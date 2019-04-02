@@ -1,0 +1,7 @@
+{
+  "name": "one-to-one-linkdrop",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/LinkdropProtocol/one-to-one-linkdrop.git",
+  "license": "MIT"
+}
