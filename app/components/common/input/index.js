@@ -12,11 +12,19 @@ class Input extends React.Component {
     }
   }
 
+  componentWillReceiveProps ({ value }) {
+    const { value: prevValue } = this.state
+    if (value == null || value === prevValue) { return }
+    this.setState({
+      value
+    })
+  }
+
   render () {
-    const { mask, className, disabled } = this.props
+    const { mask, className, disabled, placeholder } = this.props
     const { value } = this.state
     if (mask) return this.renderMaskInput()
-    return <input disabled={disabled} value={value} className={this.defineClassNames({ className, disabled })} onChange={e => this.changeValue(e)} />
+    return <input placeholder={placeholder} disabled={disabled} value={value} className={this.defineClassNames({ className, disabled })} onChange={e => this.changeValue(e)} />
   }
 
   changeValue (e) {
@@ -34,8 +42,8 @@ class Input extends React.Component {
   renderMaskInput () {
     const { value } = this.state
     const { onChange, className, disabled } = this.props
-    return <InputMask {...this.props} value={value} onChange={e => onChange && onChange({ value: e.target.value })}>
-      {(inputProps) => <input className={this.defineClassNames({ className, disabled })} {...inputProps} />}
+    return <InputMask {...this.props} value={value} className={this.defineClassNames({ className, disabled })} onChange={e => onChange && onChange({ value: e.target.value })}>
+      {(inputProps) => <input {...inputProps} />}
     </InputMask>
   }
 }
@@ -43,9 +51,16 @@ class Input extends React.Component {
 Input.propTypes = {
   mask: PropTypes.string,
   className: PropTypes.string,
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   onChange: PropTypes.func,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  placeholder: PropTypes.string,
+  alwaysShowMask: PropTypes.bool,
+  maskChar: PropTypes.string,
+  formatChars: PropTypes.object
 }
 
 export default Input

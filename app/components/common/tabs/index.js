@@ -24,7 +24,7 @@ class Tabs extends React.Component {
   render () {
     const { options = [], onChange, className } = this.props
     const { active } = this.state
-    return <div className={classNames(styles.container, className)} style={{ width: OPTION_SIZE * options.length }}>
+    return <div className={classNames(styles.container, className)}>
       {options.map(({ title, id }) => <div
         key={id}
         className={classNames(styles.option, { [styles.active]: active === id })}
@@ -45,5 +45,3 @@ Tabs.propTypes = {
 }
 
 export default Tabs
-
-const OPTION_SIZE = 114

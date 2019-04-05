@@ -16,3 +16,9 @@
   opacity: .6;
   cursor: not-allowed;
 }
+
+
+.container::placeholder {
+  color: $black;
+  opacity: 1;
+}

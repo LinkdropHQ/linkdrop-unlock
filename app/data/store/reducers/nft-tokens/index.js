@@ -1,7 +1,8 @@
 import reducers from './reducers'
 
 const initialState = {
-  tokens: []
+  tokens: [],
+  loading: false
 }
 
 export default (state = initialState, action = {}) => {
@@ -14,5 +15,6 @@ export default (state = initialState, action = {}) => {
 }
 
 const ACTIONS = {
-  'NFT_TOKENS.SET_TOKENS': reducers.setTokens
+  'NFT_TOKENS.SET_TOKENS': reducers.setTokens,
+  'NFT_TOKENS.SET_LOADING': reducers.setLoading
 }

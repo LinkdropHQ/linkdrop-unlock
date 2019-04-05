@@ -1,7 +1,7 @@
-import setTokens from './set-tokens'
+import setLink from './set-link'
 import setLoading from './set-loading'
 
 export default {
-  setTokens,
+  setLink,
   setLoading
 }

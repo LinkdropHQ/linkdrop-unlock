@@ -1,9 +1,8 @@
 import reducers from './reducers'
 
 const initialState = {
-  id: undefined,
-  locale: 'en',
-  wallet: undefined
+  loading: false,
+  link: ''
 }
 
 export default (state = initialState, action = {}) => {
@@ -16,6 +15,6 @@ export default (state = initialState, action = {}) => {
 }
 
 const ACTIONS = {
-  'USER.CHANGE_LOCALE': reducers.changeLocale,
-  'USER.SET_WALLET': reducers.setWallet
+  'TOKENS.SET_LINK': reducers.setLink,
+  'TOKENS.SET_LOADING': reducers.setLoading
 }

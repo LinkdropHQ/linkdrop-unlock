@@ -23,9 +23,13 @@
 }
 
 html, body {
-  font-family: 'Inter-Regular';
+  font-family: 'Inter-Regular', Helvetica, Arial, sans-serif;
   margin: 0px;
   padding: 0px;
   min-height: 100%;
+}
+
+* {
+  box-sizing: border-box;
 }
 

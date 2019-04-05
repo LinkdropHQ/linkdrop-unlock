@@ -4,10 +4,15 @@ import { getCrucialInfo } from '../helpers'
 
 const generator = function * ({ payload }) {
   try {
+    yield put({ type: 'NFT_TOKENS.SET_TOKENS', payload: { tokens: [] } })
+    yield put({ type: 'NFT_TOKENS.SET_LOADING', payload: { loading: true } })
     const { wallet } = payload
     const { assets } = yield call(getTokens, { wallet })
-    const finalTokens = getCrucialInfo({ tokens: assets })
-    yield put({ type: 'NFT_TOKENS.SET_TOKENS', payload: { tokens: finalTokens } })
+    if (assets) {
+      const finalTokens = getCrucialInfo({ tokens: assets })
+      yield put({ type: 'NFT_TOKENS.SET_TOKENS', payload: { tokens: finalTokens } })
+    }
+    yield put({ type: 'NFT_TOKENS.SET_LOADING', payload: { loading: false } })
   } catch (e) {
     console.error(e)
   }
