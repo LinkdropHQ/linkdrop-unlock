@@ -4,13 +4,14 @@ import thunk from 'redux-thunk'
 import { routerReducer } from 'react-router-redux'
 import saga from './saga'
 
-import { user } from './reducers'
+import { user, nftTokens } from './reducers'
 
 const sagaMiddleware = createSagaMiddleware()
 export default () => {
   const store = createStore(
     combineReducers({
       user,
+      nftTokens,
       routing: routerReducer
     }),
     {},

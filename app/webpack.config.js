@@ -35,7 +35,7 @@ module.exports = {
       }
     }, {
       test: /\.(scss|css)$/,
-      use: ['style-loader', 'css-loader?modules=true&camelCase=true']
+      use: ['style-loader', 'css-loader?modules=true&camelCase=true', 'sass-loader']
     }, {
       test: /\.(png|woff|woff2|eot|ttf|svg|otf|gif)$/,
       loader: 'url-loader?limit=100000'

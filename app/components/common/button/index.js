@@ -5,23 +5,25 @@ import PropTypes from 'prop-types'
 
 class Button extends React.Component {
   render () {
-    const { disabled, title } = this.props
+    const { disabled, children, inverted, onClick, className } = this.props
     return <button
+      onClick={_ => onClick && onClick()}
       disabled={disabled}
-      className={classNames(styles.container, {
-        [styles.disabled]: disabled
+      className={classNames(styles.container, className, {
+        [styles.disabled]: disabled,
+        [styles.inverted]: inverted
       })}
     >
-      {title}
+      {children}
     </button>
   }
 }
 
 Button.propTypes = {
-  /** The description for title */
-  title: PropTypes.string,
-  /** The description for disabled */
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  inverted: PropTypes.bool,
+  children: PropTypes.any,
+  onClick: PropTypes.func
 }
 
 export default Button

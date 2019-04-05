@@ -1,0 +1,28 @@
+@import "~variables/variables.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+}
+
+.imageBlock {
+  width: 150px;
+  height: 150px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid $black;
+}
+
+.imageBlock img {
+  max-width: 100%;
+}
+
+.name, .description {
+  font-size: 16px;
+  line-height: 22px;
+}

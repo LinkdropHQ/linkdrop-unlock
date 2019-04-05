@@ -1,5 +1,6 @@
 import User from './user'
 import Routing from './routing'
+import NftTokens from './nft-tokens'
 
 class Actions {
   constructor (env) {
@@ -8,6 +9,7 @@ class Actions {
 
     this.routing = new Routing(this)
     this.user = new User(this)
+    this.nftTokens = new NftTokens(this)
   }
 }
 

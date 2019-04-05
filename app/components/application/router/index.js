@@ -2,6 +2,7 @@ import React from 'react'
 import i18next from 'i18next'
 import { Switch, Route } from 'react-router'
 import { Main, Page } from 'components/pages'
+import './styles.css'
 
 import { actions } from 'decorators'
 @actions(({ user }) => ({
@@ -15,10 +16,9 @@ class AppRouter extends React.Component {
   }
 
   render () {
-    const { user } = this.props
     return <Page>
       <Switch>
-        <Route path='/spa' component={Main} />
+        <Route path='/' component={Main} />
       </Switch>
     </Page>
   }

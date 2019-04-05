@@ -2,7 +2,8 @@ import reducers from './reducers'
 
 const initialState = {
   id: undefined,
-  locale: 'en'
+  locale: 'en',
+  wallet: '0x6C0F58AD4eb24da5769412Bf34dDEe698c4d185b'
 }
 
 export default (state = initialState, action = {}) => {
