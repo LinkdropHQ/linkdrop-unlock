@@ -1,7 +1,14 @@
 {
   "name": "one-to-one-linkdrop",
-  "version": "1.0.2",
+  "version": "1.0.0",
+  "private": true,
   "main": "index.js",
   "repository": "https://github.com/LinkdropProtocol/one-to-one-linkdrop.git",
-  "license": "MIT"
+  "license": "MIT",
+  "workspaces": [
+    "app"
+  ],
+  "standard": {
+    "parser": "babel-eslint"
+  }
 }
