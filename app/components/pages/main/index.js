@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button, Input, NftItem, Tabs, Loading } from 'components/common'
 import { actions, translate } from 'decorators'
+import { Transfers } from 'components/pages/common'
 import LinkLoadingBlock from './link-loading-block.js'
 import LinkReadyBlock from './link-ready-block.js'
 import NeedWalletBlock from './need-wallet-block.js'
@@ -56,6 +57,7 @@ class Main extends React.Component {
         {nftLoading && <Loading />}
         {this.defineNftItems({ selected: currentNft, nftTokens, currentCurrency })}
       </div>
+      <Transfers />
     </div>
   }
 

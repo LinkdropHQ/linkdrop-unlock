@@ -1,5 +1,7 @@
 export default {
   send: 'Send',
   ok: 'OK',
-  cancel: 'cancel'
+  cancel: 'Cancel',
+  back: 'Back',
+  transfers: 'Transfers'
 }
