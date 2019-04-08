@@ -101,7 +101,6 @@ class Main extends React.Component {
   }
 
   renderButton ({ currentCurrency, amount, selected }) {
-    console.log({ currentCurrency, amount, selected })
     if (currentCurrency === 'nft' && !selected) return null
     const value = currentCurrency !== 'nft' ? amount.split(' ')[0] : null
     return <Button
