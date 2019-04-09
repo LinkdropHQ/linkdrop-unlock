@@ -10,6 +10,7 @@ import {
 } from 'ethereum-waffle'
 
 import TokenMock from '../build/TokenMock'
+import NFTMock from '../build/NFTMock'
 import Linkdrop from '../build/Linkdrop'
 const ethers = require('ethers')
 
@@ -23,6 +24,7 @@ let [sender, linkdropVerifier, receiver] = getWallets(provider)
 const SENDER_VERIFICATION_ADDRESS = linkdropVerifier.address
 
 let tokenInstance
+let nftInstance
 let linkdropInstance
 let link
 let receiverAddress
@@ -47,6 +49,21 @@ const signLink = async function (
   return signature
 }
 
+const signLinkERC721 = async function (
+  tokenAddress,
+  tokenId,
+  expirationTime,
+  linkId
+) {
+  let messageHash = ethers.utils.solidityKeccak256(
+    ['address', 'uint', 'uint', 'address'],
+    [tokenAddress, tokenId, expirationTime, linkId]
+  )
+  let messageHashToSign = ethers.utils.arrayify(messageHash)
+  let signature = await linkdropVerifier.signMessage(messageHashToSign)
+  return signature
+}
+
 // Generates new link
 const createLink = async function (tokenAddress, claimAmount, expirationTime) {
   let linkWallet = ethers.Wallet.createRandom()
@@ -55,6 +72,23 @@ const createLink = async function (tokenAddress, claimAmount, expirationTime) {
   let senderSignature = await signLink(
     tokenAddress,
     claimAmount,
+    expirationTime,
+    linkId
+  )
+  return {
+    linkKey, // link's ephemeral private key
+    linkId, // address corresponding to link key
+    senderSignature // signed by linkdrop verifier
+  }
+}
+
+const createLinkERC721 = async function (tokenAddress, tokenId, expirationTime) {
+  let linkWallet = ethers.Wallet.createRandom()
+  let linkKey = linkWallet.privateKey
+  let linkId = linkWallet.address
+  let senderSignature = await signLinkERC721(
+    tokenAddress,
+    tokenId,
     expirationTime,
     linkId
   )
@@ -79,10 +113,14 @@ const signReceiverAddress = async function (linkKey, receiverAddress) {
 describe('Linkdrop tests', () => {
   before(async () => {
     tokenInstance = await deployContract(sender, TokenMock)
+    nftInstance = await deployContract(sender, NFTMock)
 
-    linkdropInstance = await deployContract(sender, Linkdrop, [
-      SENDER_VERIFICATION_ADDRESS
-    ])
+    linkdropInstance = await deployContract(
+      sender,
+      Linkdrop,
+      [sender.address, SENDER_VERIFICATION_ADDRESS],
+      { gasLimit: 4000000 }
+    )
   })
 
   it('assigns owner of the contract as sender', async () => {
@@ -304,7 +342,7 @@ describe('Linkdrop tests', () => {
     ).to.be.revertedWith('Link has been canceled')
   })
 
-  it('should succesully claim ethers if thats the case', async () => {
+  it('should succesully claim ethers', async () => {
     claimAmount = 100 // wei
     link = await createLink(
       ethers.constants.AddressZero,
@@ -333,5 +371,93 @@ describe('Linkdrop tests', () => {
         { gasLimit: 500000 }
       )
     ).to.emit(linkdropInstance, 'Claimed')
+  })
+
+  /// ////////////////////////              ERC721             ///////////////////////////
+
+  it('creates new link key and verifies its signature', async () => {
+    tokenAddress = nftInstance.address
+    let tokenId = 0
+    link = await createLinkERC721(tokenAddress, tokenId, expirationTime)
+
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    expect(
+      await linkdropInstance.verifySenderSignature(
+        tokenAddress,
+        tokenId,
+        expirationTime,
+        link.linkId,
+        link.senderSignature
+      )
+    ).to.be.true
+  })
+
+  it('should fail to claim non approved NFT', async () => {
+    let tokenId = 0
+
+    link = await createLinkERC721(tokenAddress, tokenId, expirationTime)
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      linkdropInstance.claimERC721(
+        tokenAddress,
+        tokenId, // NFT with this id is not approved yet
+        expirationTime,
+        link.linkId,
+        link.senderSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    ).to.be.reverted
+  })
+
+  it('should succesfully claim NFT with valid claim params', async () => {
+    let tokenId = 0
+    // Approving NFT with tokenID = 0 from linkdropper to Linkdrop Contract
+    await nftInstance.approve(linkdropInstance.address, tokenId)
+
+    link = await createLinkERC721(tokenAddress, tokenId, expirationTime)
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      linkdropInstance.claimERC721(
+        tokenAddress,
+        tokenId, // NFT with this id is not approved yet
+        expirationTime,
+        link.linkId,
+        link.senderSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    )
+      .to.emit(linkdropInstance, 'Claimed')
+      .to.emit(nftInstance, 'Transfer') // should transfer claimed NFT
+      .withArgs(sender.address, receiverAddress, tokenId)
+  })
+
+  it('should fail to claim NFT with already claimed tokenId', async () => {
+    let tokenId = 0
+    link = await createLinkERC721(tokenAddress, tokenId, expirationTime)
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      linkdropInstance.claimERC721(
+        tokenAddress,
+        tokenId, // NFT with this id is not approved yet
+        expirationTime,
+        link.linkId,
+        link.senderSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    ).to.be.reverted
   })
 })

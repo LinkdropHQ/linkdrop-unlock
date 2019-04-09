@@ -1,6 +1,6 @@
 pragma solidity >= 0.5.0;
 
-interface ILinkdrop {
+contract ILinkdrop {
 
     event Canceled(address linkId, uint timestamp);
     event Claimed(address indexed linkId, address token, uint amount, address receiver, uint timestamp);
@@ -9,26 +9,26 @@ interface ILinkdrop {
     (
         address _token,
         uint _amount,
-        address _linkId,
         uint _expiration,
-        bytes calldata _signature
+        address _linkId,
+        bytes memory _signature
     )
-    external view returns (bool);
+    public view returns (bool);
 
     function verifyReceiverSignature
     (
         address _linkId,
 	    address _receiver,
-		bytes calldata _signature
+		bytes memory _signature
     )
-    external view returns (bool);
+    public view returns (bool);
 
     function checkClaimParams
     (
         address _token,
         uint _amount,
-        address _linkId, 
         uint _expiration,
+        address _linkId, 
         bytes calldata _senderSignature,
         address _receiver, 
         bytes calldata _receiverSignature
@@ -39,8 +39,8 @@ interface ILinkdrop {
     (
         address _token, 
         uint _amount,
-        address _linkId, 
         uint _expiration,
+        address _linkId, 
         bytes calldata _senderSignature, 
         address payable _receiver, 
         bytes calldata _receiverSignature
