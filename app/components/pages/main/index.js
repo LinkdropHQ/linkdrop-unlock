@@ -7,7 +7,7 @@ import LinkReadyBlock from './link-ready-block.js'
 import NeedWalletBlock from './need-wallet-block.js'
 import text from 'texts'
 
-import styles from './styles'
+import styles from './styles.module'
 
 @actions(({ tokens: { loading, link }, nftTokens: { tokens, loading: nftLoading }, user: { wallet } }) => ({ nftTokens: tokens, wallet: wallet, nftLoading, linkCreateLoading: loading, link }))
 @translate('pages.main')

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Header } from 'components/common'
-import styles from './styles.css'
+import styles from './styles.module'
 
 class Page extends React.Component {
   render () {

@@ -6,7 +6,7 @@ import { actions, translate } from 'decorators'
 import Item from './item'
 import { Scrollbars } from 'react-custom-scrollbars'
 
-import styles from './styles'
+import styles from './styles.module'
 
 @actions(({ user: { transfers } }) => ({ transfers }))
 @translate('pages.common.transfers')

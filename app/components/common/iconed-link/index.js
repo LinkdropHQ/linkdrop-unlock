@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './styles.css'
+import styles from './styles.module'
 import classNames from 'classnames'
 
 class IconedLink extends React.Component {

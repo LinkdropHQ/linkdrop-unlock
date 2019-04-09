@@ -2,7 +2,7 @@ import React from 'react'
 import i18next from 'i18next'
 import { Switch, Route } from 'react-router'
 import { Main, Page } from 'components/pages'
-import './styles.css'
+import styles from './styles.module'
 
 import { actions } from 'decorators'
 @actions(({ user }) => ({

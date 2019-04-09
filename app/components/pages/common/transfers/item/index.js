@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from 'components/common'
-import styles from './styles.css'
+import styles from './styles.module'
 import text from 'texts'
 
 export default ({ currency, amount, status, link }) => {

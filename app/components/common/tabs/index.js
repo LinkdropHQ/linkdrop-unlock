@@ -1,6 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
-import styles from './styles.css'
+import styles from './styles.module'
 import PropTypes from 'prop-types'
 
 class Tabs extends React.Component {
