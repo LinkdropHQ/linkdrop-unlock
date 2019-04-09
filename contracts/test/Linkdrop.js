@@ -286,10 +286,7 @@ describe('Linkdrop tests', () => {
   it('should fail to claim tokens by canceled link', async () => {
     link = await createLink(tokenAddress, claimAmount, expirationTime)
     receiverAddress = ethers.Wallet.createRandom().address
-    receiverSignature = await signReceiverAddress(
-      link.linkKey, // signing receiver address with fake link key
-      receiverAddress
-    )
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await linkdropInstance.cancel(link.linkId)
 
@@ -305,5 +302,36 @@ describe('Linkdrop tests', () => {
         { gasLimit: 500000 }
       )
     ).to.be.revertedWith('Link has been canceled')
+  })
+
+  it('should succesully claim ethers if thats the case', async () => {
+    claimAmount = 100 // wei
+    link = await createLink(
+      ethers.constants.AddressZero,
+      claimAmount,
+      expirationTime
+    )
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    // send some eth
+    let tx = {
+      to: linkdropInstance.address,
+      value: ethers.utils.parseEther('0.5')
+    }
+    await sender.sendTransaction(tx)
+
+    await expect(
+      linkdropInstance.claim(
+        ethers.constants.AddressZero,
+        claimAmount,
+        expirationTime,
+        link.linkId,
+        link.senderSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    ).to.emit(linkdropInstance, 'Claimed')
   })
 })

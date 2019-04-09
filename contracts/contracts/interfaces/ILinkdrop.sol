@@ -2,8 +2,8 @@ pragma solidity >= 0.5.0;
 
 interface ILinkdrop {
 
-    // event Canceled(address linkId, uint timestamp);
-    // event Claimed(address indexed linkId, address token, uint amount, address receiver, uint timestamp);
+    event Canceled(address linkId, uint timestamp);
+    event Claimed(address indexed linkId, address token, uint amount, address receiver, uint timestamp);
 
     function verifySenderSignature
     (

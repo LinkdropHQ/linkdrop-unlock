@@ -22,7 +22,7 @@ contract Linkdrop is Pausable {
     (
         address _senderVerificationAddress
     ) 
-    public 
+    public
     {
         SENDER = msg.sender;
         SENDER_VERIFICATION_ADDRESS = _senderVerificationAddress;
@@ -153,13 +153,13 @@ contract Linkdrop is Pausable {
         return true;
     }
 
-    
-
     function cancel(address _linkId) external returns (bool) {
         require(msg.sender == SENDER, "Only sender can cancel");
         canceled[_linkId] = true;
         emit Canceled(_linkId, now);
         return true;
     }
+
+    function () external payable {} 
     
 }
