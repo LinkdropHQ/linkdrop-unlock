@@ -5,6 +5,8 @@ const CSSModuleLoader = {
   options: {
     modules: true,
     sourceMap: true,
+    importLoaders: 1,
+    camelCase: true,
     localIdentName: '[local]__[hash:base64:5]',
     minimize: true
   }
@@ -66,17 +68,21 @@ module.exports = {
         loader: 'babel-loader'
       }
     }, {
-      test: /\.(css|scss)$/,
+      test: /\.(scss|css)$/,
       exclude: /\.module\.scss$/,
-      use: ['style-loader', CSSLoader, postCSSLoader, 'sass-loader']
-    },
-    {
+      use: [
+        'style-loader',
+        CSSLoader,
+        'sass-loader',
+        postCSSLoader
+      ]
+    }, {
       test: /\.module\.scss$/,
       use: [
         'style-loader',
         CSSModuleLoader,
-        postCSSLoader,
-        'sass-loader'
+        'sass-loader',
+        postCSSLoader
       ]
     }, {
       test: /\.(png|woff|woff2|eot|ttf|svg|otf|gif)$/,

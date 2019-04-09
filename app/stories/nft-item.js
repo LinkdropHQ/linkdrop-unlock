@@ -1,6 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { NftItem } from '../components/common'
+import { NftItem } from 'components/common'
 
 storiesOf('Nft Item', module)
   .add('Common', () => (

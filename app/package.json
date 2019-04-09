@@ -8,8 +8,9 @@
   "scripts": {
     "dev": "webpack --watch --mode development",
     "build": "webpack --mode production",
-    "test": "NODE_PATH=. mocha --require @babel/register --recursive",
-    "storybook": "start-storybook"
+    "test-saga": "NODE_PATH=. mocha test/saga/**/*.js --require @babel/register --require ignore-styles --recursive",
+    "storybook": "start-storybook",
+    "test-components": "NODE_PATH=. jest"
   },
   "dependencies": {
     "@babel/core": "^7.4.0",
@@ -31,6 +32,7 @@
     "history": "^4.7.2",
     "i18next": "^8.4.3",
     "immutable": "^3.8.1",
+    "jest-css-modules": "^2.0.0",
     "node-sass": "^4.7.2",
     "pure-react-carousel": "^1.19.0",
     "react": "^16.8.6",
@@ -71,7 +73,9 @@
     "chai": "^3.5.0",
     "cross-env": "^3.1.4",
     "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.12.1",
     "identity-obj-proxy": "^3.0.0",
+    "ignore-styles": "^5.0.1",
     "jest": "^24.7.1",
     "mocha": "^3.1.2",
     "nodemon": "^1.11.0",
@@ -84,14 +88,5 @@
   },
   "standard": {
     "parser": "babel-eslint"
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(css|less)$": "identity-obj-proxy"
-    },
-    "transform": {
-      "^.+\\.js$": "babel-jest",
-      "^.+\\.css$": "<rootDir>/test-helpers/file-transformer.js"
-    }
   }
 }

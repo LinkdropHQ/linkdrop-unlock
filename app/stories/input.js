@@ -1,6 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { Input } from '../components/common'
+import { Input } from 'components/common'
 
 storiesOf('Input', module)
   .add('Common with value', () => (
