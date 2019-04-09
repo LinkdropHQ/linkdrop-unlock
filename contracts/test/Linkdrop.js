@@ -174,6 +174,28 @@ describe('Linkdrop tests', () => {
     ).to.be.reverted
   })
 
+  it('should fail to claim tokens by expired link', async () => {
+    // Approving tokens from sender to Linkdrop Contract
+    await tokenInstance.approve(linkdropInstance.address, 100000)
+
+    link = await createLink(tokenAddress, claimAmount, 0)
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      linkdropInstance.claim(
+        tokenAddress,
+        claimAmount,
+        0,
+        link.linkId,
+        link.senderSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    ).to.be.revertedWith('Link has expired')
+  })
+
   it('should succesfully claim tokens with valid claim params', async () => {
     // Approving tokens from sender to Linkdrop Contract
     await tokenInstance.approve(linkdropInstance.address, 100000)
@@ -259,5 +281,29 @@ describe('Linkdrop tests', () => {
         { gasLimit: 500000 }
       )
     ).to.be.revertedWith('Receiver address is not signed by link key')
+  })
+
+  it('should fail to claim tokens by canceled link', async () => {
+    link = await createLink(tokenAddress, claimAmount, expirationTime)
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(
+      link.linkKey, // signing receiver address with fake link key
+      receiverAddress
+    )
+
+    await linkdropInstance.cancel(link.linkId)
+
+    await expect(
+      linkdropInstance.claim(
+        tokenAddress,
+        claimAmount,
+        expirationTime,
+        link.linkId,
+        link.senderSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    ).to.be.revertedWith('Link has been canceled')
   })
 })

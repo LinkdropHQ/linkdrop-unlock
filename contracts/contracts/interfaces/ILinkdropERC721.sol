@@ -3,8 +3,8 @@ pragma solidity >= 0.5.0;
 
 interface ILinkdropERC721 {
 
-    event Canceled(address linkId, uint timestamp);
-    event Claimed(address indexed linkId, uint indexed tokenId, address receiver, uint timestamp);
+    // event Canceled(address linkId, uint timestamp);
+    // event Claimed(address indexed linkId, uint indexed tokenId, address receiver, uint timestamp);
 
     function verifySenderSignatureERC721
     (
