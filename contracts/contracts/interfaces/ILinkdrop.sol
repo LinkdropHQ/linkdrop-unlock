@@ -2,7 +2,7 @@
 interface ILinkdrop {
 
     event Canceled(address linkId, uint timestamp);
-    event Claimed(address indexed linkId, uint amount, address receiver, uint timestamp);
+    event Claimed(address indexed linkId, address token, uint amount, address receiver, uint timestamp);
 
     function verifySenderSignature
     (
