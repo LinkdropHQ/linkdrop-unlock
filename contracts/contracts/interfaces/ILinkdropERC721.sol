@@ -1,4 +1,6 @@
 
+pragma solidity >= 0.5.0;
+
 interface ILinkdropERC721 {
 
     event Canceled(address linkId, uint timestamp);

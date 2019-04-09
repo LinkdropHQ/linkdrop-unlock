@@ -1,3 +1,4 @@
+pragma solidity >= 0.5.0;
 
 interface ILinkdrop {
 
@@ -41,7 +42,7 @@ interface ILinkdrop {
         address _linkId, 
         uint _expiration,
         bytes calldata _senderSignature, 
-        address _receiver, 
+        address payable _receiver, 
         bytes calldata _receiverSignature
     ) 
     external returns (bool);

@@ -6,8 +6,11 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
-contract Linkdrop is ILinkdrop, Pausable {
+contract Linkdrop is Pausable {
 
+    event Canceled(address linkId, uint timestamp);
+    event Claimed(address indexed linkId, address token, uint amount, address receiver, uint timestamp);
+    
     address payable public SENDER; 
     address public SENDER_VERIFICATION_ADDRESS; 
 
@@ -24,19 +27,22 @@ contract Linkdrop is ILinkdrop, Pausable {
         SENDER_VERIFICATION_ADDRESS = _senderVerificationAddress;
     }
 
+    function isClaimedLink(address _linkId) public view returns (bool) {
+        return claimed[_linkId];
+    }
 
     function verifySenderSignature
     (
         address _token,
         uint _amount,
-        address _linkId,
         uint _expiration,
-        bytes calldata _signature
+        address _linkId,
+        bytes memory _signature
     )
-    external view 
+    public view 
     returns (bool) 
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_token, _amount, _expiration,  _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
         return signer == SENDER_VERIFICATION_ADDRESS;
     }
@@ -44,10 +50,10 @@ contract Linkdrop is ILinkdrop, Pausable {
     function verifyReceiverSignature
     (
         address _linkId,
-        address _receiver,
-        bytes calldata _signature
+        address _receiver,
+        bytes memory _signature
     )
-    external view 
+    public view 
     returns (bool)
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_receiver)));
@@ -59,13 +65,13 @@ contract Linkdrop is ILinkdrop, Pausable {
     (
         address _token,
         uint _amount,
-        address _linkId, 
         uint _expiration,
-        bytes calldata _senderSignature,
+        address _linkId, 
+        bytes memory _senderSignature,
         address _receiver, 
-        bytes calldata _receiverSignature
+        bytes memory _receiverSignature
     )
-    external view 
+    public view 
     returns (bool)
     {
         //Verify that link wasn't claimed before
@@ -74,7 +80,7 @@ contract Linkdrop is ILinkdrop, Pausable {
         //Verify that ephemeral key is legit and signed by VERIFICATION_ADDRESS's key
         require
         (
-            verifySenderSignature(_token, _amount, _linkId, _expiration, _senderSignature),
+            verifySenderSignature(_token, _amount, _expiration, _linkId, _senderSignature),
             "Link key is not signed by sender verification key"
         );
 
@@ -92,10 +98,10 @@ contract Linkdrop is ILinkdrop, Pausable {
     (
         address _token, 
         uint _amount,
-        address _linkId, 
         uint _expiration,
+        address _linkId, 
         bytes calldata _senderSignature, 
-        address _receiver, 
+        address payable _receiver, 
         bytes calldata _receiverSignature
     ) 
     external 
@@ -108,8 +114,8 @@ contract Linkdrop is ILinkdrop, Pausable {
             (
                 _token,
                 _amount,
-                _linkId,
                 _expiration,
+                 _linkId,
                 _senderSignature,
                 _receiver,
                 _receiverSignature
@@ -136,9 +142,7 @@ contract Linkdrop is ILinkdrop, Pausable {
         return true;
     }
 
-    function isClaimedLink(address _linkId) external view returns (bool) {
-        return claimed[_linkId];
-    }
+    
 
     function cancel(address _linkId) external returns (bool) {
         require(msg.sender == SENDER, "Only sender can cancel");
