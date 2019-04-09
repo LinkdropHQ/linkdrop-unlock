@@ -1,4 +1,3 @@
-
 contract IERC721Linkdrop {
 
     event Canceled(address link, uint timestamp);
