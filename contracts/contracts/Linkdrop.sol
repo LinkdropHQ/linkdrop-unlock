@@ -9,11 +9,17 @@ import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
 contract Linkdrop is ILinkdrop, ILinkdropERC721, Pausable {
 
+    // =================================================================================================================
+    //                                         Common
+    // =================================================================================================================
+
     address payable public SENDER; 
     address public SENDER_VERIFICATION_ADDRESS; 
 
-    //Indicates who the link was claimed to
+    // Indicates who the link has been claimed to
     mapping (address => address) private claimedTo;
+
+    // Indicates whether the link has been canceled
     mapping (address => bool) private canceled;
 
     constructor
@@ -34,6 +40,28 @@ contract Linkdrop is ILinkdrop, ILinkdropERC721, Pausable {
     function isCanceledLink(address _linkId) public view returns (bool) {
         return canceled[_linkId];
     }
+
+    function cancel(address _linkId) external returns (bool) {
+        require(msg.sender == SENDER, "Only sender can cancel");
+        require(isClaimedLink(_linkId) == false, "Link has been claimed");
+        canceled[_linkId] = true;
+        emit Canceled(_linkId, now);
+        return true;
+    }
+
+    // Withdraw ether
+    function withdraw() external returns (bool) {
+        require(msg.sender == SENDER, "Only sender can withdraw ether");
+        SENDER.transfer(address(this).balance);
+        return true;
+    }
+
+    // Fallback function to accept ethers
+    function () external payable {} 
+
+    // =================================================================================================================
+    //                                         ERC20, Ether
+    // =================================================================================================================
 
     function verifySenderSignature
     (
@@ -159,24 +187,9 @@ contract Linkdrop is ILinkdrop, ILinkdropERC721, Pausable {
         return true;
     }
 
-    function cancel(address _linkId) external returns (bool) {
-        require(msg.sender == SENDER, "Only sender can cancel");
-        require(isClaimedLink(_linkId) == false, "Link has been claimed");
-        canceled[_linkId] = true;
-        emit Canceled(_linkId, now);
-        return true;
-    }
-
-    // Fallback function to accept ethers
-    function () external payable {} 
-
-    function withdraw() external returns (bool) {
-        require(msg.sender == SENDER, "Only sender can withdraw eth");
-        SENDER.transfer(address(this).balance);
-        return true;
-    }
-
-    /////////////////////////////////////////////////////////////////////
+    // =================================================================================================================
+    //                                         ERC721
+    // =================================================================================================================
 
     function verifySenderSignatureERC721
     (
