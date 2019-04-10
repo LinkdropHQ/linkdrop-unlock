@@ -3,7 +3,7 @@ pragma solidity >= 0.5.0;
 contract ILinkdrop {
 
     event Canceled(address linkId, uint timestamp);
-    event Claimed(address indexed linkId, address token, uint amount, address receiver, uint timestamp);
+    event Claimed(address indexed linkId, address indexed token, uint amount, address receiver, uint timestamp);
 
     function verifySenderSignature
     (
@@ -48,6 +48,7 @@ contract ILinkdrop {
     external returns (bool);
 
     function isClaimedLink(address _linkId) external view returns (bool);
+    function isCanceledLink(address _linkId) external view returns (bool);
     function cancel(address _linkId) external returns (bool);
     
 }

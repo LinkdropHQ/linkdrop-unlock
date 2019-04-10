@@ -1,12 +1,12 @@
 pragma solidity >= 0.5.6;
 
-import "./interfaces/ILinkdrop.sol";
+import "./interfaces/ILinkdropERC721.sol";
 
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
+import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
+import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
-contract Linkdrop is ILinkdrop, Pausable {
+contract LinkdropERC721 is ILinkdropERC721, Pausable {    
 
     // =================================================================================================================
     //                                         Common
@@ -54,15 +54,15 @@ contract Linkdrop is ILinkdrop, Pausable {
 
     // Fallback function to accept ethers
     function () external payable {} 
-
+    
     // =================================================================================================================
-    //                                         ERC20, Ether
+    //                                         ERC721
     // =================================================================================================================
 
-    function verifySenderSignature
+    function verifySenderSignatureERC721
     (
         address _token,
-        uint _amount,
+        uint _tokenId,
         uint _expiration,
         address _linkId,
         bytes memory _signature
@@ -70,12 +70,12 @@ contract Linkdrop is ILinkdrop, Pausable {
     public view 
     returns (bool) 
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_token, _amount, _expiration,  _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_token, _tokenId, _expiration, _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
         return signer == SENDER;
     }
 
-    function verifyReceiverSignature
+    function verifyReceiverSignatureERC721
     (
         address _linkId,
         address _receiver,
@@ -89,10 +89,10 @@ contract Linkdrop is ILinkdrop, Pausable {
         return signer == _linkId;
     }
 
-    function checkClaimParams
+    function checkClaimParamsERC721
     (
         address _token,
-        uint _amount,
+        uint _tokenId,
         uint _expiration,
         address _linkId, 
         bytes memory _senderSignature,
@@ -102,7 +102,6 @@ contract Linkdrop is ILinkdrop, Pausable {
     public view 
     returns (bool)
     {
-
         // Verify that link wasn't claimed before
         require(isClaimedLink(_linkId) == false, "Link has already been claimed");
         require(isCanceledLink(_linkId) == false, "Link has been canceled");
@@ -110,7 +109,7 @@ contract Linkdrop is ILinkdrop, Pausable {
         // Verify that ephemeral key is legit and signed by VERIFICATION_ADDRESS's key
         require
         (
-            verifySenderSignature(_token, _amount, _expiration, _linkId, _senderSignature),
+            verifySenderSignatureERC721(_token, _tokenId, _expiration, _linkId, _senderSignature),
             "Link key is not signed by sender verification key"
         );
 
@@ -120,17 +119,17 @@ contract Linkdrop is ILinkdrop, Pausable {
         // Verify that receiver address is signed by ephemeral key assigned to claim link
         require
         (
-            verifyReceiverSignature(_linkId, _receiver, _receiverSignature), 
+            verifyReceiverSignatureERC721(_linkId, _receiver, _receiverSignature), 
             "Receiver address is not signed by link key"
         );
 
         return true;
     }
 
-    function claim
+    function claimERC721
     (
         address _token, 
-        uint _amount,
+        uint _tokenId,
         uint _expiration,
         address _linkId, 
         bytes calldata _senderSignature, 
@@ -141,12 +140,14 @@ contract Linkdrop is ILinkdrop, Pausable {
     whenNotPaused
     returns (bool)
     {
+        require(_token != address(0), "Cannot claim ethers");
+
         require
         (
-            checkClaimParams
+            checkClaimParamsERC721
             (
                 _token,
-                _amount,
+                _tokenId,
                 _expiration,
                  _linkId,
                 _senderSignature,
@@ -159,26 +160,11 @@ contract Linkdrop is ILinkdrop, Pausable {
         // Mark link as claimed
         claimedTo[_linkId] = _receiver;
 
-        require(_transferEthOrTokens(_token, _amount, _receiver), "Failed to transfer eth or tokens");
+        // Send NFT
+        IERC721(_token).safeTransferFrom(SENDER, _receiver, _tokenId); 
 
         // Log claim
-        emit Claimed(_linkId, _token, _amount, _receiver, now);
-
-        return true;
-    }
-
-    function _transferEthOrTokens(address _token, uint _amount, address payable _receiver)
-    internal returns (bool) 
-    {
-        // Send tokens
-        if (_amount > 0 && address(_token) != address(0)) {
-            IERC20(_token).transferFrom(SENDER, _receiver, _amount); 
-        }
-
-        //Send ether (if thats the case)
-        if (_amount > 0 && address(_token) == address(0)) {
-            _receiver.transfer(_amount);
-        }
+        emit Claimed(_linkId, _token, _tokenId, _receiver, now);
 
         return true;
     }

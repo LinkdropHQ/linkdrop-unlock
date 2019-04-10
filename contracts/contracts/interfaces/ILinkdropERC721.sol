@@ -3,8 +3,9 @@ pragma solidity >= 0.5.0;
 
 contract ILinkdropERC721 {
 
-    // event Canceled(address linkId, uint timestamp);
-    // event Claimed(address indexed linkId, uint indexed tokenId, address receiver, uint timestamp);
+    event Canceled(address linkId, uint timestamp);
+    event Claimed(address indexed linkId, address indexed token, uint indexed tokenId, address receiver, uint timestamp);
+     
 
     function verifySenderSignatureERC721
     (
@@ -49,6 +50,7 @@ contract ILinkdropERC721 {
     external returns (bool);
 
     function isClaimedLink(address _linkId) external view returns (bool);
+    function isCanceledLink(address _linkId) external view returns (bool);
     function cancel(address _linkId) external returns (bool);
     
 }
