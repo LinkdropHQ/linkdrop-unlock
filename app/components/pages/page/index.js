@@ -1,6 +1,6 @@
 import React from 'react'
-import { Footer, Header } from 'components/common'
-import styles from './styles.css'
+import { Header } from 'components/common'
+import styles from './styles.module'
 
 class Page extends React.Component {
   render () {
@@ -9,7 +9,6 @@ class Page extends React.Component {
       <div className={styles.main}>
         {this.props.children}
       </div>
-      <Footer />
     </div>
   }
 }

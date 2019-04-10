@@ -1,6 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { Loading } from '../components/common'
+import { Loading } from 'components/common'
 
 storiesOf('Loading', module)
   .add('Normal', () => (

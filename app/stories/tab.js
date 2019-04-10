@@ -1,6 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { Tabs } from '../components/common'
+import { Tabs } from 'components/common'
 
 storiesOf('Tabs', module)
   .add('Common', () => (

@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './styles.css'
+import styles from './styles.module'
 import { Icons } from 'components/common'
 import { actions, translate } from 'decorators'
 

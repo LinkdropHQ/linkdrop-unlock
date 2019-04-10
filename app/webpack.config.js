@@ -1,5 +1,39 @@
 const path = require('path')
 
+const CSSModuleLoader = {
+  loader: 'css-loader',
+  options: {
+    modules: true,
+    sourceMap: true,
+    importLoaders: 1,
+    camelCase: true,
+    localIdentName: '[local]__[hash:base64:5]',
+    minimize: true
+  }
+}
+
+const CSSLoader = {
+  loader: 'css-loader',
+  options: {
+    modules: false,
+    sourceMap: true,
+    minimize: true
+  }
+}
+
+const postCSSLoader = {
+  loader: 'postcss-loader',
+  options: {
+    ident: 'postcss',
+    sourceMap: true,
+    plugins: () => [
+      require('autoprefixer')({
+        browsers: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9']
+      })
+    ]
+  }
+}
+
 module.exports = {
   entry: [
     '@babel/polyfill',
@@ -21,7 +55,7 @@ module.exports = {
   module: {
     rules: [{
       enforce: 'pre',
-      test: /\.jsx?$/,
+      test: /\.(js|jsx)$/,
       loader: 'standard-loader',
       exclude: /(node_modules|bower_components)/,
       options: {
@@ -35,7 +69,21 @@ module.exports = {
       }
     }, {
       test: /\.(scss|css)$/,
-      use: ['style-loader', 'css-loader?modules=true&camelCase=true', 'sass-loader']
+      exclude: /\.module\.scss$/,
+      use: [
+        'style-loader',
+        CSSLoader,
+        'sass-loader',
+        postCSSLoader
+      ]
+    }, {
+      test: /\.module\.scss$/,
+      use: [
+        'style-loader',
+        CSSModuleLoader,
+        'sass-loader',
+        postCSSLoader
+      ]
     }, {
       test: /\.(png|woff|woff2|eot|ttf|svg|otf|gif)$/,
       loader: 'url-loader?limit=100000'

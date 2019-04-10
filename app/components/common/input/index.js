@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './styles.css'
+import styles from './styles.module'
 import classNames from 'classnames'
 import InputMask from 'react-input-mask'
 import PropTypes from 'prop-types'

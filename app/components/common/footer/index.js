@@ -1,6 +1,6 @@
 import React from 'react'
 import { translate, actions } from 'decorators'
-import styles from './styles.css'
+import styles from './styles.module'
 
 @actions(({ user }) => ({ user }))
 @translate('components.footer')

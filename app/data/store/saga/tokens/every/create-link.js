@@ -3,7 +3,7 @@ import { getTokens } from 'data/api/nft-tokens'
 
 const generator = function * ({ payload }) {
   try {
-    const { amount, currency } = payload
+    // const { amount, currency } = payload
     yield put({ type: 'TOKENS.SET_LOADING', payload: { loading: true } })
     const wallet = yield select(generator.selectors.wallet)
     const { assets } = yield call(getTokens, { wallet })

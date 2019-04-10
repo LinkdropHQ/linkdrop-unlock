@@ -1,4 +1,4 @@
-@import "~variables/variables.scss";
+@import "variables/variables.scss";
 
 .container {
   width: 50px;
@@ -8,4 +8,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  background: $white;
 }

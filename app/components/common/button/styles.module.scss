@@ -1,4 +1,4 @@
-@import "~variables/variables.scss";
+@import "variables/variables.scss";
 
 .container {
   border: 1px solid $black;
@@ -30,4 +30,12 @@
   background: $white;
   color: $black;
   border: 1px solid $black;
+}
+
+.smallSize {
+  font-size: 18px;
+  height: 40px;
+  padding: 8px 10px;
+  width: auto;
+  font-family: 'Inter-Regular';
 }

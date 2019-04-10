@@ -8,6 +8,8 @@ import IconedLink from './iconed-link'
 import Alert from './alert'
 import Input from './input'
 import NftItem from './nft-item'
+import Slider from './slider'
+import RetinaImage from './retina-image'
 
 export {
   Footer,
@@ -19,5 +21,7 @@ export {
   IconedLink,
   Alert,
   Input,
-  NftItem
+  NftItem,
+  Slider,
+  RetinaImage
 }

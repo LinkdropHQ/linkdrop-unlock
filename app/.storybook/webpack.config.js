@@ -4,13 +4,15 @@ module.exports = ({ config }) => ({
   ...config,
   resolve: {
     ...config.resolve,
+    extensions: ['.js', '.jsx', '.json', '.scss', '.css', '*'],
     modules: [
       ...(config.resolve.modules || []),
       ...(myWebpackConfig.resolve.modules || [])
     ]
   },
   module: {
-    ...config.module,
-    rules: (myWebpackConfig.module || {}).rules || []
+    rules: [
+      ...((myWebpackConfig.module || {}).rules || [])
+    ]
   }
 })
