@@ -8,7 +8,7 @@ import 'pure-react-carousel/dist/react-carousel.es.css'
 export default class extends React.Component {
   createSlides () {
     const { children = [] } = this.props
-    return children.map((item, idx) => <Slide index={idx}>{item}</Slide>)
+    return children.map((item, idx) => <Slide key={idx} index={idx}>{item}</Slide>)
   }
 
   render () {

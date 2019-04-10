@@ -3,7 +3,9 @@ import RetinaImage from 'react-retina-image'
 
 class RetinaImageComponent extends React.Component {
   prepareSrc ({ fileName }) {
-    return [`assets/images/${fileName}.png`, `assets/images/${fileName}@2x.png`]
+    const imageOriginal = require(`assets/images/${fileName}.png`)
+    const imageRetina = require(`assets/images/${fileName}.png`)
+    return [imageOriginal, imageRetina]
   }
   render () {
     const { fileName } = this.props

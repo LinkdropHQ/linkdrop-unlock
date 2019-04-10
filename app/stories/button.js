@@ -17,4 +17,4 @@ storiesOf('Button', module)
 
   .add('With Icon or Logo', () => (
     <Button inverted><Icons.Arrow />Hello, my name is Button</Button>
-  ), { info: 'This story has additional text added to the info!' })
+  ))

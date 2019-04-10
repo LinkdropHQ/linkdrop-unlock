@@ -1,26 +1,19 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 import { Router } from 'react-router'
-import { syncHistoryWithStore } from 'react-router-redux'
-import createBrowserHistory from 'history/createBrowserHistory'
+import { ConnectedRouter } from 'connected-react-router'
 
-import data from 'data'
+import store, { history } from 'data/store'
 import AppRouter from './router'
 
 class Application extends React.Component {
-  componentWillMount () {
-    this.store = data.store()
-    this.history = createBrowserHistory()
-
-    syncHistoryWithStore(this.history, this.store)
-  }
-
   render () {
-    const { store, history } = this
-    return <Provider store={store}>
-      <Router history={history}>
-        <AppRouter />
-      </Router>
+    return <Provider store={store()}>
+      <ConnectedRouter history={history}>
+        <Router history={history}>
+          <AppRouter />
+        </Router>
+      </ConnectedRouter>
     </Provider>
   }
 }
