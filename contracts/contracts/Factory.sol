@@ -24,6 +24,10 @@ contract Factory is Storage {
         code = _code;
     }
 
+    function getSalt (address payable sender) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(sender));
+    }
+
     function getCreate2Address
     (
         address payable sender
@@ -33,7 +37,7 @@ contract Factory is Storage {
     {
     // variable for checking code size of any pre-existing contract at address.
     uint256 existingContractSize;
-    bytes32 salt = keccak256(abi.encodePacked(sender));
+    bytes32 salt = getSalt(sender);
     bytes32 codeHash = keccak256(abi.encodePacked(code));
 
     // determine the address where the contract will be deployed.
