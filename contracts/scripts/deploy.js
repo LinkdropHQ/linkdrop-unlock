@@ -9,13 +9,14 @@ const ethers = require('ethers')
 
 let receiver = ethers.Wallet.createRandom().address
 
-// let provider = ethers.getDefaultProvider('rinkeby')
-const url = 'http://localhost:8545'
-const provider = new ethers.providers.JsonRpcProvider(url)
-let privateKey =
-  '0x60ed074f1b8e2c812bc3f47860395f5af5027b26e0b7626a85e8ee535758c071'
+// const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545')
 // let privateKey =
-// 'AB3DCF0D03472E041AC2B7C0148035DA3236B1BBF2AF21D032588803F16228F3'
+//   '0xe30fb386a390fadf392ca072f5363e741bfbbea3e0a868e3ad095392e27ecc15'
+
+const provider = ethers.getDefaultProvider('rinkeby')
+let privateKey =
+  'AB3DCF0D03472E041AC2B7C0148035DA3236B1BBF2AF21D032588803F16228F3'
+
 let wallet = new ethers.Wallet(privateKey, provider)
 
 let linkdrop, linkdropFactory
@@ -28,7 +29,6 @@ const deployLinkdrop = async () => {
   )
 
   linkdrop = await factory.deploy()
-
   await linkdrop.deployed()
   console.log(`Linkdrop contract deployed at ${linkdrop.address}`)
 }
@@ -63,13 +63,15 @@ const deployProxy = async sender => {
   )
   console.log('expectedAddress: ', expectedAddress)
 
-  await factory.deployProxy(receiver)
+  let tx = await factory.deployProxy(receiver)
+  await tx.wait()
 
   console.log(`Proxy contract deployed at ${expectedAddress}`)
 
   let proxy = new ethers.Contract(expectedAddress, Linkdrop.abi, wallet)
 
   let senderAddress = await proxy.SENDER()
+  console.log('senderAddress: ', senderAddress)
   expect(receiver).to.eq(senderAddress)
 }
 
