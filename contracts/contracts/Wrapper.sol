@@ -10,19 +10,17 @@ contract Wrapper is ILinkdrop, ILinkdropERC721, Storage {
      *  Functions from Linkdrop.sol
      */
 
-
     // Withdraw ether
     function withdraw() external returns (bool) {}
 
     // Fallback function to accept ethers
     function () external payable {} 
 
-
     /*
      *  Functions from Proxy.sol
      */
 
-    function initializer(address payable _sender) public {}
+    function initializer(address payable _sender, address payable _implementation) public {}
     function setImplementation (address payable _implementation) external {}
 
 }

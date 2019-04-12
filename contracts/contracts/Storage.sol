@@ -14,7 +14,5 @@ contract Storage {
     address payable public implementation;
 
     bool initialized;
-    
-    address public owner;
 
 }

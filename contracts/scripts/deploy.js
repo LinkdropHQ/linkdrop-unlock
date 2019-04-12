@@ -1,13 +1,21 @@
 import Factory from '../build/Factory'
 import Linkdrop from '../build/Linkdrop'
 import Proxy from '../build/Proxy'
-import Wrapper from '../build/Wrapper'
 
+import chai from 'chai'
+import { computeProxyAddress } from './utils'
+
+const { expect } = chai
 const ethers = require('ethers')
 
 let receiver = ethers.Wallet.createRandom().address
 
-let provider = ethers.getDefaultProvider('ropsten')
+// const url = 'http://localhost:9545'
+
+// const provider = new ethers.providers.JsonRpcProvider(url)
+
+let provider = ethers.getDefaultProvider('rinkeby')
+
 let privateKey =
   'AB3DCF0D03472E041AC2B7C0148035DA3236B1BBF2AF21D032588803F16228F3'
 let wallet = new ethers.Wallet(privateKey, provider)
@@ -36,7 +44,7 @@ const deployFactory = async () => {
     wallet
   )
 
-  linkdropFactory = await factory.deploy(proxyBytecode, linkdrop.address, {
+  linkdropFactory = await factory.deploy(linkdrop.address, {
     gasLimit: 6000000
   })
 
@@ -50,17 +58,20 @@ const deployProxy = async sender => {
     Factory.abi,
     wallet
   )
+
+  // Compute next address with js function
+  let expectedAddress = await computeProxyAddress(factory.address, receiver)
+  console.log('expectedAddress: ', expectedAddress)
+
   await factory.deployProxy(receiver)
 
-  let contractsDeployed = await factory.contractsDeployed()
-  console.log('contractsDeployed: ', contractsDeployed)
-  //   let deployedAddress = await factory.proxies(contractsDeployed)
-  //   console.log('deployedAddress: ', deployedAddress)
-  //   let proxy = new ethers.Contract(deployedAddress, Wrapper.abi, wallet)
-  //   let senda = await proxy.SENDER()
-  //   console.log('senda: ', senda)
-  //   let impl = await proxy.implementation()
-  //   console.log('impl: ', impl)
+  let deployedAddress = await factory.computeProxyAddress(receiver)
+  console.log(`Proxy contract deployed at ${deployedAddress}`)
+  // expect(deployedAddress.toString().toLowerCase()).to.eq(
+  //   expectedAddress.toString().toLowerCase()
+  // )
+
+  // let proxy = new ethers.Contract(deployedAddress, Wrapper.abi, wallet)
 }
 
 ;(async function () {
