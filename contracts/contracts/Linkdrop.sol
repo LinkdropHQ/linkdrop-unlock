@@ -1,34 +1,31 @@
 pragma solidity >= 0.5.6;
 
 import "./interfaces/ILinkdrop.sol";
-
+import "./Storage.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
-contract Linkdrop is ILinkdrop, Pausable {
+contract Linkdrop is Storage, ILinkdrop, Pausable {   
 
-    // =================================================================================================================
-    //                                         Common
-    // =================================================================================================================
-
-    address payable public SENDER; 
-
-    // Indicates who the link has been claimed to
-    mapping (address => address) public claimedTo;
-
-    // Indicates whether the link has been canceled
-    mapping (address => bool) internal canceled;
-
-    constructor
+    function initializer
     (   
         address payable _sender
     ) 
     public
+    returns (bool)
     {
+        //require(msg.sender == owner, "Only owner has rights");
+        require(initialized == false, "Initializer can only be called once");
         SENDER = _sender;
+        initialized = true;
+        return true;
     }
 
+    // =================================================================================================================
+    //                                         Common
+    // =================================================================================================================
+    
     function isClaimedLink(address _linkId) public view returns (bool) {
         return claimedTo[_linkId] != address(0); 
     }
