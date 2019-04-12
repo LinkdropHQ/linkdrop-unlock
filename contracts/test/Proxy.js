@@ -19,58 +19,77 @@ import { computeProxyAddress } from '../src/utils'
 
 const ethers = require('ethers')
 
-const PROXY_BYTECODE = '14723a09acff6d2a60dcdf7aa4aff308fddc160c'
-
 chai.use(solidity)
 const { expect } = chai
 
 let provider = createMockProvider()
 
-let [sender, receiver, third] = getWallets(provider)
-console.log('receiver: ', receiver.address)
-console.log('sender: ', sender.address)
+let [sender, receiver, user] = getWallets(provider)
 
-let tokenInstance
 let masterCopy
-let linkdropInstance // masterCopy
 let factory
 let proxy
-let link
-let receiverAddress
-let receiverSignature
-let tokenAddress
-let claimAmount
-let expirationTime
 
-const bytecode = `0x${Proxy.bytecode}${PROXY_BYTECODE}`
+const bytecode = `0x${Proxy.bytecode}`
 
-describe('Linkdrop tests', () => {
-  before(async () => {
-    tokenInstance = await deployContract(sender, TokenMock)
-  })
+describe('Factory - Proxy pattern tests', () => {
+  //   before(async () => {})
 
-  it('should deploy master copy of linkdrop contract', async () => {
+  it('should deploy master copy of linkdrop implementation', async () => {
     masterCopy = await deployContract(sender, Linkdrop)
   })
 
   it('should deploy factory', async () => {
-    factory = await deployContract(sender, Factory, [bytecode], {
-      gasLimit: 6000000
-    })
-  })
-
-  it('should correctly get create2 address', async () => {
-    let expectedAddress = await computeProxyAddress(
-      factory.address,
-      receiver.address
+    factory = await deployContract(
+      sender,
+      Factory,
+      [bytecode, masterCopy.address],
+      {
+        gasLimit: 6000000
+      }
     )
 
-    await factory.deployProxy(receiver.address)
+    expect(factory.address).to.not.eq(ethers.constants.AddressZero)
+  })
+
+  it('should deploy proxy and delegate to implementation', async () => {
+    let senderAddress = sender.address
+
+    // Compute next address with js function
+    let expectedAddress = await computeProxyAddress(
+      factory.address,
+      senderAddress
+    )
+
+    await factory.deployProxy(senderAddress)
+
+    let contractsDeployed = await factory.contractsDeployed()
+    let deployedAddress = await factory.proxies(contractsDeployed)
+    proxy = new ethers.Contract(deployedAddress, Wrapper.abi, sender)
+
+    let implementation = await proxy.implementation()
+    expect(implementation).to.eq(masterCopy.address)
+
+    let senderAddr = await proxy.SENDER()
+    expect(senderAddress).to.eq(senderAddr)
+
+    let ownerAddress = await proxy.owner()
+    expect(ownerAddress).to.eq(factory.address)
+  })
+
+  it('should correctly precompute create2 address', async () => {
+    let senderAddress = receiver.address
+    let expectedAddress = await computeProxyAddress(
+      factory.address,
+      senderAddress
+    )
+
+    await factory.deployProxy(senderAddress)
 
     let contractsDeployed = await factory.contractsDeployed()
 
     let deployedAddress = await factory.proxies(contractsDeployed)
-    console.log('deployedAddress: ', deployedAddress)
+
     proxy = new ethers.Contract(deployedAddress, Wrapper.abi, sender)
 
     expect(expectedAddress.toString().toLowerCase()).to.be.equal(
@@ -79,38 +98,17 @@ describe('Linkdrop tests', () => {
   })
 
   it('should deploy another proxy', async () => {
+    let senderAddress = user.address
     let expectedAddress = await computeProxyAddress(
       factory.address,
-      sender.address
+      senderAddress
     )
-    console.log('expectedAddress: ', expectedAddress)
-
-    await factory.deployProxy(sender.address)
+    await factory.deployProxy(senderAddress)
 
     let contractsDeployed = await factory.contractsDeployed()
-
-    let deployedAddress = await factory.proxies(contractsDeployed)
-    console.log('deployedAddress: ', deployedAddress)
-    proxy = new ethers.Contract(deployedAddress, Wrapper.abi, sender)
-
-    let senderAddr = await proxy.SENDER()
-    console.log('sender: ', senderAddr)
-
-    let ownerAddr = await proxy.owner()
-    console.log('owner: ', ownerAddr)
+    let proxyAddress = await factory.proxies(contractsDeployed)
+    expect(proxyAddress.toString().toLowerCase()).to.eq(
+      expectedAddress.toString().toLowerCase()
+    )
   })
-
-  //   it('should deploy another proxy', async () => {
-  //     await factory.deployProxy(third.address)
-
-  //     let contractsDeployed = await factory.contractsDeployed()
-  //     console.log('contractsDeployed: ', +contractsDeployed)
-
-  //     let addr = await factory.proxies(contractsDeployed)
-  //     // let instance = new ethers.Contract(addr, Linkdrop.abi, provider)
-
-  //     console.log('addr: ', addr)
-  //     // let sende = await newLinkdrop.SENDER()
-  //     // console.log('sender: ', sende)
-  //   })
 })

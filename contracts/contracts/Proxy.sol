@@ -5,17 +5,20 @@ contract Proxy is Storage {
     
     constructor() public {
         owner = msg.sender; //This is going to be factory
+
     }
 
     function initializer
     (   
-        address payable _sender
+        address payable _sender,
+        address payable _implementation
     ) 
     public
     {
         require(msg.sender == owner, "Only owner has rights");
         require(initialized == false, "Initializer can only be called once");
         SENDER = _sender;
+        implementation = _implementation;
         initialized = true;
     }
 

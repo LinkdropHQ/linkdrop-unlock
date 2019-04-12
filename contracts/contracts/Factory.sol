@@ -3,7 +3,7 @@ pragma solidity >= 0.5.0;
 import "./Storage.sol";
 
 interface ILinkdrop {
-    function initializer(address payable _sender) external;
+    function initializer(address payable _sender, address payable _implementations) external;
 }
 
 contract Factory is Storage { 
@@ -18,13 +18,14 @@ contract Factory is Storage {
     mapping (uint => address) public proxies;
 
     // Initialize the master code
-    constructor(bytes memory _code) 
+    constructor(bytes memory _code, address payable _implementation) 
     public 
     {
         code = _code;
+        implementation = _implementation;
     }
 
-    function getSalt (address payable sender) public pure returns (bytes32) {
+    function getSalt(address payable sender) public pure returns (bytes32) {
         return keccak256(abi.encodePacked(sender));
     }
 
@@ -92,7 +93,7 @@ contract Factory is Storage {
         contractsDeployed++;
         proxies[contractsDeployed] = proxy;
         // Initialize sender in newly deployed contract
-        ILinkdrop(proxy).initializer(_sender);
+        ILinkdrop(proxy).initializer(_sender, implementation);
         emit Deployed(contractsDeployed, proxy, salt);
         return proxy;
 
