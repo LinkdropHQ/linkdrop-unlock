@@ -1,6 +1,5 @@
 import Factory from '../build/Factory'
 import Linkdrop from '../build/Linkdrop'
-import Proxy from '../build/Proxy'
 
 import chai from 'chai'
 import { computeProxyAddress } from './utils'
@@ -10,19 +9,16 @@ const ethers = require('ethers')
 
 let receiver = ethers.Wallet.createRandom().address
 
-// const url = 'http://localhost:9545'
-
-// const provider = new ethers.providers.JsonRpcProvider(url)
-
-let provider = ethers.getDefaultProvider('rinkeby')
-
+// let provider = ethers.getDefaultProvider('rinkeby')
+const url = 'http://localhost:8545'
+const provider = new ethers.providers.JsonRpcProvider(url)
 let privateKey =
-  'AB3DCF0D03472E041AC2B7C0148035DA3236B1BBF2AF21D032588803F16228F3'
+  '0x60ed074f1b8e2c812bc3f47860395f5af5027b26e0b7626a85e8ee535758c071'
+// let privateKey =
+// 'AB3DCF0D03472E041AC2B7C0148035DA3236B1BBF2AF21D032588803F16228F3'
 let wallet = new ethers.Wallet(privateKey, provider)
 
 let linkdrop, linkdropFactory
-
-const proxyBytecode = `0x${Proxy.bytecode}`
 
 const deployLinkdrop = async () => {
   let factory = new ethers.ContractFactory(
@@ -60,18 +56,21 @@ const deployProxy = async sender => {
   )
 
   // Compute next address with js function
-  let expectedAddress = await computeProxyAddress(factory.address, receiver)
+  let expectedAddress = await computeProxyAddress(
+    linkdropFactory.address,
+    receiver,
+    linkdrop.address
+  )
   console.log('expectedAddress: ', expectedAddress)
 
   await factory.deployProxy(receiver)
 
-  let deployedAddress = await factory.computeProxyAddress(receiver)
-  console.log(`Proxy contract deployed at ${deployedAddress}`)
-  // expect(deployedAddress.toString().toLowerCase()).to.eq(
-  //   expectedAddress.toString().toLowerCase()
-  // )
+  console.log(`Proxy contract deployed at ${expectedAddress}`)
 
-  // let proxy = new ethers.Contract(deployedAddress, Wrapper.abi, wallet)
+  let proxy = new ethers.Contract(expectedAddress, Linkdrop.abi, wallet)
+
+  let senderAddress = await proxy.SENDER()
+  expect(receiver).to.eq(senderAddress)
 }
 
 ;(async function () {

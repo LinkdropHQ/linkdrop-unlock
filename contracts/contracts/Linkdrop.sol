@@ -10,8 +10,7 @@ contract Linkdrop is Storage, ILinkdrop, Pausable {
 
     function initializer
     (   
-        address payable _sender,
-        address payable _implementation
+        address payable _sender
     ) 
     public
     returns (bool)
@@ -19,7 +18,6 @@ contract Linkdrop is Storage, ILinkdrop, Pausable {
         //require(msg.sender == owner, "Only owner has rights");
         require(initialized == false, "Initializer can only be called once");
         SENDER = _sender;
-        implementation = _implementation;
         initialized = true;
         return true;
     }

@@ -3,7 +3,7 @@ import "./CloneFactory.sol";
 import "./Storage.sol";
 
 interface ILinkdrop {
-    function initializer(address payable _sender, address payable _implementation) external returns (bool);
+    function initializer(address payable _sender) external returns (bool);
 }
 
 contract Factory is Storage, CloneFactory { 
@@ -26,7 +26,7 @@ contract Factory is Storage, CloneFactory {
         address payable proxy = createClone(implementation, keccak256(abi.encodePacked(_sender)));
        
         // Initialize sender in newly deployed contract
-        require(ILinkdrop(proxy).initializer(_sender, implementation), "Failed to initialize");
+        require(ILinkdrop(proxy).initializer(_sender), "Failed to initialize");
         emit Deployed( proxy, keccak256(abi.encodePacked(_sender)), now);
         
         return proxy;

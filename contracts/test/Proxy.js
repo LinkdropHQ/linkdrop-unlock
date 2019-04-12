@@ -57,9 +57,6 @@ describe('Factory - Proxy pattern tests', () => {
 
     proxy = new ethers.Contract(expectedAddress, Linkdrop.abi, sender)
 
-    let implementation = await proxy.implementation()
-    expect(implementation).to.eq(masterCopy.address)
-
     let senderAddr = await proxy.SENDER()
     expect(senderAddress).to.eq(senderAddr)
   })
@@ -76,9 +73,6 @@ describe('Factory - Proxy pattern tests', () => {
 
     proxy = new ethers.Contract(expectedAddress, Linkdrop.abi, sender)
 
-    let implementation = await proxy.implementation()
-    expect(implementation).to.eq(masterCopy.address)
-
     let senderAddr = await proxy.SENDER()
     expect(senderAddress).to.eq(senderAddr)
   })
@@ -94,9 +88,6 @@ describe('Factory - Proxy pattern tests', () => {
     await factory.deployProxy(senderAddress)
 
     proxy = new ethers.Contract(expectedAddress, Linkdrop.abi, sender)
-
-    let implementation = await proxy.implementation()
-    expect(implementation).to.eq(masterCopy.address)
 
     let senderAddr = await proxy.SENDER()
     expect(senderAddress).to.eq(senderAddr)
