@@ -8,14 +8,8 @@ interface ILinkdrop {
 
 contract Factory is Storage { 
 
-    event Deployed(uint counter, address payable proxy, bytes32 salt);
+    event Deployed(address payable proxy, bytes32 salt, uint timestamp);
     bytes public code;
-
-    // Counts number of contracts deployed using deployProxy function
-    uint public contractsDeployed;
-
-    // Deployed proxy order => deployed proxy contract address
-    mapping (uint => address) public proxies;
 
     // Initialize the master code
     constructor(bytes memory _code, address payable _implementation) 
@@ -29,7 +23,7 @@ contract Factory is Storage {
         return keccak256(abi.encodePacked(sender));
     }
 
-    function getCreate2Address
+    function computeProxyAddress
     (
         address payable sender
     ) 
@@ -74,13 +68,6 @@ contract Factory is Storage {
     external 
     returns (address payable) 
     {
-        // address payable proxy = createClone(masterCopy, uint(_sender));
-        // contractsDeployed++;
-        // proxies[contractsDeployed] = proxy;
-        // // Initialize sender in newly deployed contract
-        // ILinkdrop(proxy).initializer(_sender);
-        // emit Deployed(contractsDeployed, proxy);
-        // return proxy;
 
         address payable proxy;
 
@@ -90,11 +77,10 @@ contract Factory is Storage {
             proxy := create2(0, add(_code, 0x20), mload(_code), salt)
             if iszero(extcodesize(proxy)) {revert(0, 0)}
         }
-        contractsDeployed++;
-        proxies[contractsDeployed] = proxy;
+        
         // Initialize sender in newly deployed contract
         ILinkdrop(proxy).initializer(_sender, implementation);
-        emit Deployed(contractsDeployed, proxy, salt);
+        emit Deployed(proxy, salt, now);
         return proxy;
 
     }

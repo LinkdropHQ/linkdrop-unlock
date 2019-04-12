@@ -9,13 +9,12 @@ import {
   solidity
 } from 'ethereum-waffle'
 
-import TokenMock from '../build/TokenMock'
 import Factory from '../build/Factory'
 import Linkdrop from '../build/Linkdrop'
 import Proxy from '../build/Proxy'
 import Wrapper from '../build/Wrapper'
 
-import { computeProxyAddress } from '../src/utils'
+import { computeProxyAddress } from '../scripts/utils'
 
 const ethers = require('ethers')
 
@@ -60,12 +59,14 @@ describe('Factory - Proxy pattern tests', () => {
       factory.address,
       senderAddress
     )
+    let deployedAddress = await factory.computeProxyAddress(senderAddress)
 
+    expect(deployedAddress.toString().toLowerCase()).to.eq(
+      expectedAddress.toString().toLowerCase()
+    )
     await factory.deployProxy(senderAddress)
 
-    let contractsDeployed = await factory.contractsDeployed()
-    let deployedAddress = await factory.proxies(contractsDeployed)
-    proxy = new ethers.Contract(deployedAddress, Wrapper.abi, sender)
+    proxy = new ethers.Contract(expectedAddress, Wrapper.abi, sender)
 
     let implementation = await proxy.implementation()
     expect(implementation).to.eq(masterCopy.address)
@@ -83,18 +84,24 @@ describe('Factory - Proxy pattern tests', () => {
       factory.address,
       senderAddress
     )
+    let deployedAddress = await factory.computeProxyAddress(senderAddress)
+
+    expect(deployedAddress.toString().toLowerCase()).to.eq(
+      expectedAddress.toString().toLowerCase()
+    )
 
     await factory.deployProxy(senderAddress)
 
-    let contractsDeployed = await factory.contractsDeployed()
+    proxy = new ethers.Contract(expectedAddress, Wrapper.abi, sender)
 
-    let deployedAddress = await factory.proxies(contractsDeployed)
+    let implementation = await proxy.implementation()
+    expect(implementation).to.eq(masterCopy.address)
 
-    proxy = new ethers.Contract(deployedAddress, Wrapper.abi, sender)
+    let senderAddr = await proxy.SENDER()
+    expect(senderAddress).to.eq(senderAddr)
 
-    expect(expectedAddress.toString().toLowerCase()).to.be.equal(
-      deployedAddress.toString().toLowerCase()
-    )
+    let ownerAddress = await proxy.owner()
+    expect(ownerAddress).to.eq(factory.address)
   })
 
   it('should deploy another proxy', async () => {
@@ -103,12 +110,22 @@ describe('Factory - Proxy pattern tests', () => {
       factory.address,
       senderAddress
     )
-    await factory.deployProxy(senderAddress)
+    let deployedAddress = await factory.computeProxyAddress(senderAddress)
 
-    let contractsDeployed = await factory.contractsDeployed()
-    let proxyAddress = await factory.proxies(contractsDeployed)
-    expect(proxyAddress.toString().toLowerCase()).to.eq(
+    expect(deployedAddress.toString().toLowerCase()).to.eq(
       expectedAddress.toString().toLowerCase()
     )
+    await factory.deployProxy(senderAddress)
+
+    proxy = new ethers.Contract(expectedAddress, Wrapper.abi, sender)
+
+    let implementation = await proxy.implementation()
+    expect(implementation).to.eq(masterCopy.address)
+
+    let senderAddr = await proxy.SENDER()
+    expect(senderAddress).to.eq(senderAddr)
+
+    let ownerAddress = await proxy.owner()
+    expect(ownerAddress).to.eq(factory.address)
   })
 })
