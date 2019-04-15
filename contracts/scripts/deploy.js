@@ -8,14 +8,15 @@ const { expect } = chai
 const ethers = require('ethers')
 
 let receiver = ethers.Wallet.createRandom().address
+let alice = ethers.Wallet.createRandom().address
 
-// const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545')
-// let privateKey =
-//   '0xe30fb386a390fadf392ca072f5363e741bfbbea3e0a868e3ad095392e27ecc15'
-
-const provider = ethers.getDefaultProvider('rinkeby')
+const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545')
 let privateKey =
-  'AB3DCF0D03472E041AC2B7C0148035DA3236B1BBF2AF21D032588803F16228F3'
+  '0xe30fb386a390fadf392ca072f5363e741bfbbea3e0a868e3ad095392e27ecc15'
+
+// const provider = ethers.getDefaultProvider('rinkeby')
+// let privateKey =
+//   'AB3DCF0D03472E041AC2B7C0148035DA3236B1BBF2AF21D032588803F16228F3'
 
 let wallet = new ethers.Wallet(privateKey, provider)
 
@@ -58,12 +59,12 @@ const deployProxy = async sender => {
   // Compute next address with js function
   let expectedAddress = await computeProxyAddress(
     linkdropFactory.address,
-    receiver,
+    sender,
     linkdrop.address
   )
   console.log('expectedAddress: ', expectedAddress)
 
-  let tx = await factory.deployProxy(receiver)
+  let tx = await factory.deployProxy(sender)
   await tx.wait()
 
   console.log(`Proxy contract deployed at ${expectedAddress}`)
@@ -72,11 +73,12 @@ const deployProxy = async sender => {
 
   let senderAddress = await proxy.SENDER()
   console.log('senderAddress: ', senderAddress)
-  expect(receiver).to.eq(senderAddress)
+  expect(sender).to.eq(senderAddress)
 }
 
 ;(async function () {
   await deployLinkdrop()
   await deployFactory()
-  await deployProxy()
+  await deployProxy(receiver)
+  await deployProxy(alice)
 })()
