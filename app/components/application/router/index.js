@@ -18,6 +18,7 @@ class AppRouter extends React.Component {
   render () {
     return <Page>
       <Switch>
+        {/* <Route path='/' component={Main} /> */}
         <Route path='/' component={Main} />
         <Route path='*' component={NotFound} />
       </Switch>

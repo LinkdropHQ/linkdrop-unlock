@@ -25,8 +25,8 @@ export default class extends React.Component {
         <Slider>
           {this.createSlides()}
         </Slider>
-        <ButtonBack className={classNames(styles.arrow, styles.arrowBack)}><Icons.BackArrow /></ButtonBack>
-        <ButtonNext className={classNames(styles.arrow, styles.arrowNext)}><Icons.BackArrow /></ButtonNext>
+        <ButtonBack><Icons.BackArrow className={classNames(styles.arrow, styles.arrowBack)} /></ButtonBack>
+        <ButtonNext><Icons.BackArrow className={classNames(styles.arrow, styles.arrowNext)} /></ButtonNext>
       </CarouselProvider>
     )
   }
