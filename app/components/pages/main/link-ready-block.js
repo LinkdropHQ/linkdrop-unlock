@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Button } from 'components/common'
+import { Input, Button } from 'linkdrop-ui-kit'
 import text from 'texts'
 
 export default ({ styles, t, link, wallet, onClick }) => <div className={styles.container}>
