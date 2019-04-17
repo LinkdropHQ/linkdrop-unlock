@@ -1,15 +1,11 @@
 /* global describe, it */
-import { put, call } from 'redux-saga/effects'
+import { put } from 'redux-saga/effects'
 import { expect } from 'chai'
-import { ethers, utils } from 'ethers'
+import { ethers } from 'ethers'
 import getTokenDataGenerator from 'data/store/saga/contract/every/get-token-data.js'
 import { createMockProvider } from 'ethereum-waffle'
 import config from 'contract-config.json'
 
-const contract = {
-  decimals: () => 18,
-  symbol: () => 'BNB'
-}
 const provider = createMockProvider()
 describe('data/store/saga/contract/every/get-token-data.js saga logic', () => {
   const tokenAddress = '0xB8c77482e45F1F44dE1745F52C74426C631bDD52'

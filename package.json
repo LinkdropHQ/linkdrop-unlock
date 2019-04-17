@@ -8,7 +8,8 @@
   "workspaces": [
     "app",
     "app-claim",
-    "contracts"
+    "contracts",
+    "linkdrop-ui-kit"
   ],
   "standard": {
     "parser": "babel-eslint"

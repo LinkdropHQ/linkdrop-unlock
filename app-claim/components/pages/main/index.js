@@ -1,5 +1,5 @@
 import React from 'react'
-import { Loading } from 'components/common'
+import { Loading } from 'linkdrop-ui-kit'
 import { actions, translate } from 'decorators'
 import InitialPage from './initial-page'
 import WalletChoosePage from './wallet-choose-page'

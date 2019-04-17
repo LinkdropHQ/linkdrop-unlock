@@ -57,7 +57,7 @@ module.exports = {
       enforce: 'pre',
       test: /\.(js|jsx)$/,
       loader: 'standard-loader',
-      exclude: /(node_modules|bower_components)/,
+      exclude: /(node_modules|bower_components|linkdrop-ui-kit)/,
       options: {
         parser: 'babel-eslint'
       }

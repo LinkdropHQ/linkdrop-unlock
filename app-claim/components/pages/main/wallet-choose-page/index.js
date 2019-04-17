@@ -1,6 +1,7 @@
 import React from 'react'
-import { Button, Alert, Icons, Slider, RetinaImage } from 'components/common'
+import { Button, Alert, Icons, Slider, RetinaImage } from 'linkdrop-ui-kit'
 import { translate } from 'decorators'
+import { getImages } from 'helpers'
 import classNames from 'classnames'
 
 import styles from './styles.module'
@@ -26,12 +27,18 @@ class WalletChoosePage extends React.Component {
       <div className={styles.content}>
         <div onClick={_ => this.toggleSlider()} className={styles.subtitle}>{this.t('titles.haveAnother')}</div>
         <Slider visibleSlides={4} className={styles.slider} step={4}>
-          <div className={styles.wallet}><RetinaImage fileName='Metamask' /></div>
-          <div className={styles.wallet}><RetinaImage fileName='Coinbase' /></div>
-          <div className={styles.wallet}><RetinaImage fileName='Opera' /></div>
-          <div className={styles.wallet}><RetinaImage fileName='Status' /></div>
+          {this.renderImage({ src: 'Metamask' })}
+          {this.renderImage({ src: 'Coinbase' })}
+          {this.renderImage({ src: 'Opera' })}
+          {this.renderImage({ src: 'Status' })}
         </Slider>
       </div>
+    </div>
+  }
+
+  renderImage ({ src }) {
+    return <div className={styles.wallet}>
+      <RetinaImage width={60} {...getImages({ src })} />
     </div>
   }
 
