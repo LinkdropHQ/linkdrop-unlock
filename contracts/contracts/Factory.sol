@@ -1,12 +1,12 @@
 pragma solidity >= 0.5.0;
 import "./CloneFactory.sol";
 import "./Storage.sol";
+import "./interfaces/ILinkdrop.sol";
 
-interface ILinkdrop {
-    function initializer(address payable _sender) external returns (bool);
-}
+contract Factory is Storage, CloneFactory {
 
-contract Factory is Storage, CloneFactory { 
+    // Sender => Proxy address
+    mapping (address => address) deployed;
 
     event Deployed(address payable proxy, bytes32 salt, uint timestamp);
 
@@ -17,19 +17,58 @@ contract Factory is Storage, CloneFactory {
       implementation = _implementation;
     }
 
+    // Indicates whether a proxy is deployed or not
+    function isDeployed(address _sender) public view returns (bool) {
+        return (deployed[_sender] != address(0));
+    }
+
     // Deploy new proxy contract
     function deployProxy(address payable _sender) 
-    external 
+    public 
     returns (address payable) 
     {
 
         address payable proxy = createClone(implementation, keccak256(abi.encodePacked(_sender)));
-       
+
+        deployed[_sender] = proxy;
+
         // Initialize sender in newly deployed contract
         require(ILinkdrop(proxy).initializer(_sender), "Failed to initialize");
         emit Deployed( proxy, keccak256(abi.encodePacked(_sender)), now);
         
         return proxy;
+
+    }
+
+    // Function to claim tokens. Deploys proxy if not deployed yet
+    function claim
+    (
+        address _token, 
+        uint _amount,
+        uint _expiration,
+        address _linkId, 
+        address payable _sender, 
+        bytes calldata _senderSignature, 
+        address payable _receiver, 
+        bytes calldata _receiverSignature
+    ) 
+    external 
+    returns (bool)
+    {
+        if (!isDeployed(_sender)) {
+            deployProxy(_sender);
+        }
+
+        ILinkdrop(deployed[_sender]).claim
+        (
+            _token, 
+            _amount,
+            _expiration,
+            _linkId, 
+            _senderSignature, 
+            _receiver, 
+            _receiverSignature
+        );
 
     }
   

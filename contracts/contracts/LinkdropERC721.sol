@@ -2,30 +2,29 @@ pragma solidity >= 0.5.6;
 
 import "./interfaces/ILinkdropERC721.sol";
 import "./Storage.sol";
-
 import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
 contract LinkdropERC721 is Storage, ILinkdropERC721, Pausable {    
 
-    // =================================================================================================================
-    //                                         Common
-    // =================================================================================================================
-
-    bool initialized;
-
     function initializer
     (   
         address payable _sender
     ) 
     public
+    returns (bool)
     {
         require(initialized == false, "Initializer can only be called once");
         SENDER = _sender;
         initialized = true;
+        return true;
     }
+    
 
+    // =================================================================================================================
+    //                                         Common
+    // =================================================================================================================
 
     function isClaimedLink(address _linkId) public view returns (bool) {
         return claimedTo[_linkId] != address(0); 

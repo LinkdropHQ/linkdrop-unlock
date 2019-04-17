@@ -15,7 +15,6 @@ contract Linkdrop is Storage, ILinkdrop, Pausable {
     public
     returns (bool)
     {
-        //require(msg.sender == owner, "Only owner has rights");
         require(initialized == false, "Initializer can only be called once");
         SENDER = _sender;
         initialized = true;
@@ -172,7 +171,7 @@ contract Linkdrop is Storage, ILinkdrop, Pausable {
             IERC20(_token).transferFrom(SENDER, _receiver, _amount); 
         }
 
-        //Send ether (if thats the case)
+        // Send ether (if thats the case)
         if (_amount > 0 && address(_token) == address(0)) {
             _receiver.transfer(_amount);
         }
