@@ -1,25 +1,7 @@
 pragma solidity >= 0.5.0;
 import "./CloneFactory.sol";
 import "./Storage.sol";
-
-interface ILinkdrop {
-
-    function initializer(address payable _sender) external returns (bool);
-
-    function claim
-    (
-        address _token, 
-        uint _amount,
-        uint _expiration,
-        address _linkId, 
-        bytes calldata _senderSignature, 
-        address payable _receiver, 
-        bytes calldata _receiverSignature
-    ) 
-    external 
-    returns (bool);
-
-}
+import "./interfaces/ILinkdrop.sol";
 
 contract Factory is Storage, CloneFactory {
 
@@ -48,7 +30,7 @@ contract Factory is Storage, CloneFactory {
 
         address payable proxy = createClone(implementation, keccak256(abi.encodePacked(_sender)));
 
-        deployed[_sender] = proxy; // Added new
+        deployed[_sender] = proxy;
 
         // Initialize sender in newly deployed contract
         require(ILinkdrop(proxy).initializer(_sender), "Failed to initialize");

@@ -10,9 +10,12 @@ const ethers = require('ethers')
 let receiver = ethers.Wallet.createRandom().address
 let alice = ethers.Wallet.createRandom().address
 
-const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545')
+const provider = new ethers.providers.JsonRpcProvider()
 let privateKey =
-  '0xe30fb386a390fadf392ca072f5363e741bfbbea3e0a868e3ad095392e27ecc15'
+  '0x9471db4aca21ead4c05fe797dd92975097a61feefb07f39a1423fc7195f73c26'
+
+// const provider = ethers.getDefaultProvider(process.env.NETWORK)
+// let privateKey = process.env.SENDER_PRIVATE_KEY
 
 // const provider = ethers.getDefaultProvider('rinkeby')
 // let privateKey =

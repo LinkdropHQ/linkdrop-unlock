@@ -133,7 +133,7 @@ describe('Claim tests', () => {
         claimAmount,
         expirationTime,
         link.linkId,
-        sender.address, // New
+        sender.address,
         link.senderSignature,
         receiverAddress,
         receiverSignature,
@@ -156,7 +156,7 @@ describe('Claim tests', () => {
         claimAmount,
         0,
         link.linkId,
-        sender.address, // New
+        sender.address,
         link.senderSignature,
         receiverAddress,
         receiverSignature,
@@ -180,7 +180,7 @@ describe('Claim tests', () => {
         claimAmount,
         expirationTime,
         link.linkId,
-        sender.address, // New
+        sender.address,
         link.senderSignature,
         receiverAddress,
         receiverSignature,
