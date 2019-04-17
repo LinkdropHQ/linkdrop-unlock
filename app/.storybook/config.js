@@ -1,6 +1,14 @@
-import { configure, addDecorator } from '@storybook/react'
+import { configure, addDecorator, addParameters } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 import 'components/application/router/styles.css'
+import './styles.css'
+import linkdropTheme from './linkdrop-theme'
+
+addParameters({
+  options: {
+    theme: linkdropTheme
+  }
+})
 
 function loadStories () {
   require('stories/button.js')
@@ -8,6 +16,9 @@ function loadStories () {
   require('stories/loading.js')
   require('stories/input.js')
   require('stories/nft-item.js')
+  require('stories/alert.js')
+  require('stories/iconed-link.js')
+  require('stories/slider.js')
 }
 
 addDecorator(withInfo)

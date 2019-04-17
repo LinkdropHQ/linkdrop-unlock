@@ -8,7 +8,7 @@ import 'pure-react-carousel/dist/react-carousel.es.css'
 export default class extends React.Component {
   createSlides () {
     const { children = [] } = this.props
-    return children.map((item, idx) => <Slide index={idx}>{item}</Slide>)
+    return children.map((item, idx) => <Slide key={idx} index={idx}>{item}</Slide>)
   }
 
   render () {
@@ -25,8 +25,8 @@ export default class extends React.Component {
         <Slider>
           {this.createSlides()}
         </Slider>
-        <ButtonBack className={classNames(styles.arrow, styles.arrowBack)}><Icons.BackArrow /></ButtonBack>
-        <ButtonNext className={classNames(styles.arrow, styles.arrowNext)}><Icons.BackArrow /></ButtonNext>
+        <ButtonBack><Icons.BackArrow className={classNames(styles.arrow, styles.arrowBack)} /></ButtonBack>
+        <ButtonNext><Icons.BackArrow className={classNames(styles.arrow, styles.arrowNext)} /></ButtonNext>
       </CarouselProvider>
     )
   }
