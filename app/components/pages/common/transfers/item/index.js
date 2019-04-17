@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'components/common'
+import { Button } from 'linkdrop-ui-kit'
 import styles from './styles.module'
 import text from 'texts'
 

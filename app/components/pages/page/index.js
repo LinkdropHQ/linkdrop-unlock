@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header } from 'components/common'
+import { Header } from 'linkdrop-ui-kit'
 import styles from './styles.module'
 
 class Page extends React.Component {

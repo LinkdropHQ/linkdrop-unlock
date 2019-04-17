@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Input, NftItem, Tabs, Loading } from 'components/common'
+import { Button, Input, NftItem, Tabs, Loading } from 'linkdrop-ui-kit'
 import { actions, translate } from 'decorators'
 import { Transfers } from 'components/pages/common'
 import LinkLoadingBlock from './link-loading-block.js'

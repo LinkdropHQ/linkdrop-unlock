@@ -1,8 +1,8 @@
 import React from 'react'
-import { Header, Footer } from 'components/common'
+import { Header, Footer } from 'linkdrop-ui-kit'
 import styles from './styles.module'
 import { translate } from 'decorators'
-
+import text from 'texts'
 @translate('pages.page')
 class Page extends React.Component {
   render () {
@@ -11,7 +11,7 @@ class Page extends React.Component {
       <div className={styles.main}>
         {this.props.children}
       </div>
-      <Footer />
+      <Footer content={text('components.footer.copyright')} />
     </div>
   }
 }

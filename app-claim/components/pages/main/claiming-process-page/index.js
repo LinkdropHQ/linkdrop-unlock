@@ -1,5 +1,5 @@
 import React from 'react'
-import { Loading } from 'components/common'
+import { Loading } from 'linkdrop-ui-kit'
 import { translate } from 'decorators'
 
 import styles from './styles.module'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Alert, Icons } from 'components/common'
+import { Alert, Icons, Button } from 'linkdrop-ui-kit'
 import { translate } from 'decorators'
 import { shortenString } from 'helpers'
 import text from 'texts'

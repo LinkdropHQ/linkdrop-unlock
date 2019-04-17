@@ -1,5 +1,5 @@
 import React from 'react'
-import { Loading } from 'components/common'
+import { Loading } from 'linkdrop-ui-kit'
 
 export default ({ styles, t }) => <div className={styles.container}>
   <div className={styles.loadingContainer}>

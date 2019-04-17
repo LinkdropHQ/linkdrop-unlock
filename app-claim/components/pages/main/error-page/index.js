@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert, Icons } from 'components/common'
+import { Alert, Icons } from 'linkdrop-ui-kit'
 import { translate } from 'decorators'
 
 import styles from './styles.module'
