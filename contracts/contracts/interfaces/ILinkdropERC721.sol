@@ -6,6 +6,8 @@ contract ILinkdropERC721 {
     event Canceled(address linkId, uint timestamp);
     event Claimed(address indexed linkId, address indexed token, uint indexed tokenId, address receiver, uint timestamp);
      
+    // Constructor
+    function initializer(address payable _sender) external returns (bool);
 
     function verifySenderSignatureERC721
     (
