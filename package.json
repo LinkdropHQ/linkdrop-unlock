@@ -9,7 +9,14 @@
     "app",
     "contracts"
   ],
+  "scripts": {
+    "test": "mocha --require @babel/polyfill --require @babel/register"
+  },
   "standard": {
     "parser": "babel-eslint"
+  },
+  "dependencies": {
+    "custom-env": "^1.0.0",
+    "fast-csv": "^2.4.1"
   }
 }
