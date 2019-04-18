@@ -7,7 +7,9 @@
   "license": "MIT",
   "workspaces": [
     "app",
-    "contracts"
+    "app-claim",
+    "contracts",
+    "linkdrop-ui-kit"
   ],
   "standard": {
     "parser": "babel-eslint"

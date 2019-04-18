@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Icons, IconedLink } from 'components/common'
+import { Button, Icons, IconedLink } from 'linkdrop-ui-kit'
 import text from 'texts'
 import classNames from 'classnames'
 import { actions, translate } from 'decorators'
