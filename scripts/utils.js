@@ -12,10 +12,13 @@ function buildCreate2Address (creatorAddress, saltHex, byteCode) {
     .slice(-40)}`.toLowerCase()
 }
 
-export const computeProxyAddress = (factoryAddress, sender, implementation) => {
-  const salt = utils.solidityKeccak256(['address'], [sender])
+export const computeProxyAddress = (
+  factoryAddress,
+  senderAddress,
+  implementation
+) => {
+  const salt = utils.solidityKeccak256(['address'], [senderAddress])
 
-  // /let bytecode = `0x${Linkdrop.bytecode}`
   const bytecode = `0x3d602d80600a3d3981f3363d3d373d3d3d363d73${implementation.slice(
     2
   )}5af43d82803e903d91602b57fd5bf3`
@@ -80,4 +83,20 @@ export const signReceiverAddress = async function (linkKey, receiverAddress) {
   let messageHashToSign = ethers.utils.arrayify(messageHash)
   let signature = await wallet.signMessage(messageHashToSign)
   return signature
+}
+
+export const getMasterCopyAddress = () => {
+  let masterCopyAddress = process.env.LINKDROP_MASTER_COPY
+  if (masterCopyAddress == null || masterCopyAddress === '') {
+    throw 'Please provide linkdrop master copy address'
+  }
+  return masterCopyAddress
+}
+
+export const getFactoryAddress = () => {
+  let factoryAddress = process.env.FACTORY
+  if (factoryAddress == null || factoryAddress === '') {
+    throw 'Please provide factory contract address'
+  }
+  return factoryAddress
 }
