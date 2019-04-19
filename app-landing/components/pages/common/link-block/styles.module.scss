@@ -1,0 +1,22 @@
+@import "variables/variables.scss";
+
+.container {
+  width: 400px;
+  background: $white;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid $black;
+  padding: 60px 30px;
+  position: relative;
+  overflow: hidden;
+  transition: height .3s;
+}
+
+.title {
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 15px;
+  font-family: 'Inter-Medium';
+}

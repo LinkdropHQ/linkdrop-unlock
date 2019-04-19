@@ -15,7 +15,13 @@
   font-size: 22px;
   outline: none;
   font-family: 'Inter-Medium';
+  transition: opacity .3s;
+
+  &:active {
+    opacity: .5;
+  }
 }
+
 
 .loading {
   display: inline-block;
@@ -68,7 +74,7 @@
 }
 
 .inverted {
-  background: $white;
+  background: transparent;
   color: $black;
   border: 1px solid $black;
 

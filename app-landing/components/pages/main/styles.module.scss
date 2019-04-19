@@ -1,0 +1,31 @@
+@import "variables/variables.scss";
+
+.container {
+  display: flex;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  justify-content: space-between;
+}
+
+.rightBlock {
+  flex: 0 1 480px;
+  padding-top: 110px;
+}
+
+.mainTitle {
+  font-size: 36px;
+  font-family: 'Inter-Medium';
+  margin: 0 0 46px 0;
+}
+
+.mainDescription {
+  font-size: 24px;
+  margin-bottom: 46px;
+}
+
+.description {
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 30px;
+}

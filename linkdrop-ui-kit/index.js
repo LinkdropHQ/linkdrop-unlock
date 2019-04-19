@@ -10,7 +10,8 @@ import {
   Input,
   NftItem,
   Slider,
-  RetinaImage
+  RetinaImage,
+  TextControlBlock
 } from './dist/bundle.js'
 
 export {
@@ -25,5 +26,6 @@ export {
   Input,
   NftItem,
   Slider,
-  RetinaImage
+  RetinaImage,
+  TextControlBlock
 }
