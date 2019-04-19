@@ -2,30 +2,33 @@ import Linkdrop from '../build/Linkdrop'
 import Factory from '../build/Factory'
 import chai from 'chai'
 import { computeProxyAddress, createLink, signReceiverAddress } from './utils'
+import { checkNormalize } from 'ethers/errors'
 const ethers = require('ethers')
+const { expect } = checkNormalize
 const fs = require('fs')
 const fastcsv = require('fast-csv')
 const path = require('path')
-const { expect } = chai
-require('custom-env').env()
+const configPath = path.resolve(__dirname, '../config/config.json')
+const config = require(configPath)
 
-// const provider = new ethers.providers.JsonRpcProvider()
-// let senderPrivateKey =
-//   '0x111b0b6757ec45861340f853dec86991c5bf333f02519d6fd3200b5889146104'
+let {
+  network,
+  networkId,
+  senderPrivateKey,
+  token,
+  amount,
+  linksNumber,
+  jsonRpcUrl,
+  host,
+  masterCopy,
+  factory
+} = config
 
-let network = process.env.NETWORK
-let senderPrivateKey = process.env.SENDER_PRIVATE_KEY
-const provider = ethers.getDefaultProvider(network)
-
-let linksNumber = process.env.LINKS_NUMBER
-let token
-process.env.TOKEN == null || process.env.TOKEN === ''
+config.token == null || config.token === ''
   ? (token = '0x0000000000000000000000000000000000000000')
-  : (token = process.env.TOKEN)
+  : (token = config.token)
 
-let networkId = process.env.NETWORK_ID
-let host = process.env.HOST
-let amount = process.env.AMOUNT
+const provider = ethers.getDefaultProvider(network)
 
 // Make sure we have these set in dotenv file
 if (senderPrivateKey == null || senderPrivateKey === '') {
@@ -40,7 +43,7 @@ if (linksNumber == null || linksNumber == '') {
 const sender = new ethers.Wallet(senderPrivateKey, provider)
 let linkdrop, proxyFactory, expirationTime
 
-export const deployLinkdropMasterCopy = async () => {
+export const deployMasterCopy = async () => {
   let factory = new ethers.ContractFactory(
     Linkdrop.abi,
     Linkdrop.bytecode,
@@ -56,25 +59,26 @@ export const deployLinkdropMasterCopy = async () => {
     : `https://etherscan.io/tx/${txHash}`
 
   await linkdrop.deployed()
-  console.log(`Deployed linkdrop contract ${url}`)
+  console.log(`Deployed linkdrop master copy at ${linkdrop.address}\n${url}`)
 
-  // Add a line to .env file, using appendFile
-  fs.appendFile('.env', `\nLINKDROP_MASTER_COPY="${linkdrop.address}"`, err => {
+  config.masterCopy = linkdrop.address
+
+  fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw err
-    console.log('Linkdrop mastercopy address was added to .env file!')
+    console.log('Master copy address successfully added to config.json ')
   })
 
   return linkdrop.address
 }
 
-export const deployFactory = async linkdropMasterCopyAddress => {
+export const deployFactory = async masterCopy => {
   let factory = new ethers.ContractFactory(
     Factory.abi,
     Factory.bytecode,
     sender
   )
 
-  proxyFactory = await factory.deploy(linkdropMasterCopyAddress, {
+  proxyFactory = await factory.deploy(masterCopy, {
     gasLimit: 6000000
   })
 
@@ -85,12 +89,12 @@ export const deployFactory = async linkdropMasterCopyAddress => {
     : `https://etherscan.io/tx/${txHash}`
 
   await proxyFactory.deployed()
-  console.log(`Deployed proxy factory contract ${url}`)
+  console.log(`Deployed proxy factory at ${proxyFactory.address}\n${url}`)
 
-  // Add a line to .env file, using appendFile
-  fs.appendFile('.env', `\nFACTORY="${proxyFactory.address}"`, err => {
+  config.factory = proxyFactory.address
+  fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw err
-    console.log('Proxy factory address was added to .env file!')
+    console.log('Proxy factory address successfully added to config.json ')
   })
 
   return proxyFactory.address

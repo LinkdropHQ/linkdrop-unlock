@@ -1,8 +1,7 @@
 import { deployFactory } from './index'
 import { getMasterCopyAddress } from './utils'
   ;(async () => {
-  console.log(`Current network: ${process.env.NETWORK}`)
-
+  console.log('Deploying factory...\n')
   let masterCopyAddress = getMasterCopyAddress()
   await deployFactory(masterCopyAddress)
 })()

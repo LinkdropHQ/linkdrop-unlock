@@ -1,6 +1,6 @@
-import { deployLinkdropMasterCopy } from './index'
+import { deployMasterCopy } from './index'
   ;(async () => {
-  console.log(`Current network: ${process.env.NETWORK}`)
-  let linkdropMasterCopyAddress = await deployLinkdropMasterCopy()
-  return linkdropMasterCopyAddress
+  console.log('Deploying mastercopy...\n')
+  let masterCopyAddress = await deployMasterCopy()
+  return masterCopyAddress
 })()

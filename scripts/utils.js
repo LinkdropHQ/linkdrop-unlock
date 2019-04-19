@@ -1,5 +1,10 @@
 import { utils } from 'ethers'
 const ethers = require('ethers')
+const path = require('path')
+const configPath = path.resolve(__dirname, '../config/config.json')
+const config = require(configPath)
+
+let { masterCopy, factory } = config
 
 function buildCreate2Address (creatorAddress, saltHex, byteCode) {
   const byteCodeHash = utils.keccak256(byteCode)
@@ -15,11 +20,11 @@ function buildCreate2Address (creatorAddress, saltHex, byteCode) {
 export const computeProxyAddress = (
   factoryAddress,
   senderAddress,
-  implementation
+  masterCopyAddress
 ) => {
   const salt = utils.solidityKeccak256(['address'], [senderAddress])
 
-  const bytecode = `0x3d602d80600a3d3981f3363d3d373d3d3d363d73${implementation.slice(
+  const bytecode = `0x3d602d80600a3d3981f3363d3d373d3d3d363d73${masterCopyAddress.slice(
     2
   )}5af43d82803e903d91602b57fd5bf3`
 
@@ -86,17 +91,15 @@ export const signReceiverAddress = async function (linkKey, receiverAddress) {
 }
 
 export const getMasterCopyAddress = () => {
-  let masterCopyAddress = process.env.LINKDROP_MASTER_COPY
-  if (masterCopyAddress == null || masterCopyAddress === '') {
+  if (masterCopy == null || masterCopy === '') {
     throw 'Please provide linkdrop master copy address'
   }
-  return masterCopyAddress
+  return masterCopy
 }
 
 export const getFactoryAddress = () => {
-  let factoryAddress = process.env.FACTORY
-  if (factoryAddress == null || factoryAddress === '') {
+  if (factory == null || factory === '') {
     throw 'Please provide factory contract address'
   }
-  return factoryAddress
+  return factory
 }

@@ -4,13 +4,17 @@ import {
   getFactoryAddress,
   getMasterCopyAddress
 } from './utils'
-require('custom-env').env()
+
 const ethers = require('ethers')
+const path = require('path')
+const configPath = path.resolve(__dirname, '../config/config.json')
+const config = require(configPath)
+
+let { network, senderPrivateKey } = config
 
 ;(async () => {
-  console.log(`Current network: ${process.env.NETWORK}`)
-  const network = process.env.NETWORK
-  const senderPrivateKey = process.env.SENDER_PRIVATE_KEY
+  console.log('Generating links...\n')
+
   const provider = ethers.getDefaultProvider(network)
   const sender = new ethers.Wallet(senderPrivateKey, provider)
 
