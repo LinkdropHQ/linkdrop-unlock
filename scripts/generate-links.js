@@ -10,7 +10,7 @@ const path = require('path')
 const configPath = path.resolve(__dirname, '../config/config.json')
 const config = require(configPath)
 
-let { network, senderPrivateKey } = config
+let { network, networkId, senderPrivateKey, amount, linksNumber } = config
 
 ;(async () => {
   console.log('Generating links...\n')
@@ -26,6 +26,23 @@ let { network, senderPrivateKey } = config
     sender.address,
     masterCopyAddress
   )
+
+  let proxyBalance = await provider.getBalance(proxyAddress)
+  let cost = amount * linksNumber
+  let weiToSend = cost - proxyBalance
+
+  let rawTx = { to: proxyAddress, value: weiToSend }
+
+  console.log(`Sending eth to ${proxyAddress}...`)
+  let tx = await sender.sendTransaction(rawTx)
+  let txHash = tx.hash
+
+  let url
+  networkId !== 1
+    ? (url = `https://${network}.etherscan.io/tx/${txHash}`)
+    : `https://etherscan.io/tx/${txHash}`
+
+  console.log(url)
 
   let links = await generateLinks(proxyAddress)
   return links
