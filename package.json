@@ -14,7 +14,8 @@
     "deploy-mastercopy": "npx babel-node scripts/deploy_mastercopy.js",
     "deploy-factory": "npx babel-node scripts/deploy_factory.js",
     "generate-links": "npx babel-node scripts/generate-links.js",
-    "setup-linkdrop": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links"
+    "setup-linkdrop": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links",
+    "send-eth": "npx babel-node scripts/send-eth.js"
   },
   "standard": {
     "parser": "babel-eslint"
