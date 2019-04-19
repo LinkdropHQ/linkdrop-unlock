@@ -11,7 +11,17 @@
     "contracts",
     "linkdrop-ui-kit"
   ],
+  "scripts": {
+    "test": "mocha --require @babel/polyfill --require @babel/register",
+    "deploy-mastercopy": "npx babel-node scripts/deploy_mastercopy.js",
+    "deploy-factory": "npx babel-node scripts/deploy_factory.js",
+    "generate-links": "npx babel-node scripts/generate-links.js",
+    "setup-linkdrop": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links"
+  },
   "standard": {
     "parser": "babel-eslint"
+  },
+  "dependencies": {
+    "fast-csv": "^2.4.1"
   }
 }

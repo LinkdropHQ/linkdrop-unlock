@@ -6,8 +6,10 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
-app-config.json
+config.json
 node_modules/
 .DS_Store
 other/
 build/
+
+scripts/output
