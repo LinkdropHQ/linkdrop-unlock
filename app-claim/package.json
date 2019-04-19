@@ -9,7 +9,7 @@
     "dev": "webpack --watch --mode development",
     "build": "webpack --mode production",
     "test-saga": "NODE_PATH=. mocha test/saga/**/*.js --require @babel/register --require ignore-styles --recursive",
-    "storybook": "start-storybook"
+    "dev:server": "webpack-dev-server"
   },
   "dependencies": {
     "@babel/core": "^7.4.0",
@@ -84,7 +84,8 @@
     "sinon": "^7.3.1",
     "standard-loader": "^6.0.1",
     "supertest": "^2.0.1",
-    "supertest-as-promised": "^4.0.1"
+    "supertest-as-promised": "^4.0.1",
+    "webpack-dev-server": "^3.3.1"
   },
   "standard": {
     "parser": "babel-eslint"

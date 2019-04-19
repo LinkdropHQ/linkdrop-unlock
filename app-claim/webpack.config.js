@@ -88,5 +88,16 @@ module.exports = {
       test: /\.(png|woff|woff2|eot|ttf|svg|otf|gif)$/,
       loader: 'url-loader?limit=100000'
     }]
+  },
+  devServer: {
+    contentBase: path.join(__dirname, './'),
+    publicPath: '/',
+    compress: true,
+    hot: true,
+    port: 9000,
+    host: '0.0.0.0',
+    watchOptions: {
+      ignored: /node_modules/
+    }
   }
 }

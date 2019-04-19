@@ -4,8 +4,8 @@ import styles from './styles.module'
 
 class Alert extends React.Component {
   render () {
-    const { icon, className } = this.props
-    return <div className={classNames(styles.container, className)}>
+    const { icon, className, style = {} } = this.props
+    return <div style={style} className={classNames(styles.container, className)}>
       {icon}
     </div>
   }
