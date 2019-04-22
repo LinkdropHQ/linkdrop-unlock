@@ -29,11 +29,13 @@ let { network, networkId, senderPrivateKey, amount, linksNumber } = config
 
   let proxyBalance = await provider.getBalance(proxyAddress)
   let cost = amount * linksNumber
-  let weiToSend = cost - proxyBalance
+
+  let weiToSend
+  proxyBalance >= cost ? (weiToSend = 0) : (weiToSend = cost - proxyBalance)
 
   let rawTx = { to: proxyAddress, value: weiToSend }
 
-  console.log(`Sending eth to ${proxyAddress}...`)
+  console.log(`Sending needed amount of tokens to ${proxyAddress}...`)
   let tx = await sender.sendTransaction(rawTx)
   let txHash = tx.hash
 

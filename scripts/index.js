@@ -113,12 +113,16 @@ export const generateLinks = async proxyAddress => {
       expirationTime
     )
 
-    // construct url
-    let url = `${host}/#/receive?pk=${linkKey.toString(
-      'hex'
-    )}&sig=${senderSignature}&c=${proxyAddress}`
+    // Construct url
+    let url = `${host}/#/receive?token=${token}&amount=${amount}&expirationTime=${expirationTime}&linkKey=${linkKey}&senderAddress=${
+      sender.address
+    }&senderSignature=${senderSignature}`
 
-    // add network param to url if not mainnet
+    // let url = `${host}/#/receive?pk=${linkKey.toString(
+    //   'hex'
+    // )}&sig=${senderSignature}&exp=${expirationTime}`
+
+    // Add network param to url if not mainnet
     if (String(networkId) !== '1') {
       url = `${url}&n=${networkId}`
     }
@@ -139,3 +143,5 @@ export const generateLinks = async proxyAddress => {
 
   return links
 }
+
+console.log('Hello')

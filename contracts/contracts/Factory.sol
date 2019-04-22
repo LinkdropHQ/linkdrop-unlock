@@ -70,6 +70,8 @@ contract Factory is Storage, CloneFactory {
             _receiverSignature
         );
 
+        return true;
+        
     }
   
 }
