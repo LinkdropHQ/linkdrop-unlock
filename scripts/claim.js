@@ -1,76 +1,53 @@
-import Factory from '../build/Factory'
-import { createLink, signReceiverAddress } from './utils'
-
+import { signReceiverAddress } from './utils'
 const ethers = require('ethers')
 const path = require('path')
-const configPath = path.resolve(__dirname, '../config/config.json')
+const configPath = path.resolve(__dirname, '../config/scripts.config.json')
 const config = require(configPath)
-
-// Service
+const csvToJson = require('csvtojson')
+const queryString = require('query-string')
+const axios = require('axios')
 
 let {
   network,
   networkId,
   senderPrivateKey,
-  token,
-  amount,
   linksNumber,
   jsonRpcUrl,
   host,
   masterCopy,
-  factory
+  factory,
+  receiverAddress
 } = config
 
-config.token == null || config.token === ''
-  ? (token = '0x0000000000000000000000000000000000000000')
-  : (token = config.token)
-
 const provider = ethers.getDefaultProvider(network)
-const sender = new ethers.Wallet(senderPrivateKey, provider)
 
-export const claim = async ({
-  token,
-  amount,
-  expirationTime,
-  linkId,
-  senderAddress,
-  senderSignature,
-  receiverAddress,
-  receiverSignature
-}) => {
-  let proxyFactory = new ethers.Contract(factory, Factory.abi, sender)
+// Get params from generated link [output/linkdrop_eth.csv]
+const getUrlParams = async i => {
+  const csvFilePath = path.resolve(__dirname, './output/linkdrop_eth.csv')
+  let jsonArray = await csvToJson().fromFile(csvFilePath)
+  let rawUrl = jsonArray[i].url
+  let parsedUrl = await queryString.extract(rawUrl)
+  let parsed = await queryString.parse(parsedUrl)
+  return parsed
+}
 
-  let tx = await proxyFactory.claim(
+const claim = async () => {
+  const {
     token,
     amount,
     expirationTime,
-    linkId,
+    linkKey,
     senderAddress,
-    senderSignature,
-    receiverAddress,
-    receiverSignature
-  )
+    senderSignature
+  } = await getUrlParams(4)
 
-  // Wait for 2 confirmations in the network
-  tx.wait(2)
-  console.log('tx: ', tx.hash)
-}
+  // Get receiver signature
+  const receiverSignature = await signReceiverAddress(linkKey, receiverAddress)
 
-const getRandomClaimParams = async () => {
-  let expirationTime = 1900000000000000
+  // Get linkId from linkKey
+  const linkId = new ethers.Wallet(linkKey, provider).address
 
-  let { linkKey, linkId, senderSignature } = await createLink(
-    sender,
-    token,
-    amount,
-    expirationTime
-  )
-
-  let receiverAddress = ethers.Wallet.createRandom().address
-  let receiverSignature = await signReceiverAddress(linkKey, receiverAddress)
-  let senderAddress = sender.address
-
-  let claimParams = {
+  const claimParams = {
     token,
     amount,
     expirationTime,
@@ -80,12 +57,25 @@ const getRandomClaimParams = async () => {
     receiverAddress,
     receiverSignature
   }
-  console.log('claimParams: ', claimParams)
-  return claimParams
+  try {
+    const response = await axios.post(
+      `${host}/api/v1/linkdrops/claim`,
+      claimParams
+    )
+    if (response.status !== 200) {
+      console.error(`\n❌ Invalid response status ${response.status}`)
+    } else {
+      console.log('\n✅ Successfully claimed tokens')
+      let url
+      let txHash = response.data.txHash
+      networkId !== 1
+        ? (url = `https://${network}.etherscan.io/tx/${txHash}`)
+        : `https://etherscan.io/tx/${txHash}`
+      console.log(`🌐  ${url}`)
+    }
+  } catch (err) {
+    console.error(err)
+  }
 }
 
-;(async () => {
-  let params = await getRandomClaimParams()
-  console.log('Claiming...')
-  await claim(params)
-})()
+claim()

@@ -1,14 +1,11 @@
 import Linkdrop from '../build/Linkdrop'
 import Factory from '../build/Factory'
-import chai from 'chai'
-import { computeProxyAddress, createLink, signReceiverAddress } from './utils'
-import { checkNormalize } from 'ethers/errors'
+import { createLink } from './utils'
 const ethers = require('ethers')
-const { expect } = checkNormalize
 const fs = require('fs')
 const fastcsv = require('fast-csv')
 const path = require('path')
-const configPath = path.resolve(__dirname, '../config/config.json')
+const configPath = path.resolve(__dirname, '../config/scripts.config.json')
 const config = require(configPath)
 
 let {
@@ -118,10 +115,6 @@ export const generateLinks = async proxyAddress => {
       sender.address
     }&senderSignature=${senderSignature}`
 
-    // let url = `${host}/#/receive?pk=${linkKey.toString(
-    //   'hex'
-    // )}&sig=${senderSignature}&exp=${expirationTime}`
-
     // Add network param to url if not mainnet
     if (String(networkId) !== '1') {
       url = `${url}&n=${networkId}`
@@ -143,5 +136,3 @@ export const generateLinks = async proxyAddress => {
 
   return links
 }
-
-console.log('Hello')

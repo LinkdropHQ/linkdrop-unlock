@@ -1,30 +1,26 @@
-import { signReceiverAddress } from '../utils/utils'
 import Factory from '../../build/Factory'
 const ethers = require('ethers')
 
 const path = require('path')
-const configPath = path.resolve(__dirname, '../../config/config.json')
+const configPath = path.resolve(__dirname, '../../config/server.config.json')
 const config = require(configPath)
 
-const { senderPrivateKey, network, factory, networkId } = config
+const { network, networkId, relayerPrivateKey, factoryAddress } = config
 
 const provider = ethers.getDefaultProvider(network)
-const relayer = new ethers.Wallet(senderPrivateKey, provider)
+const relayer = new ethers.Wallet(relayerPrivateKey, provider)
 
 export const claim = async (req, res) => {
   const {
     token,
     amount,
     expirationTime,
-    linkKey,
+    linkId,
     senderAddress,
-    senderSignature
+    senderSignature,
+    receiverAddress,
+    receiverSignature
   } = req.body
-
-  const linkId = new ethers.Wallet(linkKey, provider).address
-
-  const receiverAddress = ethers.Wallet.createRandom().address
-  const receiverSignature = await signReceiverAddress(linkKey, receiverAddress)
 
   const claimParams = {
     token,
@@ -49,8 +45,8 @@ export const claim = async (req, res) => {
     throw new Error('Please provide expiration time')
   }
 
-  if (!linkKey) {
-    throw new Error('Please provide the link ket to sign receiver address with')
+  if (!linkId) {
+    throw new Error('Please provide the link id')
   }
 
   if (!senderAddress) {
@@ -69,7 +65,7 @@ export const claim = async (req, res) => {
     throw new Error('Please provide receiver signature')
   }
 
-  let proxyFactory = new ethers.Contract(factory, Factory.abi, relayer)
+  let proxyFactory = new ethers.Contract(factoryAddress, Factory.abi, relayer)
 
   try {
     console.log('Claiming ...', claimParams)
@@ -93,16 +89,8 @@ export const claim = async (req, res) => {
 
     console.log(`🌐  ${url}`)
 
-    // Wait for 2 confirmations in the network
-    tx.wait(2)
-
-    const receipt = await provider.getTransactionReceipt(tx.hash)
-
-    let success
-    receipt.status === 1 ? (success = true) : (success = false)
-
     res.json({
-      success: success,
+      success: true,
       txHash: tx.hash
     })
   } catch (err) {

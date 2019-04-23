@@ -22,8 +22,5 @@
   },
   "standard": {
     "parser": "babel-eslint"
-  },
-  "dependencies": {
-    "fast-csv": "^2.4.1"
   }
 }
