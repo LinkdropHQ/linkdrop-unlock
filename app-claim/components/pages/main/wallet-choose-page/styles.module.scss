@@ -46,12 +46,30 @@
   z-index: 1;
   width: 100%;
   top: 0px;
+  transform: translateY(-50%);
   position: absolute;
 }
 
 .instructions {
-  border: 1px solid black;
   width: 100%;
+  text-align: left;
+  font-size: 14px;
+  margin-bottom: 30px;
+
+  div {
+    margin-bottom: 12px;
+    &:last-child {
+      margin-bottom: 0px;
+    }
+  }
+}
+
+.instructionTitle {
+  margin-bottom: 40px;
+}
+
+.walletPreview {
+  margin-bottom: 30px;
 }
 
 .wallet {
@@ -71,8 +89,8 @@
 
 .wallet.withBorder {
   border: 1px solid black;
-  padding: 8px;
   transition: all .3s;
+  overflow: hidden;
 
   &:hover {
     background: $bgHoverGrey;

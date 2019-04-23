@@ -11,7 +11,8 @@ export default {
     howToClaim: 'How to claim tokens to {{walletType}} Wallet'
   },
   buttons: {
-    useTrustWallet: 'Use Trust Wallet'
+    useTrustWallet: 'Use Trust Wallet',
+    copyLink: 'Copy link'
   },
   errors: {
     LINK_EXPIRED: {

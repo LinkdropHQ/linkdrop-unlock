@@ -16,33 +16,65 @@ class WalletChoosePage extends React.Component {
       showSlider: false
     }
   }
+
   render () {
     const { showSlider } = this.state
     const { walletType } = this.props
-    return <div className={classNames(commonStyles.container, { [styles.sliderShown]: showSlider })}>
-      <Alert className={styles.alert} icon={<Icons.Exclamation />} />
-      <div className={styles.title}>{this.t('titles.needWallet')}</div>
-      {this.renderInstruction({ walletType })}
-      <Button target='_blank' href={deepLink} className={styles.button}>
-        {this.t('buttons.useTrustWallet')}
-      </Button>
-      <div className={styles.content}>
-        <div onClick={_ => this.toggleSlider()} className={styles.subtitle}>{this.t('titles.haveAnother')}</div>
-        <Slider visibleSlides={4} className={styles.slider} step={4}>
-          {this.renderImage({ src: 'Metamask', withBorder: true, id: 'metamask' })}
-          {this.renderImage({ src: 'Coinbase', id: 'coinbase' })}
-          {this.renderImage({ src: 'Opera', withBorder: true, id: 'opera' })}
-          {this.renderImage({ src: 'Status', id: 'status' })}
-        </Slider>
+    if (walletType && walletType != null) {
+      return this.renderWalletInstruction({ walletType })
+    } else {
+      return <div className={classNames(commonStyles.container, { [styles.sliderShown]: showSlider })}>
+        <Alert className={styles.alert} icon={<Icons.Exclamation />} />
+        <div className={styles.title}>{this.t('titles.needWallet')}</div>
+        <Button target='_blank' href={deepLink} className={styles.button}>
+          {this.t('buttons.useTrustWallet')}
+        </Button>
+        {this.renderSlider()}
       </div>
+    }
+  }
+
+  renderSlider () {
+    return <div className={styles.content}>
+      <div onClick={_ => this.toggleSlider({ showSlider: true })} className={styles.subtitle}>{this.t('titles.haveAnother')}</div>
+      <Slider visibleSlides={4} className={styles.slider} step={4}>
+        {this.renderImage({ id: 'trust' })}
+        {this.renderImage({ id: 'coinbase' })}
+        {this.renderImage({ id: 'opera' })}
+        {this.renderImage({ id: 'imtoken' })}
+        {this.renderImage({ id: 'status' })}
+        {this.renderImage({ id: 'tokenpocket' })}
+        {this.renderImage({ id: 'gowallet' })}
+        {this.renderImage({ id: 'buntoy' })}
+      </Slider>
+    </div>
+  }
+
+  renderWalletInstruction ({ walletType }) {
+    const { showSlider } = this.state
+    let instruction = ''
+    switch (walletType) {
+      case 'coinbase':
+        instruction = this.renderInstruction({ walletType })
+        break
+      default:
+        instruction = this.renderInstruction({ walletType })
+    }
+    return <div className={classNames(commonStyles.container, { [styles.sliderShown]: showSlider })}>
+      <div className={classNames(styles.wallet, styles.withBorder, styles.walletPreview)}>
+        <RetinaImage width={60} {...getImages({ src: walletType })} />
+      </div>
+      <div className={classNames(styles.title, styles.instructionTitle)}>{this.t('titles.howToClaim', { walletType })}</div>
+      {instruction}
+      <Button inverted className={styles.button}>
+        {this.t('buttons.copyLink')}
+      </Button>
+      {this.renderSlider()}
     </div>
   }
 
   renderInstruction ({ walletType }) {
-    if (!walletType || walletType === 'trust') { return null }
     const { title, href } = this.t(`walletsInstructions.${walletType}`, { returnObjects: true })
-    console.log(this.t(`walletsInstructions.${walletType}`, { returnObjects: true }))
-    console.log({ walletType })
     return <div className={styles.instructions}>
       <div dangerouslySetInnerHTML={{
         __html: this.t('walletsInstructions.common._1', {
@@ -55,21 +87,27 @@ class WalletChoosePage extends React.Component {
     </div>
   }
 
-  renderImage ({ src, withBorder, id }) {
+  renderImage ({ id }) {
+    const { walletType } = this.props
+    if (walletType === id) { return null }
+    if (walletType == null && id === 'trust') { return null }
     return <div
-      className={classNames(styles.wallet, {
-        [styles.withBorder]: withBorder
-      })}
-      onClick={_ => this.actions().user.setWalletType({ walletType: id })}
+      className={classNames(styles.wallet, styles.withBorder)}
+      onClick={_ => {
+        this.toggleSlider({
+          showSlider: false,
+          callback: () => this.actions().user.setWalletType({ walletType: id })
+        })
+      }}
     >
-      <RetinaImage width={60} {...getImages({ src })} />
+      <RetinaImage width={60} {...getImages({ src: id })} />
     </div>
   }
 
-  toggleSlider () {
+  toggleSlider ({ showSlider = true, callback }) {
     this.setState({
-      showSlider: true
-    })
+      showSlider
+    }, () => callback && callback())
   }
 }
 

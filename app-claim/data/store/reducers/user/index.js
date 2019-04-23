@@ -8,7 +8,7 @@ const initialState = {
   loading: false,
   transactionId: null,
   errors: [],
-  walletType: 'trust'
+  walletType: null
 }
 
 export default (state = initialState, action = {}) => {
