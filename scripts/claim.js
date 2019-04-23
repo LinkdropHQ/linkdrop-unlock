@@ -39,7 +39,7 @@ const claim = async () => {
     linkKey,
     senderAddress,
     senderSignature
-  } = await getUrlParams(4)
+  } = await getUrlParams(0)
 
   // Get receiver signature
   const receiverSignature = await signReceiverAddress(linkKey, receiverAddress)
