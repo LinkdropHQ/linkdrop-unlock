@@ -5,11 +5,15 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-.env
-config.json
+sdk/
 node_modules/
 .DS_Store
 other/
 build/
-
 scripts/output
+
+# Configs
+.env
+config.json
+scripts.config.json
+server.config.json

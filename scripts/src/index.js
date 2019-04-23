@@ -1,31 +1,28 @@
-import Linkdrop from '../build/Linkdrop'
-import Factory from '../build/Factory'
+import Linkdrop from '../../build/Linkdrop'
+import Factory from '../../build/Factory'
 import { createLink } from './utils'
 const ethers = require('ethers')
 const fs = require('fs')
 const fastcsv = require('fast-csv')
 const path = require('path')
-const configPath = path.resolve(__dirname, '../config/scripts.config.json')
+const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
 const config = require(configPath)
 
 let {
-  network,
   networkId,
   senderPrivateKey,
   token,
   amount,
   linksNumber,
   jsonRpcUrl,
-  host,
-  masterCopy,
-  factory
+  host
 } = config
 
 config.token == null || config.token === ''
   ? (token = '0x0000000000000000000000000000000000000000')
   : (token = config.token)
 
-const provider = ethers.getDefaultProvider(network)
+const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
 // Make sure we have these set in dotenv file
 if (senderPrivateKey == null || senderPrivateKey === '') {
@@ -50,13 +47,10 @@ export const deployMasterCopy = async () => {
   linkdrop = await factory.deploy()
 
   let txHash = linkdrop.deployTransaction.hash
-  let url
-  networkId !== 1
-    ? (url = `https://${network}.etherscan.io/tx/${txHash}`)
-    : `https://etherscan.io/tx/${txHash}`
+  console.log(`#️⃣  Tx Hash: ${txHash}`)
 
   await linkdrop.deployed()
-  console.log(`Deployed linkdrop master copy at ${linkdrop.address}\n${url}`)
+  console.log(`Deployed linkdrop master copy at ${linkdrop.address}\n`)
 
   config.masterCopy = linkdrop.address
 
@@ -80,13 +74,10 @@ export const deployFactory = async masterCopy => {
   })
 
   let txHash = proxyFactory.deployTransaction.hash
-  let url
-  networkId !== 1
-    ? (url = `https://${network}.etherscan.io/tx/${txHash}`)
-    : `https://etherscan.io/tx/${txHash}`
+  console.log(`#️⃣  Tx Hash: ${txHash}`)
 
   await proxyFactory.deployed()
-  console.log(`Deployed proxy factory at ${proxyFactory.address}\n${url}`)
+  console.log(`Deployed proxy factory at ${proxyFactory.address}\n`)
 
   config.factory = proxyFactory.address
   fs.writeFile(configPath, JSON.stringify(config), err => {
@@ -125,7 +116,7 @@ export const generateLinks = async proxyAddress => {
   }
 
   // Save links to csv
-  let filename = path.join(__dirname, '/output/linkdrop_eth.csv')
+  let filename = path.join(__dirname, '../output/linkdrop_eth.csv')
   try {
     const ws = fs.createWriteStream(filename)
     fastcsv.write(links, { headers: true }).pipe(ws)

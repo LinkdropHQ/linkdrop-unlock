@@ -1,0 +1,12 @@
+{
+    "networkId": "",
+    "senderPrivateKey": "",
+    "token": "",
+    "amount": "",
+    "linksNumber": "",
+    "jsonRpcUrl": "",
+    "host": "",
+    "receiverAddress": "",
+    "masterCopy": "",
+    "factory": ""
+}

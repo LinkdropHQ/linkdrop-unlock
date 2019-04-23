@@ -5,9 +5,9 @@ const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/server.config.json')
 const config = require(configPath)
 
-const { network, networkId, relayerPrivateKey, factoryAddress } = config
+const { jsonRpcUrl, relayerPrivateKey, factoryAddress } = config
 
-const provider = ethers.getDefaultProvider(network)
+const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 const relayer = new ethers.Wallet(relayerPrivateKey, provider)
 
 export const claim = async (req, res) => {
@@ -82,12 +82,7 @@ export const claim = async (req, res) => {
       { gasLimit: 500000 }
     )
 
-    let url
-    networkId !== 1
-      ? (url = `https://${network}.etherscan.io/tx/${tx.hash}`)
-      : `https://etherscan.io/tx/${tx.hash}`
-
-    console.log(`🌐  ${url}`)
+    console.log(`#️⃣  Tx Hash: ${tx.hash}`)
 
     res.json({
       success: true,
