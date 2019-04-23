@@ -11,7 +11,7 @@ class InitialPage extends React.Component {
   render () {
     const { onClick, amount, symbol, icon, wallet, loading } = this.props
     return <div className={commonStyles.container}>
-      <Alert className={styles.tokenIcon} icon={icon ? <img className={styles.icon} src={icon} /> : <Icons.Star />} />
+      <Alert noBorder={icon} className={styles.tokenIcon} icon={icon ? <img className={styles.icon} src={icon} /> : <Icons.Star />} />
       <div className={styles.title}>
         <span>{amount}</span> {symbol}
       </div>

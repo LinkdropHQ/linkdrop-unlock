@@ -36,6 +36,7 @@ const postCSSLoader = {
 
 module.exports = {
   entry: [
+    'webpack/hot/dev-server',
     '@babel/polyfill',
     './index.js'
   ],

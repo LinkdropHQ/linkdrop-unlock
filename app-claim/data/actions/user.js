@@ -18,6 +18,18 @@ class User {
   setLoading ({ loading }) {
     this.actions.dispatch({ type: 'USER.SET_LOADING', payload: { loading } })
   }
+
+  setWeb3Provider ({ provider }) {
+    this.actions.dispatch({ type: '*USER.SET_WEB3_PROVIDER', payload: { provider } })
+  }
+
+  setErrors ({ errors }) {
+    this.actions.dispatch({ type: 'USER.SET_ERRORS', payload: { errors } })
+  }
+
+  setWalletType ({ walletType }) {
+    this.actions.dispatch({ type: 'USER.SET_WALLET_TYPE', payload: { walletType } })
+  }
 }
 
 export default User

@@ -9,7 +9,7 @@
     "dev": "webpack --watch --mode development",
     "build": "webpack --mode production",
     "test-saga": "NODE_PATH=. mocha test/saga/**/*.js --require @babel/register --require ignore-styles --recursive",
-    "dev:server": "webpack-dev-server"
+    "dev:server": "webpack-dev-server --hot --inline"
   },
   "dependencies": {
     "@babel/core": "^7.4.0",

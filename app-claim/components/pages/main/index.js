@@ -6,6 +6,7 @@ import WalletChoosePage from './wallet-choose-page'
 import ClaimingProcessPage from './claiming-process-page'
 import ErrorPage from './error-page'
 import ClaimingFinishedPage from './claiming-finished-page'
+import { getHashVariables } from 'helpers'
 
 @actions(({ user: { errors, wallet, step, loading: userLoading, transactionId }, contract: { loading, decimals, amount, symbol, icon } }) => ({
   userLoading,
@@ -22,7 +23,31 @@ import ClaimingFinishedPage from './claiming-finished-page'
 @translate('pages.claim')
 class Claim extends React.Component {
   componentDidMount () {
-    this.actions().contract.getTokenData({ tokenAddress, amount: a, networkId: n })
+    const { token, amount, expirationTime, sender, senderSignature, linkKey, n } = getHashVariables()
+    // так, вот есть переменные все в урле:
+    // token - это адрес контракта,
+    // amount - количество токенов,
+    // expirationTime - дата окончания дествия линка,
+    // sender,
+    // senderSignature,
+    // linkKey - приватный ключ для линка,
+    // n - айдишник сети
+
+    // нужно для клейма
+    // sender: sender key address, e.g. 0x1234...ff
+    // senderSignature: ECDSA signature signed by sender (contained in claim link)
+    // receiverSignature: ECDSA signature signed by receiver using link key
+
+    // destination: destination address - это адрес получается, из стора
+    // token: ERC20 token address, 0x000...000 for ether - это из линка
+    // tokenAmount: token amount in atomic values - это из линка
+    // expirationTime: link expiration time - это из линка
+
+    if (Number(expirationTime) < +(new Date())) {
+      // если ссылка просрочилась, то показывать экран ошибки что ссылка исчерпалась уже
+      return this.actions().user.setErrors({ errors: ['LINK_EXPIRED'] })
+    }
+    this.actions().contract.getTokenData({ tokenAddress: token, amount, networkId: n })
   }
 
   render () {
@@ -36,43 +61,48 @@ class Claim extends React.Component {
       return <ErrorPage error={errors[0]} />
     }
     switch (step) {
-      case 0:
-        return <Loading />
       case 1:
         return <InitialPage
           {...commonData}
-          onClick={_ => this.actions().user.setStep({ step: 2 })}
+          onClick={_ => {
+            if (wallet) {
+              // если уже есть кошелек, то перекидываем на четвертый шаг и клеймим токены там уже
+              return this.actions().user.setStep({ step: 2 })
+            }
+            // если нет кошелька в сторе сейчас, то перекидываем на страницу с выбором кошелька
+            this.actions().user.setStep({ step: 2 })
+          }}
         />
       case 2:
+        // страница выбора кошелька
         return <WalletChoosePage onClick={_ => {
           this.actions().user.setStep({ step: 3 })
-          this.actions().user.setWallet({ wallet: '0x6C0F58AD4eb24da5769412Bf34dDEe698c4d185b' })
         }} />
       case 3:
+        // страница показывающая что кошелек выбран и предлагающая забрать токены
         return <InitialPage
           {...commonData}
           onClick={_ => {
-            this.actions().tokens.claimTokens()
+            this.actions().user.setStep({ step: 4 })
           }}
         />
       case 4:
+        // клэйминг токенов в процессе
         return <ClaimingProcessPage
           {...commonData}
           transactionId={transactionId}
         />
       case 5:
+        // клейминг завершен
         return <ClaimingFinishedPage
           {...commonData}
           transactionId={transactionId}
         />
       default:
+        // загрузка
         return <Loading />
     }
   }
 }
 
 export default Claim
-
-const tokenAddress = '0xB8c77482e45F1F44dE1745F52C74426C631bDD52'
-const n = '1'
-const a = '100000000000000000'
