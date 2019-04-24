@@ -140,7 +140,13 @@ export const generateLinks = async () => {
   }
 
   // Save links to csv
-  let filename = path.join(__dirname, '../output/linkdrop_eth.csv')
+  let filename
+
+  if (token === ethers.constants.AddressZero) {
+    filename = path.join(__dirname, '../output/linkdrop_eth.csv')
+  } else {
+    filename = path.join(__dirname, '../output/linkdrop.csv')
+  }
   try {
     const ws = fs.createWriteStream(filename)
     fastcsv.write(links, { headers: true }).pipe(ws)
