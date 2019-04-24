@@ -75,7 +75,7 @@ class WalletChoosePage extends React.Component {
           {buttonTitle}
         </Button>
       // case 'imtoken':
-      // тут будут кошельки которые можно скачать и потом перейти на них
+      // here is the wallets with deeplink available only after application download
       //   return <Button href={} className={styles.button}>
       //     {this.t('buttons.copyLink')}
       //   </Button>
