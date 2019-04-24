@@ -11,7 +11,10 @@ class Page extends React.Component {
       <div className={styles.main}>
         {this.props.children}
       </div>
-      <Footer content={text('components.footer.copyright')} />
+      <Footer
+        content={text('components.footer.copyright')}
+        href='https://medium.com/linkdrop-protocol/introducing-linkdrop-protocol-f612ae181e31'
+      />
     </div>
   }
 }

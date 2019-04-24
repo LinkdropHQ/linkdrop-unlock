@@ -5,15 +5,13 @@ import PropTypes from 'prop-types'
 
 class Button extends React.Component {
   render () {
-    const { disabled, children, inverted, onClick, className, size = 'normal', loading, href } = this.props
+    const { disabled, target, children, inverted, onClick, className, size = 'normal', loading, href } = this.props
     if (href) {
       return <a
         href={href}
+        target={target}
         disabled={disabled}
-        className={classNames(styles.container, className, styles[`${size}Size`], {
-          [styles.disabled]: disabled,
-          [styles.inverted]: inverted || loading
-        })}
+        className={this.defineClassNames({ disabled, size, loading, className, inverted })}
       >
         {children}
       </a>
@@ -21,13 +19,17 @@ class Button extends React.Component {
     return <button
       onClick={_ => !disabled && onClick && onClick()}
       disabled={disabled}
-      className={classNames(styles.container, className, styles[`${size}Size`], {
-        [styles.disabled]: disabled,
-        [styles.inverted]: inverted || loading
-      })}
+      className={this.defineClassNames({ disabled, size, loading, className, inverted })}
     >
       {loading ? <div className={styles.loading}><div /><div /><div /><div /></div> : children}
     </button>
+  }
+
+  defineClassNames ({ disabled, size, loading, className, inverted }) {
+    return classNames(styles.container, className, styles[`${size}Size`], {
+      [styles.disabled]: disabled,
+      [styles.inverted]: inverted || loading
+    })
   }
 }
 
