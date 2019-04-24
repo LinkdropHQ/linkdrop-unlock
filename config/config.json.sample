@@ -1,11 +1,12 @@
 {
+    "jsonRpcUrl": "",
+    "host": "",
     "networkId": "",
     "senderPrivateKey": "",
+    "relayerPrivateKey:": "",
     "token": "",
     "amount": "",
     "linksNumber": "",
-    "jsonRpcUrl": "",
-    "host": "",
     "receiverAddress": "",
     "masterCopy": "",
     "factory": ""

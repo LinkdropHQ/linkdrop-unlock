@@ -164,11 +164,12 @@ contract Linkdrop is Storage, ILinkdrop, Pausable {
     }
 
     function _transferEthOrTokens(address _token, uint _amount, address payable _receiver)
-    internal returns (bool) 
+    internal returns (bool)
     {
+
         // Send tokens
         if (_amount > 0 && address(_token) != address(0)) {
-            IERC20(_token).transferFrom(SENDER, _receiver, _amount); 
+            IERC20(_token).transfer(_receiver, _amount); 
         }
 
         // Send ether (if thats the case)

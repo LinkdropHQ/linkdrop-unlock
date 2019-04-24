@@ -1,15 +1,11 @@
-import { signReceiverAddress } from './utils'
-const ethers = require('ethers')
 const path = require('path')
-const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
+const configPath = path.resolve(__dirname, '../../config/config.json')
 const config = require(configPath)
 const csvToJson = require('csvtojson')
 const queryString = require('query-string')
-const axios = require('axios')
+const LinkdropSDK = require('../../sdk/src/index')
 
-let { jsonRpcUrl, host, receiverAddress } = config
-
-const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
+const { jsonRpcUrl, host, receiverAddress } = config
 
 // Get params from generated link [output/linkdrop_eth.csv]
 const getUrlParams = async i => {
@@ -31,38 +27,17 @@ const claim = async () => {
     senderSignature
   } = await getUrlParams(0)
 
-  // Get receiver signature
-  const receiverSignature = await signReceiverAddress(linkKey, receiverAddress)
-
-  // Get linkId from linkKey
-  const linkId = new ethers.Wallet(linkKey, provider).address
-
-  const claimParams = {
+  await LinkdropSDK.claim(
+    jsonRpcUrl,
+    host,
     token,
     amount,
     expirationTime,
-    linkId,
+    linkKey,
     senderAddress,
     senderSignature,
-    receiverAddress,
-    receiverSignature
-  }
-  try {
-    const response = await axios.post(
-      `${host}/api/v1/linkdrops/claim`,
-      claimParams
-    )
-    if (response.status !== 200) {
-      console.error(`\n❌ Invalid response status ${response.status}`)
-    } else {
-      console.log('\n✅ Successfully claimed tokens')
-
-      let txHash = response.data.txHash
-      console.log(`#️⃣  Tx Hash: ${txHash}`)
-    }
-  } catch (err) {
-    console.error(err)
-  }
+    receiverAddress
+  )
 }
 
 claim()

@@ -1,15 +1,11 @@
 import { generateLinks } from './index'
-import IERC20 from '../../build/IERC20'
-import {
-  computeProxyAddress,
-  getFactoryAddress,
-  getMasterCopyAddress
-} from './utils'
-
+import TokenMock from '../../contracts/build/TokenMock'
+import { getFactoryAddress, getMasterCopyAddress } from './utils'
 const ethers = require('ethers')
 const path = require('path')
-const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
+const configPath = path.resolve(__dirname, '../../config/config.json')
 const config = require(configPath)
+const LinkdropSDK = require('../../sdk/src/index')
 
 let { jsonRpcUrl, senderPrivateKey, token, amount, linksNumber } = config
 
@@ -25,39 +21,46 @@ config.token == null || config.token === ''
   const factoryAddress = getFactoryAddress()
   const masterCopyAddress = getMasterCopyAddress()
 
-  let proxyAddress = computeProxyAddress(
+  let proxyAddress = LinkdropSDK.computeProxyAddress(
     factoryAddress,
     sender.address,
     masterCopyAddress
   )
 
-  let proxyBalance = await provider.getBalance(proxyAddress)
   let cost = amount * linksNumber
-
-  let amountToSend
-  proxyBalance >= cost
-    ? (amountToSend = 0)
-    : (amountToSend = cost - proxyBalance)
-
-  let rawTx = { to: proxyAddress, value: amountToSend }
-
-  let tokenSymbol, tokenDecimals
+  let proxyBalance, amountToSend, tokenSymbol, tokenDecimals, tx
 
   if (token !== ethers.constants.AddressZero) {
-    const tokenContract = await new ethers.Contract(token, IERC20, provider)
+    const tokenContract = await new ethers.Contract(
+      token,
+      TokenMock.abi,
+      sender
+    )
     tokenSymbol = await tokenContract.symbol()
     tokenDecimals = await tokenContract.decimals()
+    proxyBalance = await tokenContract.balanceOf(proxyAddress)
+    proxyBalance >= cost
+      ? (amountToSend = 0)
+      : (amountToSend = cost - proxyBalance)
+    tx = await tokenContract.transfer(proxyAddress, amountToSend)
   } else {
     tokenSymbol = 'ETH'
     tokenDecimals = 18
+    proxyBalance = await provider.getBalance(proxyAddress)
+    proxyBalance >= cost
+      ? (amountToSend = 0)
+      : (amountToSend = cost - proxyBalance)
+    tx = await sender.sendTransaction({
+      to: proxyAddress,
+      value: amountToSend
+    })
   }
+
+  // Get human readable format of amount to send
   amountToSend /= Math.pow(10, tokenDecimals)
-
   console.log(`⤴️  Sending ${amountToSend} ${tokenSymbol} to ${proxyAddress} `)
-
-  let tx = await sender.sendTransaction(rawTx)
   console.log(`#️⃣  Tx Hash: ${tx.hash}`)
 
-  let links = await generateLinks(proxyAddress)
+  let links = await generateLinks()
   return links
 })()

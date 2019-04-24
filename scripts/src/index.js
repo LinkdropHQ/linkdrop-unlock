@@ -1,12 +1,14 @@
-import Linkdrop from '../../build/Linkdrop'
-import Factory from '../../build/Factory'
-import { createLink } from './utils'
+import Linkdrop from '../../contracts/build/Linkdrop'
+import Factory from '../../contracts/build/Factory'
+import TokenMock from '../../contracts/build/TokenMock'
+
 const ethers = require('ethers')
 const fs = require('fs')
 const fastcsv = require('fast-csv')
 const path = require('path')
-const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
+const configPath = path.resolve(__dirname, '../../config/config.json')
 const config = require(configPath)
+const LinkdropSDK = require('../../sdk/src/index')
 
 let {
   networkId,
@@ -35,7 +37,7 @@ if (linksNumber == null || linksNumber == '') {
 }
 
 const sender = new ethers.Wallet(senderPrivateKey, provider)
-let linkdrop, proxyFactory, expirationTime
+let linkdrop, proxyFactory, expirationTime, tokenMock
 
 export const deployMasterCopy = async () => {
   let factory = new ethers.ContractFactory(
@@ -88,28 +90,50 @@ export const deployFactory = async masterCopy => {
   return proxyFactory.address
 }
 
-export const generateLinks = async proxyAddress => {
+export const deployERC20 = async () => {
+  let factory = new ethers.ContractFactory(
+    TokenMock.abi,
+    TokenMock.bytecode,
+    sender
+  )
+
+  tokenMock = await factory.deploy({
+    gasLimit: 6000000
+  })
+
+  let txHash = tokenMock.deployTransaction.hash
+  console.log(`#️⃣  Tx Hash: ${txHash}`)
+
+  await tokenMock.deployed()
+  console.log(`Deployed token at ${tokenMock.address}\n`)
+
+  config.token = tokenMock.address
+  fs.writeFile(configPath, JSON.stringify(config), err => {
+    if (err) throw err
+    console.log(`Token address successfully added to config.json `)
+  })
+}
+
+export const generateLinks = async () => {
   expirationTime = 1900000000000000
 
   let links = []
 
   for (let i = 0; i < linksNumber; i++) {
-    let { linkKey, linkId, senderSignature } = await createLink(
-      sender,
+    let {
+      url,
+      linkId,
+      linkKey,
+      senderSignature
+    } = await LinkdropSDK.generateLink(
+      jsonRpcUrl,
+      networkId,
+      host,
+      senderPrivateKey,
       token,
       amount,
       expirationTime
     )
-
-    // Construct url
-    let url = `${host}/#/receive?token=${token}&amount=${amount}&expirationTime=${expirationTime}&linkKey=${linkKey}&senderAddress=${
-      sender.address
-    }&senderSignature=${senderSignature}`
-
-    // Add network param to url if not mainnet
-    if (String(networkId) !== '1') {
-      url = `${url}&n=${networkId}`
-    }
 
     let link = { i, linkId, linkKey, senderSignature, url }
     links.push(link)

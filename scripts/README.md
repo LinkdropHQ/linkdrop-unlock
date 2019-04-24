@@ -6,7 +6,19 @@
 yarn install
 ```
 
-## Following commands should be run from monorepo root directory:
+### Following commands should be run from monorepo root directory:
+
+### Compile contracts to get metadata
+
+```bash
+ yarn compile-contracts
+```
+
+### Deploy ERC20 Token
+
+```bash
+yarn deploy-erc20
+```
 
 ### Deploy factory
 
@@ -26,9 +38,7 @@ yarn deploy-mastercopy
 yarn generate-links
 ```
 
-### Setup linkdrop
-
-Deploys factory, linkdrop mastercopy and generates links
+### Setup linkdrop (deploys factory, linkdrop mastercopy and generates links)
 
 ```bash
 yarn setup-linkdrop

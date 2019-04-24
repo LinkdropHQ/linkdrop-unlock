@@ -22,7 +22,9 @@
     "generate-links": "npx babel-node scripts/src/generate-links.js",
     "setup-linkdrop": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links",
     "claim": "npx babel-node scripts/src/claim.js",
-    "server": "npx babel-node server/server.js"
+    "server": "npx babel-node server/server.js",
+    "deploy-erc20": "npx babel-node scripts/src/deploy_erc20.js",
+    "compile-contracts": "cd contracts && npx waffle"
   },
   "standard": {
     "parser": "babel-eslint"

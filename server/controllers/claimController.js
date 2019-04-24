@@ -1,12 +1,9 @@
-import Factory from '../../build/Factory'
+import Factory from '../../contracts/build/Factory'
 const ethers = require('ethers')
-
 const path = require('path')
-const configPath = path.resolve(__dirname, '../../config/server.config.json')
+const configPath = path.resolve(__dirname, '../../config/config.json')
 const config = require(configPath)
-
-const { jsonRpcUrl, relayerPrivateKey, factoryAddress } = config
-
+const { jsonRpcUrl, relayerPrivateKey, factory } = config
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 const relayer = new ethers.Wallet(relayerPrivateKey, provider)
 
@@ -65,7 +62,7 @@ export const claim = async (req, res) => {
     throw new Error('Please provide receiver signature')
   }
 
-  let proxyFactory = new ethers.Contract(factoryAddress, Factory.abi, relayer)
+  let proxyFactory = new ethers.Contract(factory, Factory.abi, relayer)
 
   try {
     console.log('Claiming ...', claimParams)
