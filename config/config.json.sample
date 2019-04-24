@@ -1,10 +1,13 @@
 {
-    "network": "ropsten",
-    "networkId": 3,
-    "senderPrivateKey": "${SENDER PRIVATE KEY}",
+    "jsonRpcUrl": "",
+    "host": "",
+    "networkId": "",
+    "senderPrivateKey": "",
+    "relayerPrivateKey:": "",
     "token": "",
-    "amount": 100,
-    "linksNumber": "10",
-    "jsonRpcUrl": "http://www.ropsten.infura.io/v3/${API}",
-    "host": "localhost://3000/"
+    "amount": "",
+    "linksNumber": "",
+    "receiverAddress": "",
+    "masterCopy": "",
+    "factory": ""
 }

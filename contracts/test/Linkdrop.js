@@ -10,7 +10,6 @@ import {
 } from 'ethereum-waffle'
 
 import TokenMock from '../build/TokenMock'
-import NFTMock from '../build/NFTMock'
 import Linkdrop from '../build/Linkdrop'
 
 const ethers = require('ethers')
@@ -23,7 +22,6 @@ let provider = createMockProvider()
 let [sender, receiver] = getWallets(provider)
 
 let tokenInstance
-let nftInstance
 let linkdropInstance
 let link
 let receiverAddress
@@ -80,7 +78,6 @@ const signReceiverAddress = async function (linkKey, receiverAddress) {
 describe('Linkdrop tests', () => {
   before(async () => {
     tokenInstance = await deployContract(sender, TokenMock)
-    nftInstance = await deployContract(sender, NFTMock)
 
     linkdropInstance = await deployContract(
       sender,

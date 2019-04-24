@@ -10,20 +10,22 @@
     "app-landing",
     "app-claim",
     "contracts",
-    "linkdrop-ui-kit"
+    "linkdrop-ui-kit",
+    "scripts",
+    "server"
   ],
   "scripts": {
     "test": "mocha --require @babel/polyfill --require @babel/register",
-    "deploy-mastercopy": "npx babel-node scripts/deploy_mastercopy.js",
-    "deploy-factory": "npx babel-node scripts/deploy_factory.js",
-    "generate-links": "npx babel-node scripts/generate-links.js",
+    "deploy-mastercopy": "npx babel-node scripts/src/deploy_mastercopy.js",
+    "deploy-factory": "npx babel-node scripts/src/deploy_factory.js",
+    "generate-links": "npx babel-node scripts/src/generate-links.js",
     "setup-linkdrop": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links",
-    "send-eth": "npx babel-node scripts/send-eth.js"
+    "claim": "npx babel-node scripts/src/claim.js",
+    "server": "npx babel-node server/server.js",
+    "deploy-erc20": "npx babel-node scripts/src/deploy_erc20.js",
+    "compile-contracts": "cd contracts && npx waffle"
   },
   "standard": {
     "parser": "babel-eslint"
-  },
-  "dependencies": {
-    "fast-csv": "^2.4.1"
   }
 }

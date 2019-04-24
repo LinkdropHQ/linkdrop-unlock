@@ -1,34 +1,30 @@
-import Linkdrop from '../build/Linkdrop'
-import Factory from '../build/Factory'
-import chai from 'chai'
-import { computeProxyAddress, createLink, signReceiverAddress } from './utils'
-import { checkNormalize } from 'ethers/errors'
+import Linkdrop from '../../contracts/build/Linkdrop'
+import Factory from '../../contracts/build/Factory'
+import TokenMock from '../../contracts/build/TokenMock'
+
 const ethers = require('ethers')
-const { expect } = checkNormalize
 const fs = require('fs')
 const fastcsv = require('fast-csv')
 const path = require('path')
-const configPath = path.resolve(__dirname, '../config/config.json')
+const configPath = path.resolve(__dirname, '../../config/config.json')
 const config = require(configPath)
+const LinkdropSDK = require('../../sdk/src/index')
 
 let {
-  network,
   networkId,
   senderPrivateKey,
   token,
   amount,
   linksNumber,
   jsonRpcUrl,
-  host,
-  masterCopy,
-  factory
+  host
 } = config
 
 config.token == null || config.token === ''
   ? (token = '0x0000000000000000000000000000000000000000')
   : (token = config.token)
 
-const provider = ethers.getDefaultProvider(network)
+const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
 // Make sure we have these set in dotenv file
 if (senderPrivateKey == null || senderPrivateKey === '') {
@@ -41,7 +37,7 @@ if (linksNumber == null || linksNumber == '') {
 }
 
 const sender = new ethers.Wallet(senderPrivateKey, provider)
-let linkdrop, proxyFactory, expirationTime
+let linkdrop, proxyFactory, expirationTime, tokenMock
 
 export const deployMasterCopy = async () => {
   let factory = new ethers.ContractFactory(
@@ -53,13 +49,10 @@ export const deployMasterCopy = async () => {
   linkdrop = await factory.deploy()
 
   let txHash = linkdrop.deployTransaction.hash
-  let url
-  networkId !== 1
-    ? (url = `https://${network}.etherscan.io/tx/${txHash}`)
-    : `https://etherscan.io/tx/${txHash}`
+  console.log(`#️⃣  Tx Hash: ${txHash}`)
 
   await linkdrop.deployed()
-  console.log(`Deployed linkdrop master copy at ${linkdrop.address}\n${url}`)
+  console.log(`Deployed linkdrop master copy at ${linkdrop.address}\n`)
 
   config.masterCopy = linkdrop.address
 
@@ -83,13 +76,10 @@ export const deployFactory = async masterCopy => {
   })
 
   let txHash = proxyFactory.deployTransaction.hash
-  let url
-  networkId !== 1
-    ? (url = `https://${network}.etherscan.io/tx/${txHash}`)
-    : `https://etherscan.io/tx/${txHash}`
+  console.log(`#️⃣  Tx Hash: ${txHash}`)
 
   await proxyFactory.deployed()
-  console.log(`Deployed proxy factory at ${proxyFactory.address}\n${url}`)
+  console.log(`Deployed proxy factory at ${proxyFactory.address}\n`)
 
   config.factory = proxyFactory.address
   fs.writeFile(configPath, JSON.stringify(config), err => {
@@ -100,35 +90,63 @@ export const deployFactory = async masterCopy => {
   return proxyFactory.address
 }
 
-export const generateLinks = async proxyAddress => {
+export const deployERC20 = async () => {
+  let factory = new ethers.ContractFactory(
+    TokenMock.abi,
+    TokenMock.bytecode,
+    sender
+  )
+
+  tokenMock = await factory.deploy({
+    gasLimit: 6000000
+  })
+
+  let txHash = tokenMock.deployTransaction.hash
+  console.log(`#️⃣  Tx Hash: ${txHash}`)
+
+  await tokenMock.deployed()
+  console.log(`Deployed token at ${tokenMock.address}\n`)
+
+  config.token = tokenMock.address
+  fs.writeFile(configPath, JSON.stringify(config), err => {
+    if (err) throw err
+    console.log(`Token address successfully added to config.json `)
+  })
+}
+
+export const generateLinks = async () => {
   expirationTime = 1900000000000000
 
   let links = []
 
   for (let i = 0; i < linksNumber; i++) {
-    let { linkKey, linkId, senderSignature } = await createLink(
-      sender,
+    let {
+      url,
+      linkId,
+      linkKey,
+      senderSignature
+    } = await LinkdropSDK.generateLink(
+      jsonRpcUrl,
+      networkId,
+      host,
+      senderPrivateKey,
       token,
       amount,
       expirationTime
     )
-
-    // construct url
-    let url = `${host}/#/receive?pk=${linkKey.toString(
-      'hex'
-    )}&sig=${senderSignature}&c=${proxyAddress}`
-
-    // add network param to url if not mainnet
-    if (String(networkId) !== '1') {
-      url = `${url}&n=${networkId}`
-    }
 
     let link = { i, linkId, linkKey, senderSignature, url }
     links.push(link)
   }
 
   // Save links to csv
-  let filename = path.join(__dirname, '/output/linkdrop_eth.csv')
+  let filename
+
+  if (token === ethers.constants.AddressZero) {
+    filename = path.join(__dirname, '../output/linkdrop_eth.csv')
+  } else {
+    filename = path.join(__dirname, '../output/linkdrop.csv')
+  }
   try {
     const ws = fs.createWriteStream(filename)
     fastcsv.write(links, { headers: true }).pipe(ws)
