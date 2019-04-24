@@ -1,5 +1,3 @@
-/* global web3 */
-
 import React from 'react'
 import i18next from 'i18next'
 import { Switch, Route } from 'react-router'
@@ -17,27 +15,11 @@ class AppRouter extends React.Component {
     i18next.changeLanguage(locale)
   }
 
-  componentDidMount () {
-    try {
-      web3.eth && web3.eth.getAccounts && web3.eth.getAccounts((err, res) => {
-        if (err) {
-          return console.error({ err })
-        }
-        const web3Wallet = res[0]
-        if (web3Wallet) {
-          // this.actions().user.setWeb3Provider({ provider: web3.currentProvider })
-          this.actions().user.setWallet({ wallet: web3Wallet })
-        }
-      })
-    } catch (e) {
-      console.error(e)
-    }
-  }
+  componentDidMount () {}
 
   render () {
     return <Page>
       <Switch>
-        {/* <Route path='/' component={Main} /> */}
         <Route path='/' component={Main} />
         <Route path='*' component={NotFound} />
       </Switch>

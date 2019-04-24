@@ -8,10 +8,10 @@ export default {
     instructions: 'It may take a few minutes. You can come back later.',
     seeDetails: 'See details on <a target="_blank" href={{transactionLink}}>Etherscan</a>',
     tokensClaimed: '<span>{{tokens}}</span> claimed',
-    howToClaim: 'How to claim tokens to {{walletType}} Wallet'
+    howToClaim: 'How to claim tokens to {{wallet}}'
   },
   buttons: {
-    useTrustWallet: 'Use Trust Wallet',
+    useWallet: 'Use {{wallet}}',
     copyLink: 'Copy link'
   },
   errors: {
@@ -33,10 +33,6 @@ export default {
       _1: '1. Download/Open <a href={{href}}>{{title}}</a>',
       _2: '2. Create new or import existing wallet',
       _3: '3. Copy&Paste the claiming link in a {{title}} DApp browser and follow simple instructions'
-    },
-    coinbase: {
-      url: 'https://itunes.apple.com/app/coinbase-wallet/id1278383455?ls=1&mt=8',
-      title: 'Coinbase Wallet'
     }
   }
 }

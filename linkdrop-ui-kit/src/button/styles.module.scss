@@ -1,7 +1,6 @@
 @import "../variables/variables.scss";
 
 .container {
-  border: 1px solid $black;
   background: $black;
   padding: 4px 10px;
   border-radius: 5px;
@@ -15,11 +14,11 @@
   font-size: 22px;
   outline: none;
   font-family: 'Inter-Medium';
-  transition: opacity .3s;
+  transition: all .3s;
   text-decoration: none;
 
   &:active {
-    opacity: .5;
+    background: $blackActive;
   }
 }
 
@@ -79,11 +78,19 @@
   color: $black;
   border: 1px solid $black;
 
+  &:active {
+    background: $invertedActive;
+    color: $blackActive;
+    border-color: $blackActive;
+  }
+
   .loading {
     div {
       border-color: $black transparent transparent transparent;
     }
   }
+
+
 }
 
 .smallSize {

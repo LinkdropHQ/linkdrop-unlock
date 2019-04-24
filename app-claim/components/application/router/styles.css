@@ -27,9 +27,15 @@ html, body {
   margin: 0px;
   padding: 0px;
   min-height: 100vh;
+  max-width: 100vw;
+  width: 100vw;
 }
 
 * {
   box-sizing: border-box;
 }
 
+.application {
+  margin: 0 auto;
+  max-width: 100vw;
+}

@@ -7,10 +7,10 @@ import ClaimingProcessPage from './claiming-process-page'
 import ErrorPage from './error-page'
 import ClaimingFinishedPage from './claiming-finished-page'
 import { getHashVariables } from 'helpers'
+import { Web3Consumer } from 'web3-react'
 
-@actions(({ user: { errors, wallet, step, loading: userLoading, transactionId }, contract: { loading, decimals, amount, symbol, icon } }) => ({
+@actions(({ user: { errors, step, loading: userLoading, transactionId }, contract: { loading, decimals, amount, symbol, icon } }) => ({
   userLoading,
-  wallet,
   loading,
   decimals,
   symbol,
@@ -23,7 +23,7 @@ import { getHashVariables } from 'helpers'
 @translate('pages.claim')
 class Claim extends React.Component {
   componentDidMount () {
-    const { token, amount, expirationTime, sender, senderSignature, linkKey, n } = getHashVariables()
+    const { token, amount, expirationTime, n } = getHashVariables()
     // так, вот есть переменные все в урле:
     // token - это адрес контракта,
     // amount - количество токенов,
@@ -51,12 +51,25 @@ class Claim extends React.Component {
   }
 
   render () {
-    return this.renderCurrentPage()
+    return <Web3Consumer>
+      {context => this.renderCurrentPage({ context })}
+    </Web3Consumer>
   }
 
-  renderCurrentPage () {
-    const { decimals, amount, symbol, icon, wallet, step, userLoading, transactionId, errors } = this.props
-    const commonData = { decimals, amount, symbol, icon, wallet, loading: userLoading }
+  renderCurrentPage ({ context }) {
+    const { decimals, amount, symbol, icon, step, userLoading, transactionId, errors } = this.props
+    // in context we can find:
+    // active,
+    // connectorName,
+    // connector,
+    // library,
+    // networkId,
+    // account,
+    // error
+    const {
+      account
+    } = context
+    const commonData = { decimals, amount, symbol, icon, wallet: account, loading: userLoading }
     if (errors && errors.length > 0) {
       return <ErrorPage error={errors[0]} />
     }
@@ -65,7 +78,7 @@ class Claim extends React.Component {
         return <InitialPage
           {...commonData}
           onClick={_ => {
-            if (wallet) {
+            if (account) {
               // если уже есть кошелек, то перекидываем на четвертый шаг и клеймим токены там уже
               return this.actions().user.setStep({ step: 2 })
             }

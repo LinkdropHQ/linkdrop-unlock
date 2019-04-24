@@ -15,7 +15,6 @@ const generator = function * ({ payload }) {
     //     errors: ['LINK_EXPIRED'] // LINK_CANCELED, LINK_FAILED
     //   }
     // })
-    console.log('here')
     yield put({ type: 'USER.SET_STEP', payload: { step: 5 } })
   } catch (e) {
     console.error(e)

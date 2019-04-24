@@ -1,5 +1,9 @@
 @import "variables/variables.scss";
 
+.container {
+  overflow: hidden;
+}
+
 .title {
   font-size: 24px;
   margin-bottom: 50px;
@@ -18,36 +22,22 @@
   z-index: 2;
   position: absolute;
   top: 0;
-  left: 50%;
   width: 100%;
-  transform: translateX(-50%);
+  text-align: center;
+  left: 0;
 }
+
 .content {
-  width: 100%;
   position: relative;
+  height: 100px;
+  margin: 0 auto;
+  padding: 0 30px;
+  width: 100%;
 }
 
 .button {
   margin-bottom: 50px;
   max-width: 100%;
-}
-
-.sliderShown .subtitle {
-  animation: titleOut .5s forwards;
-}
-
-.sliderShown .slider {
-  animation: sliderIn .5s forwards;
-}
-
-.slider {
-  left: 100%;
-  opacity: 0;
-  z-index: 1;
-  width: 100%;
-  top: 0px;
-  transform: translateY(-50%);
-  position: absolute;
 }
 
 .instructions {
@@ -70,6 +60,15 @@
 
 .walletPreview {
   margin-bottom: 30px;
+}
+
+.slider {
+  left: 100%;
+  opacity: 0;
+  z-index: 1;
+  width: 100%;
+  top: 0px;
+  position: absolute;
 }
 
 .wallet {
@@ -98,6 +97,21 @@
   }
 }
 
+.sliderShow .subtitle {
+  animation: titleOut .5s forwards;
+}
+
+.sliderShow .slider {
+  animation: sliderIn .5s forwards;
+}
+
+.sliderHide .subtitle {
+  animation: titleIn .5s forwards;
+}
+
+.sliderHide .slider {
+  animation: sliderOut .5s forwards;
+}
 
 @keyframes titleOut {
   0% {
@@ -132,5 +146,42 @@
     display: block;
     left: 0%;
     z-index: 2;
+  }
+}
+
+
+@keyframes titleIn {
+  0% {
+    opacity: 0;
+    display: none;
+    left: -100%;
+    z-index: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    left: 0%;
+    opacity: 1;
+  }
+}
+
+@keyframes sliderOut {
+  0% {
+    opacity: 1;
+    display: block;
+    left: 0%;
+    z-index: 2;
+  }
+
+  80% {
+    opacity: 0;
+  }
+
+  100% {
+    left: 100%;
+    opacity: 0;
   }
 }
