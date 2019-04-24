@@ -8,7 +8,7 @@ const generator = function * ({ payload }) {
     const wallet = yield select(generator.selectors.wallet)
     const { assets } = yield call(getTokens, { wallet })
     if (assets) {
-      yield put({ type: 'TOKENS.SET_LINK', payload: { link: 'https://pornhub.com' } })
+      yield put({ type: 'TOKENS.SET_LINK', payload: { link: 'https://medium.com/linkdrop-protocol/introducing-linkdrop-protocol-f612ae181e31' } })
     }
     yield put({ type: 'TOKENS.SET_LOADING', payload: { loading: false } })
   } catch (e) {
