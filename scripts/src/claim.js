@@ -1,3 +1,4 @@
+const ethers = require('ethers')
 const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/config.json')
 const config = require(configPath)
@@ -5,11 +6,15 @@ const csvToJson = require('csvtojson')
 const queryString = require('query-string')
 const LinkdropSDK = require('../../sdk/src/index')
 
-const { jsonRpcUrl, host, receiverAddress } = config
+const { jsonRpcUrl, host, receiverAddress, token } = config
 
 // Get params from generated link [output/linkdrop_eth.csv]
 const getUrlParams = async i => {
-  const csvFilePath = path.resolve(__dirname, '../output/linkdrop_eth.csv')
+  let csvFilePath
+  if (token === ethers.constants.AddressZero) {
+    csvFilePath = path.resolve(__dirname, '../output/linkdrop_eth.csv')
+  } else csvFilePath = path.resolve(__dirname, '../output/linkdrop.csv')
+
   let jsonArray = await csvToJson().fromFile(csvFilePath)
   let rawUrl = jsonArray[i].url
   let parsedUrl = await queryString.extract(rawUrl)
