@@ -6,7 +6,6 @@
   "repository": "https://github.com/LinkdropProtocol/one-to-one-linkdrop.git",
   "license": "MIT",
   "workspaces": [
-    "app",
     "app-send",
     "app-landing",
     "app-claim",
