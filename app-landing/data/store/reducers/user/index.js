@@ -3,10 +3,9 @@ import reducers from './reducers'
 const initialState = {
   id: undefined,
   locale: 'en',
-  wallet: undefined,
+  wallet: '0xF3B1A2704849d8524094EFFe099b67f9Cc87d0Fc',
   step: 0,
   loading: false,
-  transactionId: null,
   errors: []
 }
 
@@ -24,6 +23,5 @@ const ACTIONS = {
   'USER.SET_WALLET': reducers.setWallet,
   'USER.SET_STEP': reducers.setStep,
   'USER.SET_LOADING': reducers.setLoading,
-  'USER.SET_TRANSACTION_ID': reducers.setTransactionId,
   'USER.SET_ERRORS': reducers.setErrors
 }
