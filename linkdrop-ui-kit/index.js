@@ -11,7 +11,8 @@ import {
   NftItem,
   Slider,
   RetinaImage,
-  TextControlBlock
+  TextControlBlock,
+  TextCopyBlock
 } from './dist/bundle.js'
 
 export {
@@ -27,5 +28,6 @@ export {
   NftItem,
   Slider,
   RetinaImage,
-  TextControlBlock
+  TextControlBlock,
+  TextCopyBlock
 }

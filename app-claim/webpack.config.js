@@ -95,7 +95,7 @@ module.exports = {
   },
   devServer: {
     contentBase: path.join(__dirname, './'),
-    publicPath: '/',
+    publicPath: '/assets/scripts/',
     compress: true,
     hot: true,
     port: 9000,

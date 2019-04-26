@@ -10,28 +10,31 @@ class TextControlBlock extends React.Component {
       blink: false
     }
   }
+
+  componentWillReceiveProps ({ blink }) {
+    const { blink: prevPropBlink, onBlickChange, blinkOnClick } = this.props
+    const { blink: currentBlink } = this.state
+    if (currentBlink !== blink && prevPropBlink !== blink && blinkOnClick) {
+      this.setState({
+        blink: true
+      }, () => {
+        window.setTimeout(_ => this.setState({
+          blink: false
+        }, _ => onBlickChange && onBlickChange({ value: false })), 1500)
+      })
+    }
+  }
+
   render () {
     const { blink } = this.state
-    const { blinkOnClick, value = '', onClick, className, style = {}, icon = <Icons.Copy /> } = this.props
-    return <div style={style} className={classNames(styles.container, className, {
-      [styles.blink]: blink
-    })}>
+    const { value = '', onClick, className, style = {}, icon = <Icons.Copy /> } = this.props
+    return <div style={style} className={classNames(styles.container, className)}>
+      {blink && <div className={styles.copyOverlay}>Copied!</div>}
       <div className={styles.content}>
         {value}
       </div>
       <div className={styles.copyContent} onClick={_ => {
-        if (blinkOnClick) {
-          this.setState({
-            blink: true
-          }, () => {
-            onClick && onClick({ value })
-            window.setTimeout(_ => this.setState({
-              blink: false
-            }), 1000)
-          })
-        } else {
-          onClick && onClick({ value })
-        }
+        onClick && onClick({ value })
       }}>{icon}</div>
     </div>
   }

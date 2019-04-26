@@ -1,24 +1,36 @@
 export default {
   titles: {
     sendTokens: 'Try to send any tokens or NFTs via link',
-    main: 'We link everyday users to the DApp ecosystem',
-    addAmount: 'Add amount',
-    sendTokensToAddress: '1. Send any tokens to the address:',
-    shareLink: '2. Copy and share the link',
+    main: 'Try the demo and send tokens via link',
+    sendTokensToAddress: 'Send any tokens to the address:',
+    shareLink: 'Copy and share the link',
     linkDone: 'Your link is done!',
     scanCode: 'Scan QR-code to get link',
-    linkdropPro: 'Linkdrop Pro',
     multipleLinkes: 'Multiple links',
     analytics: 'Analitycs',
     expiredLinks: 'Expired links',
+    wantMoreLinks: 'Want more links?',
     cs: 'Customer service 24/7',
-    tryLinkdropPro: 'Try Linkdrop Pro for free'
+    terms: 'By sending funds you agree to the <a href={{termsHref}}>Terms</a>',
+    getYourLink: 'Get your link',
+    linkdrop: 'Linkdrop',
+    multipleLinks: 'Multiple links & Analytics',
+    createShare: 'Just create and share the link',
+    noGas: 'No gas or any fee',
+    tokenTypes: 'ETH / ERC20 / ERC721 tokens',
+    yourEmail: 'Your email',
+    wantMoreLinksInstruction: 'Want more links — request early access',
+    everydayUsers: 'We link everyday users to digital assets',
+    seeGit: 'See the Github',
+    join: 'Join Community',
+    followOnTwitter: 'Follow on Twitter',
+    trusted: 'Trusted by Leading Companies and Wallets'
   },
   descriptions: {
     sendTokens: 'Simply send your funds to our secure contract and generate the crypto link',
-    main: 'Linkdrop enables you to send digital assets to your friends without they need to have an address or wallet in advance',
-    linkdropPro: 'Pro version lets you mass-generate and track linkdrops',
-    tryLinkdropPro: 'Linkdrop enables you to send digital assets to your friends without they need to have an address or wallet in advance'
+    massGenerate: 'Linkdrop lets you mass-generate & track links',
+    newLinkInstruction: 'To create a new link—first claim this one',
+    sendLinks: 'Linkdrop enables you to send links with included digital assets and onboarding properties'
   },
   buttons: {
     continue: 'Continue',
@@ -26,7 +38,10 @@ export default {
     copyLink: 'Copy Link',
     close: 'Close',
     tryForFree: 'Try for Free',
-    campaign: 'Set Up Campaign'
+    campaign: 'Set Up Campaign',
+    learnMore: 'Learn More',
+    joinWaitlist: 'Join Waitlist',
+    requestAccess: 'Request Access'
   },
   errors: {
 

@@ -1,0 +1,37 @@
+@import "variables/variables.scss";
+
+.container {
+  display: flex;
+  align-items: center;
+  max-width: 620px;
+  margin: 0 auto;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 200px;
+}
+
+.title {
+  font-size: 56px;
+  line-height: 67px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.description {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.button {
+  max-width: 200px;
+  margin-bottom: 50px;
+}
+
+.menu {
+  max-width: 590px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+

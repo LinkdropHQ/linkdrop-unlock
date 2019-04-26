@@ -1,6 +1,11 @@
 .list {
   max-width: 226px;
-  margin-bottom: 40px;
+  margin-bottom: 52px;
+}
+
+.description {
+  text-align: center;
+  margin-bottom: 60px;
 }
 
 .listItem {
@@ -8,6 +13,9 @@
   margin-bottom: 20px;
 }
 
-.description {
-  margin-bottom: 60px;
+.close {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  cursor: pointer;
 }

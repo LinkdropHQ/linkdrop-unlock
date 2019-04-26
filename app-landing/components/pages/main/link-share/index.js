@@ -3,8 +3,7 @@ import { translate } from 'decorators'
 import styles from './styles.module'
 import { Alert, Button, TextControlBlock, Icons } from 'linkdrop-ui-kit'
 import classNames from 'classnames'
-import { LinkBlock } from 'components/pages/common'
-import QRCode from 'qrcode.react'
+import { LinkBlock, QrShare } from 'components/pages/common'
 
 @translate('pages.main')
 class LinkSahre extends React.Component {
@@ -23,7 +22,7 @@ class LinkSahre extends React.Component {
         [styles.showQr]: showQr
       })}>
         {this.renderMainScreen({ onClick })}
-        {this.renderQrScreen({ onClose: () => this.setState({ showQr: false }) })}
+        {this.renderQrScreen({ onClose: onClick })}
       </div>
     </LinkBlock>
   }
@@ -46,12 +45,8 @@ class LinkSahre extends React.Component {
   }
 
   renderQrScreen ({ onClick, onClose }) {
-    return <div className={classNames(styles.container, styles.secondary)}>
-      <div className={styles.mainTitle}>{this.t('titles.scanCode')}</div>
-      <div className={styles.qr}>
-        <QRCode size={200} value='http://facebook.github.io/react/' />
-      </div>
-      <Button inverted onClick={_ => onClose && onClose()} className={styles.button}>{this.t('buttons.close')}</Button>
+    return <div className={styles.secondary}>
+      <QrShare t={this.t} onClose={onClose} value='http://facebook.github.io/react/' />
     </div>
   }
 }

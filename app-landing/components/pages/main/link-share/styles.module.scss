@@ -13,7 +13,8 @@
   left: 0;
   height: 100%;
   width: 100%;
-  padding-top: 167px;
+  padding-top: 164px;
+  position: absolute;
 }
 
 .secondary {
@@ -54,18 +55,6 @@
   .main {
     animation: mainOut .5s forwards;
   }
-}
-
-.mainTitle {
-  font-size: 22px;
-  text-align: center;
-  margin: 60px 0px 15px;
-  font-family: 'Inter-Medium';
-  margin-bottom: 74px;
-}
-
-.qr {
-  margin-bottom: 60px;
 }
 
 @keyframes mainOut {

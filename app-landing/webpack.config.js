@@ -37,7 +37,8 @@ const postCSSLoader = {
 module.exports = {
   entry: [
     '@babel/polyfill',
-    './index.js'
+    './index.js',
+    'webpack/hot/dev-server'
   ],
   output: {
     filename: 'bundle.js',
@@ -88,5 +89,16 @@ module.exports = {
       test: /\.(png|woff|woff2|eot|ttf|svg|otf|gif)$/,
       loader: 'url-loader?limit=100000'
     }]
+  },
+  devServer: {
+    contentBase: path.join(__dirname, './'),
+    publicPath: '/assets/scripts/',
+    compress: true,
+    hot: true,
+    port: 9000,
+    host: '0.0.0.0',
+    watchOptions: {
+      ignored: /node_modules/
+    }
   }
 }

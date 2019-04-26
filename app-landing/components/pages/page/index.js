@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header } from 'components/common'
+import { Header, Footer } from 'components/common'
 import styles from './styles.module'
 import { translate } from 'decorators'
 
@@ -11,6 +11,7 @@ class Page extends React.Component {
       <div className={styles.main}>
         {this.props.children}
       </div>
+      <Footer />
     </div>
   }
 }
