@@ -37,7 +37,7 @@ export const generateLinkERC721 = async (
   networkId,
   host,
   senderPrivateKey,
-  token,
+  nft,
   tokenId,
   expirationTime
 ) => {
@@ -45,13 +45,13 @@ export const generateLinkERC721 = async (
   const sender = new ethers.Wallet(senderPrivateKey, provider)
   const { linkKey, linkId, senderSignature } = await createLink(
     sender,
-    token,
+    nft,
     tokenId,
     expirationTime
   )
 
   // Construct link
-  let url = `${host}/#/receive?token=${token}&tokenId=${tokenId}&expirationTime=${expirationTime}&linkKey=${linkKey}&senderAddress=${
+  let url = `${host}/#/receive?nft=${nft}&tokenId=${tokenId}&expirationTime=${expirationTime}&linkKey=${linkKey}&senderAddress=${
     sender.address
   }&senderSignature=${senderSignature}`
 

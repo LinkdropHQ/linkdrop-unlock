@@ -10,3 +10,4 @@ const claimController = require('./controllers/claimController')
 app.get('/', (req, res) => res.send('Hello World!'))
 
 app.post('/api/v1/linkdrops/claim', claimController.claim)
+app.post('/api/v1/linkdrops/claim-erc721', claimController.claimERC721)

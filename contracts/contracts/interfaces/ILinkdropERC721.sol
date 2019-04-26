@@ -5,6 +5,9 @@ contract ILinkdropERC721 {
 
     event Canceled(address linkId, uint timestamp);
     event Claimed(address indexed linkId, address indexed token, uint indexed tokenId, address receiver, uint timestamp);
+
+    event Paused(uint timestamp);
+    event Unpaused(uint timestamp);
      
     // Constructor
     function initializer(address payable _sender) external returns (bool);
@@ -54,7 +57,9 @@ contract ILinkdropERC721 {
     function isClaimedLink(address _linkId) external view returns (bool);
     function isCanceledLink(address _linkId) external view returns (bool);
     function cancel(address _linkId) external returns (bool);
+
+    function paused() external view returns (bool);
+    function pause() external returns (bool);
+    function unpause() external returns (bool);
     
 }
-
-// ${host}/#/claim?t=${tokenAddress}&id=${tokenId}&exp=${expirationTime}&pk=${linkKey}&sig=${senderSignature}&c=${contractAddress}
