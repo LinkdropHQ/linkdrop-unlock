@@ -1,11 +1,13 @@
 import { computeProxyAddress } from './computeProxyAddress'
-import { generateLink } from './generateLink'
-import { claim } from './claim'
+import { generateLink, generateLinkERC721 } from './generateLink'
+import { claim, claimERC721 } from './claim'
 
 const LinkdropSDK = {
   computeProxyAddress,
   generateLink,
-  claim
+  generateLinkERC721,
+  claim,
+  claimERC721
 }
 
 export default LinkdropSDK

@@ -1,6 +1,8 @@
+import Mastercopy from '../../contracts/build/Mastercopy'
 import Linkdrop from '../../contracts/build/Linkdrop'
 import Factory from '../../contracts/build/Factory'
 import TokenMock from '../../contracts/build/TokenMock'
+import NFTMock from '../../contracts/build/NFTMock'
 
 const ethers = require('ethers')
 const fs = require('fs')
@@ -17,7 +19,9 @@ let {
   amount,
   linksNumber,
   jsonRpcUrl,
-  host
+  host,
+  nft,
+  nftIds
 } = config
 
 config.token == null || config.token === ''
@@ -31,37 +35,37 @@ if (senderPrivateKey == null || senderPrivateKey === '') {
   throw "Please provide a sender's private key"
 }
 // if (network == null || network === '') throw 'Please provide network'
-if (amount == null || amount === '') throw 'Please provide amount per link'
-if (linksNumber == null || linksNumber == '') {
+if (amount === null || amount === '') throw 'Please provide amount per link'
+if (linksNumber === null || linksNumber === '') {
   throw 'Please provide links number'
 }
 
 const sender = new ethers.Wallet(senderPrivateKey, provider)
-let linkdrop, proxyFactory, expirationTime, tokenMock
+let mastercopy, proxyFactory, expirationTime, tokenMock, nftMock
 
 export const deployMasterCopy = async () => {
   let factory = new ethers.ContractFactory(
-    Linkdrop.abi,
-    Linkdrop.bytecode,
+    Mastercopy.abi,
+    Mastercopy.bytecode,
     sender
   )
 
-  linkdrop = await factory.deploy()
+  mastercopy = await factory.deploy()
 
-  let txHash = linkdrop.deployTransaction.hash
+  let txHash = mastercopy.deployTransaction.hash
   console.log(`#️⃣  Tx Hash: ${txHash}`)
 
-  await linkdrop.deployed()
-  console.log(`Deployed linkdrop master copy at ${linkdrop.address}\n`)
+  await mastercopy.deployed()
+  console.log(`Deployed linkdrop master copy at ${mastercopy.address}\n`)
 
-  config.masterCopy = linkdrop.address
+  config.masterCopy = mastercopy.address
 
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw err
     console.log('Master copy address successfully added to config.json ')
   })
 
-  return linkdrop.address
+  return mastercopy.address
 }
 
 export const deployFactory = async masterCopy => {
@@ -114,6 +118,30 @@ export const deployERC20 = async () => {
   })
 }
 
+export const deployERC721 = async () => {
+  let factory = new ethers.ContractFactory(
+    NFTMock.abi,
+    NFTMock.bytecode,
+    sender
+  )
+
+  nftMock = await factory.deploy({
+    gasLimit: 6000000
+  })
+
+  let txHash = nftMock.deployTransaction.hash
+  console.log(`#️⃣  Tx Hash: ${txHash}`)
+
+  await nftMock.deployed()
+  console.log(`Deployed token at ${nftMock.address}\n`)
+
+  config.nft = nftMock.address
+  fs.writeFile(configPath, JSON.stringify(config), err => {
+    if (err) throw err
+    console.log(`NFT address successfully added to config.json `)
+  })
+}
+
 export const generateLinks = async () => {
   expirationTime = 1900000000000000
 
@@ -155,5 +183,41 @@ export const generateLinks = async () => {
     console.error(err)
   }
 
+  return links
+}
+
+export const generateLinksERC721 = async () => {
+  expirationTime = 1900000000000000
+  let links = []
+  let tokenIds = JSON.parse(nftIds)
+
+  for (let i = 0; i < tokenIds.length; i++) {
+    let {
+      url,
+      linkId,
+      linkKey,
+      senderSignature
+    } = await LinkdropSDK.generateLinkERC721(
+      jsonRpcUrl,
+      networkId,
+      host,
+      senderPrivateKey,
+      nft,
+      tokenIds[i],
+      expirationTime
+    )
+    let link = { i, linkId, linkKey, senderSignature, url }
+    links.push(link)
+  }
+  // Save links to csv
+  const filename = path.join(__dirname, '../output/linkdrop_erc721.csv')
+
+  try {
+    const ws = fs.createWriteStream(filename)
+    fastcsv.write(links, { headers: true }).pipe(ws)
+    console.log(`File ${filename} has been succesfully updated`)
+  } catch (err) {
+    console.error(err)
+  }
   return links
 }

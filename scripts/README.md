@@ -20,6 +20,12 @@ yarn install
 yarn deploy-erc20
 ```
 
+### Deploy ERC721 Token
+
+```bash
+yarn deploy-erc721
+```
+
 ### Deploy factory
 
 ```bash
@@ -32,16 +38,28 @@ yarn deploy-factory
 yarn deploy-mastercopy
 ```
 
-### Generate links
+### Generate links for ether or ERC20
 
 ```bash
 yarn generate-links
 ```
 
-### Setup linkdrop (deploys factory, linkdrop mastercopy and generates links)
+### Generate links for ERC721
+
+```bash
+yarn generate-links-erc721
+```
+
+### Setup linkdrop for ether or ERC20 (deploys factory, linkdrop mastercopy and generates links)
 
 ```bash
 yarn setup-linkdrop
+```
+
+### Setup linkdrop for ERC721 (deploys factory, linkdrop mastercopy and generates links)
+
+```bash
+yarn setup-linkdrop-erc721
 ```
 
 ### Run server
