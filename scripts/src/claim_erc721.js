@@ -26,7 +26,7 @@ const claimERC721 = async () => {
     linkKey,
     senderAddress,
     senderSignature
-  } = await getUrlParams(1)
+  } = await getUrlParams(0)
   console.log('nft: ', nft)
   console.log('tokenId: ', tokenId)
 

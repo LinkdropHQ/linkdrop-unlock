@@ -9,5 +9,7 @@
     "linksNumber": "",
     "receiverAddress": "",
     "masterCopy": "",
-    "factory": ""
+    "factory": "",
+    "nft": "",
+    "nftIds": "[1,2,3]"
 }
