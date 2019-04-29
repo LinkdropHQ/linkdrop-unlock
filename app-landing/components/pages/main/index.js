@@ -9,9 +9,22 @@ import FinalScreen from './final-screen'
 import LearnMore from './learn-more'
 import TrustedBy from './trusted-by'
 
-@actions(({ user: { step } }) => ({ step }))
+@actions(({ user: { step, balance, wallet } }) => ({ step, balance, wallet }))
 @translate('pages.main')
 class Main extends React.Component {
+  componentDidMount () {
+    const { wallet } = this.props
+    if (!wallet) {
+      this.actions().user.createWallet()
+    }
+  }
+
+  componentWillReceiveProps ({ wallet, step }) {
+    if (step != null && step === 0 && wallet) {
+      this.actions().user.checkBalance({ account: wallet })
+    }
+  }
+
   render () {
     const { step } = this.props
     return <div className={styles.container}>
@@ -69,9 +82,8 @@ class Main extends React.Component {
   renderContent ({ step }) {
     switch (step) {
       case 1:
-      case 0:
         return <TokensSend
-          onClick={_ => {
+          onFinish={_ => {
             this.actions().user.setStep({ step: 2 })
           }}
         />

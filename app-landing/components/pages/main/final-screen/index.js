@@ -1,11 +1,12 @@
 import React from 'react'
-import { translate } from 'decorators'
+import { translate, actions } from 'decorators'
 import styles from './styles.module'
 import { Icons, Button, TextControlBlock } from 'linkdrop-ui-kit'
 import { LinkBlock, QrShare } from 'components/pages/common'
 import classNames from 'classnames'
-import { copyToClipboard } from 'helpers'
+import { copyToClipboard, getHashVariables } from 'helpers'
 
+@actions(({ user: { link, claimed } }) => ({ link, claimed }))
 @translate('pages.main')
 class FinalScreen extends React.Component {
   constructor (props) {
@@ -15,20 +16,27 @@ class FinalScreen extends React.Component {
       blink: false
     }
   }
+
   render () {
-    const { onClick } = this.props
+    const { onClick, link, claimed } = this.props
     const { showQr } = this.state
     return <LinkBlock title={this.t('titles.getYourLink')}>
+      {claimed && <h1>CLAIMED!!!</h1>}
       <div className={classNames({
         [styles.showQr]: showQr
       })}>
-        {this.renderMainScreen({ onClick })}
-        {this.renderQrScreen({ onClose: _ => this.setState({ showQr: false }) })}
+        {this.renderMainScreen({ onClick, link })}
+        {this.renderQrScreen({ link, onClose: _ => this.setState({ showQr: false }) })}
       </div>
+      <input ref={node => { this.input = node }} />
+      <Button onClick={_ => {
+        const hashVariables = getHashVariables({ url: this.input.value })
+        this.actions().user.testClaimTokens(hashVariables)
+      }}>claim</Button>
     </LinkBlock>
   }
 
-  renderMainScreen ({ onClick }) {
+  renderMainScreen ({ onClick, link }) {
     const { blink } = this.state
     return <div className={classNames(styles.container, styles.main)}>
       <TextControlBlock
@@ -41,9 +49,11 @@ class FinalScreen extends React.Component {
         onClick={({ value }) => this.setState({
           showQr: true
         })}
-        value='0x5f770e2c1f7b2c4ad788fe35eaffdf0eac2a4fcc'
+        value={link}
       />
-      <Button className={styles.button} onClick={_ => this.setState({ blink: true })}>
+      <Button className={styles.button} onClick={_ => {
+        this.setState({ blink: true }, _ => copyToClipboard({ value: link }))
+      }}>
         {this.t('buttons.copyLink')}
       </Button>
       <div className={styles.description}>{this.t('descriptions.newLinkInstruction')}</div>
@@ -62,9 +72,9 @@ class FinalScreen extends React.Component {
     </div>
   }
 
-  renderQrScreen ({ onClick, onClose }) {
+  renderQrScreen ({ onClick, onClose, link }) {
     return <div className={styles.secondary}>
-      <QrShare t={this.t} onClose={onClose} value='http://facebook.github.io/react/' />
+      <QrShare t={this.t} onClose={onClose} value={link} />
     </div>
   }
 }

@@ -8,4 +8,4 @@ const LinkdropSDK = {
   claim
 }
 
-module.exports = LinkdropSDK
+export default LinkdropSDK

@@ -51,7 +51,11 @@ module.exports = {
       path.resolve('./'),
       path.resolve('./node_modules'),
       path.resolve('../node_modules')
-    ]
+    ],
+    alias: {
+      wallets: path.resolve(__dirname, '../config/wallets'),
+      config: path.resolve(__dirname, '../config/config')
+    }
   },
   module: {
     rules: [{
@@ -99,6 +103,13 @@ module.exports = {
     host: '0.0.0.0',
     watchOptions: {
       ignored: /node_modules/
+    },
+    proxy: {
+      '/api/v1/linkdrops/**': {
+        target: 'http://localhost:5000',
+        secure: false,
+        changeOrigin: true
+      }
     }
   }
 }
