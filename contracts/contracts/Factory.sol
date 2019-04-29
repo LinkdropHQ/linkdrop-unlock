@@ -7,34 +7,47 @@ import "./interfaces/ICommon.sol";
 
 contract Factory is Storage, CloneFactory {
 
-    // Sender => Proxy address
+    // Maps sender address to its corresponding proxy address
     mapping (address => address) deployed;
 
+    // Events
     event Deployed(address payable proxy, bytes32 salt, uint timestamp);
 
-    // Initialize the master code
+    /**
+    * @dev Constructor that sets the linkdrop mastercopy address
+    * @param _masterCopy Address of linkdrop implementation contract
+    */
     constructor(address payable _masterCopy) 
     public 
     {
         masterCopy = _masterCopy;
     }
 
-    // Indicates whether a proxy is deployed or not
+    /**
+    * @dev Indicates whether a proxy contract for sender is deployed or not
+    * @param _sender Address of lindkrop sender
+    * @return True if deployed
+    */
     function isDeployed(address _sender) public view returns (bool) {
         return (deployed[_sender] != address(0));
     }
 
-    // Deploy new proxy contract
+    /**
+    * @dev Function to deploy a proxy contract for sender
+    * @param _sender Address of linkdrop sender
+    * @return Proxy contract address
+    */
     function deployProxy(address payable _sender) 
     public 
     returns (address payable) 
     {
 
+        // Create clone of the mastercopy
         address payable proxy = createClone(masterCopy, keccak256(abi.encodePacked(_sender)));
 
         deployed[_sender] = proxy;
 
-        // Initialize sender in newly deployed contract
+        // Initialize sender in newly deployed proxy contract
         require(ICommon(proxy).initializer(_sender), "Failed to initialize");
         emit Deployed( proxy, keccak256(abi.encodePacked(_sender)), now);
         
@@ -42,7 +55,18 @@ contract Factory is Storage, CloneFactory {
 
     }
 
-    // Function to claim tokens. Deploys proxy if not deployed yet
+    /**
+    * @dev Function to claim ETH or ERC20 token
+    * @param _token Token address, address(0) for ETH
+    * @param _amount Amount of tokens to be claimed in atomic value
+    * @param _expiration Unix timestamp of link expiration time
+    * @param _linkId Address corresponding to link key
+    * @param _sender Address of linkdrop sender
+    * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
+    * @param _receiver Address of linkdrop receiver
+    * @param _receiverSignature ECDSA signature of linkdrop receiver, signed with link key
+    * @return True if success
+    */
     function claim
     (
         address _token, 
@@ -57,10 +81,13 @@ contract Factory is Storage, CloneFactory {
     external 
     returns (bool)
     {
+
+        // Check whether the proxy is deployed for sender and deploy if not
         if (!isDeployed(_sender)) {
             deployProxy(_sender);
         }
 
+        // Call claim function in the context of proxy contract
         ILinkdrop(deployed[_sender]).claim
         (
             _token, 
@@ -76,7 +103,18 @@ contract Factory is Storage, CloneFactory {
         
     }
 
-    // Function to claim NFT. Deploys proxy if not deployed yet
+    /**
+    * @dev Function to claim ERC721 token
+    * @param _nft NFT address
+    * @param _tokenId Token id to be claimed
+    * @param _expiration Unix timestamp of link expiration time
+    * @param _linkId Address corresponding to link key
+    * @param _sender Address of linkdrop sender
+    * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
+    * @param _receiver Address of linkdrop receiver
+    * @param _receiverSignature ECDSA signature of linkdrop receiver, signed with link key
+    * @return True if success
+    */
     function claimERC721
     (
         address _nft, 
@@ -91,10 +129,12 @@ contract Factory is Storage, CloneFactory {
     external 
     returns (bool)
     {
+        // Check whether the proxy is deployed for sender and deploy if not
         if (!isDeployed(_sender)) {
             deployProxy(_sender);
         }
 
+        // Call claim function in the context of proxy contract
         ILinkdropERC721(deployed[_sender]).claimERC721
         (
             _nft, 

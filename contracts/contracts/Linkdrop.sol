@@ -1,16 +1,24 @@
 pragma solidity >= 0.5.6;
-
-import "./interfaces/ILinkdrop.sol";
 import "./Common.sol";
+import "./interfaces/ILinkdrop.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
 contract Linkdrop is ILinkdrop, Common {   
 
     // =================================================================================================================
-    //                                         ERC20, Ether
+    //                                         ERC20 and ETH Linkdrop
     // =================================================================================================================
 
+    /**
+    * @dev Function to verify linkdrop sender's signature
+    * @param _token Token address, address(0) for ETH
+    * @param _amount Amount of tokens to be claimed in atomic value
+    * @param _expiration Unix timestamp of link expiration time
+    * @param _linkId Address corresponding to link key
+    * @param _signature ECDSA signature of linkdrop sender, signed with sender's private key
+    * @return True if signed with sender's private key
+    */
     function verifySenderSignature
     (
         address _token,
@@ -27,6 +35,13 @@ contract Linkdrop is ILinkdrop, Common {
         return signer == SENDER;
     }
 
+    /**
+    * @dev Function to verify linkdrop receiver's signature
+    * @param _linkId Address corresponding to link key
+    * @param _receiver Address of linkdrop receiver
+    * @param _signature ECDSA signature of linkdrop receiver, signed with link key
+    * @return True if signed with link key
+    */
     function verifyReceiverSignature
     (
         address _linkId,
@@ -41,6 +56,17 @@ contract Linkdrop is ILinkdrop, Common {
         return signer == _linkId;
     }
 
+    /**
+    * @dev Function to verify claim params and make sure the link is not claimed or canceled
+    * @param _token Token address, address(0) for ETH
+    * @param _amount Amount of tokens to be claimed in atomic value
+    * @param _expiration Unix timestamp of link expiration time
+    * @param _linkId Address corresponding to link key
+    * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
+    * @param _receiver Address of linkdrop receiver
+    * @param _receiverSignature ECDSA signature of linkdrop receiver, signed with link key
+    * @return True if success
+    */
     function checkClaimParams
     (
         address _token,
@@ -55,21 +81,21 @@ contract Linkdrop is ILinkdrop, Common {
     returns (bool)
     {
 
-        // Verify that link wasn't claimed before
+        // Make sure the link is not claimed or canceled
         require(isClaimedLink(_linkId) == false, "Claimed link");
         require(isCanceledLink(_linkId) == false, "Canceled link");
 
-        // Verify that ephemeral key is legit and signed by VERIFICATION_ADDRESS's key
+        // Verify that link key is legit and signed by sender's private key
         require
         (
             verifySenderSignature(_token, _amount, _expiration, _linkId, _senderSignature),
             "Invalid sender signature"
         );
 
-        // Verify the link is not expired
+        // Make sure the link is not expired
         require(_expiration >= now, "Expired link");
 
-        // Verify that receiver address is signed by ephemeral key assigned to claim link
+        // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
         require
         (
             verifyReceiverSignature(_linkId, _receiver, _receiverSignature), 
@@ -79,6 +105,17 @@ contract Linkdrop is ILinkdrop, Common {
         return true;
     }
 
+    /**
+    * @dev Function to claim ETH or ERC20 token. Can only be called when contract is not paused
+    * @param _token Token address, address(0) for ETH
+    * @param _amount Amount of tokens to be claimed in atomic value
+    * @param _expiration Unix timestamp of link expiration time
+    * @param _linkId Address corresponding to link key
+    * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
+    * @param _receiver Address of linkdrop receiver
+    * @param _receiverSignature ECDSA signature of linkdrop receiver, signed with link key
+    * @return True if success
+    */
     function claim
     (
         address _token, 
@@ -93,6 +130,7 @@ contract Linkdrop is ILinkdrop, Common {
     whenNotPaused
     returns (bool)
     {
+        // Make sure that params are valid
         require
         (
             checkClaimParams
@@ -111,6 +149,7 @@ contract Linkdrop is ILinkdrop, Common {
         // Mark link as claimed
         claimedTo[_linkId] = _receiver;
 
+        // Make sure the transfer succeeds
         require(_transferEthOrTokens(_token, _amount, _receiver), "Transfer failed");
 
         // Log claim
@@ -119,16 +158,23 @@ contract Linkdrop is ILinkdrop, Common {
         return true;
     }
 
+    /**
+    * @dev Internal function to transfer ETH or ERC20 tokens
+    * @param _token Token address, address(0) for ETH
+    * @param _amount Amount of tokens to be claimed in atomic value
+    * @param _receiver Address to transfer funds to
+    * @return True if success
+    */
     function _transferEthOrTokens(address _token, uint _amount, address payable _receiver)
     internal returns (bool)
     {
 
-        // Send tokens
+        // Transfer tokens
         if (_amount > 0 && address(_token) != address(0)) {
             IERC20(_token).transfer(_receiver, _amount); 
         }
 
-        // Send ether (if thats the case)
+        // Transfer ethers
         if (_amount > 0 && address(_token) == address(0)) {
             _receiver.transfer(_amount);
         }

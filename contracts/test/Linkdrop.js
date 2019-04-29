@@ -26,7 +26,7 @@ const { expect } = chai
 
 let provider = createMockProvider()
 
-let [sender, receiver] = getWallets(provider)
+let [sender, receiver, nonsender] = getWallets(provider)
 
 let masterCopy
 let factory
@@ -113,6 +113,42 @@ describe('Claim tests', () => {
         receiverSignature
       )
     ).to.be.true
+  })
+
+  it('non-sender should not be able to pause contract', async () => {
+    let proxyInstance = new ethers.Contract(
+      proxyAddress,
+      Linkdrop.abi,
+      nonsender
+    )
+    // Pausing
+    await expect(proxyInstance.pause({ gasLimit: 500000 })).to.be.revertedWith(
+      'Only sender'
+    )
+  })
+
+  it('sender should be able to pause contract', async () => {
+    // Pausing
+    await proxy.pause({ gasLimit: 500000 })
+    let paused = await proxy.paused()
+    expect(paused).to.eq(true)
+  })
+
+  it('sender should be able to unpause contract', async () => {
+    // Unpausing
+    await proxy.unpause({ gasLimit: 500000 })
+    let paused = await proxy.paused()
+    expect(paused).to.eq(false)
+  })
+
+  it('sender should be able to cancel link', async () => {
+    link = await createLink(sender, tokenAddress, claimAmount, expirationTime)
+    await expect(proxy.cancel(link.linkId, { gasLimit: 200000 })).to.emit(
+      proxy,
+      'Canceled'
+    )
+    let canceled = await proxy.isCanceledLink(link.linkId)
+    expect(canceled).to.eq(true)
   })
 
   it('should fail to claim tokens when paused', async () => {
@@ -300,6 +336,20 @@ describe('Claim tests', () => {
     ).to.be.revertedWith('Canceled link')
   })
 
+  it('should be able to send ethers to proxy', async () => {
+    let balanceBefore = await provider.getBalance(proxy.address)
+
+    let wei = ethers.utils.parseEther('2')
+    // send some eth
+    let tx = {
+      to: proxy.address,
+      value: wei
+    }
+    await sender.sendTransaction(tx)
+    let balanceAfter = await provider.getBalance(proxy.address)
+    expect(balanceAfter).to.eq(balanceBefore.add(wei))
+  })
+
   it('should succesully claim ethers', async () => {
     claimAmount = 100 // wei
     link = await createLink(
@@ -310,13 +360,6 @@ describe('Claim tests', () => {
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
-
-    // send some eth
-    let tx = {
-      to: proxy.address,
-      value: ethers.utils.parseEther('0.5')
-    }
-    await sender.sendTransaction(tx)
 
     await expect(
       factory.claim(
@@ -331,6 +374,14 @@ describe('Claim tests', () => {
         { gasLimit: 500000 }
       )
     ).to.emit(proxy, 'Claimed')
+  })
+
+  it('should be able to withdraw ethers from proxy to sender', async () => {
+    let balanceBefore = await provider.getBalance(proxy.address)
+    expect(balanceBefore).to.not.eq(0)
+    await proxy.withdraw({ gasLimit: 200000 })
+    let balanceAfter = await provider.getBalance(proxy.address)
+    expect(balanceAfter).to.eq(0)
   })
 
   it('should succesfully claim tokens and deploy proxy is not deployed yet', async () => {
