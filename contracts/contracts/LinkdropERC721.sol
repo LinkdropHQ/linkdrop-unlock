@@ -158,7 +158,7 @@ contract LinkdropERC721 is Storage, ILinkdropERC721, Pausable {
         claimedTo[_linkId] = _receiver;
 
         // Send NFT
-        IERC721(_token).safeTransferFrom(SENDER, _receiver, _tokenId); 
+        IERC721(_token).safeTransferFrom(address(this), _receiver, _tokenId); 
 
         // Log claim
         emit Claimed(_linkId, _token, _tokenId, _receiver, now);
