@@ -3,6 +3,7 @@ import "./CloneFactory.sol";
 import "./Storage.sol";
 import "./interfaces/ILinkdrop.sol";
 import "./interfaces/ILinkdropERC721.sol";
+import "./interfaces/ICommon.sol";
 
 contract Factory is Storage, CloneFactory {
 
@@ -12,10 +13,10 @@ contract Factory is Storage, CloneFactory {
     event Deployed(address payable proxy, bytes32 salt, uint timestamp);
 
     // Initialize the master code
-    constructor(address payable _implementation) 
+    constructor(address payable _masterCopy) 
     public 
     {
-      implementation = _implementation;
+        masterCopy = _masterCopy;
     }
 
     // Indicates whether a proxy is deployed or not
@@ -29,12 +30,12 @@ contract Factory is Storage, CloneFactory {
     returns (address payable) 
     {
 
-        address payable proxy = createClone(implementation, keccak256(abi.encodePacked(_sender)));
+        address payable proxy = createClone(masterCopy, keccak256(abi.encodePacked(_sender)));
 
         deployed[_sender] = proxy;
 
         // Initialize sender in newly deployed contract
-        require(ILinkdrop(proxy).initializer(_sender), "Failed to initialize");
+        require(ICommon(proxy).initializer(_sender), "Failed to initialize");
         emit Deployed( proxy, keccak256(abi.encodePacked(_sender)), now);
         
         return proxy;

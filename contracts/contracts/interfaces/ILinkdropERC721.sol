@@ -1,16 +1,6 @@
-
 pragma solidity >= 0.5.0;
 
-contract ILinkdropERC721 {
-
-    event Canceled(address linkId, uint timestamp);
-    event Claimed(address indexed linkId, address indexed token, uint indexed tokenId, address receiver, uint timestamp);
-
-    event Paused(uint timestamp);
-    event Unpaused(uint timestamp);
-     
-    // Constructor
-    function initializer(address payable _sender) external returns (bool);
+interface ILinkdropERC721 {
 
     function verifySenderSignatureERC721
     (
@@ -18,17 +8,17 @@ contract ILinkdropERC721 {
         uint _tokenId,
         uint _expiration,
         address _linkId,
-        bytes memory _signature
+        bytes calldata _signature
     )
-    public view returns (bool);
+    external view returns (bool);
 
     function verifyReceiverSignatureERC721
     (
         address _linkId,
 	    address _receiver,
-		bytes memory _signature
+		bytes calldata _signature
     )
-    public view returns (bool);
+    external view returns (bool);
 
     function checkClaimParamsERC721
     (
@@ -54,12 +44,4 @@ contract ILinkdropERC721 {
     ) 
     external returns (bool);
 
-    function isClaimedLink(address _linkId) external view returns (bool);
-    function isCanceledLink(address _linkId) external view returns (bool);
-    function cancel(address _linkId) external returns (bool);
-
-    function paused() external view returns (bool);
-    function pause() external returns (bool);
-    function unpause() external returns (bool);
-    
 }

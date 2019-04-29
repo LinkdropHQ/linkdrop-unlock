@@ -11,10 +11,16 @@ contract Storage {
     mapping (address => bool) internal _canceled;
 
     // Address where proxy will route functions
-    address payable public implementation;
+    address payable public masterCopy;
 
     bool internal _initialized;
 
     bool internal _paused;
 
+    // Events
+    event Canceled(address linkId, uint timestamp);
+    event Claimed(address indexed linkId, address indexed token, uint amount, address receiver, uint timestamp);
+    event Paused(uint timestamp);
+    event Unpaused(uint timestamp);
+    
 }
