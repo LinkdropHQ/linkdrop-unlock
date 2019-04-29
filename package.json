@@ -22,6 +22,7 @@
     "generate-links-erc721": "npx babel-node scripts/src/generate_links_erc721.js",
     "setup-linkdrop": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links",
     "claim": "npx babel-node scripts/src/claim.js",
+    "claim-erc721": "npx babel-node scripts/src/claim_erc721.js",
     "server": "npx babel-node server/server.js",
     "deploy-erc20": "npx babel-node scripts/src/deploy_erc20.js",
     "deploy-erc721": "npx babel-node scripts/src/deploy_erc721.js",

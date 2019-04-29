@@ -42,7 +42,9 @@ config.token == null || config.token === ''
     proxyBalance >= cost
       ? (amountToSend = 0)
       : (amountToSend = cost - proxyBalance)
-    tx = await tokenContract.transfer(proxyAddress, amountToSend)
+    tx = await tokenContract.transfer(proxyAddress, amountToSend, {
+      gasLimit: 600000
+    })
   } else {
     tokenSymbol = 'ETH'
     tokenDecimals = 18

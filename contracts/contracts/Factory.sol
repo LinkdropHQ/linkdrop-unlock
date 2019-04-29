@@ -2,6 +2,8 @@ pragma solidity >= 0.5.0;
 import "./CloneFactory.sol";
 import "./Storage.sol";
 import "./interfaces/ILinkdrop.sol";
+import "./interfaces/ILinkdropERC721.sol";
+import "./interfaces/ICommon.sol";
 
 contract Factory is Storage, CloneFactory {
 
@@ -11,10 +13,10 @@ contract Factory is Storage, CloneFactory {
     event Deployed(address payable proxy, bytes32 salt, uint timestamp);
 
     // Initialize the master code
-    constructor(address payable _implementation) 
+    constructor(address payable _masterCopy) 
     public 
     {
-      implementation = _implementation;
+        masterCopy = _masterCopy;
     }
 
     // Indicates whether a proxy is deployed or not
@@ -28,12 +30,12 @@ contract Factory is Storage, CloneFactory {
     returns (address payable) 
     {
 
-        address payable proxy = createClone(implementation, keccak256(abi.encodePacked(_sender)));
+        address payable proxy = createClone(masterCopy, keccak256(abi.encodePacked(_sender)));
 
         deployed[_sender] = proxy;
 
         // Initialize sender in newly deployed contract
-        require(ILinkdrop(proxy).initializer(_sender), "Failed to initialize");
+        require(ICommon(proxy).initializer(_sender), "Failed to initialize");
         emit Deployed( proxy, keccak256(abi.encodePacked(_sender)), now);
         
         return proxy;
@@ -63,6 +65,40 @@ contract Factory is Storage, CloneFactory {
         (
             _token, 
             _amount,
+            _expiration,
+            _linkId, 
+            _senderSignature, 
+            _receiver, 
+            _receiverSignature
+        );
+
+        return true;
+        
+    }
+
+    // Function to claim NFT. Deploys proxy if not deployed yet
+    function claimERC721
+    (
+        address _nft, 
+        uint _tokenId,
+        uint _expiration,
+        address _linkId, 
+        address payable _sender, 
+        bytes calldata _senderSignature, 
+        address payable _receiver, 
+        bytes calldata _receiverSignature
+    ) 
+    external 
+    returns (bool)
+    {
+        if (!isDeployed(_sender)) {
+            deployProxy(_sender);
+        }
+
+        ILinkdropERC721(deployed[_sender]).claimERC721
+        (
+            _nft, 
+            _tokenId,
             _expiration,
             _linkId, 
             _senderSignature, 

@@ -1,55 +1,11 @@
 pragma solidity >= 0.5.6;
 
 import "./interfaces/ILinkdrop.sol";
-import "./Storage.sol";
+import "./Common.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
-contract Linkdrop is Storage, ILinkdrop, Pausable {   
-
-    function initializer
-    (   
-        address payable _sender
-    ) 
-    public
-    returns (bool)
-    {
-        require(initialized == false, "Initializer can only be called once");
-        SENDER = _sender;
-        initialized = true;
-        return true;
-    }
-
-    // =================================================================================================================
-    //                                         Common
-    // =================================================================================================================
-    
-    function isClaimedLink(address _linkId) public view returns (bool) {
-        return claimedTo[_linkId] != address(0); 
-    }
-
-    function isCanceledLink(address _linkId) public view returns (bool) {
-        return canceled[_linkId];
-    }
-
-    function cancel(address _linkId) external returns (bool) {
-        require(msg.sender == SENDER, "Only sender can cancel");
-        require(isClaimedLink(_linkId) == false, "Link has been claimed");
-        canceled[_linkId] = true;
-        emit Canceled(_linkId, now);
-        return true;
-    }
-
-    // Withdraw ether
-    function withdraw() external returns (bool) {
-        require(msg.sender == SENDER, "Only sender can withdraw ether");
-        SENDER.transfer(address(this).balance);
-        return true;
-    }
-
-    // Fallback function to accept ethers
-    function () external payable {} 
+contract Linkdrop is ILinkdrop, Common {   
 
     // =================================================================================================================
     //                                         ERC20, Ether
@@ -100,24 +56,24 @@ contract Linkdrop is Storage, ILinkdrop, Pausable {
     {
 
         // Verify that link wasn't claimed before
-        require(isClaimedLink(_linkId) == false, "Link has already been claimed");
-        require(isCanceledLink(_linkId) == false, "Link has been canceled");
+        require(isClaimedLink(_linkId) == false, "Claimed link");
+        require(isCanceledLink(_linkId) == false, "Canceled link");
 
         // Verify that ephemeral key is legit and signed by VERIFICATION_ADDRESS's key
         require
         (
             verifySenderSignature(_token, _amount, _expiration, _linkId, _senderSignature),
-            "Link key is not signed by sender verification key"
+            "Invalid sender signature"
         );
 
         // Verify the link is not expired
-        require(_expiration >= now, "Link has expired");
+        require(_expiration >= now, "Expired link");
 
         // Verify that receiver address is signed by ephemeral key assigned to claim link
         require
         (
             verifyReceiverSignature(_linkId, _receiver, _receiverSignature), 
-            "Receiver address is not signed by link key"
+            "Invalid receiver signature"
         );
 
         return true;
@@ -155,7 +111,7 @@ contract Linkdrop is Storage, ILinkdrop, Pausable {
         // Mark link as claimed
         claimedTo[_linkId] = _receiver;
 
-        require(_transferEthOrTokens(_token, _amount, _receiver), "Failed to transfer eth or tokens");
+        require(_transferEthOrTokens(_token, _amount, _receiver), "Transfer failed");
 
         // Log claim
         emit Claimed(_linkId, _token, _amount, _receiver, now);
@@ -179,5 +135,5 @@ contract Linkdrop is Storage, ILinkdrop, Pausable {
 
         return true;
     }
-    
+
 }

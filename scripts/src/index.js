@@ -1,3 +1,4 @@
+import Mastercopy from '../../contracts/build/Mastercopy'
 import Linkdrop from '../../contracts/build/Linkdrop'
 import Factory from '../../contracts/build/Factory'
 import TokenMock from '../../contracts/build/TokenMock'
@@ -34,37 +35,37 @@ if (senderPrivateKey == null || senderPrivateKey === '') {
   throw "Please provide a sender's private key"
 }
 // if (network == null || network === '') throw 'Please provide network'
-if (amount == null || amount === '') throw 'Please provide amount per link'
-if (linksNumber == null || linksNumber == '') {
+if (amount === null || amount === '') throw 'Please provide amount per link'
+if (linksNumber === null || linksNumber === '') {
   throw 'Please provide links number'
 }
 
 const sender = new ethers.Wallet(senderPrivateKey, provider)
-let linkdrop, proxyFactory, expirationTime, tokenMock, nftMock
+let mastercopy, proxyFactory, expirationTime, tokenMock, nftMock
 
 export const deployMasterCopy = async () => {
   let factory = new ethers.ContractFactory(
-    Linkdrop.abi,
-    Linkdrop.bytecode,
+    Mastercopy.abi,
+    Mastercopy.bytecode,
     sender
   )
 
-  linkdrop = await factory.deploy()
+  mastercopy = await factory.deploy()
 
-  let txHash = linkdrop.deployTransaction.hash
+  let txHash = mastercopy.deployTransaction.hash
   console.log(`#️⃣  Tx Hash: ${txHash}`)
 
-  await linkdrop.deployed()
-  console.log(`Deployed linkdrop master copy at ${linkdrop.address}\n`)
+  await mastercopy.deployed()
+  console.log(`Deployed linkdrop master copy at ${mastercopy.address}\n`)
 
-  config.masterCopy = linkdrop.address
+  config.masterCopy = mastercopy.address
 
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw err
     console.log('Master copy address successfully added to config.json ')
   })
 
-  return linkdrop.address
+  return mastercopy.address
 }
 
 export const deployFactory = async masterCopy => {
@@ -201,7 +202,7 @@ export const generateLinksERC721 = async () => {
       networkId,
       host,
       senderPrivateKey,
-      token,
+      nft,
       tokenIds[i],
       expirationTime
     )

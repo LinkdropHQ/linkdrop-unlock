@@ -31,10 +31,12 @@ let { jsonRpcUrl, senderPrivateKey, nft, nftIds } = config
   let tokenIds = JSON.parse(nftIds)
 
   for (let i = 0; i < tokenIds.length; i++) {
-    let owner = await nftContract.ownerOf(i)
-    if (owner === proxyAddress) {
+    let owner = await nftContract.ownerOf(tokenIds[i])
+    if (owner !== proxyAddress) {
       console.log(
-        `⤴️  Sending ${nftSymbol} with tokenId=${i} to ${proxyAddress} `
+        `⤴️  Sending ${nftSymbol} with tokenId=${
+          tokenIds[i]
+        } to ${proxyAddress} `
       )
       const tx = await nftContract.transferFrom(
         sender.address,
