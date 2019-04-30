@@ -152,12 +152,27 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
         claimedTo[_linkId] = _receiver;
 
         // Transfer NFT
-        IERC721(_nft).safeTransferFrom(address(this), _receiver, _tokenId); 
+        if (IERC721(_nft).ownerOf(_tokenId) == address(this)) 
+            IERC721(_nft).safeTransferFrom(address(this), _receiver, _tokenId); 
+        else if (IERC721(_nft).getApproved(_tokenId) == address(this)) 
+            IERC721(_nft).safeTransferFrom(SENDER, _receiver, _tokenId); 
+        else revert();
 
         // Log claim
         emit Claimed(_linkId, _nft, _tokenId, _receiver, now);
 
         return true;
+    }
+
+    /**
+    * @dev Function to get whether a NFT with token id is available for this contract
+    * @param _nft NFT address
+    * @param _tokenId Token id
+    * @return Total amount available
+    */
+    function isAvailableToken(address _nft, uint _tokenId) public view returns (bool) {
+       if (IERC721(_nft).ownerOf(_tokenId) == address(this)) return true;
+       else if (IERC721(_nft).getApproved(_tokenId) == address(this)) return true;
     }
     
 }

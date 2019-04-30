@@ -41,7 +41,7 @@ let nftAddress
 let tokenId
 let expirationTime
 
-describe('Claim ERC721 tests', () => {
+describe('Linkdrop ERC721 tests', () => {
   before(async () => {
     nftInstance = await deployContract(sender, NFTMock)
   })
@@ -199,8 +199,11 @@ describe('Claim ERC721 tests', () => {
   })
 
   it('should fail to claim nft by expired link', async () => {
-    // Transfering nft from sender to Linkdrop Contract
-    await nftInstance.transferFrom(sender.address, proxy.address, tokenId)
+    // Approving nft from sender to Linkdrop Contract
+    await nftInstance.approve(proxy.address, tokenId)
+
+    let available = await proxy.isAvailableToken(nftInstance.address, tokenId)
+    expect(available).to.eq(true)
 
     link = await createLink(sender, nftAddress, tokenId, 0)
     receiverAddress = ethers.Wallet.createRandom().address

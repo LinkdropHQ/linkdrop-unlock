@@ -4,6 +4,9 @@ import "./Storage.sol";
 import "./interfaces/ILinkdrop.sol";
 import "./interfaces/ILinkdropERC721.sol";
 import "./interfaces/ICommon.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
+import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
 contract Factory is Storage, CloneFactory {
 
@@ -30,6 +33,37 @@ contract Factory is Storage, CloneFactory {
     */
     function isDeployed(address _sender) public view returns (bool) {
         return (deployed[_sender] != address(0));
+    }
+
+    /**
+    * @dev Function to get total amount of tokens available for proxy contract
+    * @param _proxy Address of proxy contract
+    * @param _sender Address of lindkrop sender
+    * @param _token Token address, address(0) for ETH
+    * @return Total amount available
+    */
+    function getBalance(address _proxy, address _sender, address _token) public view returns (uint) {
+
+        if (_token == address(0)) {
+            return _proxy.balance;
+        }
+        else {
+            uint allowance = IERC20(_token).allowance(_sender, _proxy);
+            uint balance = IERC20(_token).balanceOf(_proxy);
+            return allowance + balance;
+        }
+    }
+
+    /**
+    * @dev Function to get whether a NFT with token id is available for proxy contract
+    * @param _proxy Address of proxy contract
+    * @param _nft NFT address
+    * @param _tokenId Token id
+    * @return Total amount available
+    */
+    function isAvailableToken(address _proxy, address _nft, uint _tokenId) public view returns (bool) {
+       if (IERC721(_nft).ownerOf(_tokenId) == _proxy) return true;
+       else if (IERC721(_nft).getApproved(_tokenId) == _proxy) return true;
     }
 
     /**
