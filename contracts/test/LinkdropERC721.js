@@ -198,6 +198,26 @@ describe('Linkdrop ERC721 tests', () => {
     ).to.be.reverted
   })
 
+  it('should fail to claim unavailable token', async () => {
+    link = await createLink(sender, nftAddress, tokenId, 0)
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      factory.claimERC721(
+        nftAddress,
+        tokenId,
+        0,
+        link.linkId,
+        sender.address,
+        link.senderSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    ).to.be.revertedWith('Unavailable token')
+  })
+
   it('should fail to claim nft by expired link', async () => {
     // Approving nft from sender to Linkdrop Contract
     await nftInstance.approve(proxy.address, tokenId)
@@ -247,6 +267,10 @@ describe('Linkdrop ERC721 tests', () => {
   })
 
   it('should fail to claim link twice', async () => {
+    tokenId = 3
+    // Approving nft from sender to Linkdrop Contract
+    await nftInstance.approve(proxy.address, tokenId)
+
     await expect(
       factory.claimERC721(
         nftAddress,

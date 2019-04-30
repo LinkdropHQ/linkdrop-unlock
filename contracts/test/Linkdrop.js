@@ -18,6 +18,7 @@ import {
   createLink,
   signReceiverAddress
 } from '../scripts/utils'
+import { irBlack } from 'react-syntax-highlighter/dist/styles/hljs'
 
 const ethers = require('ethers')
 
@@ -77,17 +78,32 @@ describe('Linkdrop tests', () => {
     expect(senderAddress).to.eq(senderAddr)
   })
 
-  it('creates new link key and verifies its signature', async () => {
+  it('should revert while checking claim params with unsufficient funds', async () => {
     tokenAddress = tokenInstance.address
     claimAmount = 100
     expirationTime = 11234234223
-
-    let senderAddress = sender.address
-
-    let senderAddr = await proxy.SENDER()
-    expect(senderAddress).to.eq(senderAddr)
-
     link = await createLink(sender, tokenAddress, claimAmount, expirationTime)
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      factory.checkClaimParams(
+        tokenAddress,
+        claimAmount,
+        expirationTime,
+        link.linkId,
+        sender.address,
+        link.senderSignature,
+        receiverAddress,
+        receiverSignature,
+        proxyAddress
+      )
+    ).to.be.revertedWith('Insufficient funds')
+  })
+
+  it('creates new link key and verifies its signature', async () => {
+    let senderAddr = await proxy.SENDER()
+    expect(sender.address).to.eq(senderAddr)
 
     expect(
       await proxy.verifySenderSignature(
@@ -198,9 +214,29 @@ describe('Linkdrop tests', () => {
     ).to.be.reverted
   })
 
+  it('should fail to claim insufficient funds', async () => {
+    link = await createLink(sender, tokenAddress, claimAmount, 0)
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      factory.claim(
+        tokenAddress,
+        claimAmount,
+        expirationTime,
+        link.linkId,
+        sender.address,
+        link.senderSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    ).to.be.revertedWith('Insufficient funds')
+  })
+
   it('should fail to claim tokens by expired link', async () => {
     // Approving tokens from sender to Linkdrop Contract
-    await tokenInstance.approve(proxy.address, 100)
+    await tokenInstance.approve(proxy.address, 10000)
 
     link = await createLink(sender, tokenAddress, claimAmount, 0)
     receiverAddress = ethers.Wallet.createRandom().address
@@ -399,9 +435,6 @@ describe('Linkdrop tests', () => {
       masterCopy.address
     )
 
-    // Transfering tokens from sender to Linkdrop Contract
-    await tokenInstance.approve(proxyAddress, claimAmount)
-
     // Contract not deployed yet
     proxy = new ethers.Contract(proxyAddress, Linkdrop.abi, sender)
 
@@ -410,6 +443,8 @@ describe('Linkdrop tests', () => {
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
+    // Transfering tokens from sender to Linkdrop Contract
+    await tokenInstance.approve(proxyAddress, claimAmount)
     await expect(
       factory.claim(
         tokenAddress,

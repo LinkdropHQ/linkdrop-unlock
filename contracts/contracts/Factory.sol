@@ -90,6 +90,122 @@ contract Factory is Storage, CloneFactory {
     }
 
     /**
+    * @dev Function to verify linkdrop sender's signature
+    * @param _token Token address, address(0) for ETH
+    * @param _amount Amount of tokens to be claimed in atomic value
+    * @param _expiration Unix timestamp of link expiration time
+    * @param _linkId Address corresponding to link key
+    * @param _sender Address of linkdrop sender
+    * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
+    * @return True if signed with sender's private key
+    */
+    function verifySenderSignature
+    (
+        address _token,
+        uint _amount,
+        uint _expiration,
+        address _linkId,
+        address _sender,
+        bytes memory _senderSignature
+    )
+    public pure 
+    returns (bool) 
+    {
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_token, _amount, _expiration,  _linkId)));
+        address signer = ECDSA.recover(prefixedHash, _senderSignature);
+        return signer == _sender;
+    }
+
+    /**
+    * @dev Function to verify linkdrop receiver's signature
+    * @param _linkId Address corresponding to link key
+    * @param _receiver Address of linkdrop receiver
+    * @param _signature ECDSA signature of linkdrop receiver, signed with link key
+    * @return True if signed with link key
+    */
+    function verifyReceiverSignature
+    (
+        address _linkId,
+        address _receiver,
+        bytes memory _signature
+    )
+    public pure 
+    returns (bool)
+    {
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_receiver)));
+        address signer = ECDSA.recover(prefixedHash, _signature);
+        return signer == _linkId;
+    }
+
+    /**
+    * @dev Function to verify claim params and make sure the link is not claimed or canceled
+    * @param _token Token address, address(0) for ETH
+    * @param _amount Amount of tokens to be claimed in atomic value
+    * @param _expiration Unix timestamp of link expiration time
+    * @param _linkId Address corresponding to link key
+    * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
+    * @param _receiver Address of linkdrop receiver
+    * @param _receiverSignature ECDSA signature of linkdrop receiver, signed with link key
+    * @return True if success
+    */
+    function checkClaimParams
+    (
+        address _token,
+        uint _amount,
+        uint _expiration,
+        address _linkId, 
+        address payable _sender,
+        bytes memory _senderSignature,
+        address _receiver, 
+        bytes memory _receiverSignature,
+        address _proxy
+    )
+    public view 
+    returns (bool)
+    {
+        // If proxy is deployed
+        if (isDeployed(_sender)) {
+
+            return ILinkdrop(deployed[_sender]).checkClaimParams
+            (
+                _token, 
+                _amount, 
+                _expiration, 
+                _linkId, 
+                _senderSignature, 
+                _receiver, 
+                _receiverSignature
+            );
+
+        }
+        else {
+
+            // Make sure the claim amount is available for proxy contract
+            require(getBalance(_proxy, _sender, _token) >= _amount, "Insufficient funds");
+
+            // Verify that link key is legit and signed by sender's private key
+            require
+            (
+                verifySenderSignature(_token, _amount, _expiration, _linkId, _sender, _senderSignature),
+                "Invalid sender signature"
+            );
+
+            // Make sure the link is not expired
+            require(_expiration >= now, "Expired link");
+
+            // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
+            require
+            (
+                verifyReceiverSignature(_linkId, _receiver, _receiverSignature), 
+                "Invalid receiver signature"
+            );
+
+            return true;
+        }
+        
+    }
+
+    /**
     * @dev Function to claim ETH or ERC20 token
     * @param _token Token address, address(0) for ETH
     * @param _amount Amount of tokens to be claimed in atomic value
