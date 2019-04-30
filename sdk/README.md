@@ -19,7 +19,7 @@ const LinkdropSDK = require('sdk')
 ### Compute proxy address
 
 ```js
-LinkdropSDK.computeProxyAddress(factoryAddress, senderAddress, masterCopyAddress)
+const proxyAddress = LinkdropSDK.computeProxyAddress(factoryAddress, senderAddress, masterCopyAddress)
 ```
 
 This function will use hash of `senderAddress` as salt and return built CREATE2 address
@@ -28,7 +28,7 @@ This function will use hash of `senderAddress` as salt and return built CREATE2 
 ### Generate link for ETH or ERC20
 
 ```js
-LinkdropSDK.generateLink(jsonRpcUrl, networkId, host, senderPrivateKey, token, amount, expirationTime)
+const {url, linkId, linkKey, senderSignature} = LinkdropSDK.generateLink(jsonRpcUrl, networkId, host, senderPrivateKey, token, amount, expirationTime)
 ```
 
 This function will generate link for claiming ETH or any ERC20 token and return the following params `url, linkId, linkKey, senderSignature`
@@ -36,7 +36,7 @@ This function will generate link for claiming ETH or any ERC20 token and return 
 ### Generate link for ERC721
 
 ```js
-LinkdropSDK.generateLinkERC721(jsonRpcUrl, networkId, host, senderPrivateKey, nft, tokenId, expirationTime)
+const {url, linkId, linkKey, senderSignature} = LinkdropSDK.generateLinkERC721(jsonRpcUrl, networkId, host, senderPrivateKey, nft, tokenId, expirationTime)
 ```
 
 This function will generate link for claiming ERC721 token and return the following params `url, linkId, linkKey, senderSignature`
