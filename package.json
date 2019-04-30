@@ -16,18 +16,20 @@
   ],
   "scripts": {
     "test": "mocha --require @babel/polyfill --require @babel/register",
+    "compile-contracts": "cd contracts && npx waffle",
     "deploy-mastercopy": "npx babel-node scripts/src/deploy_mastercopy.js",
     "deploy-factory": "npx babel-node scripts/src/deploy_factory.js",
-    "generate-links": "npx babel-node scripts/src/generate_links.js",
-    "generate-links-erc721": "npx babel-node scripts/src/generate_links_erc721.js",
-    "setup-linkdrop": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links",
-    "claim": "npx babel-node scripts/src/claim.js",
-    "claim-erc721": "npx babel-node scripts/src/claim_erc721.js",
-    "server": "npx babel-node server/server.js",
     "deploy-erc20": "npx babel-node scripts/src/deploy_erc20.js",
     "deploy-erc721": "npx babel-node scripts/src/deploy_erc721.js",
-    "setup-linkdrop-erc721": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links-erc721",
-    "compile-contracts": "cd contracts && npx waffle"
+    "generate-links-eth": "npx babel-node scripts/src/generate_links_eth.js",
+    "generate-links-erc20": "npx babel-node scripts/src/generate_links_erc20.js",
+    "generate-links-erc721": "npx babel-node scripts/src/generate_links_erc721.js",
+    "claim-eth": "npx babel-node scripts/src/claim_eth.js",
+    "claim-erc20": "npx babel-node scripts/src/claim_erc20.js",
+    "claim-erc721": "npx babel-node scripts/src/claim_erc721.js",
+    "server": "npx babel-node server/server.js",
+    "setup-linkdrop": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links",
+    "setup-linkdrop-erc721": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links-erc721"
   },
   "standard": {
     "parser": "babel-eslint"

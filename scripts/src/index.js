@@ -1,5 +1,4 @@
 import Mastercopy from '../../contracts/build/Mastercopy'
-import Linkdrop from '../../contracts/build/Linkdrop'
 import Factory from '../../contracts/build/Factory'
 import TokenMock from '../../contracts/build/TokenMock'
 import NFTMock from '../../contracts/build/NFTMock'
@@ -28,18 +27,16 @@ config.token == null || config.token === ''
   ? (token = '0x0000000000000000000000000000000000000000')
   : (token = config.token)
 
-const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
+if (jsonRpcUrl == null || jsonRpcUrl === '') {
+  throw 'Please provide JSON RPC url'
+}
 
-// Make sure we have these set in dotenv file
+// Make sure we have these set in config.json
 if (senderPrivateKey == null || senderPrivateKey === '') {
-  throw "Please provide a sender's private key"
-}
-// if (network == null || network === '') throw 'Please provide network'
-if (amount === null || amount === '') throw 'Please provide amount per link'
-if (linksNumber === null || linksNumber === '') {
-  throw 'Please provide links number'
+  throw "Please provide sender's private key"
 }
 
+const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 const sender = new ethers.Wallet(senderPrivateKey, provider)
 let mastercopy, proxyFactory, expirationTime, tokenMock, nftMock
 
@@ -142,7 +139,22 @@ export const deployERC721 = async () => {
   })
 }
 
-export const generateLinks = async () => {
+export const generateLinksETH = async () => {
+  if (networkId == null || networkId === '') {
+    throw 'Please provide networkId'
+  }
+
+  if (host == null || host === '') {
+    throw 'Please provide host'
+  }
+
+  if (amount === null || amount === '') throw 'Please provide amount per link'
+
+  if (linksNumber === null || linksNumber === '') {
+    throw 'Please provide links number'
+  }
+
+  token = ethers.constants.AddressZero
   expirationTime = 1900000000000000
 
   let links = []
@@ -168,13 +180,64 @@ export const generateLinks = async () => {
   }
 
   // Save links to csv
-  let filename
+  const filename = path.join(__dirname, '../output/linkdrop_eth.csv')
 
-  if (token === ethers.constants.AddressZero) {
-    filename = path.join(__dirname, '../output/linkdrop_eth.csv')
-  } else {
-    filename = path.join(__dirname, '../output/linkdrop.csv')
+  try {
+    const ws = fs.createWriteStream(filename)
+    fastcsv.write(links, { headers: true }).pipe(ws)
+    console.log(`File ${filename} has been succesfully updated`)
+  } catch (err) {
+    console.error(err)
   }
+
+  return links
+}
+
+export const generateLinksERC20 = async () => {
+  if (networkId == null || networkId === '') {
+    throw 'Please provide networkId'
+  }
+
+  if (host == null || host === '') {
+    throw 'Please provide host'
+  }
+
+  if (token == null || token === '' || token === ethers.constants.AddressZero) {
+    throw 'Please provide ERC20 token address'
+  }
+
+  if (amount === null || amount === '') throw 'Please provide amount per link'
+
+  if (linksNumber === null || linksNumber === '') {
+    throw 'Please provide links number'
+  }
+  expirationTime = 1900000000000000
+
+  let links = []
+
+  for (let i = 0; i < linksNumber; i++) {
+    let {
+      url,
+      linkId,
+      linkKey,
+      senderSignature
+    } = await LinkdropSDK.generateLink(
+      jsonRpcUrl,
+      networkId,
+      host,
+      senderPrivateKey,
+      token,
+      amount,
+      expirationTime
+    )
+
+    let link = { i, linkId, linkKey, senderSignature, url }
+    links.push(link)
+  }
+
+  // Save links to csv
+  const filename = path.join(__dirname, '../output/linkdrop_erc20.csv')
+
   try {
     const ws = fs.createWriteStream(filename)
     fastcsv.write(links, { headers: true }).pipe(ws)
@@ -187,6 +250,21 @@ export const generateLinks = async () => {
 }
 
 export const generateLinksERC721 = async () => {
+  if (networkId == null || networkId === '') {
+    throw 'Please provide networkId'
+  }
+
+  if (host == null || host === '') {
+    throw 'Please provide host'
+  }
+  if (nft == null || nft === '' || nft === ethers.constants.AddressZero) {
+    throw 'Please provide ERC721 token address'
+  }
+
+  if (nftIds == null || nft === '' || nft === '[]') {
+    throw 'Please provide NFT ids'
+  }
+
   expirationTime = 1900000000000000
   let links = []
   let tokenIds = JSON.parse(nftIds)
