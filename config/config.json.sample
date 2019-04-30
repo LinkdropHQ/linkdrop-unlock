@@ -1,15 +1,15 @@
 {
-    "networkId": "4",
-    "senderPrivateKey": "AB3DCF0D03472E041AC2B7C0148035DA3236B1BBF2AF21D032588803F16228F3",
-    "relayerPrivateKey": "AB3DCF0D03472E041AC2B7C0148035DA3236B1BBF2AF21D032588803F16228F3",
-    "token": "0x89FAF615Aa8FdBa72Cd9132e4092c49F1De319d8",
-    "amount": "10",
-    "linksNumber": "13",
-    "jsonRpcUrl": "https://rinkeby.infura.io",
-    "host": "http://localhost:5000",
-    "receiverAddress": "0xdb567a535d3da62F86938c30906f9e2e7376aEdc",
-    "masterCopy": "0x5d7Bf81F18F4A6AfAD26Cd95747c6609f9180890",
-    "factory": "0x9390078C0C2A758609Ab88F15e9B9Df9fCAdDA8c",
-    "nft": "0x72FeB1f6F1d41719ffd0E975d8f964A1E6a65B73",
-    "nftIds": "[1,2,3]"
+  "jsonRpcUrl": "https://rinkeby.infura.io",
+  "host": "http://localhost:5000",
+  "networkId": "4",
+  "senderPrivateKey": "",
+  "relayerPrivateKey:": "",
+  "token": "",
+  "amount": "",
+  "linksNumber": "",
+  "receiverAddress": "",
+  "masterCopy": "",
+  "factory": "",
+  "nft": "",
+  "nftIds": "[1,2,3]"
 }
