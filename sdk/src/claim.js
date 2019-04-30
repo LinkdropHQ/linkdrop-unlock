@@ -44,6 +44,7 @@ export const claim = async (
 
       let txHash = response.data.txHash
       console.log(`#️⃣  Tx Hash: ${txHash}`)
+      return txHash
     }
   } catch (err) {
     console.error(err)
@@ -92,6 +93,7 @@ export const claimERC721 = async (
 
       let txHash = response.data.txHash
       console.log(`#️⃣  Tx Hash: ${txHash}`)
+      return txHash
     }
   } catch (err) {
     console.error(err)
