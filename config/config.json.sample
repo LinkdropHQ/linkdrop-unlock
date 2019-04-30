@@ -1,7 +1,7 @@
 {
-    "jsonRpcUrl": "",
-    "host": "",
-    "networkId": "",
+    "jsonRpcUrl": "https://rinkeby.infura.io",
+    "host": "http://localhost:5000",
+    "networkId": "4",
     "senderPrivateKey": "",
     "relayerPrivateKey:": "",
     "token": "",

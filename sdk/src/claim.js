@@ -41,7 +41,7 @@ export const claim = async (
       console.error(`\n❌ Invalid response status ${response.status}`)
     } else {
       console.log(
-        '\n✅ Successfully submitted claiming transaction. Please verify the claim status manually.'
+        '\n✅  Successfully submitted claiming transaction. Please verify the claim status manually.'
       )
 
       let txHash = response.data.txHash
@@ -91,7 +91,7 @@ export const claimERC721 = async (
       console.error(`\n❌ Invalid response status ${response.status}`)
     } else {
       console.log(
-        '\n✅ Successfully submitted claiming transaction. Please verify the claim status manually.'
+        '\n✅  Successfully submitted claiming transaction. Please verify the claim status manually.'
       )
 
       let txHash = response.data.txHash
