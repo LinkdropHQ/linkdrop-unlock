@@ -7,8 +7,10 @@ import "./interfaces/ICommon.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract Factory is Storage, CloneFactory {
+    using SafeMath for uint;
 
     // Maps sender address to its corresponding proxy address
     mapping (address => address) deployed;
@@ -50,7 +52,7 @@ contract Factory is Storage, CloneFactory {
         else {
             uint allowance = IERC20(_token).allowance(_sender, _proxy);
             uint balance = IERC20(_token).balanceOf(_proxy);
-            return allowance + balance;
+            return allowance.add(balance);
         }
     }
 
