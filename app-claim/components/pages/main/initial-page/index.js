@@ -1,7 +1,7 @@
 import React from 'react'
 import { Alert, Icons, Button } from 'linkdrop-ui-kit'
 import { translate } from 'decorators'
-import { shortenString } from 'helpers'
+import { shortenString } from 'linkdrop-commons'
 import text from 'texts'
 import { Web3Consumer } from 'web3-react'
 

@@ -6,7 +6,7 @@ import WalletChoosePage from './wallet-choose-page'
 import ClaimingProcessPage from './claiming-process-page'
 import ErrorPage from './error-page'
 import ClaimingFinishedPage from './claiming-finished-page'
-import { getHashVariables } from 'helpers'
+import { getHashVariables } from 'linkdrop-commons'
 import { Web3Consumer } from 'web3-react'
 
 @actions(({ user: { errors, step, loading: userLoading, transactionId }, contract: { loading, decimals, amount, symbol, icon } }) => ({
@@ -23,7 +23,8 @@ import { Web3Consumer } from 'web3-react'
 @translate('pages.claim')
 class Claim extends React.Component {
   componentDidMount () {
-    const { token, amount, expirationTime, n } = getHashVariables()
+    const { token, amount, expirationTime, n } = getHashVariables({ })
+    console.log({ token, amount, expirationTime, n })
     // params in url:
     // token - contract/token address,
     // amount - tokens amount,

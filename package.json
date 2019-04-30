@@ -13,7 +13,8 @@
     "linkdrop-ui-kit",
     "scripts",
     "server",
-    "sdk"
+    "sdk",
+    "linkdrop-commons"
   ],
   "scripts": {
     "test": "mocha --require @babel/polyfill --require @babel/register",

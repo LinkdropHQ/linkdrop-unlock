@@ -5,7 +5,7 @@ import styles from './styles.module'
 import { TextCopyBlock } from 'linkdrop-ui-kit'
 import { LinkBlock } from 'components/pages/common'
 import QRCode from 'qrcode.react'
-import { copyToClipboard } from 'helpers'
+import { copyToClipboard } from 'linkdrop-commons'
 
 @actions(({ user: { wallet, balance } }) => ({ wallet, balance }))
 @translate('pages.main')

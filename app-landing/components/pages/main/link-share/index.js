@@ -4,7 +4,7 @@ import styles from './styles.module'
 import { Alert, Button, TextControlBlock, Icons } from 'linkdrop-ui-kit'
 import classNames from 'classnames'
 import { LinkBlock, QrShare } from 'components/pages/common'
-import { copyToClipboard } from 'helpers'
+import { copyToClipboard } from 'linkdrop-commons'
 
 @actions(({ user: { link, loading } }) => ({ link, loading }))
 @translate('pages.main')

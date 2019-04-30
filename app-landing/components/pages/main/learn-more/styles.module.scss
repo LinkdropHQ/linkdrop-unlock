@@ -29,10 +29,11 @@
 }
 
 .menu {
-  max-width: 590px;
+  max-width: 560px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 @media only screen and (max-width: 600px) {

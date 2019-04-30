@@ -53,7 +53,8 @@ module.exports = {
       path.resolve('../node_modules')
     ],
     alias: {
-      wallets: path.resolve(__dirname, '../config/wallets')
+      wallets: path.resolve(__dirname, '../config/wallets'),
+      config: path.resolve(__dirname, '../config/config')
     }
   },
   module: {
@@ -98,7 +99,7 @@ module.exports = {
     publicPath: '/assets/scripts/',
     compress: true,
     hot: true,
-    port: 9000,
+    port: 9002,
     host: '0.0.0.0',
     watchOptions: {
       ignored: /node_modules/
