@@ -3,9 +3,10 @@ import "./Common.sol";
 import "./interfaces/ILinkdrop.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract Linkdrop is ILinkdrop, Common {   
-
+    using SafeMath for uint;
     // =================================================================================================================
     //                                         ERC20 and ETH Linkdrop
     // =================================================================================================================
@@ -171,7 +172,7 @@ contract Linkdrop is ILinkdrop, Common {
         else {
             uint allowance = IERC20(_token).allowance(SENDER, address(this));
             uint balance = IERC20(_token).balanceOf(address(this));
-            return allowance + balance;
+            return allowance.add(balance);
         }
 
     }
@@ -214,7 +215,7 @@ contract Linkdrop is ILinkdrop, Common {
                 IERC20(_token).transfer(_receiver, fromProxyAmount); 
                 
                 // Transfer rest funds from sender's balance
-                uint rest = _amount - fromProxyAmount;
+                uint rest = _amount.sub(fromProxyAmount);
                 if (rest != 0) 
                     IERC20(_token).transferFrom(SENDER, _receiver, rest); 
             }
