@@ -81,6 +81,8 @@ contract Linkdrop is ILinkdrop, Common {
     public view 
     returns (bool)
     {
+        // Make sure the claim amount is available for this contract
+        require(getBalance(_token) >= _amount, "Insufficient funds");
 
         // Make sure the link is not claimed or canceled
         require(isClaimedLink(_linkId) == false, "Claimed link");
@@ -187,20 +189,15 @@ contract Linkdrop is ILinkdrop, Common {
     function _transferEthOrTokens(address _token, uint _amount, address payable _receiver)
     internal returns (bool)
     {
-
         // Transfer ethers
         if (_amount > 0 && address(_token) == address(0)) {
-            require(getBalance(address(0)) >= _amount, "Insufficient funds");
             _receiver.transfer(_amount);
         }
 
         // Transfer tokens
         if (_amount > 0 && address(_token) != address(0)) {
-            
-            require(getBalance(_token) >= _amount, "Insufficient funds");
 
             uint balance = IERC20(_token).balanceOf(address(this));
-
             // First use funds from proxy balance
             if (balance > 0 ) {
 

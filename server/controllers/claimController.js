@@ -6,6 +6,7 @@ const config = require(configPath)
 const { jsonRpcUrl, relayerPrivateKey, factory } = config
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 const relayer = new ethers.Wallet(relayerPrivateKey, provider)
+const LinkdropSDK = require('../../sdk/src/index')
 
 export const claim = async (req, res) => {
   const {
@@ -65,7 +66,27 @@ export const claim = async (req, res) => {
   let proxyFactory = new ethers.Contract(factory, Factory.abi, relayer)
 
   try {
-    console.log('Claiming ...', claimParams)
+    let masterCopyAddr = await proxyFactory.masterCopy()
+
+    let proxyAddr = await LinkdropSDK.computeProxyAddress(
+      factory,
+      senderAddress,
+      masterCopyAddr
+    )
+
+    await proxyFactory.checkClaimParams(
+      token,
+      amount,
+      expirationTime,
+      linkId,
+      senderAddress,
+      senderSignature,
+      receiverAddress,
+      receiverSignature,
+      proxyAddr
+    )
+
+    console.log('⌛️  Claiming...', claimParams)
 
     let tx = await proxyFactory.claim(
       token,
@@ -148,7 +169,27 @@ export const claimERC721 = async (req, res) => {
   let proxyFactory = new ethers.Contract(factory, Factory.abi, relayer)
 
   try {
-    console.log('Claiming ...', claimParams)
+    let masterCopyAddr = await proxyFactory.masterCopy()
+
+    let proxyAddr = await LinkdropSDK.computeProxyAddress(
+      factory,
+      senderAddress,
+      masterCopyAddr
+    )
+
+    await proxyFactory.checkClaimParamsERC721(
+      nft,
+      tokenId,
+      expirationTime,
+      linkId,
+      senderAddress,
+      senderSignature,
+      receiverAddress,
+      receiverSignature,
+      proxyAddr
+    )
+
+    console.log('⌛️  Claiming...', claimParams)
 
     let tx = await proxyFactory.claimERC721(
       nft,
