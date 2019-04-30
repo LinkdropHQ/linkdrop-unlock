@@ -11,15 +11,15 @@ class TrustedBy extends React.Component {
       <div className={styles.title}>{this.t('titles.trusted')}</div>
       <div className={styles.content}>
         <div className={styles.imgRow}>
-          <RetinaImage width={200} {...getImages({ src: 'coinbase' })} />
-          <RetinaImage width={100} {...getImages({ src: 'maker' })} />
-          <RetinaImage width={250} {...getImages({ src: 'binance' })} />
+          <RetinaImage className={styles.img} width={200} {...getImages({ src: 'coinbase' })} />
+          <RetinaImage className={styles.img} width={100} {...getImages({ src: 'maker' })} />
+          <RetinaImage className={styles.img} width={250} {...getImages({ src: 'binance' })} />
         </div>
 
         <div className={styles.imgRow}>
-          <RetinaImage width={180} {...getImages({ src: 'opera' })} />
-          <RetinaImage width={220} {...getImages({ src: 'imtoken' })} />
-          <RetinaImage width={140} {...getImages({ src: 'trust' })} />
+          <RetinaImage className={styles.img} width={180} {...getImages({ src: 'opera' })} />
+          <RetinaImage className={styles.img} width={220} {...getImages({ src: 'imtoken' })} />
+          <RetinaImage className={styles.img} width={140} {...getImages({ src: 'trust' })} />
         </div>
       </div>
     </div>

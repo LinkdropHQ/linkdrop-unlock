@@ -1,8 +1,7 @@
 import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import LinkdropSDK from 'sdk/src/index'
-import config from 'config'
-const { masterCopy, factory } = config
+import { masterCopy, factory } from 'config'
 
 const localStorage = window.localStorage
 const generator = function * ({ payload }) {

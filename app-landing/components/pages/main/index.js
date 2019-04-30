@@ -8,6 +8,7 @@ import ProSolution from './pro-solution'
 import FinalScreen from './final-screen'
 import LearnMore from './learn-more'
 import TrustedBy from './trusted-by'
+import LoadingScreen from './loading-screen'
 
 @actions(({ user: { step, balance, wallet } }) => ({ step, balance, wallet }))
 @translate('pages.main')
@@ -20,8 +21,19 @@ class Main extends React.Component {
   }
 
   componentWillReceiveProps ({ wallet, step }) {
-    if (step != null && step === 0 && wallet) {
-      this.actions().user.checkBalance({ account: wallet })
+    const { step: prevStep, wallet: prevWallet } = this.props
+    if (step != null && step === 0 && wallet && wallet !== prevWallet) {
+      return this.actions().user.checkBalance({ account: wallet })
+    }
+
+    if (
+      step === 0 && // step property gets value 0
+      prevStep !== 0 && // previous value of step property wasn't 0
+      prevStep != null && // previous step isn't null
+      wallet === null && // new value of wallet property is null
+      prevWallet != null // previous value of wallet property wasn't equal to null
+    ) {
+      this.actions().user.createWallet() // that means we have to create new wallet
     }
   }
 
@@ -82,27 +94,32 @@ class Main extends React.Component {
   renderContent ({ step }) {
     switch (step) {
       case 1:
+        // screen with proxy adress where to send tokens
         return <TokensSend
           onFinish={_ => {
             this.actions().user.setStep({ step: 2 })
           }}
         />
       case 2:
+        // screen with link to share
         return <LinkShare
           onClick={_ => {
             this.actions().user.setStep({ step: 3 })
           }}
         />
       case 3:
+        // screen with pro solutions we offer
         return <ProSolution
           onClose={_ => {
             this.actions().user.setStep({ step: 4 })
           }}
         />
       case 4:
+        // final screen with link
         return <FinalScreen />
       default:
-        return null
+        // loading screen
+        return <LoadingScreen />
     }
   }
 }

@@ -3,7 +3,7 @@ import styles from './styles.module'
 import QRCode from 'qrcode.react'
 import { Button } from 'linkdrop-ui-kit'
 
-export default ({ onClose, value = 'http://facebook.github.io/react/', t }) => <div className={styles.container}>
+export default ({ onClose, value = '', t }) => <div className={styles.container}>
   <div className={styles.mainTitle}>
     {t('titles.scanCode')}
   </div>

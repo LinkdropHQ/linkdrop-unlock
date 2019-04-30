@@ -6,7 +6,7 @@ import { LinkBlock, QrShare } from 'components/pages/common'
 import classNames from 'classnames'
 import { copyToClipboard, getHashVariables } from 'helpers'
 
-@actions(({ user: { link, claimed } }) => ({ link, claimed }))
+@actions(({ user: { link, claimed, wallet } }) => ({ link, claimed, wallet }))
 @translate('pages.main')
 class FinalScreen extends React.Component {
   constructor (props) {
@@ -17,22 +17,38 @@ class FinalScreen extends React.Component {
     }
   }
 
+  componentDidMount () {
+    const { wallet } = this.props
+    this.intervalCheckForClaim = window.setInterval(_ => {
+      this.actions().user.checkBalanceClaimed({ account: wallet })
+    }, 3000)
+  }
+
+  componentWillReceiveProps ({ claimed }) {
+    const { claimed: prevClaimed } = this.props
+    if (claimed != null && claimed && claimed !== prevClaimed) {
+      window.clearInterval(this.intervalCheckForClaim)
+      this.actions().user.emptyAllData()
+    }
+  }
+
   render () {
     const { onClick, link, claimed } = this.props
     const { showQr } = this.state
     return <LinkBlock title={this.t('titles.getYourLink')}>
-      {claimed && <h1>CLAIMED!!!</h1>}
       <div className={classNames({
         [styles.showQr]: showQr
       })}>
         {this.renderMainScreen({ onClick, link })}
         {this.renderQrScreen({ link, onClose: _ => this.setState({ showQr: false }) })}
       </div>
-      <input ref={node => { this.input = node }} />
-      <Button onClick={_ => {
-        const hashVariables = getHashVariables({ url: this.input.value })
-        this.actions().user.testClaimTokens(hashVariables)
-      }}>claim</Button>
+      <div className={styles.testClaim}>
+        <input ref={node => { this.input = node }} />
+        <Button onClick={_ => {
+          const hashVariables = getHashVariables({ url: this.input.value })
+          this.actions().user.testClaimTokens(hashVariables)
+        }}>claim</Button>
+      </div>
     </LinkBlock>
   }
 

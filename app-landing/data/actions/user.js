@@ -1,3 +1,5 @@
+import config from 'config'
+
 class User {
   constructor (actions) {
     this.actions = actions
@@ -20,7 +22,11 @@ class User {
   }
 
   checkBalance ({ account }) {
-    this.actions.dispatch({ type: '*USER.CHECK_BALANCE', payload: { account, networkId: 4 } })
+    this.actions.dispatch({ type: '*USER.CHECK_BALANCE', payload: { account, networkId: config.networkId } })
+  }
+
+  checkBalanceClaimed ({ account }) {
+    this.actions.dispatch({ type: '*USER.CHECK_BALANCE_CLAIMED', payload: { account, networkId: config.networkId } })
   }
 
   createWallet () {
@@ -29,6 +35,23 @@ class User {
 
   generateLink () {
     this.actions.dispatch({ type: '*USER.GENERATE_LINK' })
+  }
+
+  emptyAllData () {
+    this.actions.dispatch({
+      type: 'USER.SET_ALL_DATA',
+      payload: {
+        step: 0,
+        claimed: false,
+        balanceFormatted: null,
+        balance: null,
+        link: null,
+        privateKey: null,
+        wallet: null,
+        errors: [],
+        loading: false
+      }
+    })
   }
 
   testClaimTokens ({

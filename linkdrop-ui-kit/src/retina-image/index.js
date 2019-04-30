@@ -2,10 +2,10 @@ import React from 'react'
 
 class RetinaImageComponent extends React.Component {
   render () {
-    const { image, imageRetina, width = 'auto' } = this.props
+    const { image, imageRetina, width = 'auto', className } = this.props
     if (!image && !imageRetina) { return null }
     const highRes = isHighDensity() || isRetina()
-    return <img style={{ width }} src={highRes ? imageRetina : image} />
+    return <img style={{ width }} className={className} src={highRes ? imageRetina : image} />
   }
 }
 

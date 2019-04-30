@@ -35,3 +35,29 @@
   justify-content: space-between;
 }
 
+@media only screen and (max-width: 600px) {
+  .title {
+    font-size: 36px;
+    margin: 0 0 30px;
+    text-align: center;
+    line-height: inherit;
+  }
+
+  .description {
+    font-size: 18px;
+    margin-bottom: 26px;
+  }
+
+  .menu {
+    flex-direction: column;
+  }
+
+  .button {
+    margin-bottom: 20px;
+  }
+
+  .container {
+    margin-bottom: 60px;
+  }
+}
+    

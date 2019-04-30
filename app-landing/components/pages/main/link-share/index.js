@@ -4,6 +4,7 @@ import styles from './styles.module'
 import { Alert, Button, TextControlBlock, Icons } from 'linkdrop-ui-kit'
 import classNames from 'classnames'
 import { LinkBlock, QrShare } from 'components/pages/common'
+import { copyToClipboard } from 'helpers'
 
 @actions(({ user: { link, loading } }) => ({ link, loading }))
 @translate('pages.main')
@@ -46,7 +47,10 @@ class LinkSahre extends React.Component {
         })}
         value={link}
       />
-      <Button onClick={_ => onClick && onClick()} className={styles.button}>{this.t('buttons.copyLink')}</Button>
+      <Button onClick={_ => {
+        copyToClipboard({ value: link })
+        onClick && onClick()
+      }} className={styles.button}>{this.t('buttons.copyLink')}</Button>
     </div>
   }
 

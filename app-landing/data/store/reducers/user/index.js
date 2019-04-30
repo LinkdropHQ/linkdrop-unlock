@@ -11,7 +11,7 @@ const initialState = {
   balanceFormatted: null,
   link: null,
   privateKey: null,
-  claimed: true
+  claimed: false
 }
 
 export default (state = initialState, action = {}) => {
@@ -32,5 +32,6 @@ const ACTIONS = {
   'USER.SET_BALANCE': reducers.setBalance,
   'USER.SET_LINK': reducers.setLink,
   'USER.SET_PRIVATE_KEY': reducers.setPrivateKey,
-  'USER.SET_CLAIMED_STATUS': reducers.setClaimedStatus
+  'USER.SET_CLAIMED_STATUS': reducers.setClaimedStatus,
+  'USER.SET_ALL_DATA': reducers.setAllData
 }

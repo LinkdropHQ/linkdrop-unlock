@@ -1,8 +1,7 @@
 import { put, select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import LinkdropSDK from 'sdk/src/index'
-import config from 'config'
-const { jsonRpcUrl, networkId, host } = config
+import { jsonRpcUrl, networkId, host } from 'config'
 
 const generator = function * ({ payload }) {
   try {

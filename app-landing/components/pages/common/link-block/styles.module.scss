@@ -1,7 +1,7 @@
 @import "variables/variables.scss";
 
 .container {
-  width: 400px;
+  max-width: 400px;
   background: $white;
   border-radius: 5px;
   display: flex;
@@ -13,6 +13,7 @@
   overflow: hidden;
   transition: height .3s;
   height: 528px;
+  width: 100%;
 }
 
 .title {
@@ -20,4 +21,10 @@
   text-align: center;
   margin-bottom: 15px;
   font-family: 'Inter-Medium';
+}
+
+@media only screen and (max-width: 600px) {
+  .container {
+    padding: 30px 16px;
+  }
 }

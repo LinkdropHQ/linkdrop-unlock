@@ -11,10 +11,6 @@ import { copyToClipboard } from 'helpers'
 @translate('pages.main')
 class TokensSend extends React.Component {
   componentDidMount () {
-    // const { onClick } = this.props
-    // window.setTimeout(_ => this.setState({ tokensUploaded: true }, _ => {
-    //   window.setTimeout(_ => onClick && onClick(), 3000)
-    // }), 3000)
     const { wallet } = this.props
     this.intervalCheck = window.setInterval(_ => this.actions().user.checkBalance({ account: wallet }), 3000)
   }

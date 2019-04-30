@@ -1,6 +1,5 @@
 import LinkdropSDK from 'sdk/src/index'
-import config from 'config'
-const { jsonRpcUrl, host } = config
+import { jsonRpcUrl, host } from 'config'
 
 const generator = function * ({ payload }) {
   try {
@@ -13,7 +12,7 @@ const generator = function * ({ payload }) {
       token
     } = payload
 
-    const result = yield LinkdropSDK.claim(
+    yield LinkdropSDK.claim(
       jsonRpcUrl,
       host,
       token,
@@ -25,7 +24,6 @@ const generator = function * ({ payload }) {
       '0xAa46966f3448291068249E6f3fa8FDA59C929f3E'
       // receiverAddress
     )
-    console.log({ result })
   } catch (e) {
     console.error(e)
   }
