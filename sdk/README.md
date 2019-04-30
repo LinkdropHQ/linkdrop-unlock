@@ -22,7 +22,7 @@ const LinkdropSDK = require('sdk')
 LinkdropSDK.computeProxyAddress(factoryAddress, senderAddress, masterCopyAddress)
 ```
 
-This function will use hash of `senderAddress` as salt when building CREATE2 address
+This function will use hash of `senderAddress` as salt and return built CREATE2 address
 
 
 ### Generate link for ETH or ERC20
@@ -31,7 +31,7 @@ This function will use hash of `senderAddress` as salt when building CREATE2 add
 LinkdropSDK.generateLink(jsonRpcUrl, networkId, host, senderPrivateKey, token, amount, expirationTime)
 ```
 
-This function will generate link for claiming ETH or any ERC20 token
+This function will generate link for claiming ETH or any ERC20 token and return the following params `url, linkId, linkKey, senderSignature`
 
 ### Generate link for ERC721
 
@@ -39,7 +39,7 @@ This function will generate link for claiming ETH or any ERC20 token
 LinkdropSDK.generateLinkERC721(jsonRpcUrl, networkId, host, senderPrivateKey, nft, tokenId, expirationTime)
 ```
 
-This function will generate link for claiming ERC721 token
+This function will generate link for claiming ERC721 token and return the following params `url, linkId, linkKey, senderSignature`
 
 
 ### Claim ETH or ERC20
@@ -50,10 +50,14 @@ LinkdropSDK.claim(jsonRpcUrl, host, token, amount, expirationTime, linkKey, send
 
 This function will claim ETH or ERC20 token by making a POST request to server endpoint. Make sure the server is up by running `yarn server`
 
+Upon successful request function will log tx hash to the console
+
 ### Claim ERC721
 
 ```js
 LinkdropSDK.claimERC721(jsonRpcUrl, host, nft, tokenId, expirationTime, linkKey, senderAddress, senderSignature, receiverAddress)
 ```
 
-This function will claim ETH or ERC20 token by making a POST request to server endpoint. Make sure the server is up by running `yarn server`
+This function will claim ETH or ERC20 token by making a POST request to server endpoint. Make sure the server is up by running `yarn server`.
+
+Upon successful request function will log tx hash to the console
