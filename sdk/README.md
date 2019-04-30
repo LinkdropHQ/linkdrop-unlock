@@ -45,7 +45,7 @@ This function will generate link for claiming ERC721 token and return the follow
 ### Claim ETH or ERC20
 
 ```js
-LinkdropSDK.claim(jsonRpcUrl, host, token, amount, expirationTime, linkKey, senderAddress, senderSignature, receiverAddress)
+const txHash = await LinkdropSDK.claim(jsonRpcUrl, host, token, amount, expirationTime, linkKey, senderAddress, senderSignature, receiverAddress)
 ```
 
 This function will claim ETH or ERC20 token by making a POST request to server endpoint. Make sure the server is up by running `yarn server`
@@ -55,7 +55,7 @@ Upon successful request function will log tx hash to the console
 ### Claim ERC721
 
 ```js
-LinkdropSDK.claimERC721(jsonRpcUrl, host, nft, tokenId, expirationTime, linkKey, senderAddress, senderSignature, receiverAddress)
+const txHash = await LinkdropSDK.claimERC721(jsonRpcUrl, host, nft, tokenId, expirationTime, linkKey, senderAddress, senderSignature, receiverAddress)
 ```
 
 This function will claim ETH or ERC20 token by making a POST request to server endpoint. Make sure the server is up by running `yarn server`.
