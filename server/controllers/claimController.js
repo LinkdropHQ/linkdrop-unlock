@@ -74,7 +74,7 @@ export const claim = async (req, res) => {
       masterCopyAddr
     )
 
-    const result = await proxyFactory.checkClaimParams(
+    await proxyFactory.checkClaimParams(
       token,
       amount,
       expirationTime,
@@ -86,11 +86,7 @@ export const claim = async (req, res) => {
       proxyAddr
     )
 
-    if (!result) {
-      throw new Error('Invalid link')
-    }
-
-    console.log('Claiming ...', claimParams)
+    console.log('⌛️  Claiming...', claimParams)
 
     let tx = await proxyFactory.claim(
       token,
@@ -173,7 +169,27 @@ export const claimERC721 = async (req, res) => {
   let proxyFactory = new ethers.Contract(factory, Factory.abi, relayer)
 
   try {
-    console.log('Claiming ...', claimParams)
+    let masterCopyAddr = await proxyFactory.masterCopy()
+
+    let proxyAddr = await LinkdropSDK.computeProxyAddress(
+      factory,
+      senderAddress,
+      masterCopyAddr
+    )
+
+    await proxyFactory.checkClaimParamsERC721(
+      nft,
+      tokenId,
+      expirationTime,
+      linkId,
+      senderAddress,
+      senderSignature,
+      receiverAddress,
+      receiverSignature,
+      proxyAddr
+    )
+
+    console.log('⌛️  Claiming...', claimParams)
 
     let tx = await proxyFactory.claimERC721(
       nft,

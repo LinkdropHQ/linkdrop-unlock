@@ -80,7 +80,7 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
     public view 
     returns (bool)
     {
-        // Make sure the token is availabe for this contract
+        // Make sure the token is available for this contract
         require(isAvailableToken(_nft, _tokenId), "Unavailable token");
 
         // Make sure the link is not claimed or canceled

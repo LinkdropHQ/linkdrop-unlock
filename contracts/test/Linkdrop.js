@@ -18,7 +18,6 @@ import {
   createLink,
   signReceiverAddress
 } from '../scripts/utils'
-import { irBlack } from 'react-syntax-highlighter/dist/styles/hljs'
 
 const ethers = require('ethers')
 
