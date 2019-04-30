@@ -3,9 +3,10 @@ import "./Common.sol";
 import "./interfaces/ILinkdrop.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract Linkdrop is ILinkdrop, Common {   
-
+    using SafeMath for uint;
     // =================================================================================================================
     //                                         ERC20 and ETH Linkdrop
     // =================================================================================================================
@@ -159,6 +160,24 @@ contract Linkdrop is ILinkdrop, Common {
     }
 
     /**
+    * @dev Function to get total amount of tokens available for this contract
+    * @param _token Token address, address(0) for ETH
+    * @return Total amount available
+    */
+    function getBalance(address _token) public view returns (uint) {
+
+        if (_token == address(0)) {
+            return address(this).balance;
+        }
+        else {
+            uint allowance = IERC20(_token).allowance(SENDER, address(this));
+            uint balance = IERC20(_token).balanceOf(address(this));
+            return allowance.add(balance);
+        }
+
+    }
+
+    /**
     * @dev Internal function to transfer ETH or ERC20 tokens
     * @param _token Token address, address(0) for ETH
     * @param _amount Amount of tokens to be claimed in atomic value
@@ -169,15 +188,44 @@ contract Linkdrop is ILinkdrop, Common {
     internal returns (bool)
     {
 
-        // Transfer tokens
-        if (_amount > 0 && address(_token) != address(0)) {
-            IERC20(_token).transfer(_receiver, _amount); 
-        }
-
         // Transfer ethers
         if (_amount > 0 && address(_token) == address(0)) {
+            require(getBalance(address(0)) >= _amount, "Insufficient funds");
             _receiver.transfer(_amount);
         }
+
+        // Transfer tokens
+        if (_amount > 0 && address(_token) != address(0)) {
+            
+            require(getBalance(_token) >= _amount, "Insufficient funds");
+
+            uint balance = IERC20(_token).balanceOf(address(this));
+
+            // First use funds from proxy balance
+            if (balance > 0 ) {
+
+                // Get min of two values
+                uint fromProxyAmount;
+                if (balance >= _amount) 
+                    fromProxyAmount = _amount;
+                else 
+                    fromProxyAmount = balance;
+
+                // Transfer tokens from proxy balance
+                IERC20(_token).transfer(_receiver, fromProxyAmount); 
+                
+                // Transfer rest funds from sender's balance
+                uint rest = _amount.sub(fromProxyAmount);
+                if (rest != 0) 
+                    IERC20(_token).transferFrom(SENDER, _receiver, rest); 
+            }
+
+            // Then use funds approved
+            else {
+                IERC20(_token).transferFrom(SENDER, _receiver, _amount); 
+            }
+
+        }        
 
         return true;
     }

@@ -41,7 +41,7 @@ let tokenAddress
 let claimAmount
 let expirationTime
 
-describe('Claim tests', () => {
+describe('Linkdrop tests', () => {
   before(async () => {
     tokenInstance = await deployContract(sender, TokenMock)
   })
@@ -199,8 +199,8 @@ describe('Claim tests', () => {
   })
 
   it('should fail to claim tokens by expired link', async () => {
-    // Transfering tokens from sender to Linkdrop Contract
-    await tokenInstance.transfer(proxy.address, 100000)
+    // Approving tokens from sender to Linkdrop Contract
+    await tokenInstance.approve(proxy.address, 100)
 
     link = await createLink(sender, tokenAddress, claimAmount, 0)
     receiverAddress = ethers.Wallet.createRandom().address
@@ -223,12 +223,13 @@ describe('Claim tests', () => {
 
   it('should succesfully claim tokens with valid claim params', async () => {
     // Transfering tokens from sender to Linkdrop Contract
-    await tokenInstance.transfer(proxy.address, 10000)
-
+    await tokenInstance.transfer(proxy.address, 20)
     link = await createLink(sender, tokenAddress, claimAmount, expirationTime)
 
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    let proxyBalanceBefore = await proxy.getBalance(tokenAddress)
 
     await factory.claim(
       tokenAddress,
@@ -241,6 +242,9 @@ describe('Claim tests', () => {
       receiverSignature,
       { gasLimit: 500000 }
     )
+
+    let proxyBalanceAfter = await proxy.getBalance(tokenAddress)
+    expect(proxyBalanceAfter).to.eq(proxyBalanceBefore.sub(claimAmount))
 
     let receiverTokenBalance = await tokenInstance.balanceOf(receiverAddress)
     expect(receiverTokenBalance).to.eq(claimAmount)
@@ -336,8 +340,8 @@ describe('Claim tests', () => {
     ).to.be.revertedWith('Canceled link')
   })
 
-  it('should be able to send ethers to proxy', async () => {
-    let balanceBefore = await provider.getBalance(proxy.address)
+  it('should be able to get balance and send ethers to proxy', async () => {
+    let balanceBefore = await proxy.getBalance(ethers.constants.AddressZero)
 
     let wei = ethers.utils.parseEther('2')
     // send some eth
@@ -346,7 +350,7 @@ describe('Claim tests', () => {
       value: wei
     }
     await sender.sendTransaction(tx)
-    let balanceAfter = await provider.getBalance(proxy.address)
+    let balanceAfter = await proxy.getBalance(ethers.constants.AddressZero)
     expect(balanceAfter).to.eq(balanceBefore.add(wei))
   })
 
@@ -396,7 +400,7 @@ describe('Claim tests', () => {
     )
 
     // Transfering tokens from sender to Linkdrop Contract
-    await tokenInstance.transfer(proxyAddress, 10000)
+    await tokenInstance.approve(proxyAddress, claimAmount)
 
     // Contract not deployed yet
     proxy = new ethers.Contract(proxyAddress, Linkdrop.abi, sender)
