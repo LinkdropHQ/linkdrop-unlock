@@ -19,32 +19,31 @@ if (receiverAddress == null || receiverAddress === '') {
   throw 'Please provide receiver address'
 }
 
-// Get params from generated link [output/linkdrop_eth.csv]
+// Get params from generated link [output/linkdrop_erc20.csv]
 const getUrlParams = async i => {
-  const csvFilePath = path.resolve(__dirname, '../output/linkdrop_erc721.csv')
-
-  let jsonArray = await csvToJson().fromFile(csvFilePath)
-  let rawUrl = jsonArray[i].url
-  let parsedUrl = await queryString.extract(rawUrl)
-  let parsed = await queryString.parse(parsedUrl)
+  const csvFilePath = path.resolve(__dirname, '../output/linkdrop_erc20.csv')
+  const jsonArray = await csvToJson().fromFile(csvFilePath)
+  const rawUrl = jsonArray[i].url
+  const parsedUrl = await queryString.extract(rawUrl)
+  const parsed = await queryString.parse(parsedUrl)
   return parsed
 }
 
-const claimERC721 = async () => {
+const claimERC20 = async () => {
   const {
-    nft,
-    tokenId,
+    token,
+    amount,
     expirationTime,
     linkKey,
     senderAddress,
     senderSignature
   } = await getUrlParams(0)
 
-  await LinkdropSDK.claimERC721(
+  await LinkdropSDK.claim(
     jsonRpcUrl,
     host,
-    nft,
-    tokenId,
+    token,
+    amount,
     expirationTime,
     linkKey,
     senderAddress,
@@ -53,4 +52,4 @@ const claimERC721 = async () => {
   )
 }
 
-claimERC721()
+claimERC20()

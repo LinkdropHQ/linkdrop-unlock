@@ -40,7 +40,9 @@ export const claim = async (
     if (response.status !== 200) {
       console.error(`\n❌ Invalid response status ${response.status}`)
     } else {
-      console.log('\n✅ Successfully claimed tokens')
+      console.log(
+        '\n✅  Successfully submitted claiming transaction. Please verify the claim status manually.'
+      )
 
       let txHash = response.data.txHash
       console.log(`#️⃣  Tx Hash: ${txHash}`)
@@ -88,7 +90,9 @@ export const claimERC721 = async (
     if (response.status !== 200) {
       console.error(`\n❌ Invalid response status ${response.status}`)
     } else {
-      console.log('\n✅ Successfully claimed NFT')
+      console.log(
+        '\n✅  Successfully submitted claiming transaction. Please verify the claim status manually.'
+      )
 
       let txHash = response.data.txHash
       console.log(`#️⃣  Tx Hash: ${txHash}`)
