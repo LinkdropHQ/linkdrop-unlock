@@ -1,8 +1,9 @@
 import { put } from 'redux-saga/effects'
 import { ethers, utils } from 'ethers'
-import config from 'contract-config.json'
 import { defineNetworkName } from '../helpers'
 import { getImages } from 'helpers'
+import ERC20 from 'contracts/ERC20.json'
+
 const generator = function * ({ payload }) {
   try {
     const ethWalletContract = ethers.constants.AddressZero
@@ -18,7 +19,7 @@ const generator = function * ({ payload }) {
       symbol = 'ETH'
       icon = getImages({ src: 'ether' }).image
     } else {
-      const contract = yield new ethers.Contract(tokenAddress, config.erc20Abi, provider)
+      const contract = yield new ethers.Contract(tokenAddress, ERC20.abi, provider)
       decimals = yield contract.decimals()
       symbol = yield contract.symbol()
       icon = `https://trustwalletapp.com/images/tokens/${tokenAddress.toLowerCase()}.png`

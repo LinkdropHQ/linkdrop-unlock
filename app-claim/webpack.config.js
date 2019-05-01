@@ -54,7 +54,8 @@ module.exports = {
     ],
     alias: {
       wallets: path.resolve(__dirname, '../config/wallets'),
-      config: path.resolve(__dirname, '../config/config')
+      config: path.resolve(__dirname, '../config/config'),
+      contracts: path.resolve(__dirname, '../contracts/build')
     }
   },
   module: {
