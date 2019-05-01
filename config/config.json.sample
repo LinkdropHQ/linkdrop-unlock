@@ -1,15 +1,15 @@
 {
-    "jsonRpcUrl": "https://rinkeby.infura.io",
-    "host": "http://localhost:5000",
-    "networkId": "4",
-    "senderPrivateKey": "",
-    "relayerPrivateKey:": "",
-    "token": "",
-    "amount": "",
-    "linksNumber": "",
-    "receiverAddress": "",
-    "masterCopy": "",
-    "factory": "",
-    "nft": "",
-    "nftIds": "[1,2,3]"
+  "jsonRpcUrl": "https://rinkeby.infura.io",
+  "host": "http://localhost:5000",
+  "networkId": "4",
+  "senderPrivateKey": "",
+  "relayerPrivateKey:": "",
+  "token": "",
+  "amount": "",
+  "linksNumber": "",
+  "receiverAddress": "",
+  "masterCopy": "",
+  "factory": "",
+  "nft": "",
+  "nftIds": "[1,2,3]"
 }

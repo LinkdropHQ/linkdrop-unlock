@@ -3,11 +3,15 @@ import reducers from './reducers'
 const initialState = {
   id: undefined,
   locale: 'en',
-  wallet: undefined,
+  wallet: null,
   step: 0,
   loading: false,
-  transactionId: null,
-  errors: []
+  errors: [],
+  balance: null,
+  balanceFormatted: null,
+  link: null,
+  privateKey: null,
+  claimed: false
 }
 
 export default (state = initialState, action = {}) => {
@@ -24,6 +28,10 @@ const ACTIONS = {
   'USER.SET_WALLET': reducers.setWallet,
   'USER.SET_STEP': reducers.setStep,
   'USER.SET_LOADING': reducers.setLoading,
-  'USER.SET_TRANSACTION_ID': reducers.setTransactionId,
-  'USER.SET_ERRORS': reducers.setErrors
+  'USER.SET_ERRORS': reducers.setErrors,
+  'USER.SET_BALANCE': reducers.setBalance,
+  'USER.SET_LINK': reducers.setLink,
+  'USER.SET_PRIVATE_KEY': reducers.setPrivateKey,
+  'USER.SET_CLAIMED_STATUS': reducers.setClaimedStatus,
+  'USER.SET_ALL_DATA': reducers.setAllData
 }

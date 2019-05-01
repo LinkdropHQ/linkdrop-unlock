@@ -10,4 +10,4 @@ const LinkdropSDK = {
   claimERC721
 }
 
-module.exports = LinkdropSDK
+export default LinkdropSDK

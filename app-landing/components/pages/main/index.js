@@ -1,67 +1,125 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
-import { Button } from 'linkdrop-ui-kit'
+import { Button, Icons, Input } from 'linkdrop-ui-kit'
 import styles from './styles.module'
-
-import TokensAmount from './tokens-amount'
 import TokensSend from './tokens-send'
 import LinkShare from './link-share'
 import ProSolution from './pro-solution'
+import FinalScreen from './final-screen'
+import LearnMore from './learn-more'
+import TrustedBy from './trusted-by'
+import LoadingScreen from './loading-screen'
 
-@actions(({ user: { step } }) => ({ step }))
+@actions(({ user: { step, balance, wallet } }) => ({ step, balance, wallet }))
 @translate('pages.main')
 class Main extends React.Component {
+  componentDidMount () {
+    const { wallet } = this.props
+    if (!wallet) {
+      this.actions().user.createWallet()
+    }
+  }
+
+  componentWillReceiveProps ({ wallet, step }) {
+    const { step: prevStep, wallet: prevWallet } = this.props
+    if (step != null && step === 0 && wallet && wallet !== prevWallet) {
+      return this.actions().user.checkBalance({ account: wallet })
+    }
+
+    if (
+      step === 0 && // step property gets value 0
+      prevStep !== 0 && // previous value of step property wasn't 0
+      prevStep != null && // previous step isn't null
+      wallet === null && // new value of wallet property is null
+      prevWallet != null // previous value of wallet property wasn't equal to null
+    ) {
+      this.actions().user.createWallet() // that means we have to create new wallet
+    }
+  }
+
   render () {
     const { step } = this.props
     return <div className={styles.container}>
-      <div className={styles.leftBlock}>
-        {this.renderContent({ step })}
+      <div className={styles.headerContent}>
+        <div className={styles.leftBlock}>
+          {this.renderContent({ step })}
+        </div>
+        <div className={styles.rightBlock}>
+          {this.renderTexts({ step })}
+        </div>
       </div>
-      <div className={styles.rightBlock}>
-        {this.renderTexts({ step })}
-      </div>
+      <LearnMore />
+      <TrustedBy />
     </div>
   }
 
   renderTexts ({ step }) {
-    const lastStep = step === 3
-    const title = lastStep ? this.t('titles.tryLinkdropPro') : this.t('titles.main')
-    const description = lastStep ? this.t('descriptions.tryLinkdropPro') : this.t('descriptions.main')
-    return <div>
+    return <div className={styles.texts}>
       <h1 className={styles.mainTitle}>
-        {title}
+        {this.t('titles.main')}
       </h1>
-      <div className={styles.mainDescription}>
-        {description}
+      {this.renderMainDescription()}
+      {this.renderAccess()}
+    </div>
+  }
+
+  renderMainDescription () {
+    return <div className={styles.mainDescription}>
+      <div className={styles.listItem}>
+        <Icons.CheckSmall /> {this.t('titles.createShare')}
       </div>
-      {lastStep && <Button inverted>{this.t('buttons.campaign')}</Button>}
+
+      <div className={styles.listItem}>
+        <Icons.CheckSmall /> {this.t('titles.noGas')}
+      </div>
+
+      <div className={styles.listItem}>
+        <Icons.CheckSmall /> {this.t('titles.tokenTypes')}
+      </div>
+    </div>
+  }
+
+  renderAccess () {
+    return <div className={styles.form}>
+      <div className={styles.formContent}>
+        <Input className={styles.input} placeholder={this.t('titles.yourEmail')} />
+        <Button className={styles.button}>{this.t('buttons.requestAccess')}</Button>
+      </div>
+      <div className={styles.formNote}>
+        {this.t('titles.wantMoreLinksInstruction')}
+      </div>
     </div>
   }
 
   renderContent ({ step }) {
     switch (step) {
-      case 0:
-        return <TokensAmount
-          onClick={({ value }) => {
-            this.actions().tokens.setAmount({ amount: value })
-            this.actions().user.setStep({ step: 1 })
-          }}
-        />
       case 1:
+        // screen with proxy adress where to send tokens
         return <TokensSend
-          onClick={_ => {
+          onFinish={_ => {
             this.actions().user.setStep({ step: 2 })
           }}
         />
       case 2:
+        // screen with link to share
         return <LinkShare
           onClick={_ => {
-            console.log('bla')
             this.actions().user.setStep({ step: 3 })
           }}
         />
       case 3:
-        return <ProSolution />
+        // screen with pro solutions we offer
+        return <ProSolution
+          onClose={_ => {
+            this.actions().user.setStep({ step: 4 })
+          }}
+        />
+      case 4:
+        // final screen with link
+        return <FinalScreen />
+      default:
+        // loading screen
+        return <LoadingScreen />
     }
   }
 }

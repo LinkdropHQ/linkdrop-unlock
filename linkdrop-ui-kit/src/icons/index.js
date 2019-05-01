@@ -11,6 +11,7 @@ import Clock from './clock'
 import Cross from './cross'
 import Copy from './copy'
 import Qr from './qr'
+import Close from './close'
 
 export default {
   LinkdropLogo,
@@ -25,5 +26,6 @@ export default {
   Clock,
   Cross,
   Copy,
-  Qr
+  Qr,
+  Close
 }

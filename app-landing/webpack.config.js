@@ -37,7 +37,8 @@ const postCSSLoader = {
 module.exports = {
   entry: [
     '@babel/polyfill',
-    './index.js'
+    './index.js',
+    'webpack/hot/dev-server'
   ],
   output: {
     filename: 'bundle.js',
@@ -50,7 +51,11 @@ module.exports = {
       path.resolve('./'),
       path.resolve('./node_modules'),
       path.resolve('../node_modules')
-    ]
+    ],
+    alias: {
+      wallets: path.resolve(__dirname, '../config/wallets'),
+      config: path.resolve(__dirname, '../config/config')
+    }
   },
   module: {
     rules: [{
@@ -88,5 +93,23 @@ module.exports = {
       test: /\.(png|woff|woff2|eot|ttf|svg|otf|gif)$/,
       loader: 'url-loader?limit=100000'
     }]
+  },
+  devServer: {
+    contentBase: path.join(__dirname, './'),
+    publicPath: '/assets/scripts/',
+    compress: true,
+    hot: true,
+    port: 9001,
+    host: '0.0.0.0',
+    watchOptions: {
+      ignored: /node_modules/
+    },
+    proxy: {
+      '/api/v1/linkdrops/**': {
+        target: 'http://localhost:5000',
+        secure: false,
+        changeOrigin: true
+      }
+    }
   }
 }

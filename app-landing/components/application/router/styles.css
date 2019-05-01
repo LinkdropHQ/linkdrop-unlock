@@ -29,14 +29,12 @@ html, body {
   margin: 0px;
   padding: 0px;
   min-height: 100vh;
-  background: $bg;
 }
 
 body {
-  padding-top: 68px;
+  padding-top: 50px;
 }
 
 * {
   box-sizing: border-box;
 }
-

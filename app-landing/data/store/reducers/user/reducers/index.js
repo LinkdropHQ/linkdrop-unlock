@@ -2,14 +2,22 @@ import changeLocale from './change-locale'
 import setWallet from './set-wallet'
 import setStep from './set-step.js'
 import setLoading from './set-loading'
-import setTransactionId from './set-transaction-id'
 import setErrors from './set-errors'
+import setBalance from './set-balance'
+import setLink from './set-link'
+import setPrivateKey from './set-private-key'
+import setClaimedStatus from './set-claimed-status'
+import setAllData from './set-all-data'
 
 export default {
   changeLocale,
   setWallet,
   setStep,
   setLoading,
-  setTransactionId,
-  setErrors
+  setErrors,
+  setBalance,
+  setLink,
+  setPrivateKey,
+  setClaimedStatus,
+  setAllData
 }

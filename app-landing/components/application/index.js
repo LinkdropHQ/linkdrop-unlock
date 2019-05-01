@@ -8,13 +8,15 @@ import AppRouter from './router'
 
 class Application extends React.Component {
   render () {
-    return <Provider store={store()}>
-      <ConnectedRouter history={history}>
-        <Router history={history}>
-          <AppRouter />
-        </Router>
-      </ConnectedRouter>
-    </Provider>
+    return <div>
+      <Provider store={store()}>
+        <ConnectedRouter history={history}>
+          <Router history={history}>
+            <AppRouter />
+          </Router>
+        </ConnectedRouter>
+      </Provider>
+    </div>
   }
 }
 export default Application

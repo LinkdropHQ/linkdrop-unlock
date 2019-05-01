@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "webpack --watch --mode development",
     "build": "webpack --mode production",
+    "dev:server": "webpack-dev-server --hot --inline",
     "test-saga": "NODE_PATH=. mocha test/saga/**/*.js --require @babel/register --require ignore-styles --recursive"
   },
   "dependencies": {
@@ -55,7 +56,9 @@
     "webpack": "^4.10.2",
     "webpack-cli": "^3.1.1",
     "webpack-livereload-plugin": "^0.10.0",
-    "webpack-merge": "^4.2.1"
+    "webpack-merge": "^4.2.1",
+    "sdk": "1.0.0",
+    "linkdrop-commons": "1.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.51",
@@ -84,7 +87,8 @@
     "sinon": "^7.3.1",
     "standard-loader": "^6.0.1",
     "supertest": "^2.0.1",
-    "supertest-as-promised": "^4.0.1"
+    "supertest-as-promised": "^4.0.1",
+    "webpack-dev-server": "^3.3.1"
   },
   "standard": {
     "parser": "babel-eslint"

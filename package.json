@@ -12,7 +12,9 @@
     "contracts",
     "linkdrop-ui-kit",
     "scripts",
-    "server"
+    "server",
+    "sdk",
+    "linkdrop-commons"
   ],
   "scripts": {
     "test": "mocha --require @babel/polyfill --require @babel/register",

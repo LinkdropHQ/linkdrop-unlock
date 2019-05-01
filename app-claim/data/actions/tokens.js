@@ -3,8 +3,8 @@ class Tokens {
     this.actions = actions
   }
 
-  claimTokens ({ wallet, token, tokenAmount: amount, expirationTime }) {
-    this.actions.dispatch({ type: '*TOKENS.CLAIM_TOKENS', payload: { wallet, token, tokenAmount: amount, expirationTime } })
+  claimTokens ({ wallet, token, tokenAmount: amount, expirationTime, linkKey, senderAddress, senderSignature }) {
+    this.actions.dispatch({ type: '*TOKENS.CLAIM_TOKENS', payload: { wallet, token, tokenAmount: amount, expirationTime, linkKey, senderAddress, senderSignature } })
   }
 }
 

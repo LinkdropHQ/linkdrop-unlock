@@ -14,7 +14,7 @@
   font-size: 22px;
   outline: none;
   font-family: 'Inter-Medium';
-  transition: all .3s;
+  transition: background .3s;
   text-decoration: none;
 
   &:active {
@@ -89,8 +89,6 @@
       border-color: $black transparent transparent transparent;
     }
   }
-
-
 }
 
 .smallSize {

@@ -1,3 +1,5 @@
 export default {
-  title: 'Eth2Beta'
+  titles: {
+    whatIsLinkdrop: 'What is Linkdrop?'
+  }
 }
