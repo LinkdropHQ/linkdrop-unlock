@@ -1,0 +1,6 @@
+{
+  "balanceCheckInterval": 3000,
+  "balanceCheckIntervalManual": 3000,
+  "showLinkTimeout": 3000,
+  "showManualTimeout": 20000
+}

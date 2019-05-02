@@ -1,6 +1,6 @@
 import { put, select } from 'redux-saga/effects'
 import { ethers, utils } from 'ethers'
-import { defineNetworkName } from '../helpers'
+import { defineNetworkName } from 'linkdrop-commons'
 
 const generator = function * ({ payload }) {
   try {

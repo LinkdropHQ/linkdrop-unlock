@@ -2,6 +2,7 @@ import Mastercopy from '../../contracts/build/Mastercopy'
 import Factory from '../../contracts/build/Factory'
 import TokenMock from '../../contracts/build/TokenMock'
 import NFTMock from '../../contracts/build/NFTMock'
+import LinkdropSDK from '../../sdk/src/index'
 
 const ethers = require('ethers')
 const fs = require('fs')
@@ -9,7 +10,6 @@ const fastcsv = require('fast-csv')
 const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/config.json')
 const config = require(configPath)
-const LinkdropSDK = require('../../sdk/src/index')
 
 let {
   networkId,

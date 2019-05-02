@@ -24,7 +24,11 @@ export default {
     seeGit: 'See the Github',
     join: 'Join Community',
     followOnTwitter: 'Follow on Twitter',
-    trusted: 'Trusted by Leading Companies and Wallets'
+    trusted: 'Trusted by Leading Companies and Wallets',
+    addManually: 'Add token address manually',
+    footerAddManually: '<span>Add manually</span>',
+    tokenAddress: 'Token address',
+    waitingFor: 'Waiting for {{tokenSymbol}}...'
   },
   descriptions: {
     sendTokens: 'Simply send your funds to our secure contract and generate the crypto link',
@@ -41,9 +45,10 @@ export default {
     campaign: 'Set Up Campaign',
     learnMore: 'Learn More',
     joinWaitlist: 'Join Waitlist',
-    requestAccess: 'Request Access'
+    requestAccess: 'Request Access',
+    next: 'Next'
   },
   errors: {
-
+    addManually: 'Try to add token manually'
   }
 }

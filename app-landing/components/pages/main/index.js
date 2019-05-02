@@ -23,7 +23,7 @@ class Main extends React.Component {
   componentWillReceiveProps ({ wallet, step }) {
     const { step: prevStep, wallet: prevWallet } = this.props
     if (step != null && step === 0 && wallet && wallet !== prevWallet) {
-      return this.actions().user.checkBalance({ account: wallet })
+      return this.actions().tokens.checkBalance({ account: wallet })
     }
 
     if (

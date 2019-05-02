@@ -1,5 +1,6 @@
 import User from './user'
 import Routing from './routing'
+import Tokens from './tokens'
 
 class Actions {
   constructor (env) {
@@ -8,6 +9,7 @@ class Actions {
 
     this.routing = new Routing(this)
     this.user = new User(this)
+    this.tokens = new Tokens(this)
   }
 }
 
