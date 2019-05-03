@@ -1,8 +1,8 @@
 import { put } from 'redux-saga/effects'
 import { ethers, utils } from 'ethers'
-import { defineNetworkName } from '../helpers'
+import { defineNetworkName } from 'linkdrop-commons'
 import { getImages } from 'helpers'
-import ERC20 from 'contracts/ERC20.json'
+import TokenMock from 'contracts/TokenMock.json'
 
 const generator = function * ({ payload }) {
   try {
@@ -19,7 +19,7 @@ const generator = function * ({ payload }) {
       symbol = 'ETH'
       icon = getImages({ src: 'ether' }).image
     } else {
-      const contract = yield new ethers.Contract(tokenAddress, ERC20.abi, provider)
+      const contract = yield new ethers.Contract(tokenAddress, TokenMock.abi, provider)
       decimals = yield contract.decimals()
       symbol = yield contract.symbol()
       icon = `https://trustwalletapp.com/images/tokens/${tokenAddress.toLowerCase()}.png`

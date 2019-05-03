@@ -1,17 +1,28 @@
 import React from 'react'
 import { Alert, Icons } from 'linkdrop-ui-kit'
-import { translate } from 'decorators'
+import { translate, actions } from 'decorators'
 import styles from './styles.module'
 import commonStyles from '../styles.module'
+import { getHashVariables } from 'linkdrop-commons'
+import config from 'config-claim'
 
+@actions(({ tokens: { transactionId } }) => ({ transactionId }))
 @translate('pages.main')
 class ClaimingFinishedPage extends React.Component {
   render () {
+    const { n } = getHashVariables()
     const { transactionId, amount, symbol } = this.props
     return <div className={commonStyles.container}>
       <Alert icon={<Icons.Check />} className={styles.alert} />
-      <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.tokensClaimed', { tokens: `${amount} ${symbol}` }) }} />
-      <div className={styles.description} dangerouslySetInnerHTML={{ __html: this.t('titles.seeDetails', { transactionLink: `https://etherscan.io/tx/${transactionId}` }) }} />
+      <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.tokensClaimed', { tokens: `${amount || ''} ${symbol}` }) }} />
+      <div
+        className={styles.description}
+        dangerouslySetInnerHTML={{
+          __html: this.t('titles.seeDetails', {
+            transactionLink: `${Number(n) === 4 ? config.etherscanRinkeby : config.etherscanMainnet}${transactionId}`
+          })
+        }}
+      />
     </div>
   }
 }

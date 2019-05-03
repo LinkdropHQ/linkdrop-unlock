@@ -1,9 +1,9 @@
+import LinkdropSDK from '../../sdk/src/index'
 const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/config.json')
 const config = require(configPath)
 const csvToJson = require('csvtojson')
 const queryString = require('query-string')
-const LinkdropSDK = require('../../sdk/src/index')
 
 const { jsonRpcUrl, host, receiverAddress } = config
 

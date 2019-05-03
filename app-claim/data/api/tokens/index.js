@@ -1,7 +1,5 @@
-import tokensClaimErc20 from './tokens-claim-erc-20'
-import tokensClaimErc721 from './tokens-claim-erc721'
+import getTokenERC721Data from './get-token-erc-721-data'
 
 export {
-  tokensClaimErc20,
-  tokensClaimErc721
+  getTokenERC721Data
 }

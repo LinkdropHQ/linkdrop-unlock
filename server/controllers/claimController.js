@@ -1,4 +1,5 @@
 import Factory from '../../contracts/build/Factory'
+import LinkdropSDK from '../../sdk/src/index'
 const ethers = require('ethers')
 const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/config.json')
@@ -6,7 +7,6 @@ const config = require(configPath)
 const { jsonRpcUrl, relayerPrivateKey, factory } = config
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 const relayer = new ethers.Wallet(relayerPrivateKey, provider)
-const LinkdropSDK = require('../../sdk/src/index')
 
 export const claim = async (req, res) => {
   const {

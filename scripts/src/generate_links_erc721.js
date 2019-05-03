@@ -1,11 +1,11 @@
 import { generateLinksERC721 } from './index'
 import NFTMock from '../../contracts/build/NFTMock'
 import { getFactoryAddress, getMasterCopyAddress } from './utils'
+import LinkdropSDK from '../../sdk/src/index'
 const ethers = require('ethers')
 const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/config.json')
 const config = require(configPath)
-const LinkdropSDK = require('../../sdk/src/index')
 
 let { jsonRpcUrl, senderPrivateKey, nft, nftIds } = config
 

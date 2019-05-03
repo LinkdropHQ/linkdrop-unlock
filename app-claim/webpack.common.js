@@ -55,6 +55,7 @@ module.exports = {
     alias: {
       wallets: path.resolve(__dirname, '../config/wallets'),
       config: path.resolve(__dirname, '../config/config'),
+      'config-claim': path.resolve(__dirname, '../config/claim'),
       contracts: path.resolve(__dirname, '../contracts/build')
     }
   },
@@ -94,16 +95,5 @@ module.exports = {
       test: /\.(png|woff|woff2|eot|ttf|svg|otf|gif)$/,
       loader: 'url-loader?limit=100000'
     }]
-  },
-  devServer: {
-    contentBase: path.join(__dirname, './'),
-    publicPath: '/assets/scripts/',
-    compress: true,
-    hot: true,
-    port: 9002,
-    host: '0.0.0.0',
-    watchOptions: {
-      ignored: /node_modules/
-    }
   }
 }
