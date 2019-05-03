@@ -2,7 +2,7 @@ import React from 'react'
 import { translate, actions } from 'decorators'
 import { LoadingBar } from 'components/common'
 import styles from './styles.module'
-import { TextCopyBlock, Input, Button } from 'linkdrop-ui-kit'
+import { TextCopyBlock, Input, Button, Checkbox } from 'linkdrop-ui-kit'
 import { LinkBlock } from 'components/pages/common'
 import QRCode from 'qrcode.react'
 import { copyToClipboard, getHashVariables } from 'linkdrop-commons'
@@ -10,7 +10,7 @@ import classNames from 'classnames'
 import text from 'texts'
 import configs from 'config-landing'
 
-@actions(({ user: { wallet, balance, alert }, tokens: { decimals, symbol } }) => ({ wallet, balance, alert, decimals, symbol }))
+@actions(({ user: { wallet, balance, alert }, tokens: { decimals, symbol, tokenId } }) => ({ wallet, balance, alert, decimals, symbol, tokenId }))
 @translate('pages.main')
 class TokensSend extends React.Component {
   constructor (props) {
@@ -19,13 +19,18 @@ class TokensSend extends React.Component {
       manualTokenCheck: false,
       tokenAddress: '',
       started: false,
-      manualStarted: false
+      manualStarted: false,
+      isERC721: false
     }
   }
 
-  componentWillReceiveProps ({ balance, decimals, symbol }) {
-    const { balance: prevBalance, onFinish, decimals: prevDecimals } = this.props
-    if (balance && balance > 0 && balance !== prevBalance) {
+  componentWillReceiveProps ({ balance, symbol, tokenId }) {
+    const { balance: prevBalance, onFinish, symbol: prevSymbol, tokenId: prevTokenId } = this.props
+    const { isERC721 } = this.state
+    if (
+      (balance && balance > 0 && balance !== prevBalance) ||
+      (tokenId != null && prevTokenId === null)
+    ) {
       this.intervalCheck && window.clearInterval(this.intervalCheck)
       this.manualTokensCheck && window.clearInterval(this.manualTokensCheck)
       this.alertTimeout && window.clearTimeout(this.alertTimeout)
@@ -33,15 +38,15 @@ class TokensSend extends React.Component {
         window.setTimeout(_ => onFinish && onFinish(), configs.showLinkTimeout)
       })
     }
-    if (prevDecimals === null && decimals != null && decimals !== prevDecimals) {
-      this.manualTokensCheck = window.setInterval(_ => this.actions().tokens.checkTokensManually(), configs.balanceCheckIntervalManual)
+    if (prevSymbol === null && symbol != null && symbol !== prevSymbol) {
+      this.manualTokensCheck = window.setInterval(_ => this.actions().tokens.checkTokensManually({ isERC721 }), configs.balanceCheckIntervalManual)
     }
   }
 
   render () {
-    const { tokensUploaded, manualTokenCheck, tokenAddress, started, manualStarted } = this.state || {}
+    const { tokensUploaded, manualTokenCheck, tokenAddress, started, manualStarted, isERC721 } = this.state || {}
     const { wallet, alert, symbol } = this.props
-    return manualTokenCheck ? this.renderManualTokenCheckScreen({ tokenAddress, manualStarted, symbol }) : this.renderOriginalScreen({ wallet, tokensUploaded, alert, started })
+    return manualTokenCheck ? this.renderManualTokenCheckScreen({ tokenAddress, manualStarted, symbol, isERC721 }) : this.renderOriginalScreen({ wallet, tokensUploaded, alert, started })
   }
 
   renderOriginalScreen ({ wallet, tokensUploaded, alert, started }) {
@@ -88,7 +93,7 @@ class TokensSend extends React.Component {
     })
   }
 
-  renderManualTokenCheckScreen ({ tokenAddress, manualStarted, symbol }) {
+  renderManualTokenCheckScreen ({ tokenAddress, manualStarted, symbol, isERC721 }) {
     return <LinkBlock title={this.t('titles.addManually')} style={{ height: 528 }}>
       <div className={classNames(styles.container, styles.containerCentered)}>
         <Input
@@ -100,25 +105,26 @@ class TokensSend extends React.Component {
           placeholder={this.t('titles.tokenAddress')}
         />
         {manualStarted ? <LoadingBar
-          className={styles.loading}
+          className={styles.secondaryLoading}
           loadingTitle={this.t('titles.waitingFor', { tokenSymbol: symbol })}
         /> : <Button
           disabled={!tokenAddress}
           className={styles.button}
-          onClick={_ => this.checkTokenAdressManually({ tokenAddress })}
+          onClick={_ => this.checkTokenAdressManually({ tokenAddress, isERC721 })}
         >
-          {text('common.buttons.send')}
+          {text('common.buttons.addToken')}
         </Button>}
+        <Checkbox disabled={manualStarted} checked={isERC721} onChange={({ value }) => this.setState({ isERC721: value })} title={this.t('titles.isERC721')} />
       </div>
     </LinkBlock>
   }
 
-  checkTokenAdressManually ({ tokenAddress }) {
+  checkTokenAdressManually ({ tokenAddress, isERC721 }) {
     this.setState({
       manualStarted: true
     }, _ => {
       this.intervalCheck && window.clearInterval(this.intervalCheck)
-      this.actions().tokens.getTokensData({ tokenAddress })
+      this.actions().tokens.getTokensData({ tokenAddress, isERC721 })
     })
   }
 

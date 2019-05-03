@@ -17,21 +17,6 @@ class FinalScreen extends React.Component {
     }
   }
 
-  // componentDidMount () {
-  //   const { wallet } = this.props
-  //   this.intervalCheckForClaim = window.setInterval(_ => {
-  //     this.actions().user.checkBalanceClaimed({ account: wallet })
-  //   }, 3000)
-  // }
-
-  // componentWillReceiveProps ({ claimed }) {
-  //   const { claimed: prevClaimed } = this.props
-  //   if (claimed != null && claimed && claimed !== prevClaimed) {
-  //     window.clearInterval(this.intervalCheckForClaim)
-  //     this.actions().user.emptyAllData()
-  //   }
-  // }
-
   render () {
     const { onClick, link } = this.props
     const { showQr } = this.state

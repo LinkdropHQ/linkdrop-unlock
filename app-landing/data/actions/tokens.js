@@ -6,46 +6,17 @@ class Tokens {
     this.actions = actions
   }
 
-  getTokensData ({ tokenAddress }) {
-    this.actions.dispatch({ type: '*TOKENS.GET_TOKENS_DATA', payload: { tokenAddress } })
+  getTokensData ({ tokenAddress, isERC721 }) {
+    this.actions.dispatch({ type: '*TOKENS.GET_TOKENS_DATA', payload: { tokenAddress, isERC721 } })
   }
 
-  checkTokensManually () {
-    this.actions.dispatch({ type: '*TOKENS.CHECK_TOKENS_MANUALLY' })
+  checkTokensManually ({ isERC721 }) {
+    this.actions.dispatch({ type: '*TOKENS.CHECK_TOKENS_MANUALLY', payload: { isERC721 } })
   }
 
   checkBalance ({ account }) {
     // checking current balance on account in network id
     this.actions.dispatch({ type: '*TOKENS.CHECK_BALANCE', payload: { account, networkId: n } })
-  }
-
-  checkBalanceClaimed ({ account }) {
-    // checking that balance was claimed by other user
-    this.actions.dispatch({ type: '*TOKENS.CHECK_BALANCE_CLAIMED', payload: { account, networkId: n } })
-  }
-
-  testClaimTokens ({
-    amount,
-    expirationTime,
-    linkKey,
-    n,
-    senderAddress,
-    senderSignature,
-    token
-  }) {
-    // just for testing that sdk works good
-    this.actions.dispatch({
-      type: '*TOKENS.TEST_CLAIM_TOKENS',
-      payload: {
-        amount,
-        expirationTime,
-        linkKey,
-        n,
-        senderAddress,
-        senderSignature,
-        token
-      }
-    })
   }
 }
 

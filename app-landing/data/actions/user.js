@@ -28,9 +28,14 @@ class User {
     this.actions.dispatch({ type: '*USER.CREATE_WALLET' })
   }
 
-  generateLink () {
-    // generate new link with sdk
-    this.actions.dispatch({ type: '*USER.GENERATE_LINK' })
+  generateERC20Link () {
+    // generate new link with sdk for erc-20
+    this.actions.dispatch({ type: '*USER.GENERATE_LINK_ERC20' })
+  }
+
+  generateERC721Link () {
+    // generate new link with sdk for erc-721
+    this.actions.dispatch({ type: '*USER.GENERATE_LINK_ERC721' })
   }
 
   emptyAllData () {

@@ -2,6 +2,7 @@ import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import config from 'config'
 import TokenMock from 'contracts/TokenMock.json'
+import NFTMock from 'contracts/NFTMock.json'
 
 import { defineNetworkName } from 'linkdrop-commons'
 
@@ -9,8 +10,9 @@ const generator = function * ({ payload }) {
   try {
     const ethWalletContract = ethers.constants.AddressZero
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    const { tokenAddress } = payload
+    const { tokenAddress, isERC721 } = payload
     yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress } })
+    yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: isERC721 ? 'erc721' : 'erc20' } })
     const networkName = defineNetworkName({ networkId: config.networkId })
     const provider = yield ethers.getDefaultProvider(networkName)
     let symbol
@@ -19,9 +21,14 @@ const generator = function * ({ payload }) {
       symbol = 'ETH'
       decimals = 18
     } else {
-      const tokenContract = yield new ethers.Contract(tokenAddress, TokenMock.abi, provider)
-      decimals = yield tokenContract.decimals()
-      symbol = yield tokenContract.symbol()
+      if (isERC721) {
+        const tokenContract = yield new ethers.Contract(tokenAddress, NFTMock.abi, provider)
+        symbol = yield tokenContract.symbol()
+      } else {
+        const tokenContract = yield new ethers.Contract(tokenAddress, TokenMock.abi, provider)
+        decimals = yield tokenContract.decimals()
+        symbol = yield tokenContract.symbol()
+      }
     }
 
     if (decimals != null) {

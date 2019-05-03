@@ -95,23 +95,5 @@ module.exports = {
       test: /\.(png|woff|woff2|eot|ttf|svg|otf|gif)$/,
       loader: 'url-loader?limit=100000'
     }]
-  },
-  devServer: {
-    contentBase: path.join(__dirname, './'),
-    publicPath: '/assets/scripts/',
-    compress: true,
-    hot: true,
-    port: 9001,
-    host: '0.0.0.0',
-    watchOptions: {
-      ignored: /node_modules/
-    },
-    proxy: {
-      '/api/v1/linkdrops/**': {
-        target: 'http://localhost:5000',
-        secure: false,
-        changeOrigin: true
-      }
-    }
   }
 }

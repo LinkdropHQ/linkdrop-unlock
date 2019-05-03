@@ -28,7 +28,8 @@ export default {
     addManually: 'Add token address manually',
     footerAddManually: '<span>Add manually</span>',
     tokenAddress: 'Token address',
-    waitingFor: 'Waiting for {{tokenSymbol}}...'
+    waitingFor: 'Waiting for {{tokenSymbol}}...',
+    isERC721: 'is it ERC-721?'
   },
   descriptions: {
     sendTokens: 'Simply send your funds to our secure contract and generate the crypto link',
