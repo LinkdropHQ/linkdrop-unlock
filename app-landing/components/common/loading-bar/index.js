@@ -7,30 +7,45 @@ import classNames from 'classnames'
 @translate('components.loadingBar')
 class LoadingBar extends React.Component {
   render () {
-    const { className, success } = this.props
-    return <div className={classNames(styles.container, className)}>
-      {this.renderLoading({ success })}
-      {this.renderTitle({ success })}
+    const { className, success, alert, onClick, loadingTitle } = this.props
+    return <div
+      className={classNames(styles.container, className, { [styles.alert]: alert })}
+      onClick={_ => alert && onClick && onClick()}
+    >
+      {this.renderLoading({ success, alert })}
+      {this.renderTitle({ success, alert, loadingTitle })}
     </div>
   }
 
-  renderLoading ({ success }) {
+  renderLoading ({ success, alert }) {
+    if (alert) {
+      return null
+    }
+
     if (!success) {
       return <div className={styles.loading}>
         <div /><div /><div /><div />
       </div>
     }
+
     return <div className={styles.icon}>
       <Icons.CheckSmall fill='#2BC64F' />
     </div>
   }
 
-  renderTitle ({ success }) {
-    if (!success) {
-      return <div className={styles.title}>
-        {this.t('waiting')}
+  renderTitle ({ success, alert, loadingTitle }) {
+    if (alert) {
+      return <div className={classNames(styles.title, styles.titleAlert)}>
+        {alert}
       </div>
     }
+
+    if (!success) {
+      return <div className={styles.title}>
+        {loadingTitle || this.t('waiting')}
+      </div>
+    }
+
     return <div className={classNames(styles.title, styles.titleSuccess)}>
       {this.t('success')}
     </div>

@@ -1,5 +1,3 @@
-import config from 'config'
-
 class User {
   constructor (actions) {
     this.actions = actions
@@ -25,24 +23,19 @@ class User {
     this.actions.dispatch({ type: 'USER.SET_LOADING', payload: { loading } })
   }
 
-  checkBalance ({ account }) {
-    // checking current balance on account in network id
-    this.actions.dispatch({ type: '*USER.CHECK_BALANCE', payload: { account, networkId: config.networkId } })
-  }
-
-  checkBalanceClaimed ({ account }) {
-    // checking that balance was claimed by other user
-    this.actions.dispatch({ type: '*USER.CHECK_BALANCE_CLAIMED', payload: { account, networkId: config.networkId } })
-  }
-
   createWallet () {
     // create new wallet and then create proxy address
     this.actions.dispatch({ type: '*USER.CREATE_WALLET' })
   }
 
-  generateLink () {
-    // generate new link with sdk
-    this.actions.dispatch({ type: '*USER.GENERATE_LINK' })
+  generateERC20Link () {
+    // generate new link with sdk for erc-20
+    this.actions.dispatch({ type: '*USER.GENERATE_LINK_ERC20' })
+  }
+
+  generateERC721Link () {
+    // generate new link with sdk for erc-721
+    this.actions.dispatch({ type: '*USER.GENERATE_LINK_ERC721' })
   }
 
   emptyAllData () {
@@ -63,28 +56,8 @@ class User {
     })
   }
 
-  testClaimTokens ({
-    amount,
-    expirationTime,
-    linkKey,
-    n,
-    senderAddress,
-    senderSignature,
-    token
-  }) {
-    // just for testing that sdk works good
-    this.actions.dispatch({
-      type: '*USER.TEST_CLAIM_TOKENS',
-      payload: {
-        amount,
-        expirationTime,
-        linkKey,
-        n,
-        senderAddress,
-        senderSignature,
-        token
-      }
-    })
+  setAlert ({ alert }) {
+    this.actions.dispatch({ type: 'USER.SET_ALERT', payload: { alert } })
   }
 }
 

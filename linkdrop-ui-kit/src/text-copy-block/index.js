@@ -28,13 +28,13 @@ class TextCopyBlock extends React.Component {
     const { blink } = this.state
     const { value = '', className, style = {}, onClick } = this.props
     return <div style={style} className={classNames(styles.container, className)}>
-      {blink && <div className={styles.copyOverlay}>Copied!</div>}
       <div className={styles.content}>
         {value}
       </div>
       <div className={styles.copyContent} onClick={_ => this.onCopy({ value, onClick })}>
         Copy
       </div>
+      {blink && <div className={styles.copyOverlay}>Copied!</div>}
     </div>
   }
 
