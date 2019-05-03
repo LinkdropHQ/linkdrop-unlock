@@ -38,7 +38,7 @@ const generator = function * ({ payload }) {
     }
     // if step is not 0, then it means that checking goes in interval, so we can stop current check if all balances are empty
 
-    // dont know if it is a good idea, but I check balance with total of tokens
+    // dont know if it is a good idea, but I check balance with total amount of tokens
     if (Number(balanceFormatted) === 0 && erc721Balance.length === 0 && Number(erc20Balance.total) === 0) {
       return yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
     }
@@ -50,6 +50,7 @@ const generator = function * ({ payload }) {
     // if ERC-721 found on address -> set this token id to store
     if (erc721Balance.length > 0) {
       yield put({ type: 'TOKENS.SET_TOKEN_ID', payload: { tokenId: erc721Balance[0].token_id } })
+      yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress: erc721Balance[0].asset_contract.address } })
     }
 
     // if ERC-20 found on address -> set this balance to store

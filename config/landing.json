@@ -5,5 +5,6 @@
   "showManualTimeout": 20000,
   "openseaMainnet": "https://api.opensea.io",
   "openseaRinkeby": "https://rinkeby-api.opensea.io",
-  "trustWallet": "https://api.trustwalletapp.com"
+  "trustWallet": "https://api.trustwalletapp.com",
+  "expirationTime": 1900000000000000
 }

@@ -2,8 +2,9 @@ import { put, select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import LinkdropSDK from 'sdk/src/index'
 import { jsonRpcUrl, networkId, host } from 'config'
-const localStorage = window.localStorage
+import configs from 'config-landing'
 
+const localStorage = window.localStorage
 const generator = function * () {
   try {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
@@ -18,7 +19,7 @@ const generator = function * () {
       privateKey,
       tokenAddress || ethersContractZeroAddress,
       balance,
-      1900000000000000
+      configs.expirationTime
     )
 
     yield put({ type: 'USER.SET_LINK', payload: { link: link.url } })
