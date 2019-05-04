@@ -12,6 +12,7 @@ import Slider from './slider'
 import RetinaImage from './retina-image'
 import TextControlBlock from './text-control-block'
 import TextCopyBlock from './text-copy-block'
+import Checkbox from './checkbox'
 
 export {
   Footer,
@@ -27,5 +28,6 @@ export {
   Slider,
   RetinaImage,
   TextControlBlock,
-  TextCopyBlock
+  TextCopyBlock,
+  Checkbox
 }

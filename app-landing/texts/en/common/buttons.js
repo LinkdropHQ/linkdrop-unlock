@@ -4,5 +4,6 @@ export default {
   cancel: 'Cancel',
   back: 'Back',
   transfers: 'Transfers',
-  claim: 'Claim'
+  claim: 'Claim',
+  addToken: 'Add tokens'
 }

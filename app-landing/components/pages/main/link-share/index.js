@@ -6,9 +6,9 @@ import classNames from 'classnames'
 import { LinkBlock, QrShare } from 'components/pages/common'
 import { copyToClipboard } from 'linkdrop-commons'
 
-@actions(({ user: { link, loading } }) => ({ link, loading }))
+@actions(({ user: { link, loading }, tokens: { standard } }) => ({ link, loading, standard }))
 @translate('pages.main')
-class LinkSahre extends React.Component {
+class LinkShare extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -17,7 +17,13 @@ class LinkSahre extends React.Component {
   }
 
   componentDidMount () {
-    this.actions().user.generateLink()
+    const { standard, link } = this.props
+    if (link) { return }
+    if (standard === 'erc20') {
+      this.actions().user.generateERC20Link()
+    } else {
+      this.actions().user.generateERC721Link()
+    }
   }
 
   render () {
@@ -62,6 +68,6 @@ class LinkSahre extends React.Component {
   }
 }
 
-export default LinkSahre
+export default LinkShare
 
 const ALERT_COLOR = '#2BC64F'

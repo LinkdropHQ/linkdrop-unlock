@@ -10,30 +10,28 @@ import LearnMore from './learn-more'
 import TrustedBy from './trusted-by'
 import LoadingScreen from './loading-screen'
 
-@actions(({ user: { step, balance, wallet } }) => ({ step, balance, wallet }))
+@actions(({ user: { step, balance, wallet, link } }) => ({ step, balance, wallet, link }))
 @translate('pages.main')
 class Main extends React.Component {
   componentDidMount () {
-    const { wallet } = this.props
+    const { wallet, link } = this.props
+    // if has no wallet, then generate new one
     if (!wallet) {
-      this.actions().user.createWallet()
+      return this.actions().user.createWallet()
     }
+    // if has link, then bring to final screen directly
+    if (link) {
+      this.actions().user.setStep({ step: 4 })
+    }
+
+    // otherwise do the initial check
+    this.actions().tokens.checkBalance({ account: wallet })
   }
 
   componentWillReceiveProps ({ wallet, step }) {
-    const { step: prevStep, wallet: prevWallet } = this.props
+    const { wallet: prevWallet } = this.props
     if (step != null && step === 0 && wallet && wallet !== prevWallet) {
-      return this.actions().user.checkBalance({ account: wallet })
-    }
-
-    if (
-      step === 0 && // step property gets value 0
-      prevStep !== 0 && // previous value of step property wasn't 0
-      prevStep != null && // previous step isn't null
-      wallet === null && // new value of wallet property is null
-      prevWallet != null // previous value of wallet property wasn't equal to null
-    ) {
-      this.actions().user.createWallet() // that means we have to create new wallet
+      return this.actions().tokens.checkBalance({ account: wallet })
     }
   }
 

@@ -7,7 +7,7 @@ import setBalance from './set-balance'
 import setLink from './set-link'
 import setPrivateKey from './set-private-key'
 import setClaimedStatus from './set-claimed-status'
-import setAllData from './set-all-data'
+import setAlert from './set-alert'
 
 export default {
   changeLocale,
@@ -19,5 +19,5 @@ export default {
   setLink,
   setPrivateKey,
   setClaimedStatus,
-  setAllData
+  setAlert
 }

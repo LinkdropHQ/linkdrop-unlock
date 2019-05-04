@@ -12,7 +12,8 @@ import {
   Slider,
   RetinaImage,
   TextControlBlock,
-  TextCopyBlock
+  TextCopyBlock,
+  Checkbox
 } from './dist/bundle.js'
 
 export {
@@ -29,5 +30,6 @@ export {
   Slider,
   RetinaImage,
   TextControlBlock,
-  TextCopyBlock
+  TextCopyBlock,
+  Checkbox
 }

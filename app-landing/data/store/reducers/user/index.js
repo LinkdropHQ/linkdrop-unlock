@@ -1,17 +1,22 @@
 import reducers from './reducers'
+const localStorage = window.localStorage
+const initialWallet = localStorage && localStorage.getItem('wallet')
+const initialLink = localStorage && localStorage.getItem('link')
+const initialPrivateKey = localStorage && localStorage.getItem('privateKey')
 
 const initialState = {
   id: undefined,
   locale: 'en',
-  wallet: null,
+  wallet: initialWallet || null,
   step: 0,
   loading: false,
   errors: [],
   balance: null,
   balanceFormatted: null,
-  link: null,
-  privateKey: null,
-  claimed: false
+  link: initialLink || null,
+  privateKey: initialPrivateKey || null,
+  claimed: false,
+  alert: null
 }
 
 export default (state = initialState, action = {}) => {
@@ -19,7 +24,6 @@ export default (state = initialState, action = {}) => {
   const { type } = action
   const actionMethod = ACTIONS[type]
   if (!actionMethod) return newState
-
   return actionMethod(newState, action)
 }
 
@@ -33,5 +37,5 @@ const ACTIONS = {
   'USER.SET_LINK': reducers.setLink,
   'USER.SET_PRIVATE_KEY': reducers.setPrivateKey,
   'USER.SET_CLAIMED_STATUS': reducers.setClaimedStatus,
-  'USER.SET_ALL_DATA': reducers.setAllData
+  'USER.SET_ALERT': reducers.setAlert
 }

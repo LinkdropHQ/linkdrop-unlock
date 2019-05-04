@@ -10,13 +10,13 @@
   font-size: 22px;
   color: $black;
   outline: none;
+  padding: 0 10px;
 }
 
 .disabled {
   opacity: .6;
   cursor: not-allowed;
 }
-
 
 .container::placeholder {
   color: $black;
