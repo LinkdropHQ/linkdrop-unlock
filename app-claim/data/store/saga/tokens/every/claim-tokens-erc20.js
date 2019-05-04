@@ -5,7 +5,6 @@ import LinkdropSDK from 'sdk/src/index'
 const generator = function * ({ payload }) {
   try {
     const { wallet, token, tokenAmount: amount, expirationTime, linkKey, senderAddress, senderSignature } = payload
-    // тут доступны эти данные уже
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const result = yield LinkdropSDK.claim(
       jsonRpcUrl,
