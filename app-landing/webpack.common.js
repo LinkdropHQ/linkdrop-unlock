@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 
 const CSSModuleLoader = {
   loader: 'css-loader',
@@ -95,5 +96,8 @@ module.exports = {
       test: /\.(png|woff|woff2|eot|ttf|svg|otf|gif)$/,
       loader: 'url-loader?limit=100000'
     }]
-  }
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ]
 }
