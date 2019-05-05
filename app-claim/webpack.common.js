@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const path = require('path')
 
 const CSSModuleLoader = {
@@ -55,6 +56,7 @@ module.exports = {
     alias: {
       wallets: path.resolve(__dirname, '../config/wallets'),
       config: path.resolve(__dirname, '../config/config'),
+      'config-claim': path.resolve(__dirname, '../config/claim'),
       contracts: path.resolve(__dirname, '../contracts/build')
     }
   },
@@ -95,15 +97,7 @@ module.exports = {
       loader: 'url-loader?limit=100000'
     }]
   },
-  devServer: {
-    contentBase: path.join(__dirname, './'),
-    publicPath: '/assets/scripts/',
-    compress: true,
-    hot: true,
-    port: 9002,
-    host: '0.0.0.0',
-    watchOptions: {
-      ignored: /node_modules/
-    }
-  }
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ]
 }

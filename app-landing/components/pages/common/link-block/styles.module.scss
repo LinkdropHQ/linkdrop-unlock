@@ -16,6 +16,17 @@
   width: 100%;
 }
 
+.invisibleButton {
+  position: absolute;
+  z-index: 10000;
+  top: 0;
+  right: 0px;
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
+  opacity: 0;
+}
+
 .title {
   font-size: 22px;
   text-align: center;

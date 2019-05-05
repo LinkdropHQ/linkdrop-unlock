@@ -9,7 +9,7 @@ import ClaimingFinishedPage from './claiming-finished-page'
 import { getHashVariables } from 'linkdrop-commons'
 import { Web3Consumer } from 'web3-react'
 
-@actions(({ user: { errors, step, loading: userLoading, transactionId }, contract: { loading, decimals, amount, symbol, icon } }) => ({
+@actions(({ user: { errors, step, loading: userLoading }, tokens: { transactionId }, contract: { loading, decimals, amount, symbol, icon } }) => ({
   userLoading,
   loading,
   decimals,
@@ -23,8 +23,14 @@ import { Web3Consumer } from 'web3-react'
 @translate('pages.claim')
 class Claim extends React.Component {
   componentDidMount () {
-    const { token, amount, expirationTime, n } = getHashVariables({ })
-    console.log({ token, amount, expirationTime, n })
+    const {
+      token,
+      amount,
+      expirationTime,
+      n,
+      nft,
+      tokenId
+    } = getHashVariables()
     // params in url:
     // token - contract/token address,
     // amount - tokens amount,
@@ -48,7 +54,11 @@ class Claim extends React.Component {
       // show error page if link expired
       return this.actions().user.setErrors({ errors: ['LINK_EXPIRED'] })
     }
-    this.actions().contract.getTokenData({ tokenAddress: token, amount, networkId: n })
+
+    if (nft && tokenId) {
+      return this.actions().contract.getTokenERC721Data({ nft, tokenId, networkId: n })
+    }
+    this.actions().contract.getTokenERC20Data({ tokenAddress: token, amount, networkId: n })
   }
 
   render () {
@@ -58,7 +68,7 @@ class Claim extends React.Component {
   }
 
   renderCurrentPage ({ context }) {
-    const { decimals, amount, symbol, icon, step, userLoading, transactionId, errors } = this.props
+    const { decimals, amount, symbol, icon, step, userLoading, errors } = this.props
     // in context we can find:
     // active,
     // connectorName,
@@ -105,13 +115,11 @@ class Claim extends React.Component {
         // claiming is in process
         return <ClaimingProcessPage
           {...commonData}
-          transactionId={transactionId}
         />
       case 5:
         // claiming finished successfully
         return <ClaimingFinishedPage
           {...commonData}
-          transactionId={transactionId}
         />
       default:
         // зloading
