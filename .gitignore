@@ -16,4 +16,4 @@ scripts/output
 config.json
 
 app-claim/node_modules/
-app-claim/components/pages/index.js
+app-claim/assets/scripts/
