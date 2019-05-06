@@ -24,4 +24,4 @@ const renderImage = ({ id, walletType, selectWallet }) => {
   </div>
 }
 
-const WALLETS = ['trust', 'coinbase', 'opera', 'imtoken', 'status', 'tokenpocket', 'gowallet', 'buntoy']
+const WALLETS = ['trust', 'Coinbase', 'Opera', 'imtoken', 'Status', 'tokenpocket', 'gowallet', 'buntoy']

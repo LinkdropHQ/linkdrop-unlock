@@ -35,7 +35,7 @@ export default {
       }
     }
   },
-  opera: {
+  Opera: {
     id: 'opera',
     name: 'Opera',
     walletURL: 'https://play.google.com/store/apps/details?id=com.opera.browser',
@@ -51,7 +51,7 @@ export default {
       }
     }
   },
-  status: {
+  Status: {
     id: 'status',
     name: 'Status',
     walletURL: 'https://status.im/',
@@ -83,7 +83,7 @@ export default {
       }
     }
   },
-  coinbase: {
+  Coinbase: {
     id: 'coinbase_wallet',
     name: 'Coinbase Wallet',
     walletURL: 'https://www.toshi.org',
