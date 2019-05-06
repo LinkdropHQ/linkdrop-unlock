@@ -1,7 +1,7 @@
 import { put, select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import LinkdropSDK from 'sdk/src/index'
-import { jsonRpcUrl, networkId, host } from 'config'
+import { jsonRpcUrl, networkId, claimHost } from 'config'
 import configs from 'config-landing'
 
 const localStorage = window.localStorage
@@ -15,7 +15,7 @@ const generator = function * () {
     const link = yield LinkdropSDK.generateLink(
       jsonRpcUrl,
       networkId,
-      host,
+      claimHost,
       privateKey,
       tokenAddress || ethersContractZeroAddress,
       balance,
