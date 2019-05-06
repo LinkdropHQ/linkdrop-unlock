@@ -14,3 +14,11 @@ scripts/output
 # Configs
 .env
 config.json
+
+app-claim/node_modules/
+app-claim/assets/scripts/
+
+app-landing/node_modules/
+app-landing/assets/scripts/
+
+linkdrop-ui-kit/dist/

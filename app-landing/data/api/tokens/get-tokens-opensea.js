@@ -8,6 +8,6 @@ export default ({ wallet, orderBy = 'current_price', orderDirection = 'asc', net
     order_direction: orderDirection,
     owner: wallet
   })
-  const host = networkId === 4 ? configs.openseaRinkeby : configs.openseaMainnet
+  const host = Number(networkId) === 4 ? configs.openseaRinkeby : configs.openseaMainnet
   return fetch(`${host}/api/v1/assets/${getParams}`)
 }
