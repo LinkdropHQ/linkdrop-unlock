@@ -1,5 +1,5 @@
 import { put } from 'redux-saga/effects'
-import { jsonRpcUrl, host } from 'config'
+import { jsonRpcUrl, apiHost } from 'config'
 import LinkdropSDK from 'sdk/src/index'
 
 const generator = function * ({ payload }) {
@@ -8,7 +8,7 @@ const generator = function * ({ payload }) {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const result = yield LinkdropSDK.claim(
       jsonRpcUrl,
-      host,
+      apiHost,
       token,
       amount,
       expirationTime,
