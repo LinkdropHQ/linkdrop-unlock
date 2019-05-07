@@ -1,0 +1,14 @@
+{
+    "jsonRpcUrl": "",
+    "host": "",
+    "networkId": "",
+    "senderPrivateKey": "",
+    "masterCopy": "",
+    "factory": "",
+    "receiverAddress": "",
+    "token": "",
+    "amount": "",
+    "linksNumber": "",
+    "nft": "",
+    "nftIds": ""
+}
