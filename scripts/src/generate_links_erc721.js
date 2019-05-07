@@ -4,7 +4,7 @@ import { getFactoryAddress, getMasterCopyAddress } from './utils'
 import LinkdropSDK from '../../sdk/src/index'
 const ethers = require('ethers')
 const path = require('path')
-const configPath = path.resolve(__dirname, '../../config/config.json')
+const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
 const config = require(configPath)
 
 let { jsonRpcUrl, senderPrivateKey, nft, nftIds } = config
