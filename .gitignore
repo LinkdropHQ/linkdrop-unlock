@@ -14,6 +14,8 @@ scripts/output
 # Configs
 .env
 config.json
+server.config.json
+scripts.config.json
 
 app-claim/node_modules/
 app-claim/assets/scripts/

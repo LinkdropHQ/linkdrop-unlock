@@ -11,6 +11,6 @@ app.listen(PORT, () => console.log(`Running server on port ${PORT}`))
 
 const claimController = require('./controllers/claimController')
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => res.send('Hello from linkdrop server'))
 app.post('/api/v1/linkdrops/claim', claimController.claim)
 app.post('/api/v1/linkdrops/claim-erc721', claimController.claimERC721)
