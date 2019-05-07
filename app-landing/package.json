@@ -9,7 +9,7 @@
     "dev": "webpack --watch --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "dev:server": "webpack-dev-server --hot --inline --config webpack.dev.js",
-    "test-saga": "NODE_PATH=. mocha test/saga/**/*.js --require @babel/register --require ignore-styles --recursive"
+    "test": "NODE_PATH=. mocha test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.4.0",

@@ -6,7 +6,7 @@ import WalletChoosePage from './wallet-choose-page'
 import ClaimingProcessPage from './claiming-process-page'
 import ErrorPage from './error-page'
 import ClaimingFinishedPage from './claiming-finished-page'
-import { getHashVariables } from 'linkdrop-commons'
+import { getHashVariables, defineNetworkName, capitalize } from 'linkdrop-commons'
 import { Web3Consumer } from 'web3-react'
 
 @actions(({ user: { errors, step, loading: userLoading }, tokens: { transactionId }, contract: { loading, decimals, amount, symbol, icon } }) => ({
@@ -78,9 +78,16 @@ class Claim extends React.Component {
     // account,
     // error
     const {
-      account
+      account,
+      networkId
     } = context
+    const {
+      n
+    } = getHashVariables()
     const commonData = { decimals, amount, symbol, icon, wallet: account, loading: userLoading }
+    // if (Number(n) !== Number(networkId)) {
+    //   return <ErrorPage error={'NETWORK_NOT_SUPPORTED'} network={capitalize({ string: defineNetworkName({ networkId: n }) })} />
+    // }
     if (errors && errors.length > 0) {
       // if some errors occured and can be found in redux store, then show error page
       return <ErrorPage error={errors[0]} />
