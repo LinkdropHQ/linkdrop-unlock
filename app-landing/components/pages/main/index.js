@@ -9,11 +9,13 @@ import FinalScreen from './final-screen'
 import LearnMore from './learn-more'
 import TrustedBy from './trusted-by'
 import LoadingScreen from './loading-screen'
+import { getHashVariables } from 'linkdrop-commons'
 
 @actions(({ user: { step, balance, wallet, link } }) => ({ step, balance, wallet, link }))
 @translate('pages.main')
 class Main extends React.Component {
   componentDidMount () {
+    const { n } = getHashVariables()
     const { wallet, link } = this.props
     // if has no wallet, then generate new one
     if (!wallet) {
@@ -25,13 +27,14 @@ class Main extends React.Component {
     }
 
     // otherwise do the initial check
-    this.actions().tokens.checkBalance({ account: wallet })
+    this.actions().tokens.checkBalance({ account: wallet, networkId: n })
   }
 
   componentWillReceiveProps ({ wallet, step }) {
+    const { n } = getHashVariables()
     const { wallet: prevWallet } = this.props
     if (step != null && step === 0 && wallet && wallet !== prevWallet) {
-      return this.actions().tokens.checkBalance({ account: wallet })
+      return this.actions().tokens.checkBalance({ account: wallet, networkId: n })
     }
   }
 

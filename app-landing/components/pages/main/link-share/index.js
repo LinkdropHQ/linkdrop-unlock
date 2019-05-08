@@ -4,7 +4,7 @@ import styles from './styles.module'
 import { Alert, Button, TextControlBlock, Icons } from 'linkdrop-ui-kit'
 import classNames from 'classnames'
 import { LinkBlock, QrShare } from 'components/pages/common'
-import { copyToClipboard } from 'linkdrop-commons'
+import { copyToClipboard, getHashVariables } from 'linkdrop-commons'
 
 @actions(({ user: { link, loading }, tokens: { standard } }) => ({ link, loading, standard }))
 @translate('pages.main')
@@ -18,11 +18,14 @@ class LinkShare extends React.Component {
 
   componentDidMount () {
     const { standard, link } = this.props
+    const {
+      n
+    } = getHashVariables()
     if (link) { return }
     if (standard === 'erc20') {
-      this.actions().user.generateERC20Link()
+      this.actions().user.generateERC20Link({ networkId: n })
     } else {
-      this.actions().user.generateERC721Link()
+      this.actions().user.generateERC721Link({ networkId: n })
     }
   }
 

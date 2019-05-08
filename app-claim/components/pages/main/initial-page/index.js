@@ -31,7 +31,7 @@ class InitialPage extends React.Component {
     const { iconType } = this.state
     const finalIcon = iconType === 'default' ? <img onError={_ => this.setState({ iconType: 'blank' })} className={styles.icon} src={icon} /> : <Icons.Star />
     return <Web3Consumer>{context => <div className={commonStyles.container}>
-      <Alert noBorder={iconType === 'default'} className={styles.tokenIcon} icon={finalIcon} />
+      <Alert noBorder={iconType === 'default' && symbol !== 'ETH'} className={styles.tokenIcon} icon={finalIcon} />
       <div className={styles.title}>
         <span>{amount}</span> {symbol}
       </div>

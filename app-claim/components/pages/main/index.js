@@ -9,7 +9,7 @@ import ClaimingFinishedPage from './claiming-finished-page'
 import { getHashVariables, defineNetworkName, capitalize } from 'linkdrop-commons'
 import { Web3Consumer } from 'web3-react'
 
-@actions(({ user: { errors, step, loading: userLoading }, tokens: { transactionId }, contract: { loading, decimals, amount, symbol, icon } }) => ({
+@actions(({ user: { errors, step, loading: userLoading, readyToClaim, alreadyClaimed }, tokens: { transactionId }, contract: { loading, decimals, amount, symbol, icon } }) => ({
   userLoading,
   loading,
   decimals,
@@ -18,11 +18,28 @@ import { Web3Consumer } from 'web3-react'
   icon,
   step,
   transactionId,
-  errors
+  errors,
+  alreadyClaimed,
+  readyToClaim
 }))
 @translate('pages.claim')
 class Claim extends React.Component {
   componentDidMount () {
+    const {
+      senderAddress,
+      n
+    } = getHashVariables()
+    this.actions().tokens.checkIfClaimed({ account: senderAddress, networkId: n })
+  }
+
+  componentWillReceiveProps ({ readyToClaim, alreadyClaimed }) {
+    const { readyToClaim: prevReadyToClaim } = this.props
+    if (
+      (readyToClaim === true && prevReadyToClaim === true) ||
+      readyToClaim == null ||
+      readyToClaim === false ||
+      alreadyClaimed == null
+    ) { return }
     const {
       token,
       amount,
@@ -85,13 +102,22 @@ class Claim extends React.Component {
       n
     } = getHashVariables()
     const commonData = { decimals, amount, symbol, icon, wallet: account, loading: userLoading }
-    // if (Number(n) !== Number(networkId)) {
-    //   return <ErrorPage error={'NETWORK_NOT_SUPPORTED'} network={capitalize({ string: defineNetworkName({ networkId: n }) })} />
-    // }
+    if (Number(n) !== Number(networkId)) {
+      // if network id in the link and in the web3 are different
+      return <ErrorPage error={'NETWORK_NOT_SUPPORTED'} network={capitalize({ string: defineNetworkName({ networkId: n }) })} />
+    }
     if (errors && errors.length > 0) {
       // if some errors occured and can be found in redux store, then show error page
       return <ErrorPage error={errors[0]} />
     }
+
+    // if (alreadyClaimed) {
+    //   // if tokens we already claimed (if wallet is totally empty).
+    // right now we decided to close this check, because we have to prepare endpoint to check it on serverside
+    //   return <ClaimingFinishedPage
+    //     {...commonData}
+    //   />
+    // }
     switch (step) {
       case 1:
         return <InitialPage

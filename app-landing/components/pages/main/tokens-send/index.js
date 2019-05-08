@@ -26,6 +26,7 @@ class TokensSend extends React.Component {
 
   componentWillReceiveProps ({ balance, symbol, tokenId }) {
     const { balance: prevBalance, onFinish, symbol: prevSymbol, tokenId: prevTokenId } = this.props
+    const { n } = getHashVariables()
     const { isERC721 } = this.state
     if (
       (balance && balance > 0 && balance !== prevBalance) ||
@@ -39,7 +40,7 @@ class TokensSend extends React.Component {
       })
     }
     if (prevSymbol === null && symbol != null && symbol !== prevSymbol) {
-      this.manualTokensCheck = window.setInterval(_ => this.actions().tokens.checkTokensManually({ isERC721 }), configs.balanceCheckIntervalManual)
+      this.manualTokensCheck = window.setInterval(_ => this.actions().tokens.checkTokensManually({ isERC721, networkId: n }), configs.balanceCheckIntervalManual)
     }
   }
 
@@ -50,7 +51,7 @@ class TokensSend extends React.Component {
   }
 
   renderOriginalScreen ({ wallet, tokensUploaded, alert, started }) {
-    const { n } = getHashVariables({})
+    const { n } = getHashVariables()
     return <LinkBlock title={this.t('titles.sendTokensToAddress')} style={{ height: 528 }}>
       <div className={classNames(styles.container, {
         [styles.rinkeby]: n === '4'
@@ -84,16 +85,18 @@ class TokensSend extends React.Component {
   }
 
   startSearchingForTokens () {
+    const { n } = getHashVariables()
     this.setState({
       started: true
     }, _ => {
       const { wallet } = this.props
-      this.intervalCheck = window.setInterval(_ => this.actions().tokens.checkBalance({ account: wallet }), configs.balanceCheckInterval)
+      this.intervalCheck = window.setInterval(_ => this.actions().tokens.checkBalance({ account: wallet, networkId: n }), configs.balanceCheckInterval)
       this.alertTimeout = window.setTimeout(_ => this.actions().user.setAlert({ alert: this.t('errors.addManually') }), configs.showManualTimeout)
     })
   }
 
   renderManualTokenCheckScreen ({ tokenAddress, manualStarted, symbol, isERC721 }) {
+    const { n } = getHashVariables()
     return <LinkBlock title={this.t('titles.addManually')} style={{ height: 528 }}>
       <div className={classNames(styles.container, styles.containerCentered)}>
         <Input
@@ -110,7 +113,7 @@ class TokensSend extends React.Component {
         /> : <Button
           disabled={!tokenAddress}
           className={styles.button}
-          onClick={_ => this.checkTokenAdressManually({ tokenAddress, isERC721 })}
+          onClick={_ => this.checkTokenAdressManually({ tokenAddress, isERC721, networkId: n })}
         >
           {text('common.buttons.addToken')}
         </Button>}
@@ -119,12 +122,12 @@ class TokensSend extends React.Component {
     </LinkBlock>
   }
 
-  checkTokenAdressManually ({ tokenAddress, isERC721 }) {
+  checkTokenAdressManually ({ tokenAddress, isERC721, networkId }) {
     this.setState({
       manualStarted: true
     }, _ => {
       this.intervalCheck && window.clearInterval(this.intervalCheck)
-      this.actions().tokens.getTokensData({ tokenAddress, isERC721 })
+      this.actions().tokens.getTokensData({ tokenAddress, isERC721, networkId })
     })
   }
 

@@ -6,7 +6,9 @@ const initialState = {
   step: 0,
   loading: false,
   errors: [],
-  walletType: null
+  walletType: null,
+  readyToClaim: false,
+  alreadyClaimed: false
 }
 
 export default (state = initialState, action = {}) => {
@@ -23,5 +25,7 @@ const ACTIONS = {
   'USER.SET_STEP': reducers.setStep,
   'USER.SET_LOADING': reducers.setLoading,
   'USER.SET_ERRORS': reducers.setErrors,
-  'USER.SET_WALLET_TYPE': reducers.setWalletType
+  'USER.SET_WALLET_TYPE': reducers.setWalletType,
+  'USER.SET_READY_TO_CLAIM': reducers.setReadyToClaim,
+  'USER.SET_ALREADY_CLAIMED': reducers.setAlreadyClaimed
 }
