@@ -1,5 +1,8 @@
 import Factory from '../../contracts/build/Factory'
 import LinkdropSDK from '../../sdk/src/index'
+import ClaimTx from '../models/claimTx'
+import ClaimTxERC721 from '../models/claimTxERC721'
+
 const ethers = require('ethers')
 const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/server.config.json')
@@ -63,17 +66,28 @@ export const claim = async (req, res) => {
     throw new Error('Please provide receiver signature')
   }
 
-  let proxyFactory = new ethers.Contract(factory, Factory.abi, relayer)
+  const proxyFactory = new ethers.Contract(factory, Factory.abi, relayer)
 
   try {
-    let masterCopyAddr = await proxyFactory.masterCopy()
+    const masterCopyAddr = await proxyFactory.masterCopy()
 
-    let proxyAddr = await LinkdropSDK.computeProxyAddress(
+    const proxyAddress = await LinkdropSDK.computeProxyAddress(
       factory,
       senderAddress,
       masterCopyAddr
     )
 
+    // Check whether a claim tx exists in database
+    const oldClaimTx = await ClaimTx.findOne({ linkId, proxyAddress })
+
+    if (oldClaimTx && oldClaimTx.txHash) {
+      return res.json({
+        success: true,
+        txHash: oldClaimTx.txHash
+      })
+    }
+
+    // Check claim params
     await proxyFactory.checkClaimParams(
       token,
       amount,
@@ -83,12 +97,13 @@ export const claim = async (req, res) => {
       senderSignature,
       receiverAddress,
       receiverSignature,
-      proxyAddr
+      proxyAddress
     )
 
-    console.log('⌛️  Claiming...', claimParams)
+    // Claim
+    console.log('\n🔦️  Claiming...\n', claimParams)
 
-    let tx = await proxyFactory.claim(
+    const tx = await proxyFactory.claim(
       token,
       amount,
       expirationTime,
@@ -100,11 +115,30 @@ export const claim = async (req, res) => {
       { gasLimit: 500000 }
     )
 
-    console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+    const txHash = tx.hash
+
+    console.log(`#️⃣  Tx Hash: ${txHash}`)
+
+    // Save claim tx to database
+    const claimTx = new ClaimTx({
+      token,
+      amount,
+      expirationTime,
+      linkId,
+      senderAddress,
+      receiverAddress,
+      proxyAddress,
+      txHash
+    })
+
+    const document = await claimTx.save()
+    console.log(
+      `🔋  Saved claim tx with document id = ${document.id} to database`
+    )
 
     res.json({
       success: true,
-      txHash: tx.hash
+      txHash: txHash
     })
   } catch (err) {
     console.error(err)
@@ -166,17 +200,28 @@ export const claimERC721 = async (req, res) => {
     throw new Error('Please provide receiver signature')
   }
 
-  let proxyFactory = new ethers.Contract(factory, Factory.abi, relayer)
+  const proxyFactory = new ethers.Contract(factory, Factory.abi, relayer)
 
   try {
-    let masterCopyAddr = await proxyFactory.masterCopy()
+    const masterCopyAddr = await proxyFactory.masterCopy()
 
-    let proxyAddr = await LinkdropSDK.computeProxyAddress(
+    const proxyAddress = await LinkdropSDK.computeProxyAddress(
       factory,
       senderAddress,
       masterCopyAddr
     )
 
+    // Check whether a claim tx exists in database
+    const oldClaimTx = await ClaimTx.findOne({ linkId, proxyAddress })
+
+    if (oldClaimTx && oldClaimTx.txHash) {
+      return res.json({
+        success: true,
+        txHash: oldClaimTx.txHash
+      })
+    }
+
+    // Check claim params
     await proxyFactory.checkClaimParamsERC721(
       nft,
       tokenId,
@@ -186,12 +231,13 @@ export const claimERC721 = async (req, res) => {
       senderSignature,
       receiverAddress,
       receiverSignature,
-      proxyAddr
+      proxyAddress
     )
 
-    console.log('⌛️  Claiming...', claimParams)
+    // Claim
+    console.log('\n🔦️  Claiming...\n', claimParams)
 
-    let tx = await proxyFactory.claimERC721(
+    const tx = await proxyFactory.claimERC721(
       nft,
       tokenId,
       expirationTime,
@@ -202,8 +248,26 @@ export const claimERC721 = async (req, res) => {
       receiverSignature,
       { gasLimit: 500000 }
     )
+    const txHash = tx.hash
 
-    console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+    console.log(`#️⃣  Tx Hash: ${txHash}`)
+
+    // Save claim tx to database
+    const claimTxERC721 = new ClaimTxERC721({
+      nft,
+      tokenId,
+      expirationTime,
+      linkId,
+      senderAddress,
+      receiverAddress,
+      proxyAddress,
+      txHash
+    })
+
+    const document = await claimTxERC721.save()
+    console.log(
+      `🔋  Saved claim tx with document id = ${document.id} to database`
+    )
 
     res.json({
       success: true,
