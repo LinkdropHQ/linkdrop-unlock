@@ -40,13 +40,18 @@ export const claim = async (
     if (response.status !== 200) {
       console.error(`\n❌ Invalid response status ${response.status}`)
     } else {
-      console.log(
-        '\n✅  Claim tx has been submitted. Please verify the claim status manually.'
-      )
-
-      let txHash = response.data.txHash
-      console.log(`#️⃣  Tx Hash: ${txHash}`)
-      return txHash
+      if (response.data.success === true) {
+        console.log(
+          '\n✅  Claim tx has been submitted. Please verify the claim status manually.'
+        )
+        const txHash = response.data.txHash
+        console.log(`#️⃣  Tx Hash: ${txHash}`)
+        return txHash
+      } else {
+        const error = response.data.error.reason
+        console.error(`🆘  Request failed with '${error}'`)
+        return error
+      }
     }
   } catch (err) {
     console.error(err)
@@ -91,13 +96,18 @@ export const claimERC721 = async (
     if (response.status !== 200) {
       console.error(`\n❌ Invalid response status ${response.status}`)
     } else {
-      console.log(
-        '\n✅  Claim tx has been submitted. Please verify the claim status manually.'
-      )
-
-      let txHash = response.data.txHash
-      console.log(`#️⃣  Tx Hash: ${txHash}`)
-      return txHash
+      if (response.data.success === true) {
+        console.log(
+          '\n✅  Claim tx has been submitted. Please verify the claim status manually.'
+        )
+        const txHash = response.data.txHash
+        console.log(`#️⃣  Tx Hash: ${txHash}`)
+        return txHash
+      } else {
+        const error = response.data.error.reason
+        console.error(`🆘  Request failed with '${error}'`)
+        return error
+      }
     }
   } catch (err) {
     console.error(err)
