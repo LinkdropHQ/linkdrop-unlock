@@ -38,6 +38,24 @@ contract Factory is Storage, CloneFactory {
     }
 
     /**
+    * @dev Indicates whether a link is claimed or not
+    * @param _sender Address of lindkrop sender
+    * @param _linkId Address corresponding to link key
+    * @return True if claimed
+    */
+    function isClaimedLink(address payable _sender, address _linkId) public view returns (bool) {
+
+        if (!isDeployed(_sender)) {
+            return false;
+        }
+        else {
+            address payable proxy = address(uint160(deployed[_sender]));
+            return ICommon(proxy).isClaimedLink(_linkId);
+        }
+
+    }
+
+    /**
     * @dev Function to get total amount of tokens available for proxy contract
     * @param _proxy Address of proxy contract
     * @param _sender Address of lindkrop sender

@@ -290,6 +290,11 @@ describe('Linkdrop ERC721 tests', () => {
     expect(owner).to.eq(receiverAddress)
   })
 
+  it('should be able to check link claimed from factory instance', async () => {
+    let claimed = await factory.isClaimedLink(sender.address, link.linkId)
+    expect(claimed).to.eq(true)
+  })
+
   it('should fail to claim link twice', async () => {
     tokenId = 3
     // Approving nft from sender to Linkdrop Contract
