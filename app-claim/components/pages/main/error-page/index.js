@@ -9,7 +9,6 @@ class ErrorPage extends React.Component {
   render () {
     const { error, network } = this.props
     const instructions = this.t(`errors.${error}.instructions`, { returnObjects: true, network })
-    console.log({ instructions })
 
     return <div className={commonStyles.container}>
       <Alert className={styles.alert} icon={this.defineIcon({ error })} />
