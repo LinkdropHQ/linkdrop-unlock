@@ -10,6 +10,33 @@ export const generateLink = async (
   amount,
   expirationTime
 ) => {
+  if (jsonRpcUrl == null || jsonRpcUrl === '') {
+    throw new Error('Please provide json rpc url')
+  }
+
+  if (networkId == null || networkId === '') {
+    throw new Error('Please provide networkId')
+  }
+
+  if (host == null || host === '') {
+    throw new Error('Please provide host')
+  }
+
+  if (senderPrivateKey == null || senderPrivateKey === '') {
+    throw new Error(`Please provide sender's private key`)
+  }
+
+  if (token == null || token === '') {
+    throw new Error('Please provide ERC20 token address')
+  }
+
+  if (amount === null || amount === '') {
+    throw new Error('Please provide amount per link')
+  }
+
+  if (expirationTime == null || expirationTime === '') {
+    throw new Error('Please provide expiration time')
+  }
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
   const sender = new ethers.Wallet(senderPrivateKey, provider)
   const { linkKey, linkId, senderSignature } = await createLink(
@@ -41,6 +68,34 @@ export const generateLinkERC721 = async (
   tokenId,
   expirationTime
 ) => {
+  if (jsonRpcUrl == null || jsonRpcUrl === '') {
+    throw new Error('Please provide json rpc url')
+  }
+
+  if (networkId == null || networkId === '') {
+    throw new Error('Please provide networkId')
+  }
+
+  if (host == null || host === '') {
+    throw new Error('Please provide host')
+  }
+
+  if (senderPrivateKey == null || senderPrivateKey === '') {
+    throw new Error(`Please provide sender's private key`)
+  }
+
+  if (nft == null || nft === '' || nft === ethers.constants.AddressZero) {
+    throw new Error('Please provide ERC721 token address')
+  }
+
+  if (tokenId == null || tokenId === '') {
+    throw new Error('Please provide token id to claim')
+  }
+
+  if (expirationTime == null || expirationTime === '') {
+    throw new Error('Please provide expiration time')
+  }
+
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
   const sender = new ethers.Wallet(senderPrivateKey, provider)
   const { linkKey, linkId, senderSignature } = await createLink(

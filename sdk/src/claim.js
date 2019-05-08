@@ -13,6 +13,42 @@ export const claim = async (
   senderSignature,
   receiverAddress
 ) => {
+  if (jsonRpcUrl == null || jsonRpcUrl === '') {
+    throw new Error('Please provide json rpc url')
+  }
+
+  if (host == null || host === '') {
+    throw new Error('Please provide host')
+  }
+
+  if (token == null || token === '') {
+    throw new Error('Please provide ERC20 token address')
+  }
+
+  if (amount === null || amount === '') {
+    throw new Error('Please provide amount per link')
+  }
+
+  if (expirationTime == null || expirationTime === '') {
+    throw new Error('Please provide expiration time')
+  }
+
+  if (linkKey == null || linkKey === '') {
+    throw new Error('Please provide link key')
+  }
+
+  if (senderAddress == null || senderAddress === '') {
+    throw new Error('Please provide sender address')
+  }
+
+  if (senderSignature == null || senderSignature === '') {
+    throw new Error('Please provide sender signature')
+  }
+
+  if (receiverAddress == null || receiverAddress === '') {
+    throw new Error('Please provide receiver address')
+  }
+
   // Get provider
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
@@ -64,6 +100,42 @@ export const claimERC721 = async (
   senderSignature,
   receiverAddress
 ) => {
+  if (jsonRpcUrl == null || jsonRpcUrl === '') {
+    throw new Error('Please provide json rpc url')
+  }
+
+  if (host == null || host === '') {
+    throw new Error('Please provide host')
+  }
+
+  if (nft == null || nft === '' || nft === ethers.constants.AddressZero) {
+    throw new Error('Please provide ERC721 token address')
+  }
+
+  if (tokenId === null || tokenId === '') {
+    throw new Error('Please provide token id to claim')
+  }
+
+  if (expirationTime == null || expirationTime === '') {
+    throw new Error('Please provide expiration time')
+  }
+
+  if (linkKey == null || linkKey === '') {
+    throw new Error('Please provide link key')
+  }
+
+  if (senderAddress == null || senderAddress === '') {
+    throw new Error('Please provide sender address')
+  }
+
+  if (senderSignature == null || senderSignature === '') {
+    throw new Error('Please provide sender signature')
+  }
+
+  if (receiverAddress == null || receiverAddress === '') {
+    throw new Error('Please provide receiver address')
+  }
+
   // Get provider
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
