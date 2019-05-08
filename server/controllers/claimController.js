@@ -212,7 +212,7 @@ export const claimERC721 = async (req, res) => {
     )
 
     // Check whether a claim tx exists in database
-    const oldClaimTx = await ClaimTx.findOne({ linkId, proxyAddress })
+    const oldClaimTx = await ClaimTxERC721.findOne({ linkId, proxyAddress })
 
     if (oldClaimTx && oldClaimTx.txHash) {
       return res.json({
