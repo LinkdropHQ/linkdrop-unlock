@@ -78,7 +78,12 @@ export const claim = async (req, res) => {
     )
 
     // Check whether a claim tx exists in database
-    const oldClaimTx = await ClaimTx.findOne({ linkId, proxyAddress })
+    const oldClaimTx = await ClaimTx.findOne({
+      token,
+      amount,
+      linkId,
+      senderAddress
+    })
 
     if (oldClaimTx && oldClaimTx.txHash) {
       return res.json({
@@ -142,7 +147,8 @@ export const claim = async (req, res) => {
         txHash: txHash
       })
     } catch (error) {
-      console.error(`🆘  Failed with '${error.reason}'`)
+      console.error(`📛  Failed with '${error.reason}'`)
+
       return res.json({
         success: false,
         error: error
@@ -220,7 +226,13 @@ export const claimERC721 = async (req, res) => {
     )
 
     // Check whether a claim tx exists in database
-    const oldClaimTx = await ClaimTxERC721.findOne({ linkId, proxyAddress })
+
+    const oldClaimTx = await ClaimTxERC721.findOne({
+      nft,
+      tokenId,
+      linkId,
+      senderAddress
+    })
 
     if (oldClaimTx && oldClaimTx.txHash) {
       return res.json({
@@ -284,6 +296,7 @@ export const claimERC721 = async (req, res) => {
       })
     } catch (error) {
       console.error(`📛  Failed with '${error.reason}'`)
+
       return res.json({
         success: false,
         error: error
