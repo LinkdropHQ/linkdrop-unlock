@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "webpack --watch --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
-    "test-saga": "NODE_PATH=. mocha test/saga/**/*.js --require @babel/register --require ignore-styles --recursive",
+    "test": "NODE_PATH=. mocha test/saga/**/*.js --require @babel/register --require ignore-styles --recursive",
     "dev:server": "webpack-dev-server --hot --inline --config webpack.dev.js"
   },
   "dependencies": {

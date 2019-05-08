@@ -26,6 +26,15 @@ export default {
     LINK_FAILED: {
       title: 'Failed',
       description: 'Oops, something went wrong'
+    },
+    NETWORK_NOT_SUPPORTED: {
+      title: 'Token is not supported in this network',
+      description: 'Switch to {{network}}',
+      instructions: {
+        _1: '1. Go to <span>Settings</span> in your Wallet',
+        _2: '2. Swich Network to <span>{{network}}</span>',
+        _3: '3. Back to wallet’s DApp browser then reload the claiming link and follow instructions'
+      }
     }
   },
   walletsInstructions: {

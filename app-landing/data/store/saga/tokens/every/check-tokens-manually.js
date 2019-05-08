@@ -1,18 +1,17 @@
 import { put, select, call } from 'redux-saga/effects'
 import { ethers, utils } from 'ethers'
 import { getTokensOpensea } from 'data/api/tokens'
-import config from 'config'
 import TokenMock from 'contracts/TokenMock.json'
 import { defineNetworkName } from 'linkdrop-commons'
 
 const generator = function * ({ payload }) {
   try {
     const ethWalletContract = ethers.constants.AddressZero
-    const { isERC721 } = payload
+    const { isERC721, networkId } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const tokenAddress = yield select(generator.selectors.tokenAddress)
     const wallet = yield select(generator.selectors.wallet)
-    const networkName = defineNetworkName({ networkId: config.networkId })
+    const networkName = defineNetworkName({ networkId })
     const provider = yield ethers.getDefaultProvider(networkName)
 
     // if not ethereum

@@ -14,6 +14,10 @@ class Tokens {
   checkTransactionStatus ({ transactionId, networkId }) {
     this.actions.dispatch({ type: '*TOKENS.CHECK_TRANSACTION_STATUS', payload: { transactionId, networkId } })
   }
+
+  checkIfClaimed ({ account, networkId }) {
+    this.actions.dispatch({ type: '*TOKENS.CHECK_IF_CLAIMED', payload: { account, networkId } })
+  }
 }
 
 export default Tokens

@@ -12,13 +12,13 @@ const generator = function * ({ payload }) {
     const networkName = defineNetworkName({ networkId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const balance = yield provider.getBalance(account)
-    // check of balance of ethereum
+    // check of ethereum balance
     const balanceFormatted = utils.formatEther(balance)
-    // check of balance of erc-721
+    // check of erc-721 balance
     let { assets: erc721Balance = [] } = yield call(getTokensOpensea, { wallet: account, networkId })
     let erc20Balance = []
-    // check of balance of erc-20 (only on mainnet)
-    if (networkId === '1') {
+    // check of erc-20 (only on mainnet) balance
+    if (Number(networkId) === 1) {
       erc20Balance = yield call(getTokensTrustWallet, { wallet: account })
     }
     if (erc721Balance.length > 0) {

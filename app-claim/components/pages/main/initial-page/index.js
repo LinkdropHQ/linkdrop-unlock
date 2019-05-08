@@ -9,10 +9,29 @@ import styles from './styles.module'
 import commonStyles from '../styles.module'
 @translate('pages.main')
 class InitialPage extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      iconType: 'default'
+    }
+  }
+
+  componentWillReceiveProps ({ icon }) {
+    const { icon: prevIcon } = this.props
+    const { iconType } = this.state
+    if (prevIcon !== icon && icon != null && iconType !== 'default') {
+      this.setState({
+        iconType: 'default'
+      })
+    }
+  }
+
   render () {
-    const { onClick, amount, symbol, icon, loading } = this.props
+    const { onClick, amount, symbol, loading, icon } = this.props
+    const { iconType } = this.state
+    const finalIcon = iconType === 'default' ? <img onError={_ => this.setState({ iconType: 'blank' })} className={styles.icon} src={icon} /> : <Icons.Star />
     return <Web3Consumer>{context => <div className={commonStyles.container}>
-      <Alert noBorder={icon} className={styles.tokenIcon} icon={icon ? <img className={styles.icon} src={icon} /> : <Icons.Star />} />
+      <Alert noBorder={iconType === 'default' && symbol !== 'ETH'} className={styles.tokenIcon} icon={finalIcon} />
       <div className={styles.title}>
         <span>{amount}</span> {symbol}
       </div>

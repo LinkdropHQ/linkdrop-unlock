@@ -1,7 +1,7 @@
 {
-    "jsonRpcUrl": "",
-    "apiHost": "",
-    "claimHost": "",
-    "masterCopy": "",
-    "factory": ""
+  "jsonRpcUrl": "",
+  "apiHost": "",
+  "claimHost": "",
+  "masterCopy": "",
+  "factory": ""
 }

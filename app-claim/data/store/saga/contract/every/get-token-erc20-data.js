@@ -17,7 +17,7 @@ const generator = function * ({ payload }) {
     if (ethWalletContract === tokenAddress) {
       decimals = 18
       symbol = 'ETH'
-      icon = getImages({ src: 'ether' }).image
+      icon = getImages({ src: 'ether' }).imageRetina
     } else {
       const contract = yield new ethers.Contract(tokenAddress, TokenMock.abi, provider)
       decimals = yield contract.decimals()

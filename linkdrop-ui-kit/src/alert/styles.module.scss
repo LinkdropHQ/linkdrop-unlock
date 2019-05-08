@@ -7,9 +7,16 @@
   border: 1px solid $black;
   display: flex;
   align-items: center;
+  padding: 10px;
   justify-content: center;
+
+  & > * {
+    max-height: 100%;
+  }
 }
+
 
 .noBorder {
   border: none;
+  padding: 0;
 }

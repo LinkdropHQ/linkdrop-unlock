@@ -1,13 +1,14 @@
 import { put, select } from 'redux-saga/effects'
 import LinkdropSDK from 'sdk/src/index'
-import { jsonRpcUrl, networkId, claimHost } from 'config'
+import { jsonRpcUrl, claimHost } from 'config'
 import configs from 'config-landing'
 
 const localStorage = window.localStorage
-const generator = function * () {
+const generator = function * ({ payload }) {
   try {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const tokenId = yield select(generator.selectors.tokenId)
+    const { networkId } = payload
     const privateKey = yield select(generator.selectors.privateKey)
     const tokenAddress = yield select(generator.selectors.tokenAddress)
     const link = yield LinkdropSDK.generateLinkERC721(

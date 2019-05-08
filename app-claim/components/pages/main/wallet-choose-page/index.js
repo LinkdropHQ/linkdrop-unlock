@@ -25,11 +25,11 @@ class WalletChoosePage extends React.Component {
     const { showSlider } = this.state
     const { walletType } = this.props
     const { platform } = this
-    const buttonLink = platform !== 'desktop' && getWalletLink({ platform, wallet: 'trust', currentUrl: window.location.href })
-    const buttonTitle = getWalletData({ wallet: 'trust' }).name
     if (walletType && walletType != null) {
       return this.renderWalletInstruction({ walletType })
     } else {
+      const buttonLink = platform !== 'desktop' && getWalletLink({ platform, wallet: 'trust', currentUrl: window.location.href })
+      const buttonTitle = getWalletData({ wallet: 'trust' }).name
       return <div className={classNames(commonStyles.container, styles.container, {
         [styles.sliderShow]: showSlider,
         [styles.sliderHide]: showSlider === false

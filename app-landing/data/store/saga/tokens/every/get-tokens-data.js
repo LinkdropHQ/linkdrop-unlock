@@ -1,6 +1,5 @@
 import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
-import config from 'config'
 import TokenMock from 'contracts/TokenMock.json'
 import NFTMock from 'contracts/NFTMock.json'
 
@@ -10,10 +9,10 @@ const generator = function * ({ payload }) {
   try {
     const ethWalletContract = ethers.constants.AddressZero
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    const { tokenAddress, isERC721 } = payload
+    const { tokenAddress, isERC721, networkId } = payload
     yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress } })
     yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: isERC721 ? 'erc721' : 'erc20' } })
-    const networkName = defineNetworkName({ networkId: config.networkId })
+    const networkName = defineNetworkName({ networkId })
     const provider = yield ethers.getDefaultProvider(networkName)
     let symbol
     let decimals
