@@ -159,7 +159,7 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
             IERC721(_nft).safeTransferFrom(address(this), _receiver, _tokenId); 
         else if (IERC721(_nft).getApproved(_tokenId) == address(this)) 
             IERC721(_nft).safeTransferFrom(SENDER, _receiver, _tokenId); 
-        else revert();
+        else revert("Transfer failed");
 
         // Log claim
         emit Claimed(_linkId, _nft, _tokenId, _receiver, now);

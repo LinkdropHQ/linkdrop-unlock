@@ -106,7 +106,6 @@ contract Factory is Storage, CloneFactory {
         emit Deployed( proxy, keccak256(abi.encodePacked(_sender)), now);
         
         return proxy;
-
     }
 
     /**
