@@ -15,7 +15,7 @@ app.use(cors())
 
 // Set up default mongoose connection
 mongoose.connect(
-  mongoURI,
+  mongoURI || 'mongodb://localhost:27017/linkdrop_db',
   { useNewUrlParser: true, useCreateIndex: true }
 )
 
