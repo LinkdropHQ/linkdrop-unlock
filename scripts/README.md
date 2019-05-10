@@ -78,7 +78,7 @@ This will deploy mock ERC20 token contract, mint 10^6 mock tokens to deployer an
 
 1. Generate links. During link generation, tokens needed for claim will be transfered to the proxy address
 ```bash
-yarn generate-links
+yarn generate-links-erc20
 ```
 This will generate `linksNumber` links and update `scripts/output/linkdrop_erc20.csv`
 
