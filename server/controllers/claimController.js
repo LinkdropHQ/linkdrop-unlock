@@ -78,7 +78,12 @@ export const claim = async (req, res) => {
     )
 
     // Check whether a claim tx exists in database
-    const oldClaimTx = await ClaimTx.findOne({ linkId, proxyAddress })
+    const oldClaimTx = await ClaimTx.findOne({
+      token,
+      amount,
+      linkId,
+      senderAddress
+    })
 
     if (oldClaimTx && oldClaimTx.txHash) {
       return res.json({
@@ -88,58 +93,67 @@ export const claim = async (req, res) => {
     }
 
     // Check claim params
-    await proxyFactory.checkClaimParams(
-      token,
-      amount,
-      expirationTime,
-      linkId,
-      senderAddress,
-      senderSignature,
-      receiverAddress,
-      receiverSignature,
-      proxyAddress
-    )
+    try {
+      await proxyFactory.checkClaimParams(
+        token,
+        amount,
+        expirationTime,
+        linkId,
+        senderAddress,
+        senderSignature,
+        receiverAddress,
+        receiverSignature,
+        proxyAddress
+      )
 
-    // Claim
-    console.log('\n🔦️  Claiming...\n', claimParams)
+      // Claim
+      console.log('\n🔦️  Claiming...\n', claimParams)
 
-    const tx = await proxyFactory.claim(
-      token,
-      amount,
-      expirationTime,
-      linkId,
-      senderAddress,
-      senderSignature,
-      receiverAddress,
-      receiverSignature,
-      { gasLimit: 500000 }
-    )
+      const tx = await proxyFactory.claim(
+        token,
+        amount,
+        expirationTime,
+        linkId,
+        senderAddress,
+        senderSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
 
-    const txHash = tx.hash
+      const txHash = tx.hash
 
-    console.log(`#️⃣  Tx Hash: ${txHash}`)
+      console.log(`#️⃣  Tx Hash: ${txHash}`)
 
-    // Save claim tx to database
-    const claimTx = new ClaimTx({
-      token,
-      amount,
-      expirationTime,
-      linkId,
-      senderAddress,
-      receiverAddress,
-      proxyAddress,
-      txHash
-    })
+      // Save claim tx to database
+      const claimTx = new ClaimTx({
+        token,
+        amount,
+        expirationTime,
+        linkId,
+        senderAddress,
+        receiverAddress,
+        proxyAddress,
+        txHash
+      })
 
-    const document = await claimTx.save()
-    console.log(
-      `🔋  Saved claim tx with document id = ${document.id} to database`
-    )
+      const document = await claimTx.save()
+      console.log(
+        `🔋  Saved claim tx with document id = ${document.id} to database`
+      )
 
-    res.json({
-      success: true,
-      txHash: txHash
-    })
+      res.json({
+        success: true,
+        txHash: txHash
+      })
+    } catch (error) {
+      console.error(`📛  Failed with '${error.reason}'`)
+
+      return res.json({
+        success: false,
+        error: error
+      })
+    }
   } catch (err) {
     console.error(err)
   }
@@ -212,7 +226,13 @@ export const claimERC721 = async (req, res) => {
     )
 
     // Check whether a claim tx exists in database
-    const oldClaimTx = await ClaimTxERC721.findOne({ linkId, proxyAddress })
+
+    const oldClaimTx = await ClaimTxERC721.findOne({
+      nft,
+      tokenId,
+      linkId,
+      senderAddress
+    })
 
     if (oldClaimTx && oldClaimTx.txHash) {
       return res.json({
@@ -222,57 +242,66 @@ export const claimERC721 = async (req, res) => {
     }
 
     // Check claim params
-    await proxyFactory.checkClaimParamsERC721(
-      nft,
-      tokenId,
-      expirationTime,
-      linkId,
-      senderAddress,
-      senderSignature,
-      receiverAddress,
-      receiverSignature,
-      proxyAddress
-    )
+    try {
+      await proxyFactory.checkClaimParamsERC721(
+        nft,
+        tokenId,
+        expirationTime,
+        linkId,
+        senderAddress,
+        senderSignature,
+        receiverAddress,
+        receiverSignature,
+        proxyAddress
+      )
 
-    // Claim
-    console.log('\n🔦️  Claiming...\n', claimParams)
+      // Claim
+      console.log('\n🔦️  Claiming...\n', claimParams)
 
-    const tx = await proxyFactory.claimERC721(
-      nft,
-      tokenId,
-      expirationTime,
-      linkId,
-      senderAddress,
-      senderSignature,
-      receiverAddress,
-      receiverSignature,
-      { gasLimit: 500000 }
-    )
-    const txHash = tx.hash
+      const tx = await proxyFactory.claimERC721(
+        nft,
+        tokenId,
+        expirationTime,
+        linkId,
+        senderAddress,
+        senderSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+      const txHash = tx.hash
 
-    console.log(`#️⃣  Tx Hash: ${txHash}`)
+      console.log(`#️⃣  Tx Hash: ${txHash}`)
 
-    // Save claim tx to database
-    const claimTxERC721 = new ClaimTxERC721({
-      nft,
-      tokenId,
-      expirationTime,
-      linkId,
-      senderAddress,
-      receiverAddress,
-      proxyAddress,
-      txHash
-    })
+      // Save claim tx to database
+      const claimTxERC721 = new ClaimTxERC721({
+        nft,
+        tokenId,
+        expirationTime,
+        linkId,
+        senderAddress,
+        receiverAddress,
+        proxyAddress,
+        txHash
+      })
 
-    const document = await claimTxERC721.save()
-    console.log(
-      `🔋  Saved claim tx with document id = ${document.id} to database`
-    )
+      const document = await claimTxERC721.save()
+      console.log(
+        `🔋  Saved claim tx with document id = ${document.id} to database`
+      )
 
-    res.json({
-      success: true,
-      txHash: tx.hash
-    })
+      res.json({
+        success: true,
+        txHash: tx.hash
+      })
+    } catch (error) {
+      console.error(`📛  Failed with '${error.reason}'`)
+
+      return res.json({
+        success: false,
+        error: error
+      })
+    }
   } catch (err) {
     console.error(err)
   }
