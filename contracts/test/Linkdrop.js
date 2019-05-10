@@ -285,6 +285,11 @@ describe('Linkdrop tests', () => {
     expect(receiverTokenBalance).to.eq(claimAmount)
   })
 
+  it('should be able to check link claimed from factory instance', async () => {
+    let claimed = await factory.isClaimedLink(sender.address, link.linkId)
+    expect(claimed).to.eq(true)
+  })
+
   it('should fail to claim link twice', async () => {
     await expect(
       factory.claim(
