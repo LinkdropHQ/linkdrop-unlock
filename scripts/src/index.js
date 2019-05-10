@@ -28,12 +28,12 @@ config.token == null || config.token === ''
   : (token = config.token)
 
 if (jsonRpcUrl == null || jsonRpcUrl === '') {
-  throw 'Please provide JSON RPC url'
+  throw new Error('Please provide JSON RPC url')
 }
 
 // Make sure we have these set in config.json
 if (senderPrivateKey == null || senderPrivateKey === '') {
-  throw "Please provide sender's private key"
+  throw new Error(`Please provide sender's private key`)
 }
 
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
@@ -140,18 +140,8 @@ export const deployERC721 = async () => {
 }
 
 export const generateLinksETH = async () => {
-  if (networkId == null || networkId === '') {
-    throw 'Please provide networkId'
-  }
-
-  if (host == null || host === '') {
-    throw 'Please provide host'
-  }
-
-  if (amount === null || amount === '') throw 'Please provide amount per link'
-
   if (linksNumber === null || linksNumber === '') {
-    throw 'Please provide links number'
+    throw new Error('Please provide links number')
   }
 
   token = ethers.constants.AddressZero
@@ -194,22 +184,8 @@ export const generateLinksETH = async () => {
 }
 
 export const generateLinksERC20 = async () => {
-  if (networkId == null || networkId === '') {
-    throw 'Please provide networkId'
-  }
-
-  if (host == null || host === '') {
-    throw 'Please provide host'
-  }
-
-  if (token == null || token === '' || token === ethers.constants.AddressZero) {
-    throw 'Please provide ERC20 token address'
-  }
-
-  if (amount === null || amount === '') throw 'Please provide amount per link'
-
   if (linksNumber === null || linksNumber === '') {
-    throw 'Please provide links number'
+    throw new Error('Please provide links number')
   }
   expirationTime = 1900000000000000
 
@@ -250,19 +226,8 @@ export const generateLinksERC20 = async () => {
 }
 
 export const generateLinksERC721 = async () => {
-  if (networkId == null || networkId === '') {
-    throw 'Please provide networkId'
-  }
-
-  if (host == null || host === '') {
-    throw 'Please provide host'
-  }
-  if (nft == null || nft === '' || nft === ethers.constants.AddressZero) {
-    throw 'Please provide ERC721 token address'
-  }
-
-  if (nftIds == null || nft === '' || nft === '[]') {
-    throw 'Please provide NFT ids'
+  if (nftIds == null || nftIds === '' || nftIds === '[]') {
+    throw new Error('Please provide NFT ids')
   }
 
   expirationTime = 1900000000000000
