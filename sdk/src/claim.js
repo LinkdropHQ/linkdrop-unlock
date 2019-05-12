@@ -80,13 +80,13 @@ export const claim = async (
         console.log(
           '\n✅  Claim tx has been submitted. Please verify the claim status manually.'
         )
-        const txHash = response.data.txHash
+        const { success, txHash } = response.data
         console.log(`#️⃣  Tx Hash: ${txHash}`)
-        return txHash
+        return { success, txHash }
       } else {
-        const error = response.data.error.reason
-        console.error(`🆘  Request failed with '${error}'`)
-        return error
+        const { success, error } = response.data
+        console.error(`🆘  Request failed with '${error.reason}'`)
+        return { success, error }
       }
     }
   } catch (err) {
@@ -172,13 +172,13 @@ export const claimERC721 = async (
         console.log(
           '\n✅  Claim tx has been submitted. Please verify the claim status manually.'
         )
-        const txHash = response.data.txHash
+        const { success, txHash } = response.data
         console.log(`#️⃣  Tx Hash: ${txHash}`)
-        return txHash
+        return { success, txHash }
       } else {
-        const error = response.data.error.reason
-        console.error(`🆘  Request failed with '${error}'`)
-        return error
+        const { success, error } = response.data
+        console.error(`🆘  Request failed with '${error.reason}'`)
+        return { success, error }
       }
     }
   } catch (err) {
