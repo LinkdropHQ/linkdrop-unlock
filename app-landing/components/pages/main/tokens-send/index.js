@@ -141,9 +141,6 @@ class TokensSend extends React.Component {
 
   renderTermsOrAlert ({ alert }) {
     const { termsAccepted } = this.state
-    if (alert) {
-      return <div className={styles.alert} dangerouslySetInnerHTML={{ __html: this.t('titles.footerAddManually') }} />
-    }
     return <div className={styles.terms}>
       <Checkbox checked={termsAccepted} onChange={({ value }) => this.setState({ termsAccepted: value })} />
       <div dangerouslySetInnerHTML={{ __html: this.t('titles.terms') }} />

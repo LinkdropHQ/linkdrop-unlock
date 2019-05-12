@@ -5,6 +5,7 @@ import styles from './styles.module'
 import commonStyles from '../styles.module'
 import { getHashVariables } from 'linkdrop-commons'
 import config from 'config-claim'
+import classNames from 'classnames'
 
 @actions(({ tokens: { transactionId } }) => ({ transactionId }))
 @translate('pages.main')
@@ -16,7 +17,9 @@ class ClaimingFinishedPage extends React.Component {
       <Alert icon={<Icons.Check />} className={styles.alert} />
       <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.tokensClaimed', { tokens: `${amount || ''} ${symbol}` }) }} />
       <div
-        className={styles.description}
+        className={classNames(styles.description, {
+          [styles.descriptionHidden]: !transactionId
+        })}
         dangerouslySetInnerHTML={{
           __html: this.t('titles.seeDetails', {
             transactionLink: `${Number(n) === 4 ? config.etherscanRinkeby : config.etherscanMainnet}${transactionId}`

@@ -38,6 +38,7 @@ class InitialPage extends React.Component {
       <Button loading={loading} className={styles.button} onClick={_ => onClick && onClick()}>
         {text('common.buttons.claim')}
       </Button>
+      <div className={styles.terms} dangerouslySetInnerHTML={{ __html: this.t('titles.agreeWithTerms') }} />
       {context.account && <div className={styles.wallet} dangerouslySetInnerHTML={{ __html: this.t('titles.claimTo', { wallet: shortenString({ wallet: context.account }) }) }} />}
     </div>}</Web3Consumer>
   }

@@ -6,7 +6,7 @@ const generator = function * ({ payload }) {
   try {
     const { wallet, token, tokenAmount: amount, expirationTime, linkKey, senderAddress, senderSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    const result = yield LinkdropSDK.claim(
+    const { success, txHash, error } = yield LinkdropSDK.claim(
       jsonRpcUrl,
       apiHost,
       token,
@@ -17,11 +17,11 @@ const generator = function * ({ payload }) {
       senderSignature,
       wallet
     )
-    // if (success) {
-    yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: result } })
-    // } else {
-
-    // }
+    if (success) {
+      yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })
+    } else {
+      console.log({ error })
+    }
   } catch (e) {
     console.error(e)
   }
