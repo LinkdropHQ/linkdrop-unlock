@@ -9,6 +9,7 @@ import commonStyles from '../styles.module'
 import Slider from './slider'
 
 import CommonInstruction from './common-instruction'
+import DeepLinkInstruction from './deep-link-instruction'
 
 @actions(({ user: { walletType } }) => ({ walletType }))
 @translate('pages.main')
@@ -47,12 +48,16 @@ class WalletChoosePage extends React.Component {
   renderWalletInstruction ({ walletType }) {
     const { showSlider } = this.state
     const walletTitle = getWalletData({ wallet: walletType }).name
+    const walletLink = getWalletLink({ platform: this.platform, wallet: 'trust', currentUrl: window.location.href })
     let instruction = ''
     switch (walletType) {
       case 'trust':
         break
+      case 'status':
+        instruction = this.renderDeepLinkInstruction({ walletType, title: walletTitle, href: walletLink })
+        break
       default:
-        instruction = this.renderCommonInstruction({ walletType })
+        instruction = this.renderCommonInstruction({ walletType, title: walletTitle, href: walletLink })
     }
     return <div className={classNames(commonStyles.container, styles.container, {
       [styles.sliderShow]: showSlider,
@@ -69,10 +74,13 @@ class WalletChoosePage extends React.Component {
   }
 
   renderInstructionButton ({ walletType }) {
+    const { platform } = this
     switch (walletType) {
       case 'trust':
         const buttonTitle = getWalletData({ wallet: 'trust' }).name
-        return <Button onClick={_ => copyToClipboard({ value: window.location.href })} className={styles.button}>
+        return <Button href={_ => {
+          platform !== 'desktop' && getWalletLink({ platform, wallet: 'trust', currentUrl: window.location.href })
+        }} className={styles.button}>
           {buttonTitle}
         </Button>
       // case 'imtoken':
@@ -105,8 +113,12 @@ class WalletChoosePage extends React.Component {
     />
   }
 
-  renderCommonInstruction ({ walletType }) {
-    return <CommonInstruction walletType={walletType} styles={styles} t={this.t} />
+  renderCommonInstruction ({ walletType, title, href }) {
+    return <CommonInstruction walletType={walletType} styles={styles} t={this.t} title={title} href={href} />
+  }
+
+  renderDeepLinkInstruction ({ walletType, title, href }) {
+    return <DeepLinkInstruction walletType={walletType} styles={styles} t={this.t} title={title} href={href} />
   }
 
   toggleSlider ({ showSlider = true, callback }) {

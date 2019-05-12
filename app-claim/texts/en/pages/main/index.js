@@ -39,9 +39,12 @@ export default {
   },
   walletsInstructions: {
     common: {
-      _1: '1. Download/Open <a href={{href}}>{{title}}</a>',
-      _2: '2. Create new or import existing wallet',
-      _3: '3. Copy&Paste the claiming link in a {{title}} DApp browser and follow simple instructions'
+      _1: '1. Download <a href={{href}}>{{title}}</a>',
+      _2: '2. Copy&Paste the claiming link in a wallet’s DApp browser'
+    },
+    deepLink: {
+      _1: '1. Download <a href={{href}}>{{title}}</a>.',
+      _2: '2. Return here and tap on the button below'
     }
   }
 }

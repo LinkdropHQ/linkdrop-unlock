@@ -1,6 +1,6 @@
 import React from 'react'
 import { Loading } from 'linkdrop-ui-kit'
-import { actions, translate } from 'decorators'
+import { actions, translate, platform } from 'decorators'
 import InitialPage from './initial-page'
 import WalletChoosePage from './wallet-choose-page'
 import ClaimingProcessPage from './claiming-process-page'
@@ -22,6 +22,7 @@ import { Web3Consumer } from 'web3-react'
   alreadyClaimed,
   readyToClaim
 }))
+@platform()
 @translate('pages.claim')
 class Claim extends React.Component {
   componentDidMount () {
@@ -66,7 +67,6 @@ class Claim extends React.Component {
     // token: ERC20 token address, 0x000...000 for ether - can be received from url params
     // tokenAmount: token amount in atomic values - can be received from url params
     // expirationTime: link expiration time - can be received from url params
-
     if (Number(expirationTime) < +(new Date())) {
       // show error page if link expired
       return this.actions().user.setErrors({ errors: ['LINK_EXPIRED'] })
@@ -102,9 +102,13 @@ class Claim extends React.Component {
       n
     } = getHashVariables()
     const commonData = { decimals, amount, symbol, icon, wallet: account, loading: userLoading }
-    if (Number(n) !== Number(networkId)) {
+    if (
+      (this.platform === 'desktop' && networkId && Number(n) !== Number(networkId)) ||
+      (this.platform !== 'desktop' && account && networkId && Number(n) !== Number(networkId))) {
       // if network id in the link and in the web3 are different
-      return <ErrorPage error={'NETWORK_NOT_SUPPORTED'} network={capitalize({ string: defineNetworkName({ networkId: n }) })} />
+      return <div>
+        <ErrorPage error='NETWORK_NOT_SUPPORTED' network={capitalize({ string: defineNetworkName({ networkId: n }) })} />
+      </div>
     }
     if (errors && errors.length > 0) {
       // if some errors occured and can be found in redux store, then show error page

@@ -47,7 +47,7 @@ export default {
       },
       ios: {
         support: false,
-        deepLink: null
+        deepLink: () => null
       }
     }
   },
@@ -75,7 +75,7 @@ export default {
     mobile: {
       android: {
         support: false,
-        deepLink: null
+        deepLink: (url) => null
       },
       ios: {
         support: true,
@@ -91,11 +91,59 @@ export default {
     mobile: {
       android: {
         support: true,
-        deepLink: null
+        deepLink: (url) => null
       },
       ios: {
         support: true,
-        deepLink: null
+        deepLink: (url) => null
+      }
+    }
+  },
+  'imtoken': {
+    id: 'imtoken',
+    name: 'imToken Wallet',
+    walletURL: '',
+    dappStoreUrl: null,
+    mobile: {
+      android: {
+        support: true,
+        deepLink: (url) => null
+      },
+      ios: {
+        support: true,
+        deepLink: (url) => null
+      }
+    }
+  },
+  'gowallet': {
+    id: 'gowallet',
+    name: 'GoWallet',
+    walletURL: '',
+    dappStoreUrl: null,
+    mobile: {
+      android: {
+        support: true,
+        deepLink: (url) => null
+      },
+      ios: {
+        support: true,
+        deepLink: (url) => null
+      }
+    }
+  },
+  'buntoy': {
+    id: 'buntoy',
+    name: 'Buntoy',
+    walletURL: '',
+    dappStoreUrl: null,
+    mobile: {
+      android: {
+        support: true,
+        deepLink: (url) => null
+      },
+      ios: {
+        support: true,
+        deepLink: (url) => null
       }
     }
   }
