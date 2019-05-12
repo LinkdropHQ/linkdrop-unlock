@@ -105,7 +105,7 @@ contract Common is ICommon, Storage {
     }
 
     /**
-    * @dev Fallback function to accept ethers
+    * @dev Fallback function to accept ETH
     */
     function () external payable {}
 
