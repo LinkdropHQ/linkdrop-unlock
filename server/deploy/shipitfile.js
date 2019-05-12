@@ -19,6 +19,10 @@ module.exports = shipit => {
     }
   })
 
+  shipit.blTask('installDependencies', async () => {
+    await shipit.remote(`cd ${shipit.releasePath} && yarn install`)
+  })
+
   // Copy local config file to remote
   shipit.task('copyConfig', async () => {
     await shipit.copyToRemote(
@@ -29,5 +33,6 @@ module.exports = shipit => {
 
   shipit.on('deployed', () => {
     shipit.start('copyConfig')
+    shipit.start('installDependencies')
   })
 }
