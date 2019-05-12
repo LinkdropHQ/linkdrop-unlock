@@ -6,10 +6,12 @@ import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract Linkdrop is ILinkdrop, Common {
-    using SafeMath for uint;
+
     // =================================================================================================================
     //                                         ERC20 and ETH Linkdrop
     // =================================================================================================================
+
+    using SafeMath for uint;
 
     /**
     * @dev Function to verify linkdrop sender's signature

@@ -10,6 +10,11 @@ import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract Factory is Storage, CloneFactory {
+
+    // =================================================================================================================
+    //                                         Factory
+    // =================================================================================================================
+
     using SafeMath for uint;
 
     // Maps sender address to its corresponding proxy address

@@ -37,6 +37,7 @@ let nftInstance
 let link
 let receiverAddress
 let receiverSignature
+let ethAmount
 let nftAddress
 let tokenId
 let expirationTime
@@ -73,21 +74,29 @@ describe('Linkdrop ERC721 tests', () => {
 
     proxy = new ethers.Contract(proxyAddress, LinkdropERC721.abi, sender)
 
-    let senderAddr = await proxy.SENDER()
+    let senderAddr = await proxy.sender()
     expect(senderAddress).to.eq(senderAddr)
   })
 
   it('should revert while checking claim params with unavailable token', async () => {
+    ethAmount = 0
     nftAddress = nftInstance.address
     tokenId = 1
     expirationTime = 11234234223
 
-    link = await createLink(sender, nftAddress, tokenId, expirationTime)
+    link = await createLink(
+      sender,
+      ethAmount,
+      nftAddress,
+      tokenId,
+      expirationTime
+    )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
       factory.checkClaimParamsERC721(
+        ethAmount,
         nftAddress,
         tokenId,
         expirationTime,
@@ -102,19 +111,22 @@ describe('Linkdrop ERC721 tests', () => {
   })
 
   it('creates new link key and verifies its signature', async () => {
-    nftAddress = nftInstance.address
-    tokenId = 1
-    expirationTime = 11234234223
-
     let senderAddress = sender.address
 
-    let senderAddr = await proxy.SENDER()
+    let senderAddr = await proxy.sender()
     expect(senderAddress).to.eq(senderAddr)
 
-    link = await createLink(sender, nftAddress, tokenId, expirationTime)
+    link = await createLink(
+      sender,
+      ethAmount,
+      nftAddress,
+      tokenId,
+      expirationTime
+    )
 
     expect(
       await proxy.verifySenderSignatureERC721(
+        ethAmount,
         nftAddress,
         tokenId,
         expirationTime,
@@ -125,7 +137,13 @@ describe('Linkdrop ERC721 tests', () => {
   })
 
   it('signs receiver address with link key and verifies this signature onchain', async () => {
-    link = await createLink(sender, nftAddress, tokenId, expirationTime)
+    link = await createLink(
+      sender,
+      ethAmount,
+      nftAddress,
+      tokenId,
+      expirationTime
+    )
 
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -445,7 +463,7 @@ describe('Linkdrop ERC721 tests', () => {
       .to.emit(nftInstance, 'Transfer')
 
     // Now when deployed, check sender
-    let senderAddr = await proxy.SENDER()
+    let senderAddr = await proxy.sender()
     expect(sender.address).to.eq(senderAddr)
 
     let owner = await nftInstance.ownerOf(tokenId)
