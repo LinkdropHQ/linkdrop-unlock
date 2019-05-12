@@ -59,7 +59,7 @@
   margin-bottom: 20px;
 }
 
-.terms {
+.terms, .alert {
   margin-top: 20px;
   font-size: 14px;
   color: $black;
@@ -72,6 +72,12 @@
     cursor: pointer;
     text-decoration: underline;
   }
+}
+
+.terms {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .network {

@@ -27,10 +27,11 @@ import { Web3Consumer } from 'web3-react'
 class Claim extends React.Component {
   componentDidMount () {
     const {
-      senderAddress,
-      n
+      linkKey,
+      n,
+      senderAddress
     } = getHashVariables()
-    this.actions().tokens.checkIfClaimed({ account: senderAddress, networkId: n })
+    this.actions().tokens.checkIfClaimed({ linkKey, networkId: n, senderAddress })
   }
 
   componentWillReceiveProps ({ readyToClaim, alreadyClaimed }) {

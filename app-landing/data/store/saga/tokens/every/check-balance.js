@@ -16,7 +16,7 @@ const generator = function * ({ payload }) {
     const balanceFormatted = utils.formatEther(balance)
     // check of erc-721 balance
     let { assets: erc721Balance = [] } = yield call(getTokensOpensea, { wallet: account, networkId })
-    let erc20Balance = []
+    let erc20Balance = { total: 0 }
     // check of erc-20 (only on mainnet) balance
     if (Number(networkId) === 1) {
       erc20Balance = yield call(getTokensTrustWallet, { wallet: account })
@@ -26,13 +26,18 @@ const generator = function * ({ payload }) {
     } else if (Number(balanceFormatted) > 0 || Number(erc20Balance.total) > 0) {
       yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc20' } })
     }
+    console.log(
+      Number(balanceFormatted),
+      Number(erc20Balance.total),
+      erc721Balance.length
+    )
     if (step === 0) {
       // if the step is 0, then it means that it was an initial check, and we have to move on first step
-      if (Number(balanceFormatted) > 0 || erc721Balance.length > 0) {
+      if (Number(balanceFormatted) > 0 || Number(erc20Balance.total) > 0 || erc721Balance.length > 0) {
         // if the balance is more than 0, it means that we have money on account and we can generate link
         yield put({ type: 'USER.SET_STEP', payload: { step: 2 } })
       } else {
-        // if the balance is less than 0, it means that we need to start checking balance with interval
+        // if the balance is 0, it means that we need to start checking balance with interval
         yield put({ type: 'USER.SET_STEP', payload: { step: 1 } })
       }
     }

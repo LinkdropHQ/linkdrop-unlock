@@ -17,9 +17,8 @@ const generator = function * ({ payload }) {
       senderSignature,
       wallet
     )
-    console.log({ result })
     // if (success) {
-    //   yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })
+    yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: result } })
     // } else {
 
     // }

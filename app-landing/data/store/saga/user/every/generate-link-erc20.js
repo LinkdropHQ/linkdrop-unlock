@@ -4,7 +4,6 @@ import LinkdropSDK from 'sdk/src/index'
 import { jsonRpcUrl, claimHost } from 'config'
 import configs from 'config-landing'
 
-const localStorage = window.localStorage
 const generator = function * ({ payload }) {
   try {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
@@ -24,7 +23,6 @@ const generator = function * ({ payload }) {
     )
 
     yield put({ type: 'USER.SET_LINK', payload: { link: link.url } })
-    localStorage && localStorage.setItem('link', link.url)
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
   } catch (e) {
     console.error(e)

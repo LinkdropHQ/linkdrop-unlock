@@ -1,7 +1,6 @@
 import reducers from './reducers'
 const localStorage = window.localStorage
 const initialWallet = localStorage && localStorage.getItem('wallet')
-const initialLink = localStorage && localStorage.getItem('link')
 const initialPrivateKey = localStorage && localStorage.getItem('privateKey')
 
 const initialState = {
@@ -13,7 +12,7 @@ const initialState = {
   errors: [],
   balance: null,
   balanceFormatted: null,
-  link: initialLink || null,
+  link: null,
   privateKey: initialPrivateKey || null,
   claimed: false,
   alert: null

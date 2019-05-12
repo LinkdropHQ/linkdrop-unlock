@@ -14,20 +14,24 @@ import { getHashVariables } from 'linkdrop-commons'
 @actions(({ user: { step, balance, wallet, link } }) => ({ step, balance, wallet, link }))
 @translate('pages.main')
 class Main extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      startCheckingBalanceImmediately: false
+    }
+  }
   componentDidMount () {
     const { n } = getHashVariables()
-    const { wallet, link } = this.props
+    const { wallet } = this.props
     // if has no wallet, then generate new one
     if (!wallet) {
       return this.actions().user.createWallet()
     }
-    // if has link, then bring to final screen directly
-    if (link) {
-      this.actions().user.setStep({ step: 4 })
-    }
-
     // otherwise do the initial check
-    this.actions().tokens.checkBalance({ account: wallet, networkId: n })
+    console.log('here')
+    this.setState({
+      startCheckingBalanceImmediately: true
+    }, _ => this.actions().tokens.checkBalance({ account: wallet, networkId: n }))
   }
 
   componentWillReceiveProps ({ wallet, step }) {
@@ -49,8 +53,10 @@ class Main extends React.Component {
           {this.renderTexts({ step })}
         </div>
       </div>
-      <LearnMore />
-      <TrustedBy />
+      {/* currently disabled */}
+      {false && <LearnMore />}
+      {false && <TrustedBy />}
+      {/* currently disabled */}
     </div>
   }
 
@@ -83,7 +89,6 @@ class Main extends React.Component {
   renderAccess () {
     return <div className={styles.form}>
       <div className={styles.formContent}>
-        <Input className={styles.input} placeholder={this.t('titles.yourEmail')} />
         <Button className={styles.button}>{this.t('buttons.requestAccess')}</Button>
       </div>
       <div className={styles.formNote}>
@@ -93,10 +98,12 @@ class Main extends React.Component {
   }
 
   renderContent ({ step }) {
+    const { startCheckingBalanceImmediately } = this.state
     switch (step) {
       case 1:
         // screen with proxy adress where to send tokens
         return <TokensSend
+          startCheckingBalanceImmediately={startCheckingBalanceImmediately}
           onFinish={_ => {
             this.actions().user.setStep({ step: 2 })
           }}
