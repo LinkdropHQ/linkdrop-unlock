@@ -168,7 +168,7 @@ contract Linkdrop is ILinkdrop, Common {
         require(_transfer(_ethAmount, _tokenAddress, _tokenAmount, _receiver), "Transfer failed");
 
         // Emit claim event
-        emit ClaimedERC20(_linkId, _ethAmount, _tokenAddress, _tokenAmount, _receiver, now);
+        emit Claimed(_linkId, _ethAmount, _tokenAddress, _tokenAmount, _receiver, now);
 
         return true;
     }

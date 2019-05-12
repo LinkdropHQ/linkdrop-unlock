@@ -22,7 +22,7 @@ contract Storage {
 
     // Events
     event Canceled(address linkId, uint timestamp);
-    event ClaimedERC20(address indexed linkId, uint ethAmount, address indexed token, uint tokenAmount, address receiver, uint timestamp);
+    event Claimed(address indexed linkId, uint ethAmount, address indexed token, uint tokenAmount, address receiver, uint timestamp);
     event ClaimedERC721(address indexed linkId, uint ethAmount, address indexed nft, uint tokenId, address receiver, uint timestamp);
     event Paused(uint timestamp);
     event Unpaused(uint timestamp);
