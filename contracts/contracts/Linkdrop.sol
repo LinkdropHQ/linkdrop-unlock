@@ -5,7 +5,7 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
-contract Linkdrop is ILinkdrop, Common {   
+contract Linkdrop is ILinkdrop, Common {
     using SafeMath for uint;
     // =================================================================================================================
     //                                         ERC20 and ETH Linkdrop
@@ -30,8 +30,8 @@ contract Linkdrop is ILinkdrop, Common {
         address _linkId,
         bytes memory _signature
     )
-    public view 
-    returns (bool) 
+    public view
+    returns (bool)
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_ethAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
@@ -51,7 +51,7 @@ contract Linkdrop is ILinkdrop, Common {
         address _receiver,
         bytes memory _signature
     )
-    public view 
+    public view
     returns (bool)
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_receiver)));
@@ -77,12 +77,12 @@ contract Linkdrop is ILinkdrop, Common {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
-        address _linkId, 
+        address _linkId,
         bytes memory _senderSignature,
-        address _receiver, 
+        address _receiver,
         bytes memory _receiverSignature
     )
-    public view 
+    public view
     returns (bool)
     {
         // If tokens are being claimed
@@ -90,10 +90,10 @@ contract Linkdrop is ILinkdrop, Common {
             require(_tokenAddress != address(0), "Invalid token address");
         }
 
-        // Make sure the claim amount is available for this contract
+        // Make sure claim amount is available for this contract
         require(getAvailableBalance(address(0)) >= _ethAmount && getAvailableBalance(_tokenAddress) >= _tokenAmount, "Insufficient funds");
 
-        // Make sure the link is not claimed or canceled
+        // Make sure link is not claimed or canceled
         require(isClaimedLink(_linkId) == false, "Claimed link");
         require(isCanceledLink(_linkId) == false, "Canceled link");
 
@@ -110,7 +110,7 @@ contract Linkdrop is ILinkdrop, Common {
         // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
         require
         (
-            verifyReceiverSignature(_linkId, _receiver, _receiverSignature), 
+            verifyReceiverSignature(_linkId, _receiver, _receiverSignature),
             "Invalid receiver signature"
         );
 
@@ -118,7 +118,7 @@ contract Linkdrop is ILinkdrop, Common {
     }
 
     /**
-    * @dev Function to claim ETH and/or ERC20 token. Can only be called when contract is not paused
+    * @dev Function to claim ETH and/or ERC20 tokens. Can only be called when contract is not paused
     * @param _ethAmount Amount of ETH to be claimed (in atomic value)
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
@@ -132,19 +132,19 @@ contract Linkdrop is ILinkdrop, Common {
     function claim
     (
         uint _ethAmount,
-        address _tokenAddress, 
+        address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
-        address _linkId, 
-        bytes calldata _senderSignature, 
-        address payable _receiver, 
+        address _linkId,
+        bytes calldata _senderSignature,
+        address payable _receiver,
         bytes calldata _receiverSignature
-    ) 
-    external 
+    )
+    external
     whenNotPaused
     returns (bool)
     {
-        // Make sure that params are valid
+        // Make sure params are valid
         require
         (
             checkClaimParams
@@ -164,7 +164,7 @@ contract Linkdrop is ILinkdrop, Common {
         // Mark link as claimed
         claimedTo[_linkId] = _receiver;
 
-        // Make sure the transfer succeeds
+        // Make sure transfer succeeds
         require(_transfer(_ethAmount, _tokenAddress, _tokenAmount, _receiver), "Transfer failed");
 
         // Emit claim event
@@ -213,29 +213,28 @@ contract Linkdrop is ILinkdrop, Common {
             uint balance = IERC20(_tokenAddress).balanceOf(address(this));
             // First use funds from proxy balance
             if (balance > 0 ) {
-
                 // Get min of two values
                 uint fromProxyAmount;
-                if (balance >= _tokenAmount) 
+                if (balance >= _tokenAmount)
                     fromProxyAmount = _tokenAmount;
-                else 
+                else
                     fromProxyAmount = balance;
 
                 // Transfer tokens from proxy balance
-                IERC20(_tokenAddress).transfer(_receiver, fromProxyAmount); 
-                
-                // Transfer rest funds from sender's balance
-                uint rest = _tokenAmount.sub(fromProxyAmount);
-                if (rest != 0) 
-                    IERC20(_tokenAddress).transferFrom(sender, _receiver, rest); 
+                IERC20(_tokenAddress).transfer(_receiver, fromProxyAmount);
+
+                // Transfer remaining funds from sender's balance
+                uint remainder = _tokenAmount.sub(fromProxyAmount);
+                if (remainder != 0)
+                    IERC20(_tokenAddress).transferFrom(sender, _receiver, remainder);
             }
 
             // Then use funds approved
             else {
-                IERC20(_tokenAddress).transferFrom(sender, _receiver, _tokenAmount); 
+                IERC20(_tokenAddress).transferFrom(sender, _receiver, _tokenAmount);
             }
 
-        }        
+        }
 
         return true;
     }

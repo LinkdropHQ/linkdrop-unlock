@@ -4,7 +4,7 @@ import "./interfaces/ILinkdropERC721.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
-contract LinkdropERC721 is ILinkdropERC721, Common {    
+contract LinkdropERC721 is ILinkdropERC721, Common {
     
     // =================================================================================================================
     //                                         ETH and ERC721 Linkdrop
@@ -29,8 +29,8 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
         address _linkId,
         bytes memory _signature
     )
-    public view 
-    returns (bool) 
+    public view
+    returns (bool)
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_ethAmount, _nftAddress, _tokenId, _expiration, _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
@@ -50,7 +50,7 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
         address _receiver,
         bytes memory _signature
     )
-    public view 
+    public view
     returns (bool)
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_receiver)));
@@ -76,21 +76,24 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        address _linkId, 
+        address _linkId,
         bytes memory _senderSignature,
-        address _receiver, 
+        address _receiver,
         bytes memory _receiverSignature
     )
-    public view 
+    public view
     returns (bool)
     {
-        // Make sure that nft address is not equal to address(0)
+        // Make sure nft address is not equal to address(0)
         require(_nftAddress != address(0), "Invalid nft address");
 
-        // Make sure the token is available for this contract
+        // Make sure claim amount is available for proxy contract
+        require(address(this).balance >= _ethAmount, "Insufficient funds");
+
+        // Make sure token is available for this contract
         require(isAvailableToken(_nftAddress, _tokenId), "Unavailable token");
 
-        // Make sure the link is not claimed or canceled
+        // Make sure link is not claimed or canceled
         require(isClaimedLink(_linkId) == false, "Claimed link");
         require(isCanceledLink(_linkId) == false, "Canceled link");
 
@@ -101,13 +104,13 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
             "Invalid sender signature"
         );
 
-        // Make sure the link is not expired
+        // Make sure link is not expired
         require(_expiration >= now, "Expired link");
 
         // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
         require
         (
-            verifyReceiverSignatureERC721(_linkId, _receiver, _receiverSignature), 
+            verifyReceiverSignatureERC721(_linkId, _receiver, _receiverSignature),
             "Invalid receiver signature"
         );
 
@@ -129,20 +132,20 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
     function claimERC721
     (
         uint _ethAmount,
-        address _nftAddress, 
+        address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        address _linkId, 
-        bytes calldata _senderSignature, 
-        address payable _receiver, 
+        address _linkId,
+        bytes calldata _senderSignature,
+        address payable _receiver,
         bytes calldata _receiverSignature
-    ) 
-    external 
+    )
+    external
     whenNotPaused
     returns (bool)
     {
 
-        // Make sure that params are valid
+        // Make sure params are valid
         require
         (
             checkClaimParamsERC721
@@ -168,10 +171,10 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
         }
 
         // Transfer NFT
-        if (IERC721(_nftAddress).ownerOf(_tokenId) == address(this)) 
-            IERC721(_nftAddress).safeTransferFrom(address(this), _receiver, _tokenId); 
-        else if (IERC721(_nftAddress).getApproved(_tokenId) == address(this)) 
-            IERC721(_nftAddress).safeTransferFrom(sender, _receiver, _tokenId); 
+        if (IERC721(_nftAddress).ownerOf(_tokenId) == address(this))
+            IERC721(_nftAddress).safeTransferFrom(address(this), _receiver, _tokenId);
+        else if (IERC721(_nftAddress).getApproved(_tokenId) == address(this))
+            IERC721(_nftAddress).safeTransferFrom(sender, _receiver, _tokenId);
         else revert("Transfer failed");
 
         // Log claim

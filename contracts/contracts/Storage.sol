@@ -26,5 +26,5 @@ contract Storage {
     event ClaimedERC721(address indexed linkId, uint ethAmount, address indexed nft, uint tokenId, address receiver, uint timestamp);
     event Paused(uint timestamp);
     event Unpaused(uint timestamp);
-    
+
 }
