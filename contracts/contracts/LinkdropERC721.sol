@@ -32,7 +32,7 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_nft, _tokenId, _expiration, _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return signer == SENDER;
+        return signer == sender;
     }
 
     /**
@@ -158,11 +158,11 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
         if (IERC721(_nft).ownerOf(_tokenId) == address(this)) 
             IERC721(_nft).safeTransferFrom(address(this), _receiver, _tokenId); 
         else if (IERC721(_nft).getApproved(_tokenId) == address(this)) 
-            IERC721(_nft).safeTransferFrom(SENDER, _receiver, _tokenId); 
+            IERC721(_nft).safeTransferFrom(sender, _receiver, _tokenId); 
         else revert("Transfer failed");
 
         // Log claim
-        emit Claimed(_linkId, _nft, _tokenId, _receiver, now);
+        emit ClaimedERC721(_linkId, _nft, _tokenId, _receiver, now);
 
         return true;
     }

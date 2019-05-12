@@ -21,13 +21,13 @@ contract Common is ICommon, Storage {
     returns (bool)
     {
         require(_initialized == false, "Initialized");
-        SENDER = _sender;
+        sender = _sender;
         _initialized = true;
         return true;
     }
 
     modifier onlySender() {
-        require(msg.sender == SENDER, "Only sender");
+        require(msg.sender == sender, "Only sender");
         _;
     }
 
@@ -79,7 +79,7 @@ contract Common is ICommon, Storage {
     * @return True if success
     */
     function withdraw() external onlySender returns (bool) {
-        SENDER.transfer(address(this).balance);
+        sender.transfer(address(this).balance);
         return true;
     }
 

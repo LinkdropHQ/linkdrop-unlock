@@ -13,8 +13,9 @@ contract Linkdrop is ILinkdrop, Common {
 
     /**
     * @dev Function to verify linkdrop sender's signature
-    * @param _token Token address, address(0) for ETH
-    * @param _amount Amount of tokens to be claimed in atomic value
+    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _tokenAddress Token address
+    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _signature ECDSA signature of linkdrop sender, signed with sender's private key
@@ -22,8 +23,9 @@ contract Linkdrop is ILinkdrop, Common {
     */
     function verifySenderSignature
     (
-        address _token,
-        uint _amount,
+        uint _ethAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
         uint _expiration,
         address _linkId,
         bytes memory _signature
@@ -31,9 +33,9 @@ contract Linkdrop is ILinkdrop, Common {
     public view 
     returns (bool) 
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_token, _amount, _expiration,  _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_ethAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return signer == SENDER;
+        return signer == sender;
     }
 
     /**
@@ -59,8 +61,9 @@ contract Linkdrop is ILinkdrop, Common {
 
     /**
     * @dev Function to verify claim params and make sure the link is not claimed or canceled
-    * @param _token Token address, address(0) for ETH
-    * @param _amount Amount of tokens to be claimed in atomic value
+    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _tokenAddress Token address
+    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
@@ -70,8 +73,9 @@ contract Linkdrop is ILinkdrop, Common {
     */
     function checkClaimParams
     (
-        address _token,
-        uint _amount,
+        uint _ethAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
         uint _expiration,
         address _linkId, 
         bytes memory _senderSignature,
@@ -81,8 +85,13 @@ contract Linkdrop is ILinkdrop, Common {
     public view 
     returns (bool)
     {
+        // If tokens are being claimed
+        if (_tokenAmount > 0) {
+            require(_tokenAddress != address(0), "Invalid token address");
+        }
+
         // Make sure the claim amount is available for this contract
-        require(getBalance(_token) >= _amount, "Insufficient funds");
+        require(getAvailableBalance(address(0)) >= _ethAmount && getAvailableBalance(_tokenAddress) >= _tokenAmount, "Insufficient funds");
 
         // Make sure the link is not claimed or canceled
         require(isClaimedLink(_linkId) == false, "Claimed link");
@@ -91,7 +100,7 @@ contract Linkdrop is ILinkdrop, Common {
         // Verify that link key is legit and signed by sender's private key
         require
         (
-            verifySenderSignature(_token, _amount, _expiration, _linkId, _senderSignature),
+            verifySenderSignature(_ethAmount, _tokenAddress, _tokenAmount, _expiration, _linkId, _senderSignature),
             "Invalid sender signature"
         );
 
@@ -109,9 +118,10 @@ contract Linkdrop is ILinkdrop, Common {
     }
 
     /**
-    * @dev Function to claim ETH or ERC20 token. Can only be called when contract is not paused
-    * @param _token Token address, address(0) for ETH
-    * @param _amount Amount of tokens to be claimed in atomic value
+    * @dev Function to claim ETH and/or ERC20 token. Can only be called when contract is not paused
+    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _tokenAddress Token address
+    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
@@ -121,8 +131,9 @@ contract Linkdrop is ILinkdrop, Common {
     */
     function claim
     (
-        address _token, 
-        uint _amount,
+        uint _ethAmount,
+        address _tokenAddress, 
+        uint _tokenAmount,
         uint _expiration,
         address _linkId, 
         bytes calldata _senderSignature, 
@@ -138,8 +149,9 @@ contract Linkdrop is ILinkdrop, Common {
         (
             checkClaimParams
             (
-                _token,
-                _amount,
+                _ethAmount,
+                _tokenAddress,
+                _tokenAmount,
                 _expiration,
                  _linkId,
                 _senderSignature,
@@ -153,73 +165,74 @@ contract Linkdrop is ILinkdrop, Common {
         claimedTo[_linkId] = _receiver;
 
         // Make sure the transfer succeeds
-        require(_transferEthOrTokens(_token, _amount, _receiver), "Transfer failed");
+        require(_transfer(_ethAmount, _tokenAddress, _tokenAmount, _receiver), "Transfer failed");
 
-        // Log claim
-        emit Claimed(_linkId, _token, _amount, _receiver, now);
+        // Emit claim event
+        emit ClaimedERC20(_linkId, _ethAmount, _tokenAddress, _tokenAmount, _receiver, now);
 
         return true;
     }
 
     /**
     * @dev Function to get total amount of tokens available for this contract
-    * @param _token Token address, address(0) for ETH
+    * @param _tokenAddress Token address
     * @return Total amount available
     */
-    function getBalance(address _token) public view returns (uint) {
+    function getAvailableBalance(address _tokenAddress) public view returns (uint) {
 
-        if (_token == address(0)) {
+        if (_tokenAddress == address(0)) {
             return address(this).balance;
         }
         else {
-            uint allowance = IERC20(_token).allowance(SENDER, address(this));
-            uint balance = IERC20(_token).balanceOf(address(this));
+            uint allowance = IERC20(_tokenAddress).allowance(sender, address(this));
+            uint balance = IERC20(_tokenAddress).balanceOf(address(this));
             return allowance.add(balance);
         }
 
     }
 
     /**
-    * @dev Internal function to transfer ETH or ERC20 tokens
-    * @param _token Token address, address(0) for ETH
-    * @param _amount Amount of tokens to be claimed in atomic value
+    * @dev Internal function to transfer ETH and/or ERC20 tokens
+    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _tokenAddress Token address
+    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _receiver Address to transfer funds to
     * @return True if success
     */
-    function _transferEthOrTokens(address _token, uint _amount, address payable _receiver)
+    function _transfer(uint _ethAmount, address _tokenAddress, uint _tokenAmount, address payable _receiver)
     internal returns (bool)
     {
-        // Transfer ethers
-        if (_amount > 0 && address(_token) == address(0)) {
-            _receiver.transfer(_amount);
+        // Transfer ETH
+        if (_ethAmount > 0) {
+            _receiver.transfer(_ethAmount);
         }
 
         // Transfer tokens
-        if (_amount > 0 && address(_token) != address(0)) {
+        if (_tokenAmount > 0 && address(_tokenAddress) != address(0)) {
 
-            uint balance = IERC20(_token).balanceOf(address(this));
+            uint balance = IERC20(_tokenAddress).balanceOf(address(this));
             // First use funds from proxy balance
             if (balance > 0 ) {
 
                 // Get min of two values
                 uint fromProxyAmount;
-                if (balance >= _amount) 
-                    fromProxyAmount = _amount;
+                if (balance >= _tokenAmount) 
+                    fromProxyAmount = _tokenAmount;
                 else 
                     fromProxyAmount = balance;
 
                 // Transfer tokens from proxy balance
-                IERC20(_token).transfer(_receiver, fromProxyAmount); 
+                IERC20(_tokenAddress).transfer(_receiver, fromProxyAmount); 
                 
                 // Transfer rest funds from sender's balance
-                uint rest = _amount.sub(fromProxyAmount);
+                uint rest = _tokenAmount.sub(fromProxyAmount);
                 if (rest != 0) 
-                    IERC20(_token).transferFrom(SENDER, _receiver, rest); 
+                    IERC20(_tokenAddress).transferFrom(sender, _receiver, rest); 
             }
 
             // Then use funds approved
             else {
-                IERC20(_token).transferFrom(SENDER, _receiver, _amount); 
+                IERC20(_tokenAddress).transferFrom(sender, _receiver, _tokenAmount); 
             }
 
         }        
