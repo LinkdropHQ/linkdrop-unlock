@@ -475,7 +475,7 @@ describe('Linkdrop ERC721 tests', () => {
     expect(balanceAfter).to.eq(0)
   })
 
-  it('should succesfully claim nft and deploy proxy is not deployed yet', async () => {
+  it('should succesfully claim nft and deploy proxy if not deployed yet', async () => {
     nftAddress = nftInstance.address
     tokenId = 2
     expirationTime = 11234234223
@@ -517,7 +517,7 @@ describe('Linkdrop ERC721 tests', () => {
         { gasLimit: 500000 }
       )
     )
-      .to.emit(proxy, 'Claimed')
+      .to.emit(proxy, 'ClaimedERC721')
       .to.emit(nftInstance, 'Transfer')
 
     // Now when deployed, check sender
@@ -526,5 +526,50 @@ describe('Linkdrop ERC721 tests', () => {
 
     let owner = await nftInstance.ownerOf(tokenId)
     expect(owner).to.eq(receiverAddress)
+  })
+
+  it('should succesfully claim eth and nft simulteneously', async () => {
+    ethAmount = 15 // wei
+    tokenId = 3
+
+    // Send ethers to Linkdrop contract
+    let tx = {
+      to: proxy.address,
+      value: ethAmount
+    }
+    await sender.sendTransaction(tx)
+
+    // Transfering nft from sender to Linkdrop Contract
+    await nftInstance.transferFrom(sender.address, proxyAddress, tokenId)
+
+    link = await createLink(
+      sender,
+      ethAmount,
+      nftAddress,
+      tokenId,
+      expirationTime
+    )
+
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await factory.claimERC721(
+      ethAmount,
+      nftAddress,
+      tokenId,
+      expirationTime,
+      link.linkId,
+      sender.address,
+      link.senderSignature,
+      receiverAddress,
+      receiverSignature,
+      { gasLimit: 800000 }
+    )
+
+    let owner = await nftInstance.ownerOf(tokenId)
+    expect(owner).to.eq(receiverAddress)
+
+    let receiverEthBalance = await provider.getBalance(receiverAddress)
+    expect(receiverEthBalance).to.eq(ethAmount)
   })
 })

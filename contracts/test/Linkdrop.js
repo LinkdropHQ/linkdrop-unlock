@@ -460,7 +460,7 @@ describe('Linkdrop tests', () => {
     expect(balanceAfter).to.eq(balanceBefore.add(wei))
   })
 
-  it('should succesully claim ethers', async () => {
+  it('should succesully claim ethers only', async () => {
     ethAmount = 100 // wei
     tokenAmount = 0
     link = await createLink(
@@ -545,6 +545,65 @@ describe('Linkdrop tests', () => {
     // Now when deployed, check sender
     let senderAddr = await proxy.sender()
     expect(sender.address).to.eq(senderAddr)
+
+    let receiverTokenBalance = await tokenInstance.balanceOf(receiverAddress)
+    expect(receiverTokenBalance).to.eq(tokenAmount)
+  })
+
+  it('should succesfully claim tokens and ethers simultaneously', async () => {
+    ethAmount = 15 // wei
+    tokenAmount = 20
+    // Transfering tokens from sender to Linkdrop Contract
+    await tokenInstance.transfer(proxy.address, 20)
+
+    // Send ethers to Linkdrop contract
+    let tx = {
+      to: proxy.address,
+      value: ethAmount
+    }
+    await sender.sendTransaction(tx)
+
+    link = await createLink(
+      sender,
+      ethAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime
+    )
+
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    let proxyEthBalanceBefore = await proxy.getAvailableBalance(
+      ethers.constants.AddressZero
+    )
+    let proxyTokenBalanceBefore = await proxy.getAvailableBalance(tokenAddress)
+
+    await factory.claim(
+      ethAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime,
+      link.linkId,
+      sender.address,
+      link.senderSignature,
+      receiverAddress,
+      receiverSignature,
+      { gasLimit: 500000 }
+    )
+
+    let proxyTokenBalanceAfter = await proxy.getAvailableBalance(tokenAddress)
+    let proxyEthBalanceAfter = await proxy.getAvailableBalance(
+      ethers.constants.AddressZero
+    )
+    expect(proxyEthBalanceAfter).to.eq(proxyEthBalanceBefore.sub(ethAmount))
+
+    expect(proxyTokenBalanceAfter).to.eq(
+      proxyTokenBalanceBefore.sub(tokenAmount)
+    )
+
+    let receiverEthBalance = await provider.getBalance(receiverAddress)
+    expect(receiverEthBalance).to.eq(ethAmount)
 
     let receiverTokenBalance = await tokenInstance.balanceOf(receiverAddress)
     expect(receiverTokenBalance).to.eq(tokenAmount)
