@@ -7,7 +7,7 @@ const queryString = require('query-string')
 
 const { jsonRpcUrl, host, receiverAddress } = config
 
-// Get params from generated link [output/linkdrop_eth.csv]
+// Get params from generated link [output/linkdrop_erc20.csv]
 const getUrlParams = async i => {
   const csvFilePath = path.resolve(__dirname, '../output/linkdrop_eth.csv')
   const jsonArray = await csvToJson().fromFile(csvFilePath)
@@ -19,8 +19,9 @@ const getUrlParams = async i => {
 
 const claimETH = async () => {
   const {
-    token,
-    amount,
+    ethAmount,
+    tokenAddress,
+    tokenAmount,
     expirationTime,
     linkKey,
     senderAddress,
@@ -30,8 +31,9 @@ const claimETH = async () => {
   await LinkdropSDK.claim(
     jsonRpcUrl,
     host,
-    token,
-    amount,
+    ethAmount,
+    tokenAddress,
+    tokenAmount,
     expirationTime,
     linkKey,
     senderAddress,

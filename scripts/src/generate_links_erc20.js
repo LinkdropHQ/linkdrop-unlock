@@ -7,7 +7,14 @@ const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
 const config = require(configPath)
 
-let { jsonRpcUrl, senderPrivateKey, token, amount, linksNumber } = config
+let {
+  jsonRpcUrl,
+  senderPrivateKey,
+  ethAmount,
+  tokenAddress,
+  tokenAmount,
+  linksNumber
+} = config
 
 ;(async () => {
   console.log('Generating links...\n')
@@ -24,24 +31,57 @@ let { jsonRpcUrl, senderPrivateKey, token, amount, linksNumber } = config
     masterCopyAddress
   )
 
-  const cost = amount * linksNumber
-  let amountToSend
+  // Send tokens to proxy
+  if (tokenAmount > 0 && tokenAddress !== ethers.constants.AddressZero) {
+    const cost = tokenAmount * linksNumber
+    let amountToSend
 
-  const tokenContract = await new ethers.Contract(token, TokenMock.abi, sender)
-  const tokenSymbol = await tokenContract.symbol()
-  const tokenDecimals = await tokenContract.decimals()
-  const proxyBalance = await tokenContract.balanceOf(proxyAddress)
-  proxyBalance >= cost
-    ? (amountToSend = 0)
-    : (amountToSend = cost - proxyBalance)
-  const tx = await tokenContract.transfer(proxyAddress, amountToSend, {
-    gasLimit: 600000
-  })
+    const tokenContract = await new ethers.Contract(
+      tokenAddress,
+      TokenMock.abi,
+      sender
+    )
+    const tokenSymbol = await tokenContract.symbol()
+    const tokenDecimals = await tokenContract.decimals()
+    const proxyBalance = await tokenContract.balanceOf(proxyAddress)
+    proxyBalance >= cost
+      ? (amountToSend = 0)
+      : (amountToSend = cost - proxyBalance)
+    const tx = await tokenContract.transfer(proxyAddress, amountToSend, {
+      gasLimit: 600000
+    })
 
-  // Get human readable format of amount to send
-  amountToSend /= Math.pow(10, tokenDecimals)
-  console.log(`⤴️  Sending ${amountToSend} ${tokenSymbol} to ${proxyAddress} `)
-  console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+    // Get human readable format of amount to send
+    amountToSend /= Math.pow(10, tokenDecimals)
+    console.log(
+      `⤴️  Sending ${amountToSend} ${tokenSymbol} to ${proxyAddress} `
+    )
+    console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+  }
+
+  // Send eth to proxy
+  if (ethAmount > 0) {
+    let cost = ethAmount * linksNumber
+    let amountToSend
+
+    const tokenSymbol = 'ETH'
+    const tokenDecimals = 18
+    const proxyBalance = await provider.getBalance(proxyAddress)
+    proxyBalance >= cost
+      ? (amountToSend = 0)
+      : (amountToSend = cost - proxyBalance)
+    const tx = await sender.sendTransaction({
+      to: proxyAddress,
+      value: amountToSend
+    })
+
+    // Get human readable format of amount to send
+    amountToSend /= Math.pow(10, tokenDecimals)
+    console.log(
+      `⤴️  Sending ${amountToSend} ${tokenSymbol} to ${proxyAddress} `
+    )
+    console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+  }
 
   let links = await generateLinksERC20()
   return links

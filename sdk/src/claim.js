@@ -5,8 +5,9 @@ const axios = require('axios')
 export const claim = async (
   jsonRpcUrl,
   host,
-  token,
-  amount,
+  ethAmount,
+  tokenAddress,
+  tokenAmount,
   expirationTime,
   linkKey,
   senderAddress,
@@ -21,12 +22,16 @@ export const claim = async (
     throw new Error('Please provide host')
   }
 
-  if (token == null || token === '') {
+  if (ethAmount === null || ethAmount === '') {
+    throw new Error('Please provide amount of eth to claim')
+  }
+
+  if (tokenAddress == null || tokenAddress === '') {
     throw new Error('Please provide ERC20 token address')
   }
 
-  if (amount === null || amount === '') {
-    throw new Error('Please provide amount per link')
+  if (tokenAmount === null || tokenAmount === '') {
+    throw new Error('Please provide amount of tokens to claim')
   }
 
   if (expirationTime == null || expirationTime === '') {
@@ -59,8 +64,9 @@ export const claim = async (
   const linkId = new ethers.Wallet(linkKey, provider).address
 
   const claimParams = {
-    token,
-    amount,
+    ethAmount,
+    tokenAddress,
+    tokenAmount,
     expirationTime,
     linkId,
     senderAddress,
@@ -85,7 +91,9 @@ export const claim = async (
         return { success, txHash }
       } else {
         const { success, error } = response.data
-        console.error(`🆘  Request failed with '${error.reason}'`)
+        if (error.reason) {
+          console.error(`🆘  Request failed with '${error.reason}'`)
+        } else console.error(error)
         return { success, error }
       }
     }
@@ -97,7 +105,8 @@ export const claim = async (
 export const claimERC721 = async (
   jsonRpcUrl,
   host,
-  nft,
+  ethAmount,
+  nftAddress,
   tokenId,
   expirationTime,
   linkKey,
@@ -113,7 +122,15 @@ export const claimERC721 = async (
     throw new Error('Please provide host')
   }
 
-  if (nft == null || nft === '' || nft === ethers.constants.AddressZero) {
+  if (ethAmount === null || ethAmount === '') {
+    throw new Error('Please provide amount of eth to claim')
+  }
+
+  if (
+    nftAddress == null ||
+    nftAddress === '' ||
+    nftAddress === ethers.constants.AddressZero
+  ) {
     throw new Error('Please provide ERC721 token address')
   }
 
@@ -151,7 +168,8 @@ export const claimERC721 = async (
   const linkId = new ethers.Wallet(linkKey, provider).address
 
   const claimParams = {
-    nft,
+    ethAmount,
+    nftAddress,
     tokenId,
     expirationTime,
     linkId,
@@ -177,7 +195,9 @@ export const claimERC721 = async (
         return { success, txHash }
       } else {
         const { success, error } = response.data
-        console.error(`🆘  Request failed with '${error.reason}'`)
+        if (error.reason) {
+          console.error(`🆘  Request failed with '${error.reason}'`)
+        } else console.error(error)
         return { success, error }
       }
     }

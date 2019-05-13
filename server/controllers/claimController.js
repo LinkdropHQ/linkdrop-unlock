@@ -13,8 +13,9 @@ const relayer = new ethers.Wallet(relayerPrivateKey, provider)
 
 export const claim = async (req, res) => {
   const {
-    token,
-    amount,
+    ethAmount,
+    tokenAddress,
+    tokenAmount,
     expirationTime,
     linkId,
     senderAddress,
@@ -24,8 +25,9 @@ export const claim = async (req, res) => {
   } = req.body
 
   const claimParams = {
-    token,
-    amount,
+    ethAmount,
+    tokenAddress,
+    tokenAmount,
     expirationTime,
     linkId,
     senderAddress,
@@ -34,12 +36,16 @@ export const claim = async (req, res) => {
     receiverSignature
   }
 
-  if (!token) {
+  if (!ethAmount) {
+    throw new Error('Please provide amount of eth to claim')
+  }
+
+  if (!tokenAddress) {
     throw new Error('Please provide token address')
   }
 
-  if (!amount) {
-    throw new Error('Please provide amount to claim')
+  if (!tokenAmount) {
+    throw new Error('Please provide amount of tokens to claim')
   }
 
   if (!expirationTime) {
@@ -69,18 +75,19 @@ export const claim = async (req, res) => {
   const proxyFactory = new ethers.Contract(factory, Factory.abi, relayer)
 
   try {
-    const masterCopyAddr = await proxyFactory.masterCopy()
+    const masterCopyAddress = await proxyFactory.masterCopy()
 
     const proxyAddress = await LinkdropSDK.computeProxyAddress(
       factory,
       senderAddress,
-      masterCopyAddr
+      masterCopyAddress
     )
 
     // Check whether a claim tx exists in database
     const oldClaimTx = await ClaimTx.findOne({
-      token,
-      amount,
+      ethAmount,
+      tokenAddress,
+      tokenAmount,
       linkId,
       senderAddress
     })
@@ -95,8 +102,9 @@ export const claim = async (req, res) => {
     // Check claim params
     try {
       await proxyFactory.checkClaimParams(
-        token,
-        amount,
+        ethAmount,
+        tokenAddress,
+        tokenAmount,
         expirationTime,
         linkId,
         senderAddress,
@@ -110,8 +118,9 @@ export const claim = async (req, res) => {
       console.log('\n🔦️  Claiming...\n', claimParams)
 
       const tx = await proxyFactory.claim(
-        token,
-        amount,
+        ethAmount,
+        tokenAddress,
+        tokenAmount,
         expirationTime,
         linkId,
         senderAddress,
@@ -127,8 +136,9 @@ export const claim = async (req, res) => {
 
       // Save claim tx to database
       const claimTx = new ClaimTx({
-        token,
-        amount,
+        ethAmount,
+        tokenAddress,
+        tokenAmount,
         expirationTime,
         linkId,
         senderAddress,
@@ -147,7 +157,8 @@ export const claim = async (req, res) => {
         txHash: txHash
       })
     } catch (error) {
-      console.error(`📛  Failed with '${error.reason}'`)
+      if (error.reason) console.error(`📛  Failed with '${error.reason}'`)
+      else console.error(error)
 
       return res.json({
         success: false,
@@ -161,7 +172,8 @@ export const claim = async (req, res) => {
 
 export const claimERC721 = async (req, res) => {
   const {
-    nft,
+    ethAmount,
+    nftAddress,
     tokenId,
     expirationTime,
     linkId,
@@ -172,7 +184,8 @@ export const claimERC721 = async (req, res) => {
   } = req.body
 
   const claimParams = {
-    nft,
+    ethAmount,
+    nftAddress,
     tokenId,
     expirationTime,
     linkId,
@@ -182,7 +195,11 @@ export const claimERC721 = async (req, res) => {
     receiverSignature
   }
 
-  if (!nft) {
+  if (!ethAmount) {
+    throw new Error('Please provide amount of eth to claim')
+  }
+
+  if (!nftAddress) {
     throw new Error('Please provide nft address')
   }
 
@@ -217,18 +234,19 @@ export const claimERC721 = async (req, res) => {
   const proxyFactory = new ethers.Contract(factory, Factory.abi, relayer)
 
   try {
-    const masterCopyAddr = await proxyFactory.masterCopy()
+    const masterCopyAddress = await proxyFactory.masterCopy()
 
     const proxyAddress = await LinkdropSDK.computeProxyAddress(
       factory,
       senderAddress,
-      masterCopyAddr
+      masterCopyAddress
     )
 
     // Check whether a claim tx exists in database
 
     const oldClaimTx = await ClaimTxERC721.findOne({
-      nft,
+      ethAmount,
+      nftAddress,
       tokenId,
       linkId,
       senderAddress
@@ -244,7 +262,8 @@ export const claimERC721 = async (req, res) => {
     // Check claim params
     try {
       await proxyFactory.checkClaimParamsERC721(
-        nft,
+        ethAmount,
+        nftAddress,
         tokenId,
         expirationTime,
         linkId,
@@ -259,7 +278,8 @@ export const claimERC721 = async (req, res) => {
       console.log('\n🔦️  Claiming...\n', claimParams)
 
       const tx = await proxyFactory.claimERC721(
-        nft,
+        ethAmount,
+        nftAddress,
         tokenId,
         expirationTime,
         linkId,
@@ -275,7 +295,8 @@ export const claimERC721 = async (req, res) => {
 
       // Save claim tx to database
       const claimTxERC721 = new ClaimTxERC721({
-        nft,
+        ethAmount,
+        nftAddress,
         tokenId,
         expirationTime,
         linkId,
@@ -295,7 +316,8 @@ export const claimERC721 = async (req, res) => {
         txHash: tx.hash
       })
     } catch (error) {
-      console.error(`📛  Failed with '${error.reason}'`)
+      if (error.reason) console.error(`📛  Failed with '${error.reason}'`)
+      else console.error(error)
 
       return res.json({
         success: false,

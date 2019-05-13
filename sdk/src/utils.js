@@ -14,8 +14,9 @@ export const buildCreate2Address = (creatorAddress, saltHex, byteCode) => {
 // Generates new link
 export const createLink = async (
   sender, // Wallet
+  ethAmount,
   tokenAddress,
-  claimAmount,
+  tokenAmount,
   expirationTime
 ) => {
   let linkWallet = ethers.Wallet.createRandom()
@@ -23,8 +24,9 @@ export const createLink = async (
   let linkId = linkWallet.address
   let senderSignature = await signLink(
     sender,
+    ethAmount,
     tokenAddress,
-    claimAmount,
+    tokenAmount,
     expirationTime,
     linkId
   )
@@ -38,14 +40,15 @@ export const createLink = async (
 // Should be signed by sender
 export const signLink = async (
   sender, // Wallet
+  ethAmount,
   tokenAddress,
-  claimAmount,
+  tokenAmount,
   expirationTime,
   linkId
 ) => {
   let messageHash = ethers.utils.solidityKeccak256(
-    ['address', 'uint', 'uint', 'address'],
-    [tokenAddress, claimAmount, expirationTime, linkId]
+    ['uint', 'address', 'uint', 'uint', 'address'],
+    [ethAmount, tokenAddress, tokenAmount, expirationTime, linkId]
   )
   let messageHashToSign = ethers.utils.arrayify(messageHash)
   let signature = await sender.signMessage(messageHashToSign)
