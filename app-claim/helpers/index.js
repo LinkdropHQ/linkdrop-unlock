@@ -1,7 +1,11 @@
-import shortenString from './shorten-string'
 import getImages from './get-images'
+import capitalize from './capitalize'
+import getWalletLink from './get-wallet-link'
+import getWalletData from './get-wallet-data'
 
 export {
-  shortenString,
-  getImages
+  getImages,
+  capitalize,
+  getWalletLink,
+  getWalletData
 }

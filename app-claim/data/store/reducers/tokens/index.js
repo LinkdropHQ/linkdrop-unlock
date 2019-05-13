@@ -2,7 +2,9 @@ import reducers from './reducers'
 
 const initialState = {
   loading: false,
-  link: ''
+  link: '',
+  transactionStatus: null,
+  transactionId: null
 }
 
 export default (state = initialState, action = {}) => {
@@ -16,5 +18,7 @@ export default (state = initialState, action = {}) => {
 
 const ACTIONS = {
   'TOKENS.SET_LINK': reducers.setLink,
-  'TOKENS.SET_LOADING': reducers.setLoading
+  'TOKENS.SET_LOADING': reducers.setLoading,
+  'TOKENS.SET_TRANSACTION_STATUS': reducers.setTransactionStatus,
+  'TOKENS.SET_TRANSACTION_ID': reducers.setTransactionId
 }

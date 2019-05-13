@@ -15,10 +15,11 @@ class AppRouter extends React.Component {
     i18next.changeLanguage(locale)
   }
 
+  componentDidMount () {}
+
   render () {
     return <Page>
       <Switch>
-        {/* <Route path='/' component={Main} /> */}
         <Route path='/' component={Main} />
         <Route path='*' component={NotFound} />
       </Switch>

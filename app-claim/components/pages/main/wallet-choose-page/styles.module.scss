@@ -1,3 +1,9 @@
+@import "variables/variables.scss";
+
+.container {
+  overflow: hidden;
+}
+
 .title {
   font-size: 24px;
   margin-bottom: 50px;
@@ -14,8 +20,18 @@
   cursor: pointer;
   transition: all .3s;
   z-index: 2;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  left: 0;
 }
+
 .content {
+  position: relative;
+  height: 100px;
+  margin: 0 auto;
+  padding: 0 30px;
   width: 100%;
 }
 
@@ -24,25 +40,82 @@
   max-width: 100%;
 }
 
-.sliderShown .subtitle {
-  animation: titleOut .5s forwards;
+.instructions {
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  margin-bottom: 30px;
+
+  div {
+    margin-bottom: 12px;
+    &:last-child {
+      margin-bottom: 0px;
+    }
+  }
 }
 
-.sliderShown .slider {
-  animation: sliderIn .5s forwards;
+.instructionTitle {
+  margin-bottom: 40px;
+}
+
+.walletPreview {
+  margin-bottom: 30px;
 }
 
 .slider {
-  margin-left: 100%;
+  left: 100%;
   opacity: 0;
   z-index: 1;
-  margin-top: -40px;
   width: 100%;
+  top: 0px;
+  position: absolute;
+}
+
+.wallet {
+  border-radius: 14px;
+  width: 60px!important;
+  height: 60px!important;
+  display: flex!important;
+  align-items: center;
+  justify-content: center;
+  outline: none!important;
+  background: $white;
+
+  img {
+    max-width: 100%;
+  }
+}
+
+.wallet.withBorder {
+  border: 1px solid black;
+  transition: all .3s;
+  overflow: hidden;
+
+  &:hover {
+    background: $bgHoverGrey;
+    border-color: $borderHoverGrey;
+  }
+}
+
+.sliderShow .subtitle {
+  animation: titleOut .5s forwards;
+}
+
+.sliderShow .slider {
+  animation: sliderIn .5s forwards;
+}
+
+.sliderHide .subtitle {
+  animation: titleIn .5s forwards;
+}
+
+.sliderHide .slider {
+  animation: sliderOut .5s forwards;
 }
 
 @keyframes titleOut {
   0% {
-    margin-left: 0%;
+    left: 0%;
     opacity: 1;
   }
 
@@ -53,14 +126,14 @@
   100% {
     opacity: 0;
     display: none;
-    margin-left: -100%;
+    left: -100%;
     z-index: 1;
   }
 }
 
 @keyframes sliderIn {
   0% {
-    margin-left: 100%;
+    left: 100%;
     opacity: 0;
   }
 
@@ -71,7 +144,44 @@
   100% {
     opacity: 1;
     display: block;
-    margin-left: 0%;
+    left: 0%;
     z-index: 2;
+  }
+}
+
+
+@keyframes titleIn {
+  0% {
+    opacity: 0;
+    display: none;
+    left: -100%;
+    z-index: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    left: 0%;
+    opacity: 1;
+  }
+}
+
+@keyframes sliderOut {
+  0% {
+    opacity: 1;
+    display: block;
+    left: 0%;
+    z-index: 2;
+  }
+
+  80% {
+    opacity: 0;
+  }
+
+  100% {
+    left: 100%;
+    opacity: 0;
   }
 }

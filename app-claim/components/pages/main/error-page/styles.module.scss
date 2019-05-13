@@ -12,3 +12,20 @@
   margin-bottom: 40px;
 }
 
+.instructions {
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  margin-top: 40px;
+
+  span {
+    font-family: 'Inter-Bold';
+  }
+
+  div {
+    margin-bottom: 12px;
+    &:last-child {
+      margin-bottom: 0px;
+    }
+  }
+}
