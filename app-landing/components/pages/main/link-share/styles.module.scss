@@ -13,7 +13,7 @@
   left: 0;
   height: 100%;
   width: 100%;
-  padding-top: 164px;
+  padding: 164px 20px 0px;
   position: absolute;
 }
 
@@ -87,5 +87,11 @@
   100% {
     opacity: 1;
     left: 0;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .button {
+    width: 100%;
   }
 }
