@@ -8,7 +8,8 @@ export default {
     instructions: 'It may take a few minutes. You can come back later.',
     seeDetails: 'See details on <a target="_blank" href={{transactionLink}}>Etherscan</a>',
     tokensClaimed: '<span>{{tokens}}</span> claimed',
-    howToClaim: 'How to claim tokens to {{wallet}}'
+    howToClaim: 'How to claim tokens to {{wallet}}',
+    agreeWithTerms: 'By claiming this link you agree to the <a href={{termsHref}}>Terms</a> & <a href={{privacyHref}}>Privacy</a>'
   },
   buttons: {
     useWallet: 'Use {{wallet}}',

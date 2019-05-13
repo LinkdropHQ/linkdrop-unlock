@@ -2,7 +2,7 @@ export default {
   titles: {
     sendTokens: 'Try to send any tokens or NFTs via link',
     main: 'Try the demo and send tokens via link',
-    sendTokensToAddress: 'Send any tokens to the address:',
+    sendTokensToAddress: 'Scan or copy address to send tokens',
     shareLink: 'Copy and share the link',
     linkDone: 'Your link is done!',
     scanCode: 'Scan QR-code to get link',
@@ -11,7 +11,7 @@ export default {
     expiredLinks: 'Expired links',
     wantMoreLinks: 'Want more links?',
     cs: 'Customer service 24/7',
-    terms: 'By sending funds you agree to the <a href={{termsHref}}>Terms</a>',
+    terms: 'I agree with <a href={{termsHref}}>Terms</a> & <a href={{privacyHref}}>Privacy</a>',
     getYourLink: 'Get your link',
     linkdrop: 'Linkdrop',
     multipleLinks: 'Multiple links & Analytics',

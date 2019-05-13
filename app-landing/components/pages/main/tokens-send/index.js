@@ -20,7 +20,8 @@ class TokensSend extends React.Component {
       tokenAddress: '',
       started: false,
       manualStarted: false,
-      isERC721: false
+      isERC721: false,
+      termsAccepted: false
     }
   }
 
@@ -73,6 +74,7 @@ class TokensSend extends React.Component {
   }
 
   renderLoadingOrButton ({ started, tokensUploaded, alert }) {
+    const { termsAccepted } = this.state
     if (started) {
       return <LoadingBar
         className={styles.loading}
@@ -81,7 +83,13 @@ class TokensSend extends React.Component {
         onClick={_ => this.setState({ manualTokenCheck: true }, _ => this.intervalCheck && window.clearInterval(this.intervalCheck))}
       />
     }
-    return <Button onClick={_ => this.startSearchingForTokens()} className={styles.nextButton}>{this.t('buttons.next')}</Button>
+    return <Button
+      disabled={!termsAccepted}
+      onClick={_ => this.startSearchingForTokens()}
+      className={styles.nextButton}
+    >
+      {this.t('buttons.next')}
+    </Button>
   }
 
   startSearchingForTokens () {
@@ -132,8 +140,14 @@ class TokensSend extends React.Component {
   }
 
   renderTermsOrAlert ({ alert }) {
-    const text = alert ? this.t('titles.footerAddManually') : this.t('titles.terms')
-    return <div className={styles.terms} dangerouslySetInnerHTML={{ __html: text }} />
+    const { termsAccepted } = this.state
+    return <div className={styles.terms}>
+      <Checkbox checked={termsAccepted} onChange={({ value }) => this.setState({ termsAccepted: value })} />
+      <div dangerouslySetInnerHTML={{ __html: this.t('titles.terms', {
+        termsHref: 'http://linkdrop.io/terms',
+        privacyHref: 'http://linkdrop.io/privacy'
+      }) }} />
+    </div>
   }
 }
 
