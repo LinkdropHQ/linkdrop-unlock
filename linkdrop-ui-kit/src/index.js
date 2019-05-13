@@ -10,6 +10,9 @@ import Input from './input'
 import NftItem from './nft-item'
 import Slider from './slider'
 import RetinaImage from './retina-image'
+import TextControlBlock from './text-control-block'
+import TextCopyBlock from './text-copy-block'
+import Checkbox from './checkbox'
 
 export {
   Footer,
@@ -23,5 +26,8 @@ export {
   Input,
   NftItem,
   Slider,
-  RetinaImage
+  RetinaImage,
+  TextControlBlock,
+  TextCopyBlock,
+  Checkbox
 }

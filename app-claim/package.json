@@ -6,10 +6,10 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "dev": "webpack --watch --mode development",
-    "build": "webpack --mode production",
-    "test-saga": "NODE_PATH=. mocha test/saga/**/*.js --require @babel/register --require ignore-styles --recursive",
-    "storybook": "start-storybook"
+    "dev": "webpack --watch --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+    "test": "NODE_PATH=. mocha test/saga/**/*.js --require @babel/register --require ignore-styles --recursive",
+    "dev:server": "webpack-dev-server --hot --inline --config webpack.dev.js"
   },
   "dependencies": {
     "@babel/core": "^7.4.0",
@@ -32,7 +32,10 @@
     "history": "^4.7.2",
     "i18next": "^8.4.3",
     "immutable": "^3.8.1",
+    "is-android": "^1.0.1",
+    "is-ios": "^1.0.0",
     "jest-css-modules": "^2.0.0",
+    "linkdrop-commons": "1.0.0",
     "linkdrop-ui-kit": "^1.0.0",
     "node-sass": "^4.7.2",
     "react": "^16.8.6",
@@ -50,8 +53,10 @@
     "redux-saga": "^0.16.0",
     "redux-thunk": "^2.3.0",
     "sass-loader": "^6.0.3",
+    "sdk": "1.0.0",
     "style-loader": "^0.16.1",
     "url-loader": "^0.5.9",
+    "web3-react": "^5.0.2",
     "webpack": "^4.10.2",
     "webpack-cli": "^3.1.1",
     "webpack-livereload-plugin": "^0.10.0",
@@ -84,9 +89,13 @@
     "sinon": "^7.3.1",
     "standard-loader": "^6.0.1",
     "supertest": "^2.0.1",
-    "supertest-as-promised": "^4.0.1"
+    "supertest-as-promised": "^4.0.1",
+    "webpack-dev-server": "^3.3.1"
   },
   "standard": {
     "parser": "babel-eslint"
+  },
+  "babel": {
+    "extends": "../babel.config.js"
   }
 }

@@ -1,7 +1,9 @@
-import tokensClaimErc20 from './tokens-claim-erc-20'
-import tokensClaimErc721 from './tokens-claim-erc721'
+import getTokenERC721Data from './get-token-erc-721-data'
+import getTokensOpensea from './get-tokens-opensea'
+import getTokensTrustWallet from './get-tokens-trust-wallet'
 
 export {
-  tokensClaimErc20,
-  tokensClaimErc721
+  getTokenERC721Data,
+  getTokensOpensea,
+  getTokensTrustWallet
 }

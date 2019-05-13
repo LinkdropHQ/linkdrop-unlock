@@ -21,10 +21,10 @@ class Input extends React.Component {
   }
 
   render () {
-    const { mask, className, disabled, placeholder } = this.props
+    const { mask, className, disabled, placeholder, centered } = this.props
     const { value } = this.state
     if (mask) return this.renderMaskInput()
-    return <input placeholder={placeholder} disabled={disabled} value={value} className={this.defineClassNames({ className, disabled })} onChange={e => this.changeValue(e)} />
+    return <input placeholder={placeholder} disabled={disabled} value={value} className={this.defineClassNames({ className, disabled, centered })} onChange={e => this.changeValue(e)} />
   }
 
   changeValue (e) {
@@ -35,8 +35,8 @@ class Input extends React.Component {
     }, _ => onChange && onChange({ value }))
   }
 
-  defineClassNames ({ className, disabled }) {
-    return classNames(styles.container, className, { [styles.disabled]: disabled })
+  defineClassNames ({ className, disabled, centered }) {
+    return classNames(styles.container, className, { [styles.disabled]: disabled, [styles.centered]: centered })
   }
 
   renderMaskInput () {

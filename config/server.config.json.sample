@@ -1,0 +1,6 @@
+{
+    "mongoURI":"",
+    "jsonRpcUrl": "",
+    "factory": "",
+    "relayerPrivateKey": ""
+}

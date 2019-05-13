@@ -1,20 +1,21 @@
 import React from 'react'
 import { Provider } from 'react-redux'
-import { Router } from 'react-router'
-import { ConnectedRouter } from 'connected-react-router'
+import Web3Provider from 'web3-react'
+import connectors from './connectors'
+import RouterProvider from './router-provider'
 
-import store, { history } from 'data/store'
-import AppRouter from './router'
+import store from 'data/store'
 
 class Application extends React.Component {
   render () {
-    return <Provider store={store()}>
-      <ConnectedRouter history={history}>
-        <Router history={history}>
-          <AppRouter />
-        </Router>
-      </ConnectedRouter>
-    </Provider>
+    return <Web3Provider
+      connectors={connectors}
+      libraryName={'ethers.js'}
+    >
+      <Provider store={store()}>
+        <RouterProvider />
+      </Provider>
+    </Web3Provider>
   }
 }
 export default Application
