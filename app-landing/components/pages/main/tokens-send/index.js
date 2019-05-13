@@ -143,7 +143,10 @@ class TokensSend extends React.Component {
     const { termsAccepted } = this.state
     return <div className={styles.terms}>
       <Checkbox checked={termsAccepted} onChange={({ value }) => this.setState({ termsAccepted: value })} />
-      <div dangerouslySetInnerHTML={{ __html: this.t('titles.terms') }} />
+      <div dangerouslySetInnerHTML={{ __html: this.t('titles.terms', {
+        termsHref: 'http://linkdrop.io/terms',
+        privacyHref: 'http://linkdrop.io/privacy'
+      }) }} />
     </div>
   }
 }

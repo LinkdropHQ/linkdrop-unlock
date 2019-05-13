@@ -28,7 +28,6 @@ class Main extends React.Component {
       return this.actions().user.createWallet()
     }
     // otherwise do the initial check
-    console.log('here')
     this.setState({
       startCheckingBalanceImmediately: true
     }, _ => this.actions().tokens.checkBalance({ account: wallet, networkId: n }))
@@ -89,7 +88,7 @@ class Main extends React.Component {
   renderAccess () {
     return <div className={styles.form}>
       <div className={styles.formContent}>
-        <Button className={styles.button}>{this.t('buttons.requestAccess')}</Button>
+        <Button target='_blank' href='http://linkdrop.io/request' className={styles.button}>{this.t('buttons.requestAccess')}</Button>
       </div>
       <div className={styles.formNote}>
         {this.t('titles.wantMoreLinksInstruction')}

@@ -15,7 +15,7 @@ class ClaimingFinishedPage extends React.Component {
     const { transactionId, amount, symbol } = this.props
     return <div className={commonStyles.container}>
       <Alert icon={<Icons.Check />} className={styles.alert} />
-      <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.tokensClaimed', { tokens: `${amount || ''} ${symbol}` }) }} />
+      <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.tokensClaimed', { tokens: `${amount || ''} ${symbol || ''}` }) }} />
       <div
         className={classNames(styles.description, {
           [styles.descriptionHidden]: !transactionId

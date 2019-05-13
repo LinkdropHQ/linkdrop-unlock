@@ -7,7 +7,7 @@ import { LinkBlock } from 'components/pages/common'
 @translate('pages.main')
 class ProSolution extends React.Component {
   render () {
-    const { onClick, onClose } = this.props
+    const { onClose } = this.props
     return <LinkBlock title={this.t('titles.wantMoreLinks')}>
       <div className={styles.close} onClick={_ => onClose && onClose()}>
         <Icons.Close />
@@ -18,7 +18,7 @@ class ProSolution extends React.Component {
           <Icons.CheckSmall /> {this.t(`titles.${item}`)}
         </div>)}
       </div>
-      <Button className={styles.button} onClick={_ => onClick && onClick()}>
+      <Button href='http://linkdrop.io/request' target='_blank' className={styles.button}>
         {this.t('buttons.joinWaitlist')}
       </Button>
     </LinkBlock>
