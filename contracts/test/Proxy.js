@@ -27,7 +27,7 @@ let masterCopy
 let factory
 let proxy
 
-describe('Factory - Proxy pattern tests', () => {
+describe('Factory and Proxy tests', () => {
   //   before(async () => {})
 
   it('should deploy master copy of linkdrop implementation', async () => {
@@ -57,7 +57,7 @@ describe('Factory - Proxy pattern tests', () => {
 
     proxy = new ethers.Contract(expectedAddress, Linkdrop.abi, sender)
 
-    let senderAddr = await proxy.SENDER()
+    let senderAddr = await proxy.sender()
     expect(senderAddress).to.eq(senderAddr)
   })
 
@@ -73,7 +73,7 @@ describe('Factory - Proxy pattern tests', () => {
 
     proxy = new ethers.Contract(expectedAddress, Linkdrop.abi, sender)
 
-    let senderAddr = await proxy.SENDER()
+    let senderAddr = await proxy.sender()
     expect(senderAddress).to.eq(senderAddr)
   })
 
@@ -89,7 +89,7 @@ describe('Factory - Proxy pattern tests', () => {
 
     proxy = new ethers.Contract(expectedAddress, Linkdrop.abi, sender)
 
-    let senderAddr = await proxy.SENDER()
+    let senderAddr = await proxy.sender()
     expect(senderAddress).to.eq(senderAddr)
   })
 })
