@@ -8,7 +8,7 @@ class Footer extends React.Component {
     return <footer className={styles.container}>
       <div className={styles.content}>
         <div>{this.t('copyright', { year: new Date().getFullYear() })}</div>
-        {MENU_ITEMS.map(item => <a href={this.t(`${item}.url`)}>{this.t(`${item}.title`)}</a>)}
+        {MENU_ITEMS.map(item => <a key={item} href={this.t(`${item}.url`)}>{this.t(`${item}.title`)}</a>)}
       </div>
     </footer>
   }

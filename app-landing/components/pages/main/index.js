@@ -1,6 +1,6 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
-import { Button, Icons, Input } from 'linkdrop-ui-kit'
+import { Button, Icons } from 'linkdrop-ui-kit'
 import styles from './styles.module'
 import TokensSend from './tokens-send'
 import LinkShare from './link-share'
@@ -9,9 +9,10 @@ import FinalScreen from './final-screen'
 import LearnMore from './learn-more'
 import TrustedBy from './trusted-by'
 import LoadingScreen from './loading-screen'
+import ErrorScreen from './error-screen'
 import { getHashVariables } from 'linkdrop-commons'
 
-@actions(({ user: { step, balance, wallet, link } }) => ({ step, balance, wallet, link }))
+@actions(({ user: { step, balance, wallet, link, errors } }) => ({ step, balance, wallet, link, errors }))
 @translate('pages.main')
 class Main extends React.Component {
   constructor (props) {
@@ -42,11 +43,11 @@ class Main extends React.Component {
   }
 
   render () {
-    const { step } = this.props
+    const { step, errors } = this.props
     return <div className={styles.container}>
       <div className={styles.headerContent}>
         <div className={styles.leftBlock}>
-          {this.renderContent({ step })}
+          {this.renderContent({ step, errors })}
         </div>
         <div className={styles.rightBlock}>
           {this.renderTexts({ step })}
@@ -96,7 +97,7 @@ class Main extends React.Component {
     </div>
   }
 
-  renderContent ({ step }) {
+  renderContent ({ step, errors }) {
     const { startCheckingBalanceImmediately } = this.state
     switch (step) {
       case 1:
