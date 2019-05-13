@@ -99,9 +99,6 @@ class Main extends React.Component {
 
   renderContent ({ step, errors }) {
     const { startCheckingBalanceImmediately } = this.state
-    if (errors && errors.length > 0) {
-      return <ErrorScreen error={errors[0]} />
-    }
     switch (step) {
       case 1:
         // screen with proxy adress where to send tokens

@@ -26,11 +26,6 @@ const generator = function * ({ payload }) {
     } else if (Number(balanceFormatted) > 0 || Number(erc20Balance.total) > 0) {
       yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc20' } })
     }
-    console.log(
-      Number(balanceFormatted),
-      Number(erc20Balance.total),
-      erc721Balance.length
-    )
     if (step === 0) {
       // if the step is 0, then it means that it was an initial check, and we have to move on first step
       if (Number(balanceFormatted) > 0 || Number(erc20Balance.total) > 0 || erc721Balance.length > 0) {
@@ -74,6 +69,7 @@ const generator = function * ({ payload }) {
   } catch (e) {
     console.error(e)
     yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['PROBLEM_WITH_EXRTERNAL_LIBRARY'] } })
+    yield put({ type: 'USER.SET_STEP', payload: { step: 1 } })
   }
 }
 

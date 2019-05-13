@@ -29,8 +29,10 @@ export default {
     footerAddManually: '<span>Add manually</span>',
     tokenAddress: 'Token address',
     waitingFor: 'Waiting for {{tokenSymbol}}...',
-    isERC721: 'is it ERC-721?',
-    errorOccured: 'Some error occured'
+    errorOccured: 'Some error occured',
+    erc721: 'ERC-721',
+    erc20: 'ERC-20',
+    tokenId: 'Token ID'
   },
   descriptions: {
     sendTokens: 'Simply send your funds to our secure contract and generate the crypto link',
