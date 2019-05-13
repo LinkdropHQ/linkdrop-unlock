@@ -1,6 +1,6 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
-import { Button, Icons, Input } from 'linkdrop-ui-kit'
+import { Button, Icons } from 'linkdrop-ui-kit'
 import styles from './styles.module'
 import TokensSend from './tokens-send'
 import LinkShare from './link-share'
@@ -9,25 +9,29 @@ import FinalScreen from './final-screen'
 import LearnMore from './learn-more'
 import TrustedBy from './trusted-by'
 import LoadingScreen from './loading-screen'
+import ErrorScreen from './error-screen'
 import { getHashVariables } from 'linkdrop-commons'
 
-@actions(({ user: { step, balance, wallet, link } }) => ({ step, balance, wallet, link }))
+@actions(({ user: { step, balance, wallet, link, errors } }) => ({ step, balance, wallet, link, errors }))
 @translate('pages.main')
 class Main extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      startCheckingBalanceImmediately: false
+    }
+  }
   componentDidMount () {
     const { n } = getHashVariables()
-    const { wallet, link } = this.props
+    const { wallet } = this.props
     // if has no wallet, then generate new one
     if (!wallet) {
       return this.actions().user.createWallet()
     }
-    // if has link, then bring to final screen directly
-    if (link) {
-      this.actions().user.setStep({ step: 4 })
-    }
-
     // otherwise do the initial check
-    this.actions().tokens.checkBalance({ account: wallet, networkId: n })
+    this.setState({
+      startCheckingBalanceImmediately: true
+    }, _ => this.actions().tokens.checkBalance({ account: wallet, networkId: n }))
   }
 
   componentWillReceiveProps ({ wallet, step }) {
@@ -39,18 +43,20 @@ class Main extends React.Component {
   }
 
   render () {
-    const { step } = this.props
+    const { step, errors } = this.props
     return <div className={styles.container}>
       <div className={styles.headerContent}>
         <div className={styles.leftBlock}>
-          {this.renderContent({ step })}
+          {this.renderContent({ step, errors })}
         </div>
         <div className={styles.rightBlock}>
           {this.renderTexts({ step })}
         </div>
       </div>
-      <LearnMore />
-      <TrustedBy />
+      {/* currently disabled */}
+      {false && <LearnMore />}
+      {false && <TrustedBy />}
+      {/* currently disabled */}
     </div>
   }
 
@@ -83,8 +89,7 @@ class Main extends React.Component {
   renderAccess () {
     return <div className={styles.form}>
       <div className={styles.formContent}>
-        <Input className={styles.input} placeholder={this.t('titles.yourEmail')} />
-        <Button className={styles.button}>{this.t('buttons.requestAccess')}</Button>
+        <Button target='_blank' href='http://linkdrop.io/request' className={styles.button}>{this.t('buttons.requestAccess')}</Button>
       </div>
       <div className={styles.formNote}>
         {this.t('titles.wantMoreLinksInstruction')}
@@ -92,11 +97,16 @@ class Main extends React.Component {
     </div>
   }
 
-  renderContent ({ step }) {
+  renderContent ({ step, errors }) {
+    const { startCheckingBalanceImmediately } = this.state
+    if (errors && errors.length > 0) {
+      return <ErrorScreen error={errors[0]} />
+    }
     switch (step) {
       case 1:
         // screen with proxy adress where to send tokens
         return <TokensSend
+          startCheckingBalanceImmediately={startCheckingBalanceImmediately}
           onFinish={_ => {
             this.actions().user.setStep({ step: 2 })
           }}

@@ -27,10 +27,11 @@ import { Web3Consumer } from 'web3-react'
 class Claim extends React.Component {
   componentDidMount () {
     const {
-      senderAddress,
-      n
+      linkKey,
+      n,
+      senderAddress
     } = getHashVariables()
-    this.actions().tokens.checkIfClaimed({ account: senderAddress, networkId: n })
+    this.actions().tokens.checkIfClaimed({ linkKey, networkId: n, senderAddress })
   }
 
   componentWillReceiveProps ({ readyToClaim, alreadyClaimed }) {
@@ -85,7 +86,7 @@ class Claim extends React.Component {
   }
 
   renderCurrentPage ({ context }) {
-    const { decimals, amount, symbol, icon, step, userLoading, errors } = this.props
+    const { decimals, amount, symbol, icon, step, userLoading, errors, alreadyClaimed } = this.props
     // in context we can find:
     // active,
     // connectorName,
@@ -115,13 +116,12 @@ class Claim extends React.Component {
       return <ErrorPage error={errors[0]} />
     }
 
-    // if (alreadyClaimed) {
-    //   // if tokens we already claimed (if wallet is totally empty).
-    // right now we decided to close this check, because we have to prepare endpoint to check it on serverside
-    //   return <ClaimingFinishedPage
-    //     {...commonData}
-    //   />
-    // }
+    if (alreadyClaimed) {
+      // if tokens we already claimed (if wallet is totally empty).
+      return <ClaimingFinishedPage
+        {...commonData}
+      />
+    }
     switch (step) {
       case 1:
         return <InitialPage

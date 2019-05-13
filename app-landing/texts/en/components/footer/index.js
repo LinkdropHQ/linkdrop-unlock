@@ -1,13 +1,23 @@
 export default {
-  funded: 'Funded by Tachyon',
   copyright: 'Linkdrop Labs, Inc. {{year}}',
-  contactUs: 'Contact Us',
+  contactUs: {
+    title: 'Contact Us',
+    url: 'mailto:hi@linkdrop.io'
+  },
   twitter: {
     title: 'Twitter',
-    url: ''
+    url: 'https://twitter.com/LinkdropOrg'
   },
   blog: {
     title: 'Blog',
-    url: ''
+    url: 'https://medium.com/linkdrop-protocol'
+  },
+  termsOfService: {
+    title: 'Terms of Service',
+    url: 'http://linkdrop.io/terms'
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    url: 'http://linkdrop.io/privacy'
   }
 }

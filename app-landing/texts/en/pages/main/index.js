@@ -2,7 +2,7 @@ export default {
   titles: {
     sendTokens: 'Try to send any tokens or NFTs via link',
     main: 'Try the demo and send tokens via link',
-    sendTokensToAddress: 'Send any tokens to the address:',
+    sendTokensToAddress: 'Scan or copy address to send tokens',
     shareLink: 'Copy and share the link',
     linkDone: 'Your link is done!',
     scanCode: 'Scan QR-code to get link',
@@ -11,7 +11,7 @@ export default {
     expiredLinks: 'Expired links',
     wantMoreLinks: 'Want more links?',
     cs: 'Customer service 24/7',
-    terms: 'By sending funds you agree to the <a href={{termsHref}}>Terms</a>',
+    terms: 'I agree with <a href={{termsHref}}>Terms</a> & <a href={{privacyHref}}>Privacy</a>',
     getYourLink: 'Get your link',
     linkdrop: 'Linkdrop',
     multipleLinks: 'Multiple links & Analytics',
@@ -29,7 +29,8 @@ export default {
     footerAddManually: '<span>Add manually</span>',
     tokenAddress: 'Token address',
     waitingFor: 'Waiting for {{tokenSymbol}}...',
-    isERC721: 'is it ERC-721?'
+    isERC721: 'is it ERC-721?',
+    errorOccured: 'Some error occured'
   },
   descriptions: {
     sendTokens: 'Simply send your funds to our secure contract and generate the crypto link',
@@ -50,6 +51,7 @@ export default {
     next: 'Next'
   },
   errors: {
-    addManually: 'Try to add token manually'
+    addManually: 'Try to add token manually',
+    PROBLEM_WITH_EXRTERNAL_LIBRARY: 'Problem with connection to external library API.<br>Please try later'
   }
 }
