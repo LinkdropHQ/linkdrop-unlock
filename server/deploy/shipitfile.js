@@ -1,38 +1,65 @@
-// shipitfile.js
 module.exports = shipit => {
-  // Load shipit-deploy tasks
   require('shipit-deploy')(shipit)
-  require('shipit-shared')(shipit)
+
+  const PM2_APP_NAME = 'linkdrop-server'
 
   shipit.initConfig({
     default: {
-      deployTo: 'linkdrop/var/www/linkdrop-monorepo',
+      deployTo: 'linkdrop/linkdrop-monorepo',
       repositoryUrl: 'git@github.com:LinkdropProtocol/linkdrop-monorepo.git',
-      shared: {
-        dirs: ['node_modules'],
-        overwrite: true
-      }
+      keepReleases: 3
     },
-    staging: {
+    dev: {
       servers: 'root@rinkeby.linkdrop.io',
       branch: 'dev'
     }
   })
 
   shipit.blTask('installDependencies', async () => {
-    await shipit.remote(`cd ${shipit.releasePath} && yarn install`)
+    await shipit.remote(
+      `cd ${shipit.releasePath} && yarn cache clean && yarn install`
+    )
+    shipit.log('Installed yarn dependecies')
   })
 
-  // Copy local config file to remote
   shipit.task('copyConfig', async () => {
     await shipit.copyToRemote(
       '../../config/server.config.json',
-      'linkdrop/var/www/linkdrop-monorepo/current/config/server.config.json'
+      'linkdrop/linkdrop-monorepo/current/config/server.config.json'
     )
   })
 
-  shipit.on('deployed', () => {
-    shipit.start('copyConfig')
-    shipit.start('installDependencies')
+  shipit.task('compileContracts', async () => {
+    await shipit.remote(`cd ${shipit.releasePath} && yarn compile-contracts`)
+  })
+
+  shipit.blTask('stopApp', async () => {
+    try {
+      await shipit.remote(
+        `cd ${
+          shipit.releasePath
+        } && pm2 stop ${PM2_APP_NAME} && pm2 delete ${PM2_APP_NAME}`
+      )
+      shipit.log('Stopped app process')
+    } catch (err) {
+      shipit.log('No previous process to restart. Continuing.')
+    }
+  })
+
+  shipit.blTask('startApp', async () => {
+    await shipit.remote(
+      `cd ${
+        shipit.releasePath
+      } && pm2 start --name ${PM2_APP_NAME} npm -- run server`
+    )
+    shipit.log('Started app process')
+  })
+
+  shipit.on('updated', () => {
+    shipit.start(['installDependencies'])
+  })
+
+  shipit.on('published', () => {
+    shipit.start(['copyConfig', 'compileContracts', 'stopApp', 'startApp'])
   })
 }
