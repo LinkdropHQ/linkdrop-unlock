@@ -9,7 +9,7 @@ class Header extends React.Component {
     return <header className={styles.container}>
       <Logo />
       <div className={styles.links}>
-        <a target='_blank' href='https://medium.com/linkdrop-protocol/introducing-linkdrop-protocol-f612ae181e31'>{this.t('titles.whatIsLinkdrop')}</a>
+        <a target='_blank' href='https://linkdrop.io/'>{this.t('titles.whatIsLinkdrop')}</a>
       </div>
     </header>
   }

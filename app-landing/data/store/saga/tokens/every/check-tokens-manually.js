@@ -1,13 +1,13 @@
-import { put, select, call } from 'redux-saga/effects'
+import { put, select } from 'redux-saga/effects'
 import { ethers, utils } from 'ethers'
-import { getTokensOpensea } from 'data/api/tokens'
 import TokenMock from 'contracts/TokenMock.json'
+import NFTMock from 'contracts/NFTMock.json'
 import { defineNetworkName } from 'linkdrop-commons'
 
 const generator = function * ({ payload }) {
   try {
     const ethWalletContract = ethers.constants.AddressZero
-    const { isERC721, networkId } = payload
+    const { isERC721, networkId, tokenId } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const tokenAddress = yield select(generator.selectors.tokenAddress)
     const wallet = yield select(generator.selectors.wallet)
@@ -17,13 +17,11 @@ const generator = function * ({ payload }) {
     // if not ethereum
     if (ethWalletContract !== tokenAddress) {
       if (isERC721) {
-        // checking balance of ERC-721 from opensea
-        const { assets } = yield call(getTokensOpensea, { wallet })
-        if (assets.length > 0) {
-          const assetForTokenAddress = assets.find(asset => asset.asset_contract.address === tokenAddress)
-          if (assetForTokenAddress) {
-            yield put({ type: 'TOKENS.SET_TOKEN_ID', payload: { tokenId: assetForTokenAddress.token_id } })
-          }
+        // checking balance of ERC-721 from manual check
+        const nftContract = yield new ethers.Contract(tokenAddress, NFTMock.abi, provider)
+        const nftContractOwner = yield nftContract.ownerOf(tokenId)
+        if (nftContractOwner === wallet) {
+          yield put({ type: 'TOKENS.SET_TOKEN_ID', payload: { tokenId: tokenId } })
         }
       } else {
         // checking balance of ERC-20 from blockchain by tokenAddress

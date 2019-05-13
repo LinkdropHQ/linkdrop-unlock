@@ -3,12 +3,12 @@ class Tokens {
     this.actions = actions
   }
 
-  getTokensData ({ tokenAddress, isERC721, networkId }) {
-    this.actions.dispatch({ type: '*TOKENS.GET_TOKENS_DATA', payload: { tokenAddress, isERC721, networkId } })
+  getTokensData ({ tokenAddress, isERC721, networkId, tokenId }) {
+    this.actions.dispatch({ type: '*TOKENS.GET_TOKENS_DATA', payload: { tokenAddress, isERC721, networkId, tokenId } })
   }
 
-  checkTokensManually ({ isERC721, networkId }) {
-    this.actions.dispatch({ type: '*TOKENS.CHECK_TOKENS_MANUALLY', payload: { isERC721, networkId } })
+  checkTokensManually ({ isERC721, networkId, tokenId }) {
+    this.actions.dispatch({ type: '*TOKENS.CHECK_TOKENS_MANUALLY', payload: { isERC721, networkId, tokenId } })
   }
 
   checkBalance ({ account, networkId }) {
