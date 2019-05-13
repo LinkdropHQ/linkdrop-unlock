@@ -15,3 +15,9 @@ yarn install
 ```bash
 yarn start
 ```
+
+### Deploy server
+
+```bash
+yarn deploy
+```
