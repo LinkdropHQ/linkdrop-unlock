@@ -6,6 +6,7 @@ import configs from 'config-landing'
 const generator = function * ({ payload }) {
   try {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
+    const balance = yield select(generator.selectors.balance)
     const tokenId = yield select(generator.selectors.tokenId)
     const { networkId } = payload
     const privateKey = yield select(generator.selectors.privateKey)
@@ -15,6 +16,7 @@ const generator = function * ({ payload }) {
       networkId,
       claimHost,
       privateKey,
+      balance || 0,
       tokenAddress,
       tokenId,
       configs.expirationTime
