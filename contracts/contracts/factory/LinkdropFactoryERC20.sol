@@ -8,7 +8,7 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
 
     /**
     * @dev Function to verify linkdrop sender's signature
-    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _weiAmount Amount of wei to be claimed
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
@@ -19,7 +19,7 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
     */
     function verifySenderSignature
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
@@ -30,7 +30,7 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
     public pure
     returns (bool)
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_ethAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
         address signer = ECDSA.recover(prefixedHash, _senderSignature);
         return signer == _sender;
     }
@@ -58,7 +58,7 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
 
     /**
     * @dev Function to verify claim params, make sure the link is not claimed or canceled and proxy has sufficient balance
-    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _weiAmount Amount of wei to be claimed
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
@@ -70,7 +70,7 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
     */
     function checkClaimParams
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
@@ -87,9 +87,9 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
         // If proxy is deployed
         if (isDeployed(_sender)) {
 
-            return ILinkdropERC20(deployed[_sender]).checkClaimParams
+            return ILinkdropERC20(_deployed[_sender]).checkClaimParams
             (
-                _ethAmount,
+                _weiAmount,
                 _tokenAddress,
                 _tokenAmount,
                 _expiration,
@@ -105,15 +105,15 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
             // Make sure claim amount is available for proxy contract
             require
             (
-                getAvailableBalance(_proxy, _sender, address(0)) >= _ethAmount &&
-                getAvailableBalance(_proxy, _sender, _tokenAddress) >= _tokenAmount,
+                _proxy.balance >= _weiAmount &&
+                IERC20(_tokenAddress).balanceOf(_proxy) >= _tokenAmount,
                 "Insufficient funds"
             );
 
             // Verify that link key is legit and signed by sender's private key
             require
             (
-                verifySenderSignature(_ethAmount, _tokenAddress, _tokenAmount, _expiration, _linkId, _sender, _senderSignature),
+                verifySenderSignature(_weiAmount, _tokenAddress, _tokenAmount, _expiration, _linkId, _sender, _senderSignature),
                 "Invalid sender signature"
             );
 
@@ -134,7 +134,7 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
 
     /**
     * @dev Function to claim ETH and/or ERC20 tokens
-    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _weiAmount Amount of wei to be claimed
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
@@ -147,7 +147,7 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
     */
     function claim
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
@@ -167,9 +167,9 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
         }
 
         // Call claim function in the context of proxy contract
-        ILinkdropERC20(deployed[_sender]).claim
+        ILinkdropERC20(_deployed[_sender]).claim
         (
-            _ethAmount,
+            _weiAmount,
             _tokenAddress,
             _tokenAmount,
             _expiration,
@@ -183,22 +183,4 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
 
     }
 
-    /**
-    * @dev Function to get total amount of tokens available for proxy contract
-    * @param _proxy Address of proxy contract
-    * @param _sender Address of lindkrop sender
-    * @param _tokenAddress Token address, address(0) for ETH
-    * @return Total amount available
-    */
-    function getAvailableBalance(address _proxy, address _sender, address _tokenAddress) public view returns (uint) {
-
-        if (_tokenAddress == address(0)) {
-            return _proxy.balance;
-        }
-        else {
-            uint allowance = IERC20(_tokenAddress).allowance(_sender, _proxy);
-            uint balance = IERC20(_tokenAddress).balanceOf(_proxy);
-            return allowance.add(balance);
-        }
-    }
 }

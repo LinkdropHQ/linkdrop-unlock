@@ -1,9 +1,9 @@
-pragma solidity >= 0.5.6;
+pragma solidity ^0.5.6;
 
 contract LinkdropStorage {
 
-    // Address of linkdrop sender
-    address payable public sender;
+    // Address of linkdrop signer
+    address payable public linkdropSigner;
 
     // Indicates who the link is claimed to
     mapping (address => address) public claimedTo;
@@ -19,7 +19,8 @@ contract LinkdropStorage {
 
     // Events
     event Canceled(address linkId, uint timestamp);
-    event Claimed(address indexed linkId, address indexed token, uint amount, address receiver, uint timestamp);
+    event Claimed(address indexed linkId, uint ethAmount, address indexed token, uint tokenAmount, address receiver, uint timestamp);
+    event ClaimedERC721(address indexed linkId, uint ethAmount, address indexed nft, uint tokenId, address receiver, uint timestamp);
     event Paused(uint timestamp);
     event Unpaused(uint timestamp);
 

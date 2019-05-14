@@ -3,16 +3,9 @@ pragma solidity ^0.5.6;
 import "./CloneFactory.sol";
 import "../storage/LinkdropFactoryStorage.sol";
 import "../interfaces/ILinkdropCommon.sol";
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
-// =================================================================================================================
-//                                         Linkdrop Factory Common
-// =================================================================================================================
-
 contract LinkdropFactoryCommon is LinkdropFactoryStorage, CloneFactory {
-
-    using SafeMath for uint;
 
     /**
     * @dev Constructor that sets the linkdrop mastercopy address
