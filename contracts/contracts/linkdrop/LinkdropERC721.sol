@@ -1,11 +1,11 @@
-pragma solidity >= 0.5.6;
-import "./Common.sol";
-import "./interfaces/ILinkdropERC721.sol";
-import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
-import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
+pragma solidity ^0.5.6;
 
-contract LinkdropERC721 is ILinkdropERC721, Common {
-    
+import "./LinkdropCommon.sol";
+import "../interfaces/ILinkdropERC721.sol";
+import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
+
+contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
+
     // =================================================================================================================
     //                                         ETH and ERC721 Linkdrop
     // =================================================================================================================

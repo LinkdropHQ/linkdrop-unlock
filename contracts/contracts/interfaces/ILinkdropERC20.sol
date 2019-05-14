@@ -1,6 +1,6 @@
-pragma solidity >= 0.5.0;
+pragma solidity ^0.5.6;
 
-interface ILinkdrop {
+interface ILinkdropERC20 {
 
     function verifySenderSignature
     (
@@ -46,5 +46,5 @@ interface ILinkdrop {
         bytes calldata _receiverSignature
     )
     external returns (bool);
-    
+
 }

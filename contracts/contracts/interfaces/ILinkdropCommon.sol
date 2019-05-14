@@ -1,6 +1,6 @@
-pragma solidity >= 0.5.0;
+pragma solidity ^0.5.6;
 
-interface ICommon {
+interface ILinkdropCommon {
 
     function initializer(address payable _sender) external returns (bool);
     function isClaimedLink(address _linkId) external view returns (bool);

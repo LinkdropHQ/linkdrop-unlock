@@ -1,9 +1,6 @@
 pragma solidity >= 0.5.6;
 
-contract Storage {
-
-    // Address of implementation contract, where proxy will route functions
-    address payable public masterCopy;
+contract LinkdropStorage {
 
     // Address of linkdrop sender
     address payable public sender;
@@ -22,8 +19,7 @@ contract Storage {
 
     // Events
     event Canceled(address linkId, uint timestamp);
-    event Claimed(address indexed linkId, uint ethAmount, address indexed token, uint tokenAmount, address receiver, uint timestamp);
-    event ClaimedERC721(address indexed linkId, uint ethAmount, address indexed nft, uint tokenId, address receiver, uint timestamp);
+    event Claimed(address indexed linkId, address indexed token, uint amount, address receiver, uint timestamp);
     event Paused(uint timestamp);
     event Unpaused(uint timestamp);
 

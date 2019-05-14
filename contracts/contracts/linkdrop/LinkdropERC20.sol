@@ -1,17 +1,14 @@
-pragma solidity >= 0.5.6;
-import "./Common.sol";
-import "./interfaces/ILinkdrop.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+pragma solidity ^0.5.6;
 
-contract Linkdrop is ILinkdrop, Common {
+import "./LinkdropCommon.sol";
+import "../interfaces/ILinkdropERC20.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+
+contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
 
     // =================================================================================================================
     //                                         ERC20 and ETH Linkdrop
     // =================================================================================================================
-
-    using SafeMath for uint;
 
     /**
     * @dev Function to verify linkdrop sender's signature

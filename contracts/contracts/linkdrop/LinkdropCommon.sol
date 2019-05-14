@@ -1,12 +1,17 @@
-pragma solidity >= 0.5.6;
-import "./interfaces/ICommon.sol";
-import "./Storage.sol";
+pragma solidity ^0.5.6;
 
-contract Common is ICommon, Storage {
+import "../interfaces/ILinkdropCommon.sol";
+import "../storage/LinkdropStorage.sol";
+import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+
+contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
 
     // =================================================================================================================
-    //                                         Common
+    //                                         Linkdrop Common
     // =================================================================================================================
+
+    using SafeMath for uint;
 
     /**
     * @dev Function to set the linkdrop sender, can only be called once
