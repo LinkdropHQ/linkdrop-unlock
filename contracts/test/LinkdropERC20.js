@@ -42,7 +42,7 @@ let tokenAddress
 let tokenAmount
 let expirationTime
 
-describe('[ETH || ERC20], [ETH && ERC20] Linkdrop tests', () => {
+describe('ETH + ERC20 Linkdrop tests', () => {
   before(async () => {
     tokenInstance = await deployContract(sender, TokenMock)
   })

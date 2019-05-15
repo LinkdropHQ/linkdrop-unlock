@@ -4,12 +4,13 @@ import LinkdropSDK from 'sdk/src/index'
 
 const generator = function * ({ payload }) {
   try {
-    const { wallet, nft, tokenId, expirationTime, linkKey, senderAddress, senderSignature } = payload
+    const { wallet, nftAddress, tokenId, ethAmount, expirationTime, linkKey, senderAddress, senderSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const { success, txHash, error } = yield LinkdropSDK.claimERC721(
       jsonRpcUrl,
       apiHost,
-      nft,
+      ethAmount,
+      nftAddress,
       tokenId,
       expirationTime,
       linkKey,
@@ -17,6 +18,7 @@ const generator = function * ({ payload }) {
       senderSignature,
       wallet
     )
+
     if (success) {
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })
     } else {

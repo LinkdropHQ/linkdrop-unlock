@@ -43,11 +43,12 @@ class Claim extends React.Component {
       alreadyClaimed == null
     ) { return }
     const {
-      token,
-      amount,
+      tokenAddress,
+      ethAmount,
+      tokenAmount,
       expirationTime,
       n,
-      nft,
+      nftAddress,
       tokenId
     } = getHashVariables()
     // params in url:
@@ -73,10 +74,10 @@ class Claim extends React.Component {
       return this.actions().user.setErrors({ errors: ['LINK_EXPIRED'] })
     }
 
-    if (nft && tokenId) {
-      return this.actions().contract.getTokenERC721Data({ nft, tokenId, networkId: n })
+    if (nftAddress && tokenId) {
+      return this.actions().contract.getTokenERC721Data({ nftAddress, tokenId, networkId: n })
     }
-    this.actions().contract.getTokenERC20Data({ tokenAddress: token, amount, networkId: n })
+    this.actions().contract.getTokenERC20Data({ tokenAddress, ethAmount, tokenAmount, networkId: n })
   }
 
   render () {

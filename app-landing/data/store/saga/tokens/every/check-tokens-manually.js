@@ -30,7 +30,7 @@ const generator = function * ({ payload }) {
         const balance = yield tokenContract.balanceOf(wallet)
         const balanceFormatted = utils.formatUnits(balance, decimals)
         if (Number(balanceFormatted) > 0) {
-          yield put({ type: 'USER.SET_BALANCE', payload: { balanceFormatted, balance: balance } })
+          yield put({ type: 'USER.SET_BALANCE', payload: { balanceFormatted, balance } })
         }
       }
     } else {
@@ -39,7 +39,7 @@ const generator = function * ({ payload }) {
       const balance = yield provider.getBalance(wallet)
       const balanceFormatted = utils.formatEther(balance)
       if (Number(balanceFormatted) > 0) {
-        yield put({ type: 'USER.SET_BALANCE', payload: { balanceFormatted, balance: balance } })
+        yield put({ type: 'USER.SET_BALANCE', payload: { balanceFormatted, balance } })
       }
     }
 

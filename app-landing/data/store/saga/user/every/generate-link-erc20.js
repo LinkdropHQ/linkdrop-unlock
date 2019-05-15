@@ -12,13 +12,15 @@ const generator = function * ({ payload }) {
     const privateKey = yield select(generator.selectors.privateKey)
     const ethersContractZeroAddress = ethers.constants.AddressZero
     const tokenAddress = yield select(generator.selectors.tokenAddress)
+
     const link = yield LinkdropSDK.generateLink(
       jsonRpcUrl,
       networkId,
       claimHost,
       privateKey,
+      tokenAddress ? 0 : balance,
       tokenAddress || ethersContractZeroAddress,
-      balance,
+      tokenAddress ? balance : 0,
       configs.expirationTime
     )
 
