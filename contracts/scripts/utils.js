@@ -22,25 +22,21 @@ export const computeProxyAddress = (factoryAddress, sender, implementation) => {
 
   const proxyAddress = buildCreate2Address(factoryAddress, salt, bytecode)
 
-  // console.log({
-  //   salt,
-  //   factoryAddress,
-  //   proxyAddress
-  // })
   return proxyAddress
 }
 
 // Should be signed by sender
 export const signLink = async function (
   sender, // Wallet
+  ethAmount,
   tokenAddress,
-  claimAmount,
+  tokenAmount,
   expirationTime,
   linkId
 ) {
   let messageHash = ethers.utils.solidityKeccak256(
-    ['address', 'uint', 'uint', 'address'],
-    [tokenAddress, claimAmount, expirationTime, linkId]
+    ['uint', 'address', 'uint', 'uint', 'address'],
+    [ethAmount, tokenAddress, tokenAmount, expirationTime, linkId]
   )
   let messageHashToSign = ethers.utils.arrayify(messageHash)
   let signature = await sender.signMessage(messageHashToSign)
@@ -50,8 +46,9 @@ export const signLink = async function (
 // Generates new link
 export const createLink = async function (
   sender, // Wallet
+  ethAmount,
   tokenAddress,
-  claimAmount,
+  tokenAmount,
   expirationTime
 ) {
   let linkWallet = ethers.Wallet.createRandom()
@@ -59,8 +56,9 @@ export const createLink = async function (
   let linkId = linkWallet.address
   let senderSignature = await signLink(
     sender,
+    ethAmount,
     tokenAddress,
-    claimAmount,
+    tokenAmount,
     expirationTime,
     linkId
   )

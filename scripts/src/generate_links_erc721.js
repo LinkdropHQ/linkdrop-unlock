@@ -7,7 +7,7 @@ const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
 const config = require(configPath)
 
-let { jsonRpcUrl, senderPrivateKey, nft, nftIds } = config
+let { jsonRpcUrl, senderPrivateKey, ethAmount, nftAddress, nftIds } = config
 
 ;(async () => {
   console.log('Generating links...\n')
@@ -24,7 +24,7 @@ let { jsonRpcUrl, senderPrivateKey, nft, nftIds } = config
     masterCopyAddress
   )
 
-  const nftContract = await new ethers.Contract(nft, NFTMock.abi, sender)
+  const nftContract = await new ethers.Contract(nftAddress, NFTMock.abi, sender)
   const nftSymbol = await nftContract.symbol()
 
   // If owner of tokenId is not proxy contract -> send it to proxy
@@ -46,6 +46,30 @@ let { jsonRpcUrl, senderPrivateKey, nft, nftIds } = config
       ) // This should be changed to safeTransferFrom
       console.log(`#️⃣  Tx Hash: ${tx.hash}`)
     }
+  }
+
+  // Send eth to proxy
+  if (ethAmount > 0) {
+    let cost = ethAmount * tokenIds.length
+    let amountToSend
+
+    const tokenSymbol = 'ETH'
+    const tokenDecimals = 18
+    const proxyBalance = await provider.getBalance(proxyAddress)
+    proxyBalance >= cost
+      ? (amountToSend = 0)
+      : (amountToSend = cost - proxyBalance)
+    const tx = await sender.sendTransaction({
+      to: proxyAddress,
+      value: amountToSend
+    })
+
+    // Get human readable format of amount to send
+    amountToSend /= Math.pow(10, tokenDecimals)
+    console.log(
+      `⤴️  Sending ${amountToSend} ${tokenSymbol} to ${proxyAddress} `
+    )
+    console.log(`#️⃣  Tx Hash: ${tx.hash}`)
   }
 
   let links = await generateLinksERC721()

@@ -19,8 +19,9 @@ const getUrlParams = async i => {
 
 const claimETH = async () => {
   const {
-    token,
-    amount,
+    ethAmount,
+    tokenAddress,
+    tokenAmount,
     expirationTime,
     linkKey,
     senderAddress,
@@ -30,8 +31,9 @@ const claimETH = async () => {
   await LinkdropSDK.claim(
     jsonRpcUrl,
     host,
-    token,
-    amount,
+    ethAmount,
+    tokenAddress,
+    tokenAmount,
     expirationTime,
     linkKey,
     senderAddress,

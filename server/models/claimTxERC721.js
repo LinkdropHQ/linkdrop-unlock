@@ -1,7 +1,8 @@
 import mongoose from 'mongoose'
 
 const claimTxERC721Schema = new mongoose.Schema({
-  nft: { type: String, required: true },
+  ethAmount: { type: String, required: true },
+  nftAddress: { type: String, required: true },
   tokenId: { type: Number, required: true },
   expirationTime: { type: Number, required: true },
   linkId: { type: String, required: true, unique: true },

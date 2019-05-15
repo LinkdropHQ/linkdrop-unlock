@@ -6,8 +6,9 @@ export const generateLink = async (
   networkId,
   host,
   senderPrivateKey,
-  token,
-  amount,
+  ethAmount,
+  tokenAddress,
+  tokenAmount,
   expirationTime
 ) => {
   if (jsonRpcUrl == null || jsonRpcUrl === '') {
@@ -26,12 +27,16 @@ export const generateLink = async (
     throw new Error(`Please provide sender's private key`)
   }
 
-  if (token == null || token === '') {
+  if (ethAmount === null || ethAmount === '') {
+    throw new Error('Please provide amount of eth to claim')
+  }
+
+  if (tokenAddress == null || tokenAddress === '') {
     throw new Error('Please provide ERC20 token address')
   }
 
-  if (amount === null || amount === '') {
-    throw new Error('Please provide amount per link')
+  if (tokenAmount === null || tokenAmount === '') {
+    throw new Error('Please provide amount of tokens to claim')
   }
 
   if (expirationTime == null || expirationTime === '') {
@@ -41,13 +46,14 @@ export const generateLink = async (
   const sender = new ethers.Wallet(senderPrivateKey, provider)
   const { linkKey, linkId, senderSignature } = await createLink(
     sender,
-    token,
-    amount,
+    ethAmount,
+    tokenAddress,
+    tokenAmount,
     expirationTime
   )
 
   // Construct link
-  let url = `${host}/#/receive?token=${token}&amount=${amount}&expirationTime=${expirationTime}&linkKey=${linkKey}&senderAddress=${
+  let url = `${host}/#/receive?ethAmount=${ethAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&linkKey=${linkKey}&senderAddress=${
     sender.address
   }&senderSignature=${senderSignature}`
 
@@ -64,7 +70,8 @@ export const generateLinkERC721 = async (
   networkId,
   host,
   senderPrivateKey,
-  nft,
+  ethAmount,
+  nftAddress,
   tokenId,
   expirationTime
 ) => {
@@ -84,7 +91,15 @@ export const generateLinkERC721 = async (
     throw new Error(`Please provide sender's private key`)
   }
 
-  if (nft == null || nft === '' || nft === ethers.constants.AddressZero) {
+  if (ethAmount === null || ethAmount === '') {
+    throw new Error('Please provide amount of eth to claim')
+  }
+
+  if (
+    nftAddress == null ||
+    nftAddress === '' ||
+    nftAddress === ethers.constants.AddressZero
+  ) {
     throw new Error('Please provide ERC721 token address')
   }
 
@@ -100,13 +115,14 @@ export const generateLinkERC721 = async (
   const sender = new ethers.Wallet(senderPrivateKey, provider)
   const { linkKey, linkId, senderSignature } = await createLink(
     sender,
-    nft,
+    ethAmount,
+    nftAddress,
     tokenId,
     expirationTime
   )
 
   // Construct link
-  let url = `${host}/#/receive?nft=${nft}&tokenId=${tokenId}&expirationTime=${expirationTime}&linkKey=${linkKey}&senderAddress=${
+  let url = `${host}/#/receive?ethAmount=${ethAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&linkKey=${linkKey}&senderAddress=${
     sender.address
   }&senderSignature=${senderSignature}`
 

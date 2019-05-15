@@ -6,9 +6,10 @@
     "masterCopy": "",
     "factory": "",
     "receiverAddress": "",
-    "token": "",
-    "amount": "",
+    "ethAmount": "",
+    "tokenAddress": "",
+    "tokenAmount": "",
     "linksNumber": "",
-    "nft": "",
+    "nftAddress": "",
     "nftIds": ""
 }

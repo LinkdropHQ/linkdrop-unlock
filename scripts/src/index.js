@@ -14,18 +14,15 @@ const config = require(configPath)
 let {
   networkId,
   senderPrivateKey,
-  token,
-  amount,
+  ethAmount,
+  tokenAddress,
+  tokenAmount,
   linksNumber,
   jsonRpcUrl,
   host,
-  nft,
+  nftAddress,
   nftIds
 } = config
-
-config.token == null || config.token === ''
-  ? (token = '0x0000000000000000000000000000000000000000')
-  : (token = config.token)
 
 if (jsonRpcUrl == null || jsonRpcUrl === '') {
   throw new Error('Please provide JSON RPC url')
@@ -38,7 +35,10 @@ if (senderPrivateKey == null || senderPrivateKey === '') {
 
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 const sender = new ethers.Wallet(senderPrivateKey, provider)
-let mastercopy, proxyFactory, expirationTime, tokenMock, nftMock
+
+const expirationTime = 1900000000000000
+
+let mastercopy, proxyFactory, tokenMock, nftMock
 
 export const deployMasterCopy = async () => {
   let factory = new ethers.ContractFactory(
@@ -59,7 +59,9 @@ export const deployMasterCopy = async () => {
 
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw err
-    console.log('Master copy address successfully added to config.json ')
+    console.log(
+      'Master copy address successfully added to scripts.config.json '
+    )
   })
 
   return mastercopy.address
@@ -85,7 +87,9 @@ export const deployFactory = async masterCopy => {
   config.factory = proxyFactory.address
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw err
-    console.log('Proxy factory address successfully added to config.json ')
+    console.log(
+      'Proxy factory address successfully added to scripts.config.json '
+    )
   })
 
   return proxyFactory.address
@@ -108,10 +112,10 @@ export const deployERC20 = async () => {
   await tokenMock.deployed()
   console.log(`Deployed token at ${tokenMock.address}\n`)
 
-  config.token = tokenMock.address
+  config.tokenAddress = tokenMock.address
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw err
-    console.log(`Token address successfully added to config.json `)
+    console.log(`Token address successfully added to scripts.config.json `)
   })
 }
 
@@ -132,10 +136,10 @@ export const deployERC721 = async () => {
   await nftMock.deployed()
   console.log(`Deployed token at ${nftMock.address}\n`)
 
-  config.nft = nftMock.address
+  config.nftAddress = nftMock.address
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw err
-    console.log(`NFT address successfully added to config.json `)
+    console.log(`NFT address successfully added to scripts.config.json `)
   })
 }
 
@@ -144,8 +148,8 @@ export const generateLinksETH = async () => {
     throw new Error('Please provide links number')
   }
 
-  token = ethers.constants.AddressZero
-  expirationTime = 1900000000000000
+  tokenAddress = ethers.constants.AddressZero
+  tokenAmount = 0
 
   let links = []
 
@@ -160,8 +164,9 @@ export const generateLinksETH = async () => {
       networkId,
       host,
       senderPrivateKey,
-      token,
-      amount,
+      ethAmount,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
 
@@ -187,7 +192,6 @@ export const generateLinksERC20 = async () => {
   if (linksNumber === null || linksNumber === '') {
     throw new Error('Please provide links number')
   }
-  expirationTime = 1900000000000000
 
   let links = []
 
@@ -202,8 +206,9 @@ export const generateLinksERC20 = async () => {
       networkId,
       host,
       senderPrivateKey,
-      token,
-      amount,
+      ethAmount,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
 
@@ -230,7 +235,6 @@ export const generateLinksERC721 = async () => {
     throw new Error('Please provide NFT ids')
   }
 
-  expirationTime = 1900000000000000
   let links = []
   let tokenIds = JSON.parse(nftIds)
 
@@ -245,7 +249,8 @@ export const generateLinksERC721 = async () => {
       networkId,
       host,
       senderPrivateKey,
-      nft,
+      ethAmount,
+      nftAddress,
       tokenIds[i],
       expirationTime
     )

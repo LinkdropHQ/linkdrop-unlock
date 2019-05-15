@@ -14,20 +14,20 @@ contract Common is ICommon, Storage {
     */
 
     function initializer
-    (   
+    (
         address payable _sender
-    ) 
+    )
     public
     returns (bool)
     {
         require(_initialized == false, "Initialized");
-        SENDER = _sender;
+        sender = _sender;
         _initialized = true;
         return true;
     }
 
     modifier onlySender() {
-        require(msg.sender == SENDER, "Only sender");
+        require(msg.sender == sender, "Only sender");
         _;
     }
 
@@ -35,14 +35,14 @@ contract Common is ICommon, Storage {
         require(!paused(), "Paused");
         _;
     }
-    
+
     /**
     * @dev Indicates whether a link is claimed or not
     * @param _linkId Address corresponding to link key
     * @return True if claimed
     */
     function isClaimedLink(address _linkId) public view returns (bool) {
-        return claimedTo[_linkId] != address(0); 
+        return claimedTo[_linkId] != address(0);
     }
 
     /**
@@ -79,7 +79,7 @@ contract Common is ICommon, Storage {
     * @return True if success
     */
     function withdraw() external onlySender returns (bool) {
-        SENDER.transfer(address(this).balance);
+        sender.transfer(address(this).balance);
         return true;
     }
 
@@ -105,7 +105,7 @@ contract Common is ICommon, Storage {
     }
 
     /**
-    * @dev Fallback function to accept ethers
+    * @dev Fallback function to accept ETH
     */
     function () external payable {}
 

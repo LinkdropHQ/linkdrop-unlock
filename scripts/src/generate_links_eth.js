@@ -6,7 +6,7 @@ const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
 const config = require(configPath)
 
-let { jsonRpcUrl, senderPrivateKey, amount, linksNumber } = config
+let { jsonRpcUrl, senderPrivateKey, ethAmount, linksNumber } = config
 
 ;(async () => {
   console.log('Generating links...\n')
@@ -17,13 +17,15 @@ let { jsonRpcUrl, senderPrivateKey, amount, linksNumber } = config
   const factoryAddress = getFactoryAddress()
   const masterCopyAddress = getMasterCopyAddress()
 
-  let proxyAddress = LinkdropSDK.computeProxyAddress(
+  const proxyAddress = LinkdropSDK.computeProxyAddress(
     factoryAddress,
     sender.address,
     masterCopyAddress
   )
 
-  let cost = amount * linksNumber
+  // Send eth to proxy
+
+  let cost = ethAmount * linksNumber
   let amountToSend
 
   const tokenSymbol = 'ETH'

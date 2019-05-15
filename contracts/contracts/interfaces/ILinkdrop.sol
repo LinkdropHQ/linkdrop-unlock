@@ -4,8 +4,9 @@ interface ILinkdrop {
 
     function verifySenderSignature
     (
-        address _token,
-        uint _amount,
+        uint _ethAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
         uint _expiration,
         address _linkId,
         bytes calldata _signature
@@ -22,26 +23,28 @@ interface ILinkdrop {
 
     function checkClaimParams
     (
-        address _token,
-        uint _amount,
+        uint _ethAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
         uint _expiration,
-        address _linkId, 
+        address _linkId,
         bytes calldata _senderSignature,
-        address _receiver, 
+        address _receiver,
         bytes calldata _receiverSignature
     )
     external view returns (bool);
 
     function claim
     (
-        address _token, 
-        uint _amount,
+        uint _ethAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
         uint _expiration,
-        address _linkId, 
-        bytes calldata _senderSignature, 
-        address payable _receiver, 
+        address _linkId,
+        bytes calldata _senderSignature,
+        address payable _receiver,
         bytes calldata _receiverSignature
-    ) 
+    )
     external returns (bool);
     
 }

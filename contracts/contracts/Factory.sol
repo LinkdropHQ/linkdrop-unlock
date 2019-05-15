@@ -10,6 +10,11 @@ import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract Factory is Storage, CloneFactory {
+
+    // =================================================================================================================
+    //                                         Factory
+    // =================================================================================================================
+
     using SafeMath for uint;
 
     // Maps sender address to its corresponding proxy address
@@ -22,8 +27,8 @@ contract Factory is Storage, CloneFactory {
     * @dev Constructor that sets the linkdrop mastercopy address
     * @param _masterCopy Address of linkdrop implementation contract
     */
-    constructor(address payable _masterCopy) 
-    public 
+    constructor(address payable _masterCopy)
+    public
     {
         masterCopy = _masterCopy;
     }
@@ -59,17 +64,17 @@ contract Factory is Storage, CloneFactory {
     * @dev Function to get total amount of tokens available for proxy contract
     * @param _proxy Address of proxy contract
     * @param _sender Address of lindkrop sender
-    * @param _token Token address, address(0) for ETH
+    * @param _tokenAddress Token address, address(0) for ETH
     * @return Total amount available
     */
-    function getBalance(address _proxy, address _sender, address _token) public view returns (uint) {
+    function getAvailableBalance(address _proxy, address _sender, address _tokenAddress) public view returns (uint) {
 
-        if (_token == address(0)) {
+        if (_tokenAddress == address(0)) {
             return _proxy.balance;
         }
         else {
-            uint allowance = IERC20(_token).allowance(_sender, _proxy);
-            uint balance = IERC20(_token).balanceOf(_proxy);
+            uint allowance = IERC20(_tokenAddress).allowance(_sender, _proxy);
+            uint balance = IERC20(_tokenAddress).balanceOf(_proxy);
             return allowance.add(balance);
         }
     }
@@ -77,13 +82,13 @@ contract Factory is Storage, CloneFactory {
     /**
     * @dev Function to get whether a NFT with token id is available for proxy contract
     * @param _proxy Address of proxy contract
-    * @param _nft NFT address
+    * @param _nftAddress NFT address
     * @param _tokenId Token id
     * @return Total amount available
     */
-    function isAvailableToken(address _proxy, address _nft, uint _tokenId) public view returns (bool) {
-       if (IERC721(_nft).ownerOf(_tokenId) == _proxy) return true;
-       else if (IERC721(_nft).getApproved(_tokenId) == _proxy) return true;
+    function isAvailableToken(address _proxy, address _nftAddress, uint _tokenId) public view returns (bool) {
+       if (IERC721(_nftAddress).ownerOf(_tokenId) == _proxy) return true;
+       else if (IERC721(_nftAddress).getApproved(_tokenId) == _proxy) return true;
     }
 
     /**
@@ -91,9 +96,9 @@ contract Factory is Storage, CloneFactory {
     * @param _sender Address of linkdrop sender
     * @return Proxy contract address
     */
-    function deployProxy(address payable _sender) 
-    public 
-    returns (address payable) 
+    function deployProxy(address payable _sender)
+    public
+    returns (address payable)
     {
 
         // Create clone of the mastercopy
@@ -103,15 +108,16 @@ contract Factory is Storage, CloneFactory {
 
         // Initialize sender in newly deployed proxy contract
         require(ICommon(proxy).initializer(_sender), "Failed to initialize");
-        emit Deployed( proxy, keccak256(abi.encodePacked(_sender)), now);
-        
+        emit Deployed(proxy, keccak256(abi.encodePacked(_sender)), now);
+
         return proxy;
     }
 
     /**
     * @dev Function to verify linkdrop sender's signature
-    * @param _token Token address, address(0) for ETH
-    * @param _amount Amount of tokens to be claimed in atomic value
+    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _tokenAddress Token address
+    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _sender Address of linkdrop sender
@@ -120,17 +126,18 @@ contract Factory is Storage, CloneFactory {
     */
     function verifySenderSignature
     (
-        address _token,
-        uint _amount,
+        uint _ethAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
         uint _expiration,
         address _linkId,
         address _sender,
         bytes memory _senderSignature
     )
-    public pure 
-    returns (bool) 
+    public pure
+    returns (bool)
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_token, _amount, _expiration,  _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_ethAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
         address signer = ECDSA.recover(prefixedHash, _senderSignature);
         return signer == _sender;
     }
@@ -148,7 +155,7 @@ contract Factory is Storage, CloneFactory {
         address _receiver,
         bytes memory _signature
     )
-    public pure 
+    public pure
     returns (bool)
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_receiver)));
@@ -158,8 +165,9 @@ contract Factory is Storage, CloneFactory {
 
     /**
     * @dev Function to verify claim params, make sure the link is not claimed or canceled and proxy has sufficient balance
-    * @param _token Token address, address(0) for ETH
-    * @param _amount Amount of tokens to be claimed in atomic value
+    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _tokenAddress Token address
+    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
@@ -169,17 +177,18 @@ contract Factory is Storage, CloneFactory {
     */
     function checkClaimParams
     (
-        address _token,
-        uint _amount,
+        uint _ethAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
         uint _expiration,
-        address _linkId, 
+        address _linkId,
         address payable _sender,
         bytes memory _senderSignature,
-        address _receiver, 
+        address _receiver,
         bytes memory _receiverSignature,
         address _proxy
     )
-    public view 
+    public view
     returns (bool)
     {
         // If proxy is deployed
@@ -187,47 +196,54 @@ contract Factory is Storage, CloneFactory {
 
             return ILinkdrop(deployed[_sender]).checkClaimParams
             (
-                _token, 
-                _amount, 
-                _expiration, 
-                _linkId, 
-                _senderSignature, 
-                _receiver, 
+                _ethAmount,
+                _tokenAddress,
+                _tokenAmount,
+                _expiration,
+                _linkId,
+                _senderSignature,
+                _receiver,
                 _receiverSignature
             );
 
         }
         else {
 
-            // Make sure the claim amount is available for proxy contract
-            require(getBalance(_proxy, _sender, _token) >= _amount, "Insufficient funds");
+            // Make sure claim amount is available for proxy contract
+            require
+            (
+                getAvailableBalance(_proxy, _sender, address(0)) >= _ethAmount &&
+                getAvailableBalance(_proxy, _sender, _tokenAddress) >= _tokenAmount,
+                "Insufficient funds"
+            );
 
             // Verify that link key is legit and signed by sender's private key
             require
             (
-                verifySenderSignature(_token, _amount, _expiration, _linkId, _sender, _senderSignature),
+                verifySenderSignature(_ethAmount, _tokenAddress, _tokenAmount, _expiration, _linkId, _sender, _senderSignature),
                 "Invalid sender signature"
             );
 
-            // Make sure the link is not expired
+            // Make sure link is not expired
             require(_expiration >= now, "Expired link");
 
             // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
             require
             (
-                verifyReceiverSignature(_linkId, _receiver, _receiverSignature), 
+                verifyReceiverSignature(_linkId, _receiver, _receiverSignature),
                 "Invalid receiver signature"
             );
 
             return true;
         }
-        
+
     }
 
     /**
-    * @dev Function to claim ETH or ERC20 token
-    * @param _token Token address, address(0) for ETH
-    * @param _amount Amount of tokens to be claimed in atomic value
+    * @dev Function to claim ETH and/or ERC20 tokens
+    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _tokenAddress Token address
+    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _sender Address of linkdrop sender
@@ -238,16 +254,17 @@ contract Factory is Storage, CloneFactory {
     */
     function claim
     (
-        address _token, 
-        uint _amount,
+        uint _ethAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
         uint _expiration,
-        address _linkId, 
-        address payable _sender, 
-        bytes calldata _senderSignature, 
-        address payable _receiver, 
+        address _linkId,
+        address payable _sender,
+        bytes calldata _senderSignature,
+        address payable _receiver,
         bytes calldata _receiverSignature
-    ) 
-    external 
+    )
+    external
     returns (bool)
     {
 
@@ -259,22 +276,24 @@ contract Factory is Storage, CloneFactory {
         // Call claim function in the context of proxy contract
         ILinkdrop(deployed[_sender]).claim
         (
-            _token, 
-            _amount,
+            _ethAmount,
+            _tokenAddress,
+            _tokenAmount,
             _expiration,
-            _linkId, 
-            _senderSignature, 
-            _receiver, 
+            _linkId,
+            _senderSignature,
+            _receiver,
             _receiverSignature
         );
 
         return true;
-        
+
     }
 
     /**
     * @dev Function to verify linkdrop sender's signature
-    * @param _nft NFT address
+    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
@@ -284,17 +303,18 @@ contract Factory is Storage, CloneFactory {
     */
     function verifySenderSignatureERC721
     (
-        address _nft,
+        uint _ethAmount,
+        address _nftAddress,
         uint _tokenId,
         uint _expiration,
         address _linkId,
         address _sender,
         bytes memory _senderSignature
     )
-    public pure 
-    returns (bool) 
+    public pure
+    returns (bool)
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_nft, _tokenId, _expiration,  _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_ethAmount, _nftAddress, _tokenId, _expiration, _linkId)));
         address signer = ECDSA.recover(prefixedHash, _senderSignature);
         return signer == _sender;
     }
@@ -312,7 +332,7 @@ contract Factory is Storage, CloneFactory {
         address _receiver,
         bytes memory _signature
     )
-    public pure 
+    public pure
     returns (bool)
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_receiver)));
@@ -322,7 +342,8 @@ contract Factory is Storage, CloneFactory {
 
     /**
     * @dev Function to verify claim params, make sure the link is not claimed or canceled and proxy is allowed to spend token
-    * @param _nft NFT address
+    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
@@ -333,17 +354,18 @@ contract Factory is Storage, CloneFactory {
     */
     function checkClaimParamsERC721
     (
-        address _nft,
+        uint _ethAmount,
+        address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        address _linkId, 
+        address _linkId,
         address payable _sender,
         bytes memory _senderSignature,
-        address _receiver, 
+        address _receiver,
         bytes memory _receiverSignature,
         address _proxy
     )
-    public view 
+    public view
     returns (bool)
     {
         // If proxy is deployed
@@ -351,25 +373,32 @@ contract Factory is Storage, CloneFactory {
 
             return ILinkdropERC721(deployed[_sender]).checkClaimParamsERC721
             (
-                _nft, 
-                _tokenId, 
-                _expiration, 
-                _linkId, 
-                _senderSignature, 
-                _receiver, 
+                _ethAmount,
+                _nftAddress,
+                _tokenId,
+                _expiration,
+                _linkId,
+                _senderSignature,
+                _receiver,
                 _receiverSignature
             );
 
         }
         else {
 
+            // Make sure nft address is not equal to address(0)
+            require(_nftAddress != address(0), "Invalid nft address");
+
+            // Make sure claim amount is available for proxy contract
+            require(getAvailableBalance(_proxy, _sender, address(0)) >= _ethAmount, "Insufficient funds");
+
             // Make sure the token is available for proxy contract
-            require(isAvailableToken(_proxy, _nft, _tokenId), "Unavailable token");
+            require(isAvailableToken(_proxy, _nftAddress, _tokenId), "Unavailable token");
 
             // Verify that link key is legit and signed by sender's private key
             require
             (
-                verifySenderSignatureERC721(_nft, _tokenId, _expiration, _linkId, _sender, _senderSignature),
+                verifySenderSignatureERC721(_ethAmount, _nftAddress, _tokenId, _expiration, _linkId, _sender, _senderSignature),
                 "Invalid sender signature"
             );
 
@@ -379,18 +408,19 @@ contract Factory is Storage, CloneFactory {
             // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
             require
             (
-                verifyReceiverSignature(_linkId, _receiver, _receiverSignature), 
+                verifyReceiverSignature(_linkId, _receiver, _receiverSignature),
                 "Invalid receiver signature"
             );
 
             return true;
         }
-        
+
     }
 
     /**
-    * @dev Function to claim ERC721 token
-    * @param _nft NFT address
+    * @dev Function to claim ETH and/or ERC721 token
+    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
@@ -402,16 +432,17 @@ contract Factory is Storage, CloneFactory {
     */
     function claimERC721
     (
-        address _nft, 
+        uint _ethAmount,
+        address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        address _linkId, 
-        address payable _sender, 
-        bytes calldata _senderSignature, 
-        address payable _receiver, 
+        address _linkId,
+        address payable _sender,
+        bytes calldata _senderSignature,
+        address payable _receiver,
         bytes calldata _receiverSignature
-    ) 
-    external 
+    )
+    external
     returns (bool)
     {
         // Check whether the proxy is deployed for sender and deploy if not
@@ -422,17 +453,18 @@ contract Factory is Storage, CloneFactory {
         // Call claim function in the context of proxy contract
         ILinkdropERC721(deployed[_sender]).claimERC721
         (
-            _nft, 
+            _ethAmount,
+            _nftAddress,
             _tokenId,
             _expiration,
-            _linkId, 
-            _senderSignature, 
-            _receiver, 
+            _linkId,
+            _senderSignature,
+            _receiver,
             _receiverSignature
         );
 
         return true;
-        
+
     }
-  
+
 }
