@@ -9,6 +9,7 @@ const generator = function * ({ payload }) {
   let name
   const { nftAddress, networkId, tokenId } = payload
   try {
+    // checking with provider
     yield put({ type: 'CONTRACT.SET_LOADING', payload: { loading: true } })
     const networkName = defineNetworkName({ networkId })
     const provider = yield ethers.getDefaultProvider(networkName)
@@ -29,6 +30,7 @@ const generator = function * ({ payload }) {
     yield put({ type: 'CONTRACT.SET_LOADING', payload: { loading: false } })
     yield put({ type: 'USER.SET_STEP', payload: { step: 1 } })
   } catch (e) {
+    // checking with opensea
     const token = yield call(getERC721MetaData, { tokenAddress: nftAddress, networkId })
     if (token) {
       image = token.featured_image_url
