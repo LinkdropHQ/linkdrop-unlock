@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import checkBalanceGenerator from 'data/store/saga/tokens/every/check-balance.js'
 import { createMockProvider } from 'ethereum-waffle'
 import { put, select, call } from 'redux-saga/effects'
-import { ethers, utils } from 'ethers'
+import { ethers } from 'ethers'
 import { getTokensOpensea, getTokensTrustWallet } from 'data/api/tokens'
 
 const provider = createMockProvider()
@@ -12,7 +12,7 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
   const networkId = '1'
   const payload = { account, networkId }
   const gen = checkBalanceGenerator({ payload })
-  const balance = { '_hex': '0x16345785d8a0000' }
+  const balance = 0
   const step = 0
   const erc721Balance = { assets: [] }
   let erc20Balance = { total: 0 }
@@ -80,22 +80,6 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
   //     nextGenStep
   //   ).to.equal(
   //     expectedNextGenStep
-  //   )
-  // })
-
-  // it('must put fetched tokens to store', () => {
-  //   expect(
-  //     gen.next(response).value
-  //   ).to.deep.equal(
-  //     put({ type: 'NFT_TOKENS.SET_TOKENS', payload: { tokens: response.assets } })
-  //   )
-  // })
-
-  // it('must disable the loading', () => {
-  //   expect(
-  //     gen.next().value
-  //   ).to.deep.equal(
-  //     put({ type: 'NFT_TOKENS.SET_LOADING', payload: { loading: false } })
   //   )
   // })
 })
@@ -183,29 +167,11 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
     )
   })
 
-  // it('get contract instance', () => {
-  //   const nextGenStep = gen.next(provider).value
-  //   const expectedNextGenStep = new ethers.Contract(tokenAddress, config.erc20Abi, provider)
-  //   expect(
-  //     nextGenStep
-  //   ).to.equal(
-  //     expectedNextGenStep
-  //   )
-  // })
-
-  // it('must put fetched tokens to store', () => {
-  //   expect(
-  //     gen.next(response).value
-  //   ).to.deep.equal(
-  //     put({ type: 'NFT_TOKENS.SET_TOKENS', payload: { tokens: response.assets } })
-  //   )
-  // })
-
-  // it('must disable the loading', () => {
-  //   expect(
-  //     gen.next().value
-  //   ).to.deep.equal(
-  //     put({ type: 'NFT_TOKENS.SET_LOADING', payload: { loading: false } })
-  //   )
-  // })
+  it('disable loading', () => {
+    expect(
+      gen.next(erc20Balance).value
+    ).to.deep.equal(
+      put({ type: 'USER.SET_LOADING', payload: { loading: false } })
+    )
+  })
 })

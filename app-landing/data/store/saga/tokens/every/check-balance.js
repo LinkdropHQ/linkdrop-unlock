@@ -15,7 +15,6 @@ const generator = function * ({ payload }) {
 
     // check of ethereum balance
     const balanceFormatted = utils.formatEther(balance)
-    console.log({ balance, balanceFormatted })
     // check of erc-721 balance
     let { assets: erc721Balance = [] } = yield call(getTokensOpensea, { wallet: account, networkId })
     let erc20Balance = { total: 0 }
@@ -54,9 +53,8 @@ const generator = function * ({ payload }) {
       yield put({ type: 'TOKENS.SET_TOKEN_ID', payload: { tokenId: erc721Balance[0].token_id } })
       yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress: erc721Balance[0].asset_contract.address } })
     }
-
     // if ERC-20 found on address -> set this balance to store
-    if (Number(erc20Balance.total) > 0) {
+    if (Number((erc20Balance || {}).total) > 0) {
       const tokenAddress = erc20Balance.docs[0].contract.address
       const tokenContract = yield new ethers.Contract(tokenAddress, TokenMock.abi, provider)
       const balance = yield tokenContract.balanceOf(account)
