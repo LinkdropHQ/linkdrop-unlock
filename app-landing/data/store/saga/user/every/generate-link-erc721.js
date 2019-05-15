@@ -31,6 +31,7 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
+  balance: ({ user: { balance } }) => balance,
   balanceFormatted: ({ user: { balanceFormatted } }) => balanceFormatted,
   privateKey: ({ user: { privateKey } }) => privateKey,
   tokenId: ({ tokens: { tokenId } }) => tokenId,
