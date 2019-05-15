@@ -97,7 +97,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         // Make sure eth amount is available for this contract
         require(address(this).balance >= _weiAmount, "Insufficient amount of eth");
 
-        // Make sure tokens available for this contract
+        // Make sure tokens are available for this contract
         if (_tokenAddress != address(0)) {
             require(IERC20(_tokenAddress).balanceOf(address(this)) >= _tokenAmount, "Insufficient amount of tokens");
         }
@@ -191,7 +191,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
             _receiver.transfer(_weiAmount);
         }
 
-        // // Transfer tokens
+        // Transfer tokens
         if (_tokenAmount > 0) {
             IERC20(_tokenAddress).transfer(_receiver, _tokenAmount);
         }
