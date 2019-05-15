@@ -6,26 +6,26 @@ const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
 const config = require(configPath)
 
-let { jsonRpcUrl, senderPrivateKey, ethAmount, linksNumber } = config
+let { jsonRpcUrl, linkdropSignerPrivateKey, weiAmount, linksNumber } = config
 
 ;(async () => {
   console.log('Generating links...\n')
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-  const sender = new ethers.Wallet(senderPrivateKey, provider)
+  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
 
   const factoryAddress = getFactoryAddress()
   const masterCopyAddress = getMasterCopyAddress()
 
   const proxyAddress = LinkdropSDK.computeProxyAddress(
     factoryAddress,
-    sender.address,
+    linkdropSigner.address,
     masterCopyAddress
   )
 
   // Send eth to proxy
 
-  let cost = ethAmount * linksNumber
+  let cost = weiAmount * linksNumber
   let amountToSend
 
   const tokenSymbol = 'ETH'
@@ -34,7 +34,7 @@ let { jsonRpcUrl, senderPrivateKey, ethAmount, linksNumber } = config
   proxyBalance >= cost
     ? (amountToSend = 0)
     : (amountToSend = cost - proxyBalance)
-  const tx = await sender.sendTransaction({
+  const tx = await linkdropSigner.sendTransaction({
     to: proxyAddress,
     value: amountToSend
   })

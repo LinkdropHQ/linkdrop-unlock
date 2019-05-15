@@ -7,24 +7,34 @@ const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
 const config = require(configPath)
 
-let { jsonRpcUrl, senderPrivateKey, ethAmount, nftAddress, nftIds } = config
+let {
+  jsonRpcUrl,
+  linkdropSignerPrivateKey,
+  weiAmount,
+  nftAddress,
+  nftIds
+} = config
 
 ;(async () => {
   console.log('Generating links...\n')
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-  const sender = new ethers.Wallet(senderPrivateKey, provider)
+  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
 
   const factoryAddress = getFactoryAddress()
   const masterCopyAddress = getMasterCopyAddress()
 
   let proxyAddress = LinkdropSDK.computeProxyAddress(
     factoryAddress,
-    sender.address,
+    linkdropSigner.address,
     masterCopyAddress
   )
 
-  const nftContract = await new ethers.Contract(nftAddress, NFTMock.abi, sender)
+  const nftContract = await new ethers.Contract(
+    nftAddress,
+    NFTMock.abi,
+    linkdropSigner
+  )
   const nftSymbol = await nftContract.symbol()
 
   // If owner of tokenId is not proxy contract -> send it to proxy
@@ -39,7 +49,7 @@ let { jsonRpcUrl, senderPrivateKey, ethAmount, nftAddress, nftIds } = config
         } to ${proxyAddress} `
       )
       const tx = await nftContract.transferFrom(
-        sender.address,
+        linkdropSigner.address,
         proxyAddress,
         tokenIds[i],
         { gasLimit: 500000 }
@@ -49,8 +59,8 @@ let { jsonRpcUrl, senderPrivateKey, ethAmount, nftAddress, nftIds } = config
   }
 
   // Send eth to proxy
-  if (ethAmount > 0) {
-    let cost = ethAmount * tokenIds.length
+  if (weiAmount > 0) {
+    let cost = weiAmount * tokenIds.length
     let amountToSend
 
     const tokenSymbol = 'ETH'
@@ -59,7 +69,7 @@ let { jsonRpcUrl, senderPrivateKey, ethAmount, nftAddress, nftIds } = config
     proxyBalance >= cost
       ? (amountToSend = 0)
       : (amountToSend = cost - proxyBalance)
-    const tx = await sender.sendTransaction({
+    const tx = await linkdropSigner.sendTransaction({
       to: proxyAddress,
       value: amountToSend
     })

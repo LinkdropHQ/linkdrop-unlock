@@ -5,8 +5,8 @@ export const generateLink = async (
   jsonRpcUrl,
   networkId,
   host,
-  senderPrivateKey,
-  ethAmount,
+  linkdropSignerPrivateKey,
+  weiAmount,
   tokenAddress,
   tokenAmount,
   expirationTime
@@ -23,11 +23,11 @@ export const generateLink = async (
     throw new Error('Please provide host')
   }
 
-  if (senderPrivateKey == null || senderPrivateKey === '') {
-    throw new Error(`Please provide sender's private key`)
+  if (linkdropSignerPrivateKey == null || linkdropSignerPrivateKey === '') {
+    throw new Error(`Please provide linkdropSigner's private key`)
   }
 
-  if (ethAmount === null || ethAmount === '') {
+  if (weiAmount === null || weiAmount === '') {
     throw new Error('Please provide amount of eth to claim')
   }
 
@@ -43,34 +43,34 @@ export const generateLink = async (
     throw new Error('Please provide expiration time')
   }
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-  const sender = new ethers.Wallet(senderPrivateKey, provider)
-  const { linkKey, linkId, senderSignature } = await createLink(
-    sender,
-    ethAmount,
+  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
+  const { linkKey, linkId, linkdropSignerSignature } = await createLink(
+    linkdropSigner,
+    weiAmount,
     tokenAddress,
     tokenAmount,
     expirationTime
   )
 
   // Construct link
-  let url = `${host}/#/receive?ethAmount=${ethAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&linkKey=${linkKey}&senderAddress=${
-    sender.address
-  }&senderSignature=${senderSignature}`
+  let url = `${host}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&linkKey=${linkKey}&linkdropSignerAddress=${
+    linkdropSigner.address
+  }&linkdropSignerSignature=${linkdropSignerSignature}`
 
   // Add network param to url if not mainnet
   if (String(networkId) !== '1') {
     url = `${url}&n=${networkId}`
   }
 
-  return { url, linkId, linkKey, senderSignature }
+  return { url, linkId, linkKey, linkdropSignerSignature }
 }
 
 export const generateLinkERC721 = async (
   jsonRpcUrl,
   networkId,
   host,
-  senderPrivateKey,
-  ethAmount,
+  linkdropSignerPrivateKey,
+  weiAmount,
   nftAddress,
   tokenId,
   expirationTime
@@ -87,11 +87,11 @@ export const generateLinkERC721 = async (
     throw new Error('Please provide host')
   }
 
-  if (senderPrivateKey == null || senderPrivateKey === '') {
-    throw new Error(`Please provide sender's private key`)
+  if (linkdropSignerPrivateKey == null || linkdropSignerPrivateKey === '') {
+    throw new Error(`Please provide linkdropSigner's private key`)
   }
 
-  if (ethAmount === null || ethAmount === '') {
+  if (weiAmount === null || weiAmount === '') {
     throw new Error('Please provide amount of eth to claim')
   }
 
@@ -112,24 +112,24 @@ export const generateLinkERC721 = async (
   }
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-  const sender = new ethers.Wallet(senderPrivateKey, provider)
-  const { linkKey, linkId, senderSignature } = await createLink(
-    sender,
-    ethAmount,
+  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
+  const { linkKey, linkId, linkdropSignerSignature } = await createLink(
+    linkdropSigner,
+    weiAmount,
     nftAddress,
     tokenId,
     expirationTime
   )
 
   // Construct link
-  let url = `${host}/#/receive?ethAmount=${ethAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&linkKey=${linkKey}&senderAddress=${
-    sender.address
-  }&senderSignature=${senderSignature}`
+  let url = `${host}/#/receive?weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&linkKey=${linkKey}&linkdropSignerAddress=${
+    linkdropSigner.address
+  }&linkdropSignerSignature=${linkdropSignerSignature}`
 
   // Add network param to url if not mainnet
   if (String(networkId) !== '1') {
     url = `${url}&n=${networkId}`
   }
 
-  return { url, linkId, linkKey, senderSignature }
+  return { url, linkId, linkKey, linkdropSignerSignature }
 }
