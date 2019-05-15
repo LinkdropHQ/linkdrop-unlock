@@ -83,15 +83,20 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         // Make sure nft address is not equal to address(0)
         require(_nftAddress != address(0), "Invalid nft address");
 
-        // Make sure claim amount is available for proxy contract
+        // Make sure link is not claimed
+        require(isClaimedLink(_linkId) == false, "Claimed link");
+
+        // Make sure link is not canceled
+        require(isCanceledLink(_linkId) == false, "Canceled link");
+
+        // Make sure link is not expired
+        require(_expiration >= now, "Expired link");
+
+        // Make sure eth amount is available for this contract
         require(address(this).balance >= _weiAmount, "Insufficient funds");
 
-        // Make sure token is available for this contract
+        // Make sure nft is available for this contract
         require(IERC721(_nftAddress).ownerOf(_tokenId) == address(this), "Unavailable token");
-
-        // Make sure link is not claimed or canceled
-        require(isClaimedLink(_linkId) == false, "Claimed link");
-        require(isCanceledLink(_linkId) == false, "Canceled link");
 
         // Verify that link key is legit and signed by linkdrop signer's private key
         require
@@ -99,9 +104,6 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
             verifyLinkdropSignerSignatureERC721(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId, _linkdropSignerSignature),
             "Invalid linkdrop signer signature"
         );
-
-        // Make sure link is not expired
-        require(_expiration >= now, "Expired link");
 
         // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
         require

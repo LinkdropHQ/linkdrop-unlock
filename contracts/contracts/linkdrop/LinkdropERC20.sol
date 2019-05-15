@@ -85,16 +85,22 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
             require(_tokenAddress != address(0), "Invalid token address");
         }
 
-        // Make sure claim amount is available for this contract
+        // Make sure link is not claimed
+        require(isClaimedLink(_linkId) == false, "Claimed link");
+
+        // Make sure link is not canceled
+        require(isCanceledLink(_linkId) == false, "Canceled link");
+
+        // Make sure link is not expired
+        require(_expiration >= now, "Expired link");
+
+        // Make sure eth amount is available for this contract
         require(address(this).balance >= _weiAmount, "Insufficient amount of eth");
 
+        // Make sure tokens available for this contract
         if (_tokenAddress != address(0)) {
             require(IERC20(_tokenAddress).balanceOf(address(this)) >= _tokenAmount, "Insufficient amount of tokens");
         }
-
-        // Make sure link is not claimed or canceled
-        require(isClaimedLink(_linkId) == false, "Claimed link");
-        require(isCanceledLink(_linkId) == false, "Canceled link");
 
         // Verify that link key is legit and signed by linkdrop signer
         require
@@ -102,9 +108,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
             verifyLinkdropSignerSignature(_weiAmount, _tokenAddress, _tokenAmount, _expiration, _linkId, _linkdropSignerSignature),
             "Invalid linkdrop signer signature"
         );
-
-        // Make sure the link is not expired
-        require(_expiration >= now, "Expired link");
 
         // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
         require
