@@ -7,16 +7,16 @@ import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
 
     /**
-    * @dev Function to verify linkdrop sender's signature
+    * @dev Function to verify linkdrop signer's signature
     * @param _weiAmount Amount of wei to be claimed
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _signature ECDSA signature of linkdrop sender, signed with sender's private key
-    * @return True if signed with sender's private key
+    * @param _signature ECDSA signature of linkdrop signer
+    * @return True if signed with linkdrop signer's private key
     */
-    function verifySenderSignatureERC721
+    function verifyLinkdropSignerSignatureERC721
     (
         uint _weiAmount,
         address _nftAddress,
@@ -30,14 +30,14 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return signer == sender;
+        return signer == linkdropSigner;
     }
 
     /**
     * @dev Function to verify linkdrop receiver's signature
     * @param _linkId Address corresponding to link key
     * @param _receiver Address of linkdrop receiver
-    * @param _signature ECDSA signature of linkdrop receiver, signed with link key
+    * @param _signature ECDSA signature of linkdrop receiver
     * @return True if signed with link key
     */
     function verifyReceiverSignatureERC721
@@ -61,9 +61,9 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
+    * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
-    * @param _receiverSignature ECDSA signature of linkdrop receiver, signed with link key
+    * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
     function checkClaimParamsERC721
@@ -73,7 +73,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         uint _tokenId,
         uint _expiration,
         address _linkId,
-        bytes memory _senderSignature,
+        bytes memory _linkdropSignerSignature,
         address _receiver,
         bytes memory _receiverSignature
     )
@@ -93,11 +93,11 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         require(isClaimedLink(_linkId) == false, "Claimed link");
         require(isCanceledLink(_linkId) == false, "Canceled link");
 
-        // Verify that link key is legit and signed by sender's private key
+        // Verify that link key is legit and signed by linkdrop signer's private key
         require
         (
-            verifySenderSignatureERC721(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId, _senderSignature),
-            "Invalid sender signature"
+            verifyLinkdropSignerSignatureERC721(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId, _linkdropSignerSignature),
+            "Invalid linkdrop signer signature"
         );
 
         // Make sure link is not expired
@@ -120,9 +120,9 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
+    * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
-    * @param _receiverSignature ECDSA signature of linkdrop receiver, signed with link key
+    * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
     function claimERC721
@@ -132,7 +132,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         uint _tokenId,
         uint _expiration,
         address _linkId,
-        bytes calldata _senderSignature,
+        bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
     )
@@ -151,7 +151,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
                 _tokenId,
                 _expiration,
                  _linkId,
-                _senderSignature,
+                _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature
             ),
@@ -162,7 +162,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         claimedTo[_linkId] = _receiver;
 
         // Make sure transfer succeeds
-        require(_transfer(_weiAmount, _nftAddress, _tokenId, _receiver), "Transfer failed");
+        require(_transferFundsERC721(_weiAmount, _nftAddress, _tokenId, _receiver), "Transfer failed");
 
         // Log claim
         emit ClaimedERC721(_linkId, _weiAmount, _nftAddress, _tokenId, _receiver, now);
@@ -171,14 +171,14 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     }
 
     /**
-    * @dev Internal function to transfer ETH and/or ERC20 tokens
+    * @dev Internal function to transfer ETH and/or ERC721 tokens
     * @param _weiAmount Amount of wei to be claimed
     * @param _nftAddress NFT address
     * @param _tokenId Amount of tokens to be claimed (in atomic value)
     * @param _receiver Address to transfer funds to
     * @return True if success
     */
-    function _transfer(uint _weiAmount, address _nftAddress, uint _tokenId, address payable _receiver)
+    function _transferFundsERC721(uint _weiAmount, address _nftAddress, uint _tokenId, address payable _receiver)
     internal returns (bool)
     {
         // Transfer ETH

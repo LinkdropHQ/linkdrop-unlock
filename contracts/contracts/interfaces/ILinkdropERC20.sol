@@ -2,9 +2,9 @@ pragma solidity ^0.5.6;
 
 interface ILinkdropERC20 {
 
-    function verifySenderSignature
+    function verifyLinkdropSignerSignature
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
@@ -23,12 +23,12 @@ interface ILinkdropERC20 {
 
     function checkClaimParams
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        bytes calldata _senderSignature,
+        bytes calldata _linkdropSignerSignature,
         address _receiver,
         bytes calldata _receiverSignature
     )
@@ -36,12 +36,12 @@ interface ILinkdropERC20 {
 
     function claim
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        bytes calldata _senderSignature,
+        bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
     )

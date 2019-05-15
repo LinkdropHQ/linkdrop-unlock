@@ -7,39 +7,39 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
 
     /**
-    * @dev Function to verify linkdrop sender's signature
+    * @dev Function to verify linkdrop signer's signature
     * @param _weiAmount Amount of wei to be claimed
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _sender Address of linkdrop sender
-    * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
-    * @return True if signed with sender's private key
+    * @param _linkdropSigner Address of linkdrop signer
+    * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
+    * @return True if signed with linkdrop signer's private key
     */
-    function verifySenderSignature
+    function verifyLinkdropSignerSignature
     (
         uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address _sender,
-        bytes memory _senderSignature
+        address _linkdropSigner,
+        bytes memory _linkdropSignerSignature
     )
     public pure
     returns (bool)
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
-        address signer = ECDSA.recover(prefixedHash, _senderSignature);
-        return signer == _sender;
+        address signer = ECDSA.recover(prefixedHash, _linkdropSignerSignature);
+        return signer == _linkdropSigner;
     }
 
     /**
     * @dev Function to verify linkdrop receiver's signature
     * @param _linkId Address corresponding to link key
     * @param _receiver Address of linkdrop receiver
-    * @param _signature ECDSA signature of linkdrop receiver, signed with link key
+    * @param _signature ECDSA signature of linkdrop receiver
     * @return True if signed with link key
     */
     function verifyReceiverSignature
@@ -63,9 +63,9 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
+    * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
-    * @param _receiverSignature ECDSA signature of linkdrop receiver, signed with link key
+    * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
     function checkClaimParams
@@ -75,8 +75,8 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address payable _sender,
-        bytes memory _senderSignature,
+        address payable _linkdropSigner,
+        bytes memory _linkdropSignerSignature,
         address _receiver,
         bytes memory _receiverSignature,
         address _proxy
@@ -85,16 +85,16 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
     returns (bool)
     {
         // If proxy is deployed
-        if (isDeployed(_sender)) {
+        if (isDeployed(_linkdropSigner)) {
 
-            return ILinkdropERC20(_deployed[_sender]).checkClaimParams
+            return ILinkdropERC20(_deployed[_linkdropSigner]).checkClaimParams
             (
                 _weiAmount,
                 _tokenAddress,
                 _tokenAmount,
                 _expiration,
                 _linkId,
-                _senderSignature,
+                _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature
             );
@@ -105,16 +105,27 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
             // Make sure claim amount is available for proxy contract
             require
             (
-                _proxy.balance >= _weiAmount &&
-                IERC20(_tokenAddress).balanceOf(_proxy) >= _tokenAmount,
-                "Insufficient funds"
+                _proxy.balance >= _weiAmount,"Insufficient amount of eth"
             );
 
-            // Verify that link key is legit and signed by sender's private key
+            if (_tokenAddress != address(0)) {
+                require(IERC20(_tokenAddress).balanceOf(_proxy) >= _tokenAmount, "Insufficient amount of tokens");
+            }
+
+            // Verify that link key is legit and signed by linkdrop signer's private key
             require
             (
-                verifySenderSignature(_weiAmount, _tokenAddress, _tokenAmount, _expiration, _linkId, _sender, _senderSignature),
-                "Invalid sender signature"
+                verifyLinkdropSignerSignature
+                (
+                    _weiAmount,
+                    _tokenAddress,
+                    _tokenAmount,
+                    _expiration,
+                    _linkId,
+                    _linkdropSigner,
+                    _linkdropSignerSignature
+                ),
+                "Invalid linkdrop signer signature"
             );
 
             // Make sure link is not expired
@@ -139,10 +150,10 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _sender Address of linkdrop sender
-    * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
+    * @param _linkdropSigner Address of linkdrop signer
+    * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
-    * @param _receiverSignature ECDSA signature of linkdrop receiver, signed with link key
+    * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
     function claim
@@ -152,8 +163,8 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address payable _sender,
-        bytes calldata _senderSignature,
+        address payable _linkdropSigner,
+        bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
     )
@@ -161,20 +172,20 @@ contract LinkdropFactoryERC20 is LinkdropFactoryCommon {
     returns (bool)
     {
 
-        // Check whether the proxy is deployed for sender and deploy if not
-        if (!isDeployed(_sender)) {
-            deployProxy(_sender);
+        // Check whether the proxy is deployed for linkdrop signer and deploy if not
+        if (!isDeployed(_linkdropSigner)) {
+            deployProxy(_linkdropSigner);
         }
 
         // Call claim function in the context of proxy contract
-        ILinkdropERC20(_deployed[_sender]).claim
+        ILinkdropERC20(_deployed[_linkdropSigner]).claim
         (
             _weiAmount,
             _tokenAddress,
             _tokenAmount,
             _expiration,
             _linkId,
-            _senderSignature,
+            _linkdropSignerSignature,
             _receiver,
             _receiverSignature
         );

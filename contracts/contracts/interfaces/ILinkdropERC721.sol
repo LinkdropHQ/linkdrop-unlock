@@ -2,9 +2,9 @@ pragma solidity ^0.5.6;
 
 interface ILinkdropERC721 {
 
-    function verifySenderSignatureERC721
+    function verifyLinkdropSignerSignatureERC721
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
@@ -23,12 +23,12 @@ interface ILinkdropERC721 {
 
     function checkClaimParamsERC721
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
         address _linkId,
-        bytes calldata _senderSignature,
+        bytes calldata _linkdropSignerSignature,
         address _receiver,
         bytes calldata _receiverSignature
     )
@@ -36,12 +36,12 @@ interface ILinkdropERC721 {
 
     function claimERC721
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
         address _linkId,
-        bytes calldata _senderSignature,
+        bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
     )

@@ -37,7 +37,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @dev Function to verify linkdrop receiver's signature
     * @param _linkId Address corresponding to link key
     * @param _receiver Address of linkdrop receiver
-    * @param _signature ECDSA signature of linkdrop receiver, signed with link key
+    * @param _signature ECDSA signature of linkdrop receiver
     * @return True if signed with link key
     */
     function verifyReceiverSignature
@@ -63,7 +63,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _linkId Address corresponding to link key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
-    * @param _receiverSignature ECDSA signature of linkdrop receiver, signed with link key
+    * @param _receiverSignature ECDSA signature of linkdrop receiver,
     * @return True if success
     */
     function checkClaimParams
@@ -86,12 +86,11 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         }
 
         // Make sure claim amount is available for this contract
-        require
-        (
-            address(this).balance >= _weiAmount &&
-            IERC20(_tokenAddress).balanceOf(address(this)) >= _tokenAmount,
-            "Insufficient funds"
-        );
+        require(address(this).balance >= _weiAmount, "Insufficient amount of eth");
+
+        if (_tokenAddress != address(0)) {
+            require(IERC20(_tokenAddress).balanceOf(address(this)) >= _tokenAmount, "Insufficient amount of tokens");
+        }
 
         // Make sure link is not claimed or canceled
         require(isClaimedLink(_linkId) == false, "Claimed link");
@@ -126,7 +125,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _linkId Address corresponding to link key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
-    * @param _receiverSignature ECDSA signature of linkdrop receiver, signed with link key
+    * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
     function claim
@@ -165,7 +164,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         claimedTo[_linkId] = _receiver;
 
         // Make sure transfer succeeds
-        require(_transfer(_weiAmount, _tokenAddress, _tokenAmount, _receiver), "Transfer failed");
+        require(_transferFunds(_weiAmount, _tokenAddress, _tokenAmount, _receiver), "Transfer failed");
 
         // Emit claim event
         emit Claimed(_linkId, _weiAmount, _tokenAddress, _tokenAmount, _receiver, now);
@@ -181,7 +180,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _receiver Address to transfer funds to
     * @return True if success
     */
-    function _transfer(uint _weiAmount, address _tokenAddress, uint _tokenAmount, address payable _receiver)
+    function _transferFunds(uint _weiAmount, address _tokenAddress, uint _tokenAmount, address payable _receiver)
     internal returns (bool)
     {
         // Transfer ETH
@@ -189,7 +188,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
             _receiver.transfer(_weiAmount);
         }
 
-        // Transfer tokens
+        // // Transfer tokens
         if (_tokenAmount > 0) {
             IERC20(_tokenAddress).transfer(_receiver, _tokenAmount);
         }

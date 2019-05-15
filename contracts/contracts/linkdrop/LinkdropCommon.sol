@@ -10,7 +10,6 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     * @dev Function to set the linkdrop signer, can only be called once
     * @param _linkdropSigner Address of linkdrop signer
     */
-
     function initializer
     (
         address payable _linkdropSigner
