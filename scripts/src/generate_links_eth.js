@@ -31,18 +31,21 @@ let { jsonRpcUrl, linkdropSignerPrivateKey, weiAmount, linksNumber } = config
   const tokenSymbol = 'ETH'
   const tokenDecimals = 18
   const proxyBalance = await provider.getBalance(proxyAddress)
-  proxyBalance >= cost
-    ? (amountToSend = 0)
-    : (amountToSend = cost - proxyBalance)
-  const tx = await linkdropSigner.sendTransaction({
-    to: proxyAddress,
-    value: amountToSend
-  })
 
-  // Get human readable format of amount to send
-  amountToSend /= Math.pow(10, tokenDecimals)
-  console.log(`⤴️  Sending ${amountToSend} ${tokenSymbol} to ${proxyAddress} `)
-  console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+  if (proxyBalance < cost) {
+    amountToSend = cost - proxyBalance
+    const tx = await linkdropSigner.sendTransaction({
+      to: proxyAddress,
+      value: amountToSend
+    })
+
+    // Get human readable format of amount to send
+    amountToSend /= Math.pow(10, tokenDecimals)
+    console.log(
+      `⤴️  Sending ${amountToSend} ${tokenSymbol} to ${proxyAddress} `
+    )
+    console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+  }
 
   let links = await generateLinksETH()
   return links
