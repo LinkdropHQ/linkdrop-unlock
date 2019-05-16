@@ -12,11 +12,15 @@ function buildCreate2Address (creatorAddress, saltHex, byteCode) {
     .slice(-40)}`.toLowerCase()
 }
 
-export const computeProxyAddress = (factoryAddress, sender, implementation) => {
-  const salt = utils.solidityKeccak256(['address'], [sender])
+export const computeProxyAddress = (
+  factoryAddress,
+  linkdropSignerAddress,
+  masterCopyAddress
+) => {
+  const salt = utils.solidityKeccak256(['address'], [linkdropSignerAddress])
 
   // /let bytecode = `0x${Linkdrop.bytecode}`
-  const bytecode = `0x3d602d80600a3d3981f3363d3d373d3d3d363d73${implementation.slice(
+  const bytecode = `0x3d602d80600a3d3981f3363d3d373d3d3d363d73${masterCopyAddress.slice(
     2
   )}5af43d82803e903d91602b57fd5bf3`
 
@@ -27,7 +31,7 @@ export const computeProxyAddress = (factoryAddress, sender, implementation) => {
 
 // Should be signed by sender
 export const signLink = async function (
-  sender, // Wallet
+  linkdropSigner, // Wallet
   ethAmount,
   tokenAddress,
   tokenAmount,
@@ -39,13 +43,13 @@ export const signLink = async function (
     [ethAmount, tokenAddress, tokenAmount, expirationTime, linkId]
   )
   let messageHashToSign = ethers.utils.arrayify(messageHash)
-  let signature = await sender.signMessage(messageHashToSign)
+  let signature = await linkdropSigner.signMessage(messageHashToSign)
   return signature
 }
 
 // Generates new link
 export const createLink = async function (
-  sender, // Wallet
+  linkdropSigner, // Wallet
   ethAmount,
   tokenAddress,
   tokenAmount,
@@ -54,8 +58,8 @@ export const createLink = async function (
   let linkWallet = ethers.Wallet.createRandom()
   let linkKey = linkWallet.privateKey
   let linkId = linkWallet.address
-  let senderSignature = await signLink(
-    sender,
+  let linkdropSignerSignature = await signLink(
+    linkdropSigner,
     ethAmount,
     tokenAddress,
     tokenAmount,
@@ -65,7 +69,7 @@ export const createLink = async function (
   return {
     linkKey, // link's ephemeral private key
     linkId, // address corresponding to link key
-    senderSignature // signed by linkdrop verifier
+    linkdropSignerSignature // signed by linkdrop verifier
   }
 }
 

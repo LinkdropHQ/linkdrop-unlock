@@ -1,10 +1,10 @@
-pragma solidity >= 0.5.0;
+pragma solidity ^0.5.6;
 
-interface ILinkdrop {
+interface ILinkdropERC20 {
 
-    function verifySenderSignature
+    function verifyLinkdropSignerSignature
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
@@ -23,12 +23,12 @@ interface ILinkdrop {
 
     function checkClaimParams
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        bytes calldata _senderSignature,
+        bytes calldata _linkdropSignerSignature,
         address _receiver,
         bytes calldata _receiverSignature
     )
@@ -36,15 +36,15 @@ interface ILinkdrop {
 
     function claim
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        bytes calldata _senderSignature,
+        bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
     )
     external returns (bool);
-    
+
 }

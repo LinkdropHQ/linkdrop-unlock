@@ -1,28 +1,24 @@
-pragma solidity >= 0.5.6;
-import "./Common.sol";
-import "./interfaces/ILinkdropERC721.sol";
-import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
-import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
+pragma solidity ^0.5.6;
 
-contract LinkdropERC721 is ILinkdropERC721, Common {
-    
-    // =================================================================================================================
-    //                                         ETH and ERC721 Linkdrop
-    // =================================================================================================================
+import "./LinkdropCommon.sol";
+import "../interfaces/ILinkdropERC721.sol";
+import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
+
+contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
 
     /**
-    * @dev Function to verify linkdrop sender's signature
-    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @dev Function to verify linkdrop signer's signature
+    * @param _weiAmount Amount of wei to be claimed
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _signature ECDSA signature of linkdrop sender, signed with sender's private key
-    * @return True if signed with sender's private key
+    * @param _signature ECDSA signature of linkdrop signer
+    * @return True if signed with linkdrop signer's private key
     */
-    function verifySenderSignatureERC721
+    function verifyLinkdropSignerSignatureERC721
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
@@ -32,16 +28,16 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
     public view
     returns (bool)
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_ethAmount, _nftAddress, _tokenId, _expiration, _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return signer == sender;
+        return signer == linkdropSigner;
     }
 
     /**
     * @dev Function to verify linkdrop receiver's signature
     * @param _linkId Address corresponding to link key
     * @param _receiver Address of linkdrop receiver
-    * @param _signature ECDSA signature of linkdrop receiver, signed with link key
+    * @param _signature ECDSA signature of linkdrop receiver
     * @return True if signed with link key
     */
     function verifyReceiverSignatureERC721
@@ -60,24 +56,24 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
 
     /**
     * @dev Function to verify claim params and make sure the link is not claimed or canceled
-    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _weiAmount Amount of wei to be claimed
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
+    * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
-    * @param _receiverSignature ECDSA signature of linkdrop receiver, signed with link key
+    * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
     function checkClaimParamsERC721
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
         address _linkId,
-        bytes memory _senderSignature,
+        bytes memory _linkdropSignerSignature,
         address _receiver,
         bytes memory _receiverSignature
     )
@@ -87,25 +83,27 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
         // Make sure nft address is not equal to address(0)
         require(_nftAddress != address(0), "Invalid nft address");
 
-        // Make sure claim amount is available for proxy contract
-        require(address(this).balance >= _ethAmount, "Insufficient funds");
-
-        // Make sure token is available for this contract
-        require(isAvailableToken(_nftAddress, _tokenId), "Unavailable token");
-
-        // Make sure link is not claimed or canceled
+        // Make sure link is not claimed
         require(isClaimedLink(_linkId) == false, "Claimed link");
-        require(isCanceledLink(_linkId) == false, "Canceled link");
 
-        // Verify that link key is legit and signed by sender's private key
-        require
-        (
-            verifySenderSignatureERC721(_ethAmount, _nftAddress, _tokenId, _expiration, _linkId, _senderSignature),
-            "Invalid sender signature"
-        );
+        // Make sure link is not canceled
+        require(isCanceledLink(_linkId) == false, "Canceled link");
 
         // Make sure link is not expired
         require(_expiration >= now, "Expired link");
+
+        // Make sure eth amount is available for this contract
+        require(address(this).balance >= _weiAmount, "Insufficient funds");
+
+        // Make sure nft is available for this contract
+        require(IERC721(_nftAddress).ownerOf(_tokenId) == address(this), "Unavailable token");
+
+        // Verify that link key is legit and signed by linkdrop signer's private key
+        require
+        (
+            verifyLinkdropSignerSignatureERC721(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId, _linkdropSignerSignature),
+            "Invalid linkdrop signer signature"
+        );
 
         // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
         require
@@ -119,24 +117,24 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
 
     /**
     * @dev Function to claim ETH and/or ERC721 token. Can only be called when contract is not paused
-    * @param _ethAmount Amount of ETH to be claimed (in atomic value)
+    * @param _weiAmount Amount of wei to be claimed
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _senderSignature ECDSA signature of linkdrop sender, signed with sender's private key
+    * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
-    * @param _receiverSignature ECDSA signature of linkdrop receiver, signed with link key
+    * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
     function claimERC721
     (
-        uint _ethAmount,
+        uint _weiAmount,
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
         address _linkId,
-        bytes calldata _senderSignature,
+        bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
     )
@@ -150,12 +148,12 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
         (
             checkClaimParamsERC721
             (
-                _ethAmount,
+                _weiAmount,
                 _nftAddress,
                 _tokenId,
                 _expiration,
                  _linkId,
-                _senderSignature,
+                _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature
             ),
@@ -165,32 +163,34 @@ contract LinkdropERC721 is ILinkdropERC721, Common {
         // Mark link as claimed
         claimedTo[_linkId] = _receiver;
 
-        // Transfer ETH
-        if (_ethAmount > 0) {
-            _receiver.transfer(_ethAmount);
-        }
-
-        // Transfer NFT
-        if (IERC721(_nftAddress).ownerOf(_tokenId) == address(this))
-            IERC721(_nftAddress).safeTransferFrom(address(this), _receiver, _tokenId);
-        else if (IERC721(_nftAddress).getApproved(_tokenId) == address(this))
-            IERC721(_nftAddress).safeTransferFrom(sender, _receiver, _tokenId);
-        else revert("Transfer failed");
+        // Make sure transfer succeeds
+        require(_transferFundsERC721(_weiAmount, _nftAddress, _tokenId, _receiver), "Transfer failed");
 
         // Log claim
-        emit ClaimedERC721(_linkId, _ethAmount, _nftAddress, _tokenId, _receiver, now);
+        emit ClaimedERC721(_linkId, _weiAmount, _nftAddress, _tokenId, _receiver, now);
 
         return true;
     }
 
     /**
-    * @dev Function to get whether a NFT with token id is available for this contract
+    * @dev Internal function to transfer ETH and/or ERC721 tokens
+    * @param _weiAmount Amount of wei to be claimed
     * @param _nftAddress NFT address
-    * @param _tokenId Token id
-    * @return Total amount available
+    * @param _tokenId Amount of tokens to be claimed (in atomic value)
+    * @param _receiver Address to transfer funds to
+    * @return True if success
     */
-    function isAvailableToken(address _nftAddress, uint _tokenId) public view returns (bool) {
-       if (IERC721(_nftAddress).ownerOf(_tokenId) == address(this)) return true;
-       else if (IERC721(_nftAddress).getApproved(_tokenId) == address(this)) return true;
+    function _transferFundsERC721(uint _weiAmount, address _nftAddress, uint _tokenId, address payable _receiver)
+    internal returns (bool)
+    {
+        // Transfer ETH
+        if (_weiAmount > 0) {
+            _receiver.transfer(_weiAmount);
+        }
+
+        IERC721(_nftAddress).safeTransferFrom(address(this), _receiver, _tokenId);
+
+        return true;
     }
+
 }

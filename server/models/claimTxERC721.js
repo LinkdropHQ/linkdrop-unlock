@@ -1,12 +1,12 @@
 import mongoose from 'mongoose'
 
 const claimTxERC721Schema = new mongoose.Schema({
-  ethAmount: { type: String, required: true },
+  weiAmount: { type: String, required: true },
   nftAddress: { type: String, required: true },
   tokenId: { type: Number, required: true },
   expirationTime: { type: Number, required: true },
   linkId: { type: String, required: true, unique: true },
-  senderAddress: { type: String, required: true },
+  linkdropSignerAddress: { type: String, required: true },
   receiverAddress: { type: String, required: true },
   proxyAddress: { type: String, required: true },
   txHash: { type: String, required: true, unique: true }

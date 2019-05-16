@@ -1,4 +1,4 @@
-import Factory from '../../contracts/build/Factory'
+import LinkdropFactory from '../../contracts/build/LinkdropFactory'
 import LinkdropSDK from '../../sdk/src/index'
 import ClaimTx from '../models/claimTx'
 import ClaimTxERC721 from '../models/claimTxERC721'
@@ -13,30 +13,30 @@ const relayer = new ethers.Wallet(relayerPrivateKey, provider)
 
 export const claim = async (req, res) => {
   const {
-    ethAmount,
+    weiAmount,
     tokenAddress,
     tokenAmount,
     expirationTime,
     linkId,
-    senderAddress,
-    senderSignature,
+    linkdropSignerAddress,
+    linkdropSignerSignature,
     receiverAddress,
     receiverSignature
   } = req.body
 
   const claimParams = {
-    ethAmount,
+    weiAmount,
     tokenAddress,
     tokenAmount,
     expirationTime,
     linkId,
-    senderAddress,
-    senderSignature,
+    linkdropSignerAddress,
+    linkdropSignerSignature,
     receiverAddress,
     receiverSignature
   }
 
-  if (!ethAmount) {
+  if (!weiAmount) {
     throw new Error('Please provide amount of eth to claim')
   }
 
@@ -56,12 +56,12 @@ export const claim = async (req, res) => {
     throw new Error('Please provide the link id')
   }
 
-  if (!senderAddress) {
-    throw new Error(`Please provide sender's address`)
+  if (!linkdropSignerAddress) {
+    throw new Error(`Please provide linkdropSigner's address`)
   }
 
-  if (!senderSignature) {
-    throw new Error('Please provide sender signature')
+  if (!linkdropSignerSignature) {
+    throw new Error('Please provide linkdropSigner signature')
   }
 
   if (!receiverAddress) {
@@ -72,24 +72,28 @@ export const claim = async (req, res) => {
     throw new Error('Please provide receiver signature')
   }
 
-  const proxyFactory = new ethers.Contract(factory, Factory.abi, relayer)
+  const proxyFactory = new ethers.Contract(
+    factory,
+    LinkdropFactory.abi,
+    relayer
+  )
 
   try {
     const masterCopyAddress = await proxyFactory.masterCopy()
 
     const proxyAddress = await LinkdropSDK.computeProxyAddress(
       factory,
-      senderAddress,
+      linkdropSignerAddress,
       masterCopyAddress
     )
 
     // Check whether a claim tx exists in database
     const oldClaimTx = await ClaimTx.findOne({
-      ethAmount,
+      weiAmount,
       tokenAddress,
       tokenAmount,
       linkId,
-      senderAddress
+      linkdropSignerAddress
     })
 
     if (oldClaimTx && oldClaimTx.txHash) {
@@ -102,13 +106,13 @@ export const claim = async (req, res) => {
     // Check claim params
     try {
       await proxyFactory.checkClaimParams(
-        ethAmount,
+        weiAmount,
         tokenAddress,
         tokenAmount,
         expirationTime,
         linkId,
-        senderAddress,
-        senderSignature,
+        linkdropSignerAddress,
+        linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
         proxyAddress
@@ -118,13 +122,13 @@ export const claim = async (req, res) => {
       console.log('\n🔦️  Claiming...\n', claimParams)
 
       const tx = await proxyFactory.claim(
-        ethAmount,
+        weiAmount,
         tokenAddress,
         tokenAmount,
         expirationTime,
         linkId,
-        senderAddress,
-        senderSignature,
+        linkdropSignerAddress,
+        linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
         { gasLimit: 500000 }
@@ -136,12 +140,12 @@ export const claim = async (req, res) => {
 
       // Save claim tx to database
       const claimTx = new ClaimTx({
-        ethAmount,
+        weiAmount,
         tokenAddress,
         tokenAmount,
         expirationTime,
         linkId,
-        senderAddress,
+        linkdropSignerAddress,
         receiverAddress,
         proxyAddress,
         txHash
@@ -172,30 +176,30 @@ export const claim = async (req, res) => {
 
 export const claimERC721 = async (req, res) => {
   const {
-    ethAmount,
+    weiAmount,
     nftAddress,
     tokenId,
     expirationTime,
     linkId,
-    senderAddress,
-    senderSignature,
+    linkdropSignerAddress,
+    linkdropSignerSignature,
     receiverAddress,
     receiverSignature
   } = req.body
 
   const claimParams = {
-    ethAmount,
+    weiAmount,
     nftAddress,
     tokenId,
     expirationTime,
     linkId,
-    senderAddress,
-    senderSignature,
+    linkdropSignerAddress,
+    linkdropSignerSignature,
     receiverAddress,
     receiverSignature
   }
 
-  if (!ethAmount) {
+  if (!weiAmount) {
     throw new Error('Please provide amount of eth to claim')
   }
 
@@ -215,12 +219,12 @@ export const claimERC721 = async (req, res) => {
     throw new Error('Please provide the link id')
   }
 
-  if (!senderAddress) {
-    throw new Error(`Please provide sender's address`)
+  if (!linkdropSignerAddress) {
+    throw new Error(`Please provide linkdropSigner's address`)
   }
 
-  if (!senderSignature) {
-    throw new Error('Please provide sender signature')
+  if (!linkdropSignerSignature) {
+    throw new Error('Please provide linkdropSigner signature')
   }
 
   if (!receiverAddress) {
@@ -231,25 +235,29 @@ export const claimERC721 = async (req, res) => {
     throw new Error('Please provide receiver signature')
   }
 
-  const proxyFactory = new ethers.Contract(factory, Factory.abi, relayer)
+  const proxyFactory = new ethers.Contract(
+    factory,
+    LinkdropFactory.abi,
+    relayer
+  )
 
   try {
     const masterCopyAddress = await proxyFactory.masterCopy()
 
     const proxyAddress = await LinkdropSDK.computeProxyAddress(
       factory,
-      senderAddress,
+      linkdropSignerAddress,
       masterCopyAddress
     )
 
     // Check whether a claim tx exists in database
 
     const oldClaimTx = await ClaimTxERC721.findOne({
-      ethAmount,
+      weiAmount,
       nftAddress,
       tokenId,
       linkId,
-      senderAddress
+      linkdropSignerAddress
     })
 
     if (oldClaimTx && oldClaimTx.txHash) {
@@ -262,13 +270,13 @@ export const claimERC721 = async (req, res) => {
     // Check claim params
     try {
       await proxyFactory.checkClaimParamsERC721(
-        ethAmount,
+        weiAmount,
         nftAddress,
         tokenId,
         expirationTime,
         linkId,
-        senderAddress,
-        senderSignature,
+        linkdropSignerAddress,
+        linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
         proxyAddress
@@ -278,13 +286,13 @@ export const claimERC721 = async (req, res) => {
       console.log('\n🔦️  Claiming...\n', claimParams)
 
       const tx = await proxyFactory.claimERC721(
-        ethAmount,
+        weiAmount,
         nftAddress,
         tokenId,
         expirationTime,
         linkId,
-        senderAddress,
-        senderSignature,
+        linkdropSignerAddress,
+        linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
         { gasLimit: 500000 }
@@ -295,12 +303,12 @@ export const claimERC721 = async (req, res) => {
 
       // Save claim tx to database
       const claimTxERC721 = new ClaimTxERC721({
-        ethAmount,
+        weiAmount,
         nftAddress,
         tokenId,
         expirationTime,
         linkId,
-        senderAddress,
+        linkdropSignerAddress,
         receiverAddress,
         proxyAddress,
         txHash

@@ -29,9 +29,9 @@ class Claim extends React.Component {
     const {
       linkKey,
       n,
-      senderAddress
+      linkdropSignerAddress
     } = getHashVariables()
-    this.actions().tokens.checkIfClaimed({ linkKey, networkId: n, senderAddress })
+    this.actions().tokens.checkIfClaimed({ linkKey, networkId: n, linkdropSignerAddress })
   }
 
   componentWillReceiveProps ({ readyToClaim, alreadyClaimed }) {
@@ -44,7 +44,7 @@ class Claim extends React.Component {
     ) { return }
     const {
       tokenAddress,
-      ethAmount,
+      weiAmount,
       tokenAmount,
       expirationTime,
       n,
@@ -56,13 +56,13 @@ class Claim extends React.Component {
     // amount - tokens amount,
     // expirationTime - expiration time of link,
     // sender,
-    // senderSignature,
+    // linkdropSignerSignature,
     // linkKey - private key for link,
     // n - network id
 
     // params needed for claim
     // sender: sender key address, e.g. 0x1234...ff
-    // senderSignature: ECDSA signature signed by sender (contained in claim link)
+    // linkdropSignerSignature: ECDSA signature signed by sender (contained in claim link)
     // receiverSignature: ECDSA signature signed by receiver using link key
 
     // destination: destination address - can be received from web3-react context
@@ -77,7 +77,7 @@ class Claim extends React.Component {
     if (nftAddress && tokenId) {
       return this.actions().contract.getTokenERC721Data({ nftAddress, tokenId, networkId: n })
     }
-    this.actions().contract.getTokenERC20Data({ tokenAddress, ethAmount, tokenAmount, networkId: n })
+    this.actions().contract.getTokenERC20Data({ tokenAddress, weiAmount, tokenAmount, networkId: n })
   }
 
   render () {

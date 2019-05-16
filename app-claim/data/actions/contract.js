@@ -3,8 +3,8 @@ class Contract {
     this.actions = actions
   }
 
-  getTokenERC20Data ({ tokenAddress, tokenAmount, ethAmount, networkId }) {
-    this.actions.dispatch({ type: '*CONTRACT.GET_TOKEN_ERC20_DATA', payload: { tokenAddress, tokenAmount, ethAmount, networkId } })
+  getTokenERC20Data ({ tokenAddress, tokenAmount, weiAmount, networkId }) {
+    this.actions.dispatch({ type: '*CONTRACT.GET_TOKEN_ERC20_DATA', payload: { tokenAddress, tokenAmount, weiAmount, networkId } })
   }
 
   getTokenERC721Data ({ nftAddress, tokenId, networkId }) {

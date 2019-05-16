@@ -9,8 +9,8 @@ describe('data/store/saga/tokens/every/claim-tokens-erc721.js ERC-20', () => {
   const wallet = '0x0fc0c96d5aba156b1263311812a7b3d0812f4120b8f3f4288c0b7806fc2aaa2a'
   const nftAddress = '0x1a031d35e1c90cd6e4228f03c2b31cea5a0956c89be0c1c576fa52b76e2f50e2'
   const linkKey = '0x3e42a6647091a256103b6ad3d310b3887b3fe5d7f5e3d71df2f03985ca5ea071'
-  const senderAddress = '0xbF0e4036BF968dD007F9B4A1BFdA4e54C042F612'
-  const senderSignature = '0xd49fe15958f67d0349b4ff98d1367c9a9a709f3c0e571c2dc41741bef883cb5606f05cbd6e292ae22644a69a68fd3df69a03d0a'
+  const linkdropSignerAddress = '0xbF0e4036BF968dD007F9B4A1BFdA4e54C042F612'
+  const linkdropSignerSignature = '0xd49fe15958f67d0349b4ff98d1367c9a9a709f3c0e571c2dc41741bef883cb5606f05cbd6e292ae22644a69a68fd3df69a03d0a'
   const ethAmount = '0'
   const tokenId = '1'
   const expirationTime = '1900000000000000'
@@ -22,8 +22,8 @@ describe('data/store/saga/tokens/every/claim-tokens-erc721.js ERC-20', () => {
     ethAmount,
     expirationTime,
     linkKey,
-    senderAddress,
-    senderSignature
+    linkdropSignerAddress,
+    linkdropSignerSignature
   }
   const gen = generateLinkERC721Generator({ payload })
   const result = {
@@ -51,8 +51,8 @@ describe('data/store/saga/tokens/every/claim-tokens-erc721.js ERC-20', () => {
         tokenId,
         expirationTime,
         linkKey,
-        senderAddress,
-        senderSignature,
+        linkdropSignerAddress,
+        linkdropSignerSignature,
         wallet
       )
     )

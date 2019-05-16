@@ -18,10 +18,13 @@ function buildCreate2Address (creatorAddress, saltHex, byteCode) {
 
 export const computeProxyAddress = (
   factoryAddress,
-  senderAddress,
+  linkdropSignerAddress,
   masterCopyAddress
 ) => {
-  const salt = ethers.utils.solidityKeccak256(['address'], [senderAddress])
+  const salt = ethers.utils.solidityKeccak256(
+    ['address'],
+    [linkdropSignerAddress]
+  )
 
   const bytecode = `0x3d602d80600a3d3981f3363d3d373d3d3d363d73${masterCopyAddress.slice(
     2
@@ -31,9 +34,9 @@ export const computeProxyAddress = (
   return proxyAddress
 }
 
-// Should be signed by sender
+// Should be signed by linkdropSigner
 export const signLink = async function (
-  sender, // Wallet
+  linkdropSigner, // Wallet
   tokenAddress,
   claimAmount,
   expirationTime,
@@ -44,13 +47,13 @@ export const signLink = async function (
     [tokenAddress, claimAmount, expirationTime, linkId]
   )
   let messageHashToSign = ethers.utils.arrayify(messageHash)
-  let signature = await sender.signMessage(messageHashToSign)
+  let signature = await linkdropSigner.signMessage(messageHashToSign)
   return signature
 }
 
 // Generates new link
 export const createLink = async function (
-  sender, // Wallet
+  linkdropSigner, // Wallet
   tokenAddress,
   claimAmount,
   expirationTime
@@ -58,8 +61,8 @@ export const createLink = async function (
   let linkWallet = ethers.Wallet.createRandom()
   let linkKey = linkWallet.privateKey
   let linkId = linkWallet.address
-  let senderSignature = await signLink(
-    sender,
+  let linkdropSignerSignature = await signLink(
+    linkdropSigner,
     tokenAddress,
     claimAmount,
     expirationTime,
@@ -68,7 +71,7 @@ export const createLink = async function (
   return {
     linkKey, // link's ephemeral private key
     linkId, // address corresponding to link key
-    senderSignature // signed by linkdrop verifier
+    linkdropSignerSignature // signed by linkdrop verifier
   }
 }
 

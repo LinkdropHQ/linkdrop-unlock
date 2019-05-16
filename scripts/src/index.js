@@ -1,5 +1,5 @@
-import Mastercopy from '../../contracts/build/Mastercopy'
-import Factory from '../../contracts/build/Factory'
+import LinkdropMastercopy from '../../contracts/build/LinkdropMastercopy'
+import LinkdropFactory from '../../contracts/build/LinkdropFactory'
 import TokenMock from '../../contracts/build/TokenMock'
 import NFTMock from '../../contracts/build/NFTMock'
 import LinkdropSDK from '../../sdk/src/index'
@@ -13,8 +13,8 @@ const config = require(configPath)
 
 let {
   networkId,
-  senderPrivateKey,
-  ethAmount,
+  linkdropSignerPrivateKey,
+  weiAmount,
   tokenAddress,
   tokenAmount,
   linksNumber,
@@ -29,12 +29,12 @@ if (jsonRpcUrl == null || jsonRpcUrl === '') {
 }
 
 // Make sure we have these set in config.json
-if (senderPrivateKey == null || senderPrivateKey === '') {
-  throw new Error(`Please provide sender's private key`)
+if (linkdropSignerPrivateKey == null || linkdropSignerPrivateKey === '') {
+  throw new Error(`Please provide linkdropSigner's private key`)
 }
 
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-const sender = new ethers.Wallet(senderPrivateKey, provider)
+const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
 
 const expirationTime = 1900000000000000
 
@@ -42,9 +42,9 @@ let mastercopy, proxyFactory, tokenMock, nftMock
 
 export const deployMasterCopy = async () => {
   let factory = new ethers.ContractFactory(
-    Mastercopy.abi,
-    Mastercopy.bytecode,
-    sender
+    LinkdropMastercopy.abi,
+    LinkdropMastercopy.bytecode,
+    linkdropSigner
   )
 
   mastercopy = await factory.deploy()
@@ -69,9 +69,9 @@ export const deployMasterCopy = async () => {
 
 export const deployFactory = async masterCopy => {
   let factory = new ethers.ContractFactory(
-    Factory.abi,
-    Factory.bytecode,
-    sender
+    LinkdropFactory.abi,
+    LinkdropFactory.bytecode,
+    linkdropSigner
   )
 
   proxyFactory = await factory.deploy(masterCopy, {
@@ -99,7 +99,7 @@ export const deployERC20 = async () => {
   let factory = new ethers.ContractFactory(
     TokenMock.abi,
     TokenMock.bytecode,
-    sender
+    linkdropSigner
   )
 
   tokenMock = await factory.deploy({
@@ -123,7 +123,7 @@ export const deployERC721 = async () => {
   let factory = new ethers.ContractFactory(
     NFTMock.abi,
     NFTMock.bytecode,
-    sender
+    linkdropSigner
   )
 
   nftMock = await factory.deploy({
@@ -158,19 +158,19 @@ export const generateLinksETH = async () => {
       url,
       linkId,
       linkKey,
-      senderSignature
+      linkdropSignerSignature
     } = await LinkdropSDK.generateLink(
       jsonRpcUrl,
       networkId,
       host,
-      senderPrivateKey,
-      ethAmount,
+      linkdropSignerPrivateKey,
+      weiAmount,
       tokenAddress,
       tokenAmount,
       expirationTime
     )
 
-    let link = { i, linkId, linkKey, senderSignature, url }
+    let link = { i, linkId, linkKey, linkdropSignerSignature, url }
     links.push(link)
   }
 
@@ -200,19 +200,19 @@ export const generateLinksERC20 = async () => {
       url,
       linkId,
       linkKey,
-      senderSignature
+      linkdropSignerSignature
     } = await LinkdropSDK.generateLink(
       jsonRpcUrl,
       networkId,
       host,
-      senderPrivateKey,
-      ethAmount,
+      linkdropSignerPrivateKey,
+      weiAmount,
       tokenAddress,
       tokenAmount,
       expirationTime
     )
 
-    let link = { i, linkId, linkKey, senderSignature, url }
+    let link = { i, linkId, linkKey, linkdropSignerSignature, url }
     links.push(link)
   }
 
@@ -243,18 +243,18 @@ export const generateLinksERC721 = async () => {
       url,
       linkId,
       linkKey,
-      senderSignature
+      linkdropSignerSignature
     } = await LinkdropSDK.generateLinkERC721(
       jsonRpcUrl,
       networkId,
       host,
-      senderPrivateKey,
-      ethAmount,
+      linkdropSignerPrivateKey,
+      weiAmount,
       nftAddress,
       tokenIds[i],
       expirationTime
     )
-    let link = { i, linkId, linkKey, senderSignature, url }
+    let link = { i, linkId, linkKey, linkdropSignerSignature, url }
     links.push(link)
   }
   // Save links to csv

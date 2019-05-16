@@ -1,12 +1,9 @@
-pragma solidity >= 0.5.6;
+pragma solidity ^0.5.6;
 
-contract Storage {
+contract LinkdropStorage {
 
-    // Address of implementation contract, where proxy will route functions
-    address payable public masterCopy;
-
-    // Address of linkdrop sender
-    address payable public sender;
+    // Address of linkdrop signer
+    address payable public linkdropSigner;
 
     // Indicates who the link is claimed to
     mapping (address => address) public claimedTo;

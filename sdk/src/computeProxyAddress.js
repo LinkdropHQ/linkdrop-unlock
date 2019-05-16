@@ -3,22 +3,25 @@ const ethers = require('ethers')
 
 export const computeProxyAddress = (
   factoryAddress,
-  senderAddress,
+  linkdropSignerAddress,
   masterCopyAddress
 ) => {
   if (factoryAddress == null || factoryAddress === '') {
     throw new Error('Please provide factory address')
   }
 
-  if (senderAddress == null || senderAddress === '') {
-    throw new Error('Please provide sender address')
+  if (linkdropSignerAddress == null || linkdropSignerAddress === '') {
+    throw new Error('Please provide linkdropSigner address')
   }
 
   if (masterCopyAddress == null || masterCopyAddress === '') {
     throw new Error('Please provide mastercopy address')
   }
 
-  const salt = ethers.utils.solidityKeccak256(['address'], [senderAddress])
+  const salt = ethers.utils.solidityKeccak256(
+    ['address'],
+    [linkdropSignerAddress]
+  )
 
   const bytecode = `0x3d602d80600a3d3981f3363d3d373d3d3d363d73${masterCopyAddress.slice(
     2
