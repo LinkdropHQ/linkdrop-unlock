@@ -26,6 +26,7 @@ const generator = function * ({ payload }) {
     } else {
       console.log({ error })
     }
+    yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
   } catch (e) {
     console.error(e)
   }

@@ -10,6 +10,11 @@ module.exports = ({
       'plugins': [
         [ 'babel-plugin-webpack-alias', { 'config': './app-landing/webpack.common.js' } ]
       ]
+    },
+    'test-claim': {
+      'plugins': [
+        [ 'babel-plugin-webpack-alias', { 'config': './app-claim/webpack.common.js' } ]
+      ]
     }
   }
 })
