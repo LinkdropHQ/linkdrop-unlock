@@ -29,9 +29,9 @@ class Claim extends React.Component {
     const {
       linkKey,
       n,
-      senderAddress
+      linkdropSignerAddress
     } = getHashVariables()
-    this.actions().tokens.checkIfClaimed({ linkKey, networkId: n, senderAddress })
+    this.actions().tokens.checkIfClaimed({ linkKey, networkId: n, linkdropSignerAddress })
   }
 
   componentWillReceiveProps ({ readyToClaim, alreadyClaimed }) {
@@ -43,11 +43,12 @@ class Claim extends React.Component {
       alreadyClaimed == null
     ) { return }
     const {
-      token,
-      amount,
+      tokenAddress,
+      weiAmount,
+      tokenAmount,
       expirationTime,
       n,
-      nft,
+      nftAddress,
       tokenId
     } = getHashVariables()
     // params in url:
@@ -55,13 +56,13 @@ class Claim extends React.Component {
     // amount - tokens amount,
     // expirationTime - expiration time of link,
     // sender,
-    // senderSignature,
+    // linkdropSignerSignature,
     // linkKey - private key for link,
     // n - network id
 
     // params needed for claim
     // sender: sender key address, e.g. 0x1234...ff
-    // senderSignature: ECDSA signature signed by sender (contained in claim link)
+    // linkdropSignerSignature: ECDSA signature signed by sender (contained in claim link)
     // receiverSignature: ECDSA signature signed by receiver using link key
 
     // destination: destination address - can be received from web3-react context
@@ -73,10 +74,10 @@ class Claim extends React.Component {
       return this.actions().user.setErrors({ errors: ['LINK_EXPIRED'] })
     }
 
-    if (nft && tokenId) {
-      return this.actions().contract.getTokenERC721Data({ nft, tokenId, networkId: n })
+    if (nftAddress && tokenId) {
+      return this.actions().contract.getTokenERC721Data({ nftAddress, tokenId, networkId: n })
     }
-    this.actions().contract.getTokenERC20Data({ tokenAddress: token, amount, networkId: n })
+    this.actions().contract.getTokenERC20Data({ tokenAddress, weiAmount, tokenAmount, networkId: n })
   }
 
   render () {

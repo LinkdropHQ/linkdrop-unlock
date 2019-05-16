@@ -1,33 +1,30 @@
-pragma solidity >= 0.5.6;
-import "./interfaces/ICommon.sol";
-import "./Storage.sol";
+pragma solidity ^0.5.6;
 
-contract Common is ICommon, Storage {
+import "../interfaces/ILinkdropCommon.sol";
+import "../storage/LinkdropStorage.sol";
+import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
-    // =================================================================================================================
-    //                                         Common
-    // =================================================================================================================
+contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
 
     /**
-    * @dev Function to set the linkdrop sender, can only be called once
-    * @param _sender Linkdrop sender's address
+    * @dev Function to set the linkdrop signer, can only be called once
+    * @param _linkdropSigner Address of linkdrop signer
     */
-
     function initializer
-    (   
-        address payable _sender
-    ) 
+    (
+        address payable _linkdropSigner
+    )
     public
     returns (bool)
     {
         require(_initialized == false, "Initialized");
-        SENDER = _sender;
+        linkdropSigner = _linkdropSigner;
         _initialized = true;
         return true;
     }
 
-    modifier onlySender() {
-        require(msg.sender == SENDER, "Only sender");
+    modifier onlyLinkdropSigner() {
+        require(msg.sender == linkdropSigner, "Only linkdrop signer");
         _;
     }
 
@@ -35,14 +32,14 @@ contract Common is ICommon, Storage {
         require(!paused(), "Paused");
         _;
     }
-    
+
     /**
     * @dev Indicates whether a link is claimed or not
     * @param _linkId Address corresponding to link key
     * @return True if claimed
     */
     function isClaimedLink(address _linkId) public view returns (bool) {
-        return claimedTo[_linkId] != address(0); 
+        return claimedTo[_linkId] != address(0);
     }
 
     /**
@@ -63,11 +60,11 @@ contract Common is ICommon, Storage {
     }
 
     /**
-    * @dev Function to cancel a link, can only be called by linkdrop sender
+    * @dev Function to cancel a link, can only be called by linkdrop signer
     * @param _linkId Address corresponding to link key
     * @return True if success
     */
-    function cancel(address _linkId) external onlySender returns (bool) {
+    function cancel(address _linkId) external onlyLinkdropSigner returns (bool) {
         require(isClaimedLink(_linkId) == false, "Claimed link");
         _canceled[_linkId] = true;
         emit Canceled(_linkId, now);
@@ -75,29 +72,29 @@ contract Common is ICommon, Storage {
     }
 
     /**
-    * @dev Function to withdraw ethers kept on this contract to sender, can only be called by linkdrop sender
+    * @dev Function to withdraw eth to linkdrop signer, can only be called by linkdrop signer
     * @return True if success
     */
-    function withdraw() external onlySender returns (bool) {
-        SENDER.transfer(address(this).balance);
+    function withdraw() external onlyLinkdropSigner returns (bool) {
+        linkdropSigner.transfer(address(this).balance);
         return true;
     }
 
     /**
-    * @dev Function to pause contract, can only be called by linkdrop sender
+    * @dev Function to pause contract, can only be called by linkdrop signer
     * @return True if success
     */
-    function pause() external onlySender whenNotPaused returns (bool) {
+    function pause() external onlyLinkdropSigner whenNotPaused returns (bool) {
         _paused = true;
         emit Paused(now);
         return true;
     }
 
     /**
-    * @dev Function to unpause contract, can only be called by linkdrop sender
+    * @dev Function to unpause contract, can only be called by linkdrop signer
     * @return True if success
     */
-    function unpause() external onlySender returns (bool) {
+    function unpause() external onlyLinkdropSigner returns (bool) {
         require(paused(), "Unpaused");
         _paused = false;
         emit Unpaused(now);
@@ -105,7 +102,7 @@ contract Common is ICommon, Storage {
     }
 
     /**
-    * @dev Fallback function to accept ethers
+    * @dev Fallback function to accept ETH
     */
     function () external payable {}
 

@@ -9,8 +9,8 @@ import {
   solidity
 } from 'ethereum-waffle'
 
-import Factory from '../build/Factory'
-import Linkdrop from '../build/Linkdrop'
+import LinkdropFactory from '../build/LinkdropFactory'
+import LinkdropMastercopy from '../build/LinkdropMastercopy'
 
 import { computeProxyAddress } from '../scripts/utils'
 
@@ -21,75 +21,90 @@ const { expect } = chai
 
 let provider = createMockProvider()
 
-let [sender, receiver, user] = getWallets(provider)
+let [linkdropSigner, receiver, user] = getWallets(provider)
 
 let masterCopy
 let factory
 let proxy
 
-describe('Factory - Proxy pattern tests', () => {
+describe('Factory and Proxy tests', () => {
   //   before(async () => {})
 
   it('should deploy master copy of linkdrop implementation', async () => {
-    masterCopy = await deployContract(sender, Linkdrop)
+    masterCopy = await deployContract(linkdropSigner, LinkdropMastercopy)
     expect(masterCopy.address).to.not.eq(ethers.constants.AddressZero)
   })
 
   it('should deploy factory', async () => {
-    factory = await deployContract(sender, Factory, [masterCopy.address], {
-      gasLimit: 6000000
-    })
+    factory = await deployContract(
+      linkdropSigner,
+      LinkdropFactory,
+      [masterCopy.address],
+      {
+        gasLimit: 6000000
+      }
+    )
 
     expect(factory.address).to.not.eq(ethers.constants.AddressZero)
   })
 
   it('should deploy proxy and delegate to implementation', async () => {
-    let senderAddress = sender.address
-
     // Compute next address with js function
     let expectedAddress = await computeProxyAddress(
       factory.address,
-      senderAddress,
+      linkdropSigner.address,
       masterCopy.address
     )
 
-    await factory.deployProxy(senderAddress)
+    await factory.deployProxy(linkdropSigner.address)
 
-    proxy = new ethers.Contract(expectedAddress, Linkdrop.abi, sender)
+    proxy = new ethers.Contract(
+      expectedAddress,
+      LinkdropMastercopy.abi,
+      linkdropSigner
+    )
 
-    let senderAddr = await proxy.SENDER()
-    expect(senderAddress).to.eq(senderAddr)
+    let linkdropSignerAddress = await proxy.linkdropSigner()
+    expect(linkdropSignerAddress).to.eq(linkdropSigner.address)
   })
 
   it('should correctly precompute create2 address', async () => {
-    let senderAddress = receiver.address
+    let linkdropSignerAddress = receiver.address
     let expectedAddress = await computeProxyAddress(
       factory.address,
-      senderAddress,
+      linkdropSignerAddress,
       masterCopy.address
     )
 
-    await factory.deployProxy(senderAddress)
+    await factory.deployProxy(linkdropSignerAddress)
 
-    proxy = new ethers.Contract(expectedAddress, Linkdrop.abi, sender)
+    proxy = new ethers.Contract(
+      expectedAddress,
+      LinkdropMastercopy.abi,
+      linkdropSigner
+    )
 
-    let senderAddr = await proxy.SENDER()
-    expect(senderAddress).to.eq(senderAddr)
+    let linkdropSignerAddr = await proxy.linkdropSigner()
+    expect(linkdropSignerAddress).to.eq(linkdropSignerAddr)
   })
 
   it('should deploy another proxy', async () => {
-    let senderAddress = user.address
+    let linkdropSignerAddress = user.address
     let expectedAddress = await computeProxyAddress(
       factory.address,
-      senderAddress,
+      linkdropSignerAddress,
       masterCopy.address
     )
 
-    await factory.deployProxy(senderAddress)
+    await factory.deployProxy(linkdropSignerAddress)
 
-    proxy = new ethers.Contract(expectedAddress, Linkdrop.abi, sender)
+    proxy = new ethers.Contract(
+      expectedAddress,
+      LinkdropMastercopy.abi,
+      linkdropSigner
+    )
 
-    let senderAddr = await proxy.SENDER()
-    expect(senderAddress).to.eq(senderAddr)
+    let linkdropSignerAddr = await proxy.linkdropSigner()
+    expect(linkdropSignerAddress).to.eq(linkdropSignerAddr)
   })
 })

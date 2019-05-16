@@ -2,13 +2,14 @@
     "jsonRpcUrl": "",
     "host": "",
     "networkId": "",
-    "senderPrivateKey": "",
+    "linkdropSignerPrivateKey": "",
     "masterCopy": "",
     "factory": "",
     "receiverAddress": "",
-    "token": "",
-    "amount": "",
+    "weiAmount": "",
+    "tokenAddress": "",
+    "tokenAmount": "",
     "linksNumber": "",
-    "nft": "",
+    "nftAddress": "",
     "nftIds": ""
 }

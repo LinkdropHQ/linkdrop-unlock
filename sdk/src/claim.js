@@ -5,12 +5,13 @@ const axios = require('axios')
 export const claim = async (
   jsonRpcUrl,
   host,
-  token,
-  amount,
+  weiAmount,
+  tokenAddress,
+  tokenAmount,
   expirationTime,
   linkKey,
-  senderAddress,
-  senderSignature,
+  linkdropSignerAddress,
+  linkdropSignerSignature,
   receiverAddress
 ) => {
   if (jsonRpcUrl == null || jsonRpcUrl === '') {
@@ -21,12 +22,16 @@ export const claim = async (
     throw new Error('Please provide host')
   }
 
-  if (token == null || token === '') {
+  if (weiAmount === null || weiAmount === '') {
+    throw new Error('Please provide amount of eth to claim')
+  }
+
+  if (tokenAddress == null || tokenAddress === '') {
     throw new Error('Please provide ERC20 token address')
   }
 
-  if (amount === null || amount === '') {
-    throw new Error('Please provide amount per link')
+  if (tokenAmount === null || tokenAmount === '') {
+    throw new Error('Please provide amount of tokens to claim')
   }
 
   if (expirationTime == null || expirationTime === '') {
@@ -37,12 +42,12 @@ export const claim = async (
     throw new Error('Please provide link key')
   }
 
-  if (senderAddress == null || senderAddress === '') {
-    throw new Error('Please provide sender address')
+  if (linkdropSignerAddress == null || linkdropSignerAddress === '') {
+    throw new Error('Please provide linkdropSigner address')
   }
 
-  if (senderSignature == null || senderSignature === '') {
-    throw new Error('Please provide sender signature')
+  if (linkdropSignerSignature == null || linkdropSignerSignature === '') {
+    throw new Error('Please provide linkdropSigner signature')
   }
 
   if (receiverAddress == null || receiverAddress === '') {
@@ -59,12 +64,13 @@ export const claim = async (
   const linkId = new ethers.Wallet(linkKey, provider).address
 
   const claimParams = {
-    token,
-    amount,
+    weiAmount,
+    tokenAddress,
+    tokenAmount,
     expirationTime,
     linkId,
-    senderAddress,
-    senderSignature,
+    linkdropSignerAddress,
+    linkdropSignerSignature,
     receiverAddress,
     receiverSignature
   }
@@ -85,7 +91,9 @@ export const claim = async (
         return { success, txHash }
       } else {
         const { success, error } = response.data
-        console.error(`🆘  Request failed with '${error.reason}'`)
+        if (error.reason) {
+          console.error(`🆘  Request failed with '${error.reason}'`)
+        } else console.error(error)
         return { success, error }
       }
     }
@@ -97,12 +105,13 @@ export const claim = async (
 export const claimERC721 = async (
   jsonRpcUrl,
   host,
-  nft,
+  weiAmount,
+  nftAddress,
   tokenId,
   expirationTime,
   linkKey,
-  senderAddress,
-  senderSignature,
+  linkdropSignerAddress,
+  linkdropSignerSignature,
   receiverAddress
 ) => {
   if (jsonRpcUrl == null || jsonRpcUrl === '') {
@@ -113,7 +122,15 @@ export const claimERC721 = async (
     throw new Error('Please provide host')
   }
 
-  if (nft == null || nft === '' || nft === ethers.constants.AddressZero) {
+  if (weiAmount === null || weiAmount === '') {
+    throw new Error('Please provide amount of eth to claim')
+  }
+
+  if (
+    nftAddress == null ||
+    nftAddress === '' ||
+    nftAddress === ethers.constants.AddressZero
+  ) {
     throw new Error('Please provide ERC721 token address')
   }
 
@@ -129,12 +146,12 @@ export const claimERC721 = async (
     throw new Error('Please provide link key')
   }
 
-  if (senderAddress == null || senderAddress === '') {
-    throw new Error('Please provide sender address')
+  if (linkdropSignerAddress == null || linkdropSignerAddress === '') {
+    throw new Error('Please provide linkdropSigner address')
   }
 
-  if (senderSignature == null || senderSignature === '') {
-    throw new Error('Please provide sender signature')
+  if (linkdropSignerSignature == null || linkdropSignerSignature === '') {
+    throw new Error('Please provide linkdropSigner signature')
   }
 
   if (receiverAddress == null || receiverAddress === '') {
@@ -151,12 +168,13 @@ export const claimERC721 = async (
   const linkId = new ethers.Wallet(linkKey, provider).address
 
   const claimParams = {
-    nft,
+    weiAmount,
+    nftAddress,
     tokenId,
     expirationTime,
     linkId,
-    senderAddress,
-    senderSignature,
+    linkdropSignerAddress,
+    linkdropSignerSignature,
     receiverAddress,
     receiverSignature
   }
@@ -177,7 +195,9 @@ export const claimERC721 = async (
         return { success, txHash }
       } else {
         const { success, error } = response.data
-        console.error(`🆘  Request failed with '${error.reason}'`)
+        if (error.reason) {
+          console.error(`🆘  Request failed with '${error.reason}'`)
+        } else console.error(error)
         return { success, error }
       }
     }

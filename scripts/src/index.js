@@ -1,5 +1,5 @@
-import Mastercopy from '../../contracts/build/Mastercopy'
-import Factory from '../../contracts/build/Factory'
+import LinkdropMastercopy from '../../contracts/build/LinkdropMastercopy'
+import LinkdropFactory from '../../contracts/build/LinkdropFactory'
 import TokenMock from '../../contracts/build/TokenMock'
 import NFTMock from '../../contracts/build/NFTMock'
 import LinkdropSDK from '../../sdk/src/index'
@@ -13,38 +13,38 @@ const config = require(configPath)
 
 let {
   networkId,
-  senderPrivateKey,
-  token,
-  amount,
+  linkdropSignerPrivateKey,
+  weiAmount,
+  tokenAddress,
+  tokenAmount,
   linksNumber,
   jsonRpcUrl,
   host,
-  nft,
+  nftAddress,
   nftIds
 } = config
-
-config.token == null || config.token === ''
-  ? (token = '0x0000000000000000000000000000000000000000')
-  : (token = config.token)
 
 if (jsonRpcUrl == null || jsonRpcUrl === '') {
   throw new Error('Please provide JSON RPC url')
 }
 
 // Make sure we have these set in config.json
-if (senderPrivateKey == null || senderPrivateKey === '') {
-  throw new Error(`Please provide sender's private key`)
+if (linkdropSignerPrivateKey == null || linkdropSignerPrivateKey === '') {
+  throw new Error(`Please provide linkdropSigner's private key`)
 }
 
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-const sender = new ethers.Wallet(senderPrivateKey, provider)
-let mastercopy, proxyFactory, expirationTime, tokenMock, nftMock
+const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
+
+const expirationTime = 1900000000000000
+
+let mastercopy, proxyFactory, tokenMock, nftMock
 
 export const deployMasterCopy = async () => {
   let factory = new ethers.ContractFactory(
-    Mastercopy.abi,
-    Mastercopy.bytecode,
-    sender
+    LinkdropMastercopy.abi,
+    LinkdropMastercopy.bytecode,
+    linkdropSigner
   )
 
   mastercopy = await factory.deploy()
@@ -59,7 +59,9 @@ export const deployMasterCopy = async () => {
 
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw err
-    console.log('Master copy address successfully added to config.json ')
+    console.log(
+      'Master copy address successfully added to scripts.config.json '
+    )
   })
 
   return mastercopy.address
@@ -67,9 +69,9 @@ export const deployMasterCopy = async () => {
 
 export const deployFactory = async masterCopy => {
   let factory = new ethers.ContractFactory(
-    Factory.abi,
-    Factory.bytecode,
-    sender
+    LinkdropFactory.abi,
+    LinkdropFactory.bytecode,
+    linkdropSigner
   )
 
   proxyFactory = await factory.deploy(masterCopy, {
@@ -85,7 +87,9 @@ export const deployFactory = async masterCopy => {
   config.factory = proxyFactory.address
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw err
-    console.log('Proxy factory address successfully added to config.json ')
+    console.log(
+      'Proxy factory address successfully added to scripts.config.json '
+    )
   })
 
   return proxyFactory.address
@@ -95,7 +99,7 @@ export const deployERC20 = async () => {
   let factory = new ethers.ContractFactory(
     TokenMock.abi,
     TokenMock.bytecode,
-    sender
+    linkdropSigner
   )
 
   tokenMock = await factory.deploy({
@@ -108,10 +112,10 @@ export const deployERC20 = async () => {
   await tokenMock.deployed()
   console.log(`Deployed token at ${tokenMock.address}\n`)
 
-  config.token = tokenMock.address
+  config.tokenAddress = tokenMock.address
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw err
-    console.log(`Token address successfully added to config.json `)
+    console.log(`Token address successfully added to scripts.config.json `)
   })
 }
 
@@ -119,7 +123,7 @@ export const deployERC721 = async () => {
   let factory = new ethers.ContractFactory(
     NFTMock.abi,
     NFTMock.bytecode,
-    sender
+    linkdropSigner
   )
 
   nftMock = await factory.deploy({
@@ -132,10 +136,10 @@ export const deployERC721 = async () => {
   await nftMock.deployed()
   console.log(`Deployed token at ${nftMock.address}\n`)
 
-  config.nft = nftMock.address
+  config.nftAddress = nftMock.address
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw err
-    console.log(`NFT address successfully added to config.json `)
+    console.log(`NFT address successfully added to scripts.config.json `)
   })
 }
 
@@ -144,8 +148,8 @@ export const generateLinksETH = async () => {
     throw new Error('Please provide links number')
   }
 
-  token = ethers.constants.AddressZero
-  expirationTime = 1900000000000000
+  tokenAddress = ethers.constants.AddressZero
+  tokenAmount = 0
 
   let links = []
 
@@ -154,18 +158,19 @@ export const generateLinksETH = async () => {
       url,
       linkId,
       linkKey,
-      senderSignature
+      linkdropSignerSignature
     } = await LinkdropSDK.generateLink(
       jsonRpcUrl,
       networkId,
       host,
-      senderPrivateKey,
-      token,
-      amount,
+      linkdropSignerPrivateKey,
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
 
-    let link = { i, linkId, linkKey, senderSignature, url }
+    let link = { i, linkId, linkKey, linkdropSignerSignature, url }
     links.push(link)
   }
 
@@ -187,7 +192,6 @@ export const generateLinksERC20 = async () => {
   if (linksNumber === null || linksNumber === '') {
     throw new Error('Please provide links number')
   }
-  expirationTime = 1900000000000000
 
   let links = []
 
@@ -196,18 +200,19 @@ export const generateLinksERC20 = async () => {
       url,
       linkId,
       linkKey,
-      senderSignature
+      linkdropSignerSignature
     } = await LinkdropSDK.generateLink(
       jsonRpcUrl,
       networkId,
       host,
-      senderPrivateKey,
-      token,
-      amount,
+      linkdropSignerPrivateKey,
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
 
-    let link = { i, linkId, linkKey, senderSignature, url }
+    let link = { i, linkId, linkKey, linkdropSignerSignature, url }
     links.push(link)
   }
 
@@ -230,7 +235,6 @@ export const generateLinksERC721 = async () => {
     throw new Error('Please provide NFT ids')
   }
 
-  expirationTime = 1900000000000000
   let links = []
   let tokenIds = JSON.parse(nftIds)
 
@@ -239,17 +243,18 @@ export const generateLinksERC721 = async () => {
       url,
       linkId,
       linkKey,
-      senderSignature
+      linkdropSignerSignature
     } = await LinkdropSDK.generateLinkERC721(
       jsonRpcUrl,
       networkId,
       host,
-      senderPrivateKey,
-      nft,
+      linkdropSignerPrivateKey,
+      weiAmount,
+      nftAddress,
       tokenIds[i],
       expirationTime
     )
-    let link = { i, linkId, linkKey, senderSignature, url }
+    let link = { i, linkId, linkKey, linkdropSignerSignature, url }
     links.push(link)
   }
   // Save links to csv
