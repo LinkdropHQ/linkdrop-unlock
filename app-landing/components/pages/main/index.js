@@ -9,7 +9,6 @@ import FinalScreen from './final-screen'
 import LearnMore from './learn-more'
 import TrustedBy from './trusted-by'
 import LoadingScreen from './loading-screen'
-import ErrorScreen from './error-screen'
 import { getHashVariables } from 'linkdrop-commons'
 
 @actions(({ user: { step, balance, wallet, link, errors } }) => ({ step, balance, wallet, link, errors }))

@@ -8,7 +8,7 @@ const generator = function * ({ payload }) {
   try {
     const ethWalletContract = ethers.constants.AddressZero
     yield put({ type: 'CONTRACT.SET_LOADING', payload: { loading: true } })
-    const { tokenAmount, ethAmount, tokenAddress, networkId } = payload
+    const { tokenAmount, weiAmount, tokenAddress, networkId } = payload
     const networkName = defineNetworkName({ networkId })
     const provider = yield ethers.getDefaultProvider(networkName)
     let decimals
@@ -25,7 +25,7 @@ const generator = function * ({ payload }) {
       icon = `https://trustwalletapp.com/images/tokens/${tokenAddress.toLowerCase()}.png`
     }
 
-    const amountBigNumber = utils.formatUnits((ethAmount === '0') ? tokenAmount : ethAmount, decimals)
+    const amountBigNumber = utils.formatUnits((weiAmount === '0') ? tokenAmount : weiAmount, decimals)
     if (decimals) {
       yield put({ type: 'CONTRACT.SET_DECIMALS', payload: { decimals } })
     }
