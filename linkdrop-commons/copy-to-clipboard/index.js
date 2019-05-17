@@ -7,6 +7,13 @@ export default ({ value }) => {
   function createTextArea (text) {
     textArea = document.createElement('textArea')
     textArea.value = text
+    textArea.style.position = 'fixed'
+    textArea.style.left = '50%'
+    textArea.style.top = '50%'
+    textArea.style.transform = 'translate(-50%, -50%)'
+    textArea.onfocus = (e) => {
+      e.preventDefault()
+    }
     document.body.appendChild(textArea)
   }
 
@@ -28,6 +35,7 @@ export default ({ value }) => {
 
   function copyToClipboard () {
     document.execCommand('copy')
+    textArea.blur()
     document.body.removeChild(textArea)
   }
 
