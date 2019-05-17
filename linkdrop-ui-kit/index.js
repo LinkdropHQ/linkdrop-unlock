@@ -13,12 +13,14 @@ import {
   RetinaImage,
   TextControlBlock,
   TextCopyBlock,
-  Checkbox
+  Checkbox,
+  ModalWindow
 } from './dist/bundle.js'
 
 export {
   Footer,
   Header,
+  ModalWindow,
   Button,
   Tabs,
   Loading,

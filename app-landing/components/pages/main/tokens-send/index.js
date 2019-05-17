@@ -20,7 +20,7 @@ class TokensSend extends React.Component {
       tokenAddress: '',
       started: false,
       manualStarted: false,
-      standard: 'erc20',
+      tokenType: 'eth',
       termsAccepted: false,
       tokenId: ''
     }
@@ -28,8 +28,8 @@ class TokensSend extends React.Component {
 
   componentWillReceiveProps ({ balance, symbol, tokenId }) {
     const { balance: prevBalance, onFinish, symbol: prevSymbol, tokenId: prevTokenId } = this.props
-    const { n } = getHashVariables()
-    const { standard, tokenId: userTokenId } = this.state
+    const { n = '4' } = getHashVariables()
+    const { tokenType, tokenId: userTokenId } = this.state
     if (
       (balance && balance > 0 && balance !== prevBalance) ||
       (tokenId != null && prevTokenId === null)
@@ -42,18 +42,18 @@ class TokensSend extends React.Component {
       })
     }
     if (prevSymbol === null && symbol != null && symbol !== prevSymbol) {
-      this.manualTokensCheck = window.setInterval(_ => this.actions().tokens.checkTokensManually({ isERC721: standard === 'erc721', networkId: n, tokenId: userTokenId }), configs.balanceCheckIntervalManual)
+      this.manualTokensCheck = window.setInterval(_ => this.actions().tokens.checkTokensManually({ isERC721: tokenType === 'erc721', networkId: n, tokenId: userTokenId }), configs.balanceCheckIntervalManual)
     }
   }
 
   render () {
-    const { tokensUploaded, manualTokenCheck, tokenAddress, started, manualStarted, standard, tokenId } = this.state || {}
+    const { tokensUploaded, manualTokenCheck, tokenAddress, started, manualStarted, tokenType, tokenId } = this.state || {}
     const { wallet, alert, symbol } = this.props
-    return manualTokenCheck ? this.renderManualTokenCheckScreen({ tokenAddress, tokenId, manualStarted, symbol, standard }) : this.renderOriginalScreen({ wallet, tokensUploaded, alert, started })
+    return manualTokenCheck ? this.renderManualTokenCheckScreen({ tokenAddress, tokenId, manualStarted, symbol, tokenType }) : this.renderOriginalScreen({ wallet, tokensUploaded, alert, started })
   }
 
   renderOriginalScreen ({ wallet, tokensUploaded, alert, started }) {
-    const { n } = getHashVariables()
+    const { n = '4' } = getHashVariables()
     return <LinkBlock title={this.t('titles.sendTokensToAddress')} style={{ height: 528 }}>
       <div className={classNames(styles.container, {
         [styles.rinkeby]: n === '4'
@@ -94,7 +94,7 @@ class TokensSend extends React.Component {
   }
 
   startSearchingForTokens () {
-    const { n } = getHashVariables()
+    const { n = '4' } = getHashVariables()
     this.setState({
       started: true
     }, _ => {
@@ -104,28 +104,29 @@ class TokensSend extends React.Component {
     })
   }
 
-  renderManualTokenCheckScreen ({ tokenAddress, manualStarted, symbol, standard, tokenId }) {
-    const { n } = getHashVariables()
+  renderManualTokenCheckScreen ({ tokenAddress, manualStarted, symbol, tokenType, tokenId }) {
+    const { n = '4' } = getHashVariables()
     return <LinkBlock title={this.t('titles.addManually')} style={{ height: 528 }}>
       <div className={classNames(styles.container, styles.containerCentered)}>
         <Tabs
           className={styles.tabs}
-          active={standard}
+          active={tokenType}
           options={[
+            { title: this.t('titles.eth'), id: 'eth' },
             { title: this.t('titles.erc20'), id: 'erc20' },
             { title: this.t('titles.erc721'), id: 'erc721' }
           ]}
-          onChange={({ id }) => this.setState({ standard: id })}
+          onChange={({ id }) => this.setState({ tokenType: id })}
         />
-        <Input
+        {(tokenType === 'erc721' || tokenType === 'erc20') && <Input
           value={tokenAddress}
           onChange={({ value }) => this.setState({
             tokenAddress: value
           })}
           className={styles.input}
           placeholder={this.t('titles.tokenAddress')}
-        />
-        {standard === 'erc721' && <Input
+        />}
+        {tokenType === 'erc721' && <Input
           value={tokenId}
           onChange={({ value }) => this.setState({
             tokenId: value
@@ -137,9 +138,9 @@ class TokensSend extends React.Component {
           className={styles.secondaryLoading}
           loadingTitle={this.t('titles.waitingFor', { tokenSymbol: symbol })}
         /> : <Button
-          disabled={standard === 'erc721' ? (!tokenId || !tokenAddress) : !tokenAddress}
+          disabled={this.defineIfButtonIsDisabled({ tokenType, tokenId, tokenAddress })}
           className={styles.button}
-          onClick={_ => this.checkTokenAdressManually({ tokenAddress, tokenId, standard, networkId: n })}
+          onClick={_ => this.checkTokenAdressManually({ tokenAddress, tokenId, tokenType, networkId: n })}
         >
           {text('common.buttons.addToken')}
         </Button>}
@@ -147,17 +148,35 @@ class TokensSend extends React.Component {
     </LinkBlock>
   }
 
-  checkTokenAdressManually ({ tokenAddress, standard, networkId, tokenId }) {
+  defineIfButtonIsDisabled ({ tokenType, tokenId, tokenAddress }) {
+    if (tokenType === 'erc721') return !tokenId || !tokenAddress
+    if (tokenType === 'erc20') return !tokenAddress
+    return false
+  }
+
+  checkTokenAdressManually ({ tokenAddress, tokenType, networkId, tokenId }) {
     this.setState({
       manualStarted: true
     }, _ => {
       this.intervalCheck && window.clearInterval(this.intervalCheck)
-      this.actions().tokens.getTokensData({ tokenAddress, tokenId, isERC721: standard === 'erc721', networkId })
+      this.actions().tokens.getTokensData({
+        tokenAddress,
+        tokenType,
+        networkId
+      })
     })
   }
 
   renderTermsOrAlert ({ alert }) {
-    const { termsAccepted } = this.state
+    const { termsAccepted, started } = this.state
+    if (alert) {
+      return <div
+        className={styles.alert}
+        onClick={_ => this.setState({ manualTokenCheck: true }, _ => this.intervalCheck && window.clearInterval(this.intervalCheck))}
+        dangerouslySetInnerHTML={{ __html: this.t('titles.footerAddManually') }}
+      />
+    }
+    if (started) return null
     return <div className={styles.terms}>
       <Checkbox checked={termsAccepted} onChange={({ value }) => this.setState({ termsAccepted: value })} />
       <div dangerouslySetInnerHTML={{ __html: this.t('titles.terms', {

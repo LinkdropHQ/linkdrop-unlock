@@ -14,10 +14,10 @@ export default {
   },
   termsOfService: {
     title: 'Terms of Service',
-    url: 'http://linkdrop.io/terms'
+    url: 'https://www.notion.so/linkdrop/Terms-of-Service-727ad720d63b4cd0a10bef54ede3295b'
   },
   privacy: {
     title: 'Privacy Policy',
-    url: 'http://linkdrop.io/privacy'
+    url: 'https://www.notion.so/Linkdrop-Privacy-Policy-5555f0852dda46ddada3ddb3b0cd6c53'
   }
 }

@@ -48,7 +48,7 @@ class WalletChoosePage extends React.Component {
   renderWalletInstruction ({ walletType }) {
     const { showSlider } = this.state
     const walletTitle = getWalletData({ wallet: walletType }).name
-    const walletLink = getWalletLink({ platform: this.platform, wallet: 'trust', currentUrl: window.location.href })
+    const walletLink = getWalletLink({ platform: this.platform, wallet: walletType, currentUrl: window.location.href })
     let instruction = ''
     switch (walletType) {
       case 'trust':

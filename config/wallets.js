@@ -90,11 +90,11 @@ export default {
     dappStoreUrl: null,
     mobile: {
       android: {
-        support: true,
+        support: false,
         deepLink: (url) => null
       },
       ios: {
-        support: true,
+        support: false,
         deepLink: (url) => null
       }
     }
@@ -106,11 +106,11 @@ export default {
     dappStoreUrl: null,
     mobile: {
       android: {
-        support: true,
+        support: false,
         deepLink: (url) => null
       },
       ios: {
-        support: true,
+        support: false,
         deepLink: (url) => null
       }
     }

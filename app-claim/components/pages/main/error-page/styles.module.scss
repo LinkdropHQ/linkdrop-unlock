@@ -1,3 +1,5 @@
+@import "variables/variables.scss";
+
 .title {
   margin-bottom: 30px;
   font-family: 'Inter-Medium';
@@ -5,6 +7,7 @@
 }
 
 .description {
+  margin-bottom: 40px;
   font-size: 18px;
 }
 
@@ -16,10 +19,13 @@
   width: 100%;
   text-align: left;
   font-size: 14px;
-  margin-top: 40px;
 
   span {
     font-family: 'Inter-Bold';
+  }
+
+  a {
+    color: $black;
   }
 
   div {

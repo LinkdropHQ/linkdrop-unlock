@@ -9,18 +9,18 @@ const generator = function * ({ payload }) {
   try {
     const ethWalletContract = ethers.constants.AddressZero
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    const { tokenAddress, isERC721, networkId } = payload
-    yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress } })
-    yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: isERC721 ? 'erc721' : 'erc20' } })
+    const { tokenAddress, tokenType, networkId } = payload
+    yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress: tokenType === 'eth' ? ethWalletContract : tokenAddress } })
+    yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: tokenType === 'erc721' ? 'erc721' : 'erc20' } })
     const networkName = defineNetworkName({ networkId })
     const provider = yield ethers.getDefaultProvider(networkName)
     let symbol
     let decimals
-    if (ethWalletContract === tokenAddress) {
+    if (tokenType === 'eth' || tokenAddress === ethWalletContract) {
       symbol = 'ETH'
       decimals = 18
     } else {
-      if (isERC721) {
+      if (tokenType === 'erc721') {
         const tokenContract = yield new ethers.Contract(tokenAddress, NFTMock.abi, provider)
         symbol = yield tokenContract.symbol()
       } else {

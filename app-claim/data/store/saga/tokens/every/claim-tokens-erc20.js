@@ -8,7 +8,7 @@ const generator = function * ({ payload }) {
     const { wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropSignerAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const ethersContractZeroAddress = ethers.constants.AddressZero
-    const { success, txHash, error } = yield LinkdropSDK.claim(
+    const { success, txHash, error: { reason = [] } = {} } = yield LinkdropSDK.claim(
       jsonRpcUrl,
       apiHost,
       tokenAddress === ethersContractZeroAddress ? weiAmount : '0',
@@ -24,7 +24,11 @@ const generator = function * ({ payload }) {
     if (success) {
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })
     } else {
-      console.log({ error })
+      if (reason.length > 0) {
+        if (reason[0] === 'Insufficient amount of eth') {
+          yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['LINK_FAILED'] } })
+        }
+      }
     }
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
   } catch (e) {

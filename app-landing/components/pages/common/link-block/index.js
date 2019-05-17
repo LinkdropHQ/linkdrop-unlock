@@ -9,7 +9,7 @@ class LinkBlock extends React.Component {
   render () {
     const { children, title, style = {} } = this.props
     return <div className={styles.container} style={style}>
-      <div className={styles.title}>{title}</div>
+      <div className={styles.title} dangerouslySetInnerHTML={{ __html: title }} />
       {children}
       <div className={styles.invisibleButton} onClick={_ => this.emptyStoragesAndReload()} />
     </div>

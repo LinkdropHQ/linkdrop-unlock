@@ -4,7 +4,7 @@ import styles from './styles.module'
 import { Icons, Button, TextControlBlock } from 'linkdrop-ui-kit'
 import { LinkBlock, QrShare } from 'components/pages/common'
 import classNames from 'classnames'
-import { copyToClipboard, getHashVariables } from 'linkdrop-commons'
+import { copyToClipboard } from 'linkdrop-commons'
 
 @actions(({ user: { link, claimed, wallet } }) => ({ link, claimed, wallet }))
 @translate('pages.main')
@@ -26,13 +26,6 @@ class FinalScreen extends React.Component {
       })}>
         {this.renderMainScreen({ onClick, link })}
         {this.renderQrScreen({ link, onClose: _ => this.setState({ showQr: false }) })}
-      </div>
-      <div className={styles.testClaim}>
-        <input ref={node => { this.input = node }} />
-        <Button onClick={_ => {
-          const hashVariables = getHashVariables({ url: this.input.value })
-          this.actions().tokens.testClaimTokens(hashVariables)
-        }}>claim</Button>
       </div>
     </LinkBlock>
   }
@@ -69,8 +62,8 @@ class FinalScreen extends React.Component {
         <Icons.CheckSmall /> {this.t('titles.multipleLinks')}
       </div>
 
-      <Button inverted className={styles.button} >
-        {this.t('buttons.joinWaitlist')}
+      <Button inverted className={styles.button} href='https://linkdrop.io/product'>
+        {this.t('buttons.learnMore')}
       </Button>
     </div>
   }
