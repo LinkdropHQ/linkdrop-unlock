@@ -18,7 +18,7 @@ class Main extends React.Component {
     super(props)
     this.state = {
       startCheckingBalanceImmediately: false,
-      modalHide: Boolean(window.localStorage && window.localStorage.getItem('modalWindowHide'))
+      modalShow: true
     }
   }
 
@@ -45,9 +45,9 @@ class Main extends React.Component {
 
   render () {
     const { step, errors } = this.props
-    const { modalHide } = this.state
+    const { modalShow } = this.state
     return <div className={styles.container}>
-      <ModalWindow visible={!modalHide}>
+      <ModalWindow visible={modalShow}>
         <div className={styles.modalContent}>
           <h2 className={styles.modalTitle}>{this.t('titles.beCareful')}</h2>
           <div className={styles.modalDescription} dangerouslySetInnerHTML={{ __html: this.t('descriptions.bugBountyNote') }} />
@@ -73,8 +73,8 @@ class Main extends React.Component {
 
   onModalClose () {
     this.setState({
-      modalHide: true
-    }, _ => window.localStorage && window.localStorage.setItem('modalWindowHide', 'true'))
+      modalShow: false
+    })
   }
 
   renderTexts ({ step }) {

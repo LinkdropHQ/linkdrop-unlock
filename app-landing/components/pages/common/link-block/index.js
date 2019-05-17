@@ -20,7 +20,6 @@ class LinkBlock extends React.Component {
     localStorage && localStorage.removeItem('privateKey')
     localStorage && localStorage.removeItem('wallet')
     localStorage && localStorage.removeItem('account')
-    localStorage && localStorage.removeItem('modalWindowHide')
     location && location.reload(true)
   }
 }

@@ -168,8 +168,14 @@ class TokensSend extends React.Component {
   }
 
   renderTermsOrAlert ({ alert }) {
-    const { termsAccepted, started, manualTokenCheck } = this.state
-    if (manualTokenCheck) return <div className={styles.alert}>{this.t('titles.footerAddManually')}</div>
+    const { termsAccepted, started } = this.state
+    if (alert) {
+      return <div
+        className={styles.alert}
+        onClick={_ => this.setState({ manualTokenCheck: true }, _ => this.intervalCheck && window.clearInterval(this.intervalCheck))}
+        dangerouslySetInnerHTML={{ __html: this.t('titles.footerAddManually') }}
+      />
+    }
     if (started) return null
     return <div className={styles.terms}>
       <Checkbox checked={termsAccepted} onChange={({ value }) => this.setState({ termsAccepted: value })} />
