@@ -31,6 +31,28 @@
   }
 }
 
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modalTitle {
+  margin: 0 0 40px;
+  font-size: 24px;
+}
+
+.modalDescription {
+  font-size: 18px;
+  margin-bottom: 52px;
+  text-align: center;
+}
+
+.buttonOrange {
+  background: $orange;
+  max-width: 260px;
+}
+
 .mainTitle {
   font-size: 56px;
   margin: 0 0 40px 0;

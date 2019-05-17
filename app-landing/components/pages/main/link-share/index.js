@@ -19,7 +19,7 @@ class LinkShare extends React.Component {
   componentDidMount () {
     const { standard, link } = this.props
     const {
-      n
+      n = '4'
     } = getHashVariables()
     if (link) { return }
     if (standard === 'erc20') {

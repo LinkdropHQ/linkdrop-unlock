@@ -2,9 +2,9 @@ export default {
   titles: {
     sendTokens: 'Try to send any tokens or NFTs via link',
     main: 'Try the demo and send tokens via link',
-    sendTokensToAddress: 'Scan or copy address to send tokens',
+    sendTokensToAddress: 'Scan or copy address<br />to send tokens',
     shareLink: 'Copy and share the link',
-    linkDone: 'Your link is done!',
+    linkDone: 'Your\'re done!',
     scanCode: 'Scan QR-code to get link',
     multipleLinkes: 'Multiple links',
     analytics: 'Analitycs',
@@ -12,14 +12,14 @@ export default {
     wantMoreLinks: 'Want more links?',
     cs: 'Customer service 24/7',
     terms: 'I agree with <a href={{termsHref}}>Terms</a> & <a href={{privacyHref}}>Privacy</a>',
-    getYourLink: 'Get your link',
+    getYourLink: 'Copy and share the link',
     linkdrop: 'Linkdrop',
     multipleLinks: 'Multiple links & Analytics',
     createShare: 'Fast and simple',
-    noGas: 'No gas or any fee',
-    tokenTypes: 'ERC20 & ERC721 tokens',
+    noGas: 'No gas or any fees',
+    tokenTypes: 'ETH, ERC20 & ERC721 tokens',
     yourEmail: 'Your email',
-    wantMoreLinksInstruction: 'Want more links—request early access',
+    wantMoreLinksInstruction: 'Request early access to generate more links',
     everydayUsers: 'We link everyday users to digital assets',
     seeGit: 'See the Github',
     join: 'Join Community',
@@ -32,13 +32,16 @@ export default {
     errorOccured: 'Some error occured',
     erc721: 'ERC-721',
     erc20: 'ERC-20',
-    tokenId: 'Token ID'
+    eth: 'ETH',
+    tokenId: 'Token ID',
+    beCareful: 'Be careful!'
   },
   descriptions: {
     sendTokens: 'Simply send your funds to our secure contract and generate the crypto link',
-    massGenerate: 'Linkdrop lets you mass-generate & track links',
+    massGenerate: 'Linkdrop lets you<br/>mass-generate & track links',
     newLinkInstruction: 'To create a new link—first claim this one',
-    sendLinks: 'Linkdrop enables you to send links with included digital assets and onboarding properties'
+    sendLinks: 'Linkdrop enables you to send links with included digital assets and onboarding properties',
+    bugBountyNote: 'Don’t send any MainNet tokens.<br>Demo works only with Rinkeby Network'
   },
   buttons: {
     continue: 'Continue',
@@ -50,7 +53,8 @@ export default {
     learnMore: 'Learn More',
     joinWaitlist: 'Join Waitlist',
     requestAccess: 'Request Access',
-    next: 'Next'
+    next: 'Next',
+    understood: 'Yep, understood'
   },
   errors: {
     addManually: 'Try to add token manually',

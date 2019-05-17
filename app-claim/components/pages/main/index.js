@@ -104,13 +104,18 @@ class Claim extends React.Component {
       n
     } = getHashVariables()
     const commonData = { decimals, amount, symbol, icon, wallet: account, loading: userLoading }
+    if (this.platform === 'desktop' && !account) {
+      return <div>
+        <ErrorPage
+          error='NEED_METAMASK'
+        />
+      </div>
+    }
     if (
       (this.platform === 'desktop' && networkId && Number(n) !== Number(networkId)) ||
       (this.platform !== 'desktop' && account && networkId && Number(n) !== Number(networkId))) {
       // if network id in the link and in the web3 are different
-      return <div>
-        <ErrorPage error='NETWORK_NOT_SUPPORTED' network={capitalize({ string: defineNetworkName({ networkId: n }) })} />
-      </div>
+      return <ErrorPage error='NETWORK_NOT_SUPPORTED' network={capitalize({ string: defineNetworkName({ networkId: n }) })} />
     }
     if (errors && errors.length > 0) {
       // if some errors occured and can be found in redux store, then show error page

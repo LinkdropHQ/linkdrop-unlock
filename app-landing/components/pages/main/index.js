@@ -1,6 +1,6 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
-import { Button, Icons } from 'linkdrop-ui-kit'
+import { Button, Icons, ModalWindow } from 'linkdrop-ui-kit'
 import styles from './styles.module'
 import TokensSend from './tokens-send'
 import LinkShare from './link-share'
@@ -17,11 +17,13 @@ class Main extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      startCheckingBalanceImmediately: false
+      startCheckingBalanceImmediately: false,
+      modalHide: Boolean(window.localStorage && window.localStorage.getItem('modalWindowHide'))
     }
   }
+
   componentDidMount () {
-    const { n } = getHashVariables()
+    const { n = '4' } = getHashVariables()
     const { wallet } = this.props
     // if has no wallet, then generate new one
     if (!wallet) {
@@ -34,7 +36,7 @@ class Main extends React.Component {
   }
 
   componentWillReceiveProps ({ wallet, step }) {
-    const { n } = getHashVariables()
+    const { n = '4' } = getHashVariables()
     const { wallet: prevWallet } = this.props
     if (step != null && step === 0 && wallet && wallet !== prevWallet) {
       return this.actions().tokens.checkBalance({ account: wallet, networkId: n })
@@ -43,7 +45,17 @@ class Main extends React.Component {
 
   render () {
     const { step, errors } = this.props
+    const { modalHide } = this.state
     return <div className={styles.container}>
+      <ModalWindow visible={!modalHide}>
+        <div className={styles.modalContent}>
+          <h2 className={styles.modalTitle}>{this.t('titles.beCareful')}</h2>
+          <div className={styles.modalDescription} dangerouslySetInnerHTML={{ __html: this.t('descriptions.bugBountyNote') }} />
+          <Button className={styles.buttonOrange} onClick={_ => this.onModalClose()}>
+            {this.t('buttons.understood')}
+          </Button>
+        </div>
+      </ModalWindow>
       <div className={styles.headerContent}>
         <div className={styles.leftBlock}>
           {this.renderContent({ step, errors })}
@@ -57,6 +69,12 @@ class Main extends React.Component {
       {false && <TrustedBy />}
       {/* currently disabled */}
     </div>
+  }
+
+  onModalClose () {
+    this.setState({
+      modalHide: true
+    }, _ => window.localStorage && window.localStorage.setItem('modalWindowHide', 'true'))
   }
 
   renderTexts ({ step }) {

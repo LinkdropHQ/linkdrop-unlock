@@ -13,14 +13,14 @@ class ProSolution extends React.Component {
         <div className={styles.close} onClick={_ => onClose && onClose()}>
           <Icons.Close />
         </div>
-        <div className={styles.description}>{this.t('descriptions.massGenerate')}</div>
+        <div className={styles.description} dangerouslySetInnerHTML={{ __html: this.t('descriptions.massGenerate') }} />
         <div className={styles.list}>
           {LIST_ITEMS.map(item => <div className={styles.listItem}>
             <Icons.CheckSmall /> {this.t(`titles.${item}`)}
           </div>)}
         </div>
-        <Button href='http://linkdrop.io/request' target='_blank' className={styles.button}>
-          {this.t('buttons.joinWaitlist')}
+        <Button href='http://linkdrop.io/product' target='_blank' className={styles.button}>
+          {this.t('buttons.learnMore')}
         </Button>
       </div>
     </LinkBlock>

@@ -29,18 +29,29 @@ export default {
       description: 'Oops, something went wrong'
     },
     NETWORK_NOT_SUPPORTED: {
-      title: 'Token is not supported in this network',
+      title: 'Network is not supported',
       description: 'Switch to {{network}}',
       instructions: {
         _1: '1. Go to <span>Settings</span> in your Wallet',
         _2: '2. Swich Network to <span>{{network}}</span>',
         _3: '3. Back to wallet’s DApp browser then reload the claiming link and follow instructions'
       }
+    },
+    NEED_METAMASK: {
+      title: 'You need a wallet to claim tokens',
+      description: '',
+      instructions: {
+        _1: '1. Download <a href="https://metamask.io/" target="_blank">Metamask</a>',
+        _2: '2. Then just reload the claim page'
+      }
     }
   },
   walletsInstructions: {
     common: {
-      _1: '1. Download <a href={{href}}>{{title}}</a>',
+      _1: {
+        withUrl: '1. Download <a href={{href}}>{{title}}</a>',
+        withNoUrl: '1. Download {{title}}'
+      },
       _2: '2. Copy&Paste the claiming link in a wallet’s DApp browser'
     },
     deepLink: {

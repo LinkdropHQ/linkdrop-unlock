@@ -13,6 +13,7 @@ import RetinaImage from './retina-image'
 import TextControlBlock from './text-control-block'
 import TextCopyBlock from './text-copy-block'
 import Checkbox from './checkbox'
+import ModalWindow from './modal-window'
 
 export {
   Footer,
@@ -29,5 +30,6 @@ export {
   RetinaImage,
   TextControlBlock,
   TextCopyBlock,
-  Checkbox
+  Checkbox,
+  ModalWindow
 }

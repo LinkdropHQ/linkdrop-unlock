@@ -8,6 +8,22 @@
   margin: 0 auto 70px;
 }
 
+.notification {
+  background: $orange;
+  border-radius: 5px;
+  font-size: 18px;
+  color: $white;
+  display: flex;
+  align-items: center;
+  max-width: 670px;
+  padding: 0px 20px;
+  width: 100%;
+
+  a {
+    text-decoration: underline;
+  }
+}
+
 .links {
   display: flex;
 
