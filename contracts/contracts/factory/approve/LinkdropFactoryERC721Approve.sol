@@ -1,10 +1,11 @@
 pragma solidity ^0.5.6;
 
-import "../interfaces/ILinkdropERC721.sol";
-import "./LinkdropFactoryCommon.sol";
+import "../../interfaces/approve/ILinkdropERC721Approve.sol";
+import "../../interfaces/approve/ILinkdropFactoryERC721Approve.sol";
+import "../LinkdropFactoryCommon.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 
-contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
+contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, LinkdropFactoryCommon {
 
     /**
     * @dev Function to verify linkdrop signer's signature
@@ -88,7 +89,7 @@ contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
         // If proxy is deployed
         if (isDeployed(_linkdropSigner)) {
 
-            return ILinkdropERC721(_deployed[_linkdropSigner]).checkClaimParamsERC721
+            return ILinkdropERC721Approve(_deployed[_linkdropSigner]).checkClaimParamsERC721
             (
                 _weiAmount,
                 _nftAddress,
@@ -110,7 +111,7 @@ contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
             require(_proxy.balance >= _weiAmount, "Insufficient funds");
 
             // Make sure the token is available for proxy contract
-            require(IERC721(_nftAddress).ownerOf(_tokenId) == _proxy, "Unavailable token");
+            require(IERC721(_nftAddress).getApproved(_tokenId) == _proxy, "Unavailable token");
 
             // Verify that link key is legit and signed by linkdrop signer's private key
             require
@@ -141,6 +142,7 @@ contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
+    * @param _approver Approver address
     * @param _linkdropSigner Address of linkdrop signer
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
@@ -154,6 +156,7 @@ contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
         uint _tokenId,
         uint _expiration,
         address _linkId,
+        address _approver,
         address payable _linkdropSigner,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
@@ -168,13 +171,14 @@ contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
         }
 
         // Call claim function in the context of proxy contract
-        ILinkdropERC721(_deployed[_linkdropSigner]).claimERC721
+        ILinkdropERC721Approve(_deployed[_linkdropSigner]).claimERC721
         (
             _weiAmount,
             _nftAddress,
             _tokenId,
             _expiration,
             _linkId,
+            _approver,
             _linkdropSignerSignature,
             _receiver,
             _receiverSignature

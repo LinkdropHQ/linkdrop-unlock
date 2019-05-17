@@ -28,7 +28,6 @@ interface ILinkdropERC721Approve {
         uint _tokenId,
         uint _expiration,
         address _linkId,
-        address _sender,
         bytes calldata _linkdropSignerSignature,
         address _receiver,
         bytes calldata _receiverSignature
@@ -42,7 +41,7 @@ interface ILinkdropERC721Approve {
         uint _tokenId,
         uint _expiration,
         address _linkId,
-        address _sender,
+        address _approver,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature

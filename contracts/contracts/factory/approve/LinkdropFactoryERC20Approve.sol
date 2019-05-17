@@ -1,27 +1,28 @@
 pragma solidity ^0.5.6;
 
-import "../interfaces/ILinkdropERC721.sol";
-import "./LinkdropFactoryCommon.sol";
-import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
+import "../../interfaces/approve/ILinkdropERC20Approve.sol";
+import "../../interfaces/approve/ILinkdropFactoryERC20Approve.sol";
+import "../LinkdropFactoryCommon.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
-contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
+contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFactoryCommon {
 
     /**
     * @dev Function to verify linkdrop signer's signature
     * @param _weiAmount Amount of wei to be claimed
-    * @param _nftAddress NFT address
-    * @param _tokenId Token id to be claimed
+    * @param _tokenAddress Token address
+    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _linkdropSigner Address of linkdrop signer
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @return True if signed with linkdrop signer's private key
     */
-    function verifyLinkdropSignerSignatureERC721
+    function verifyLinkdropSignerSignature
     (
         uint _weiAmount,
-        address _nftAddress,
-        uint _tokenId,
+        address _tokenAddress,
+        uint _tokenAmount,
         uint _expiration,
         address _linkId,
         address _linkdropSigner,
@@ -30,7 +31,7 @@ contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
     public pure
     returns (bool)
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
         address signer = ECDSA.recover(prefixedHash, _linkdropSignerSignature);
         return signer == _linkdropSigner;
     }
@@ -42,7 +43,7 @@ contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
     * @param _signature ECDSA signature of linkdrop receiver
     * @return True if signed with link key
     */
-    function verifyReceiverSignatureERC721
+    function verifyReceiverSignature
     (
         address _linkId,
         address _receiver,
@@ -57,25 +58,26 @@ contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
     }
 
     /**
-    * @dev Function to verify claim params, make sure the link is not claimed or canceled and proxy is allowed to spend token
+    * @dev Function to verify claim params, make sure the link is not claimed or canceled and proxy has sufficient balance
     * @param _weiAmount Amount of wei to be claimed
-    * @param _nftAddress NFT address
-    * @param _tokenId Token id to be claimed
+    * @param _tokenAddress Token address
+    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _linkdropSigner Address of linkdrop signer
+    * @param _approver Approver address
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
-    function checkClaimParamsERC721
+    function checkClaimParams
     (
         uint _weiAmount,
-        address _nftAddress,
-        uint _tokenId,
+        address _tokenAddress,
+        uint _tokenAmount,
         uint _expiration,
         address _linkId,
+        address _approver,
         address payable _linkdropSigner,
         bytes memory _linkdropSignerSignature,
         address _receiver,
@@ -88,13 +90,14 @@ contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
         // If proxy is deployed
         if (isDeployed(_linkdropSigner)) {
 
-            return ILinkdropERC721(_deployed[_linkdropSigner]).checkClaimParamsERC721
+            return ILinkdropERC20Approve(_deployed[_linkdropSigner]).checkClaimParams
             (
                 _weiAmount,
-                _nftAddress,
-                _tokenId,
+                _tokenAddress,
+                _tokenAmount,
                 _expiration,
                 _linkId,
+                _approver,
                 _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature
@@ -103,29 +106,39 @@ contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
         }
         else {
 
-            // Make sure nft address is not equal to address(0)
-            require(_nftAddress != address(0), "Invalid nft address");
-
             // Make sure claim amount is available for proxy contract
-            require(_proxy.balance >= _weiAmount, "Insufficient funds");
+            require
+            (
+                _proxy.balance >= _weiAmount,"Insufficient amount of eth"
+            );
 
-            // Make sure the token is available for proxy contract
-            require(IERC721(_nftAddress).ownerOf(_tokenId) == _proxy, "Unavailable token");
+            if (_tokenAddress != address(0)) {
+                require(IERC20(_tokenAddress).allowance(_approver, _proxy) >= _tokenAmount, "Insufficient amount of tokens");
+            }
 
             // Verify that link key is legit and signed by linkdrop signer's private key
             require
             (
-                verifyLinkdropSignerSignatureERC721(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId, _linkdropSigner, _linkdropSignerSignature),
+                verifyLinkdropSignerSignature
+                (
+                    _weiAmount,
+                    _tokenAddress,
+                    _tokenAmount,
+                    _expiration,
+                    _linkId,
+                    _linkdropSigner,
+                    _linkdropSignerSignature
+                ),
                 "Invalid linkdrop signer signature"
             );
 
-            // Make sure the link is not expired
+            // Make sure link is not expired
             require(_expiration >= now, "Expired link");
 
             // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
             require
             (
-                verifyReceiverSignatureERC721(_linkId, _receiver, _receiverSignature),
+                verifyReceiverSignature(_linkId, _receiver, _receiverSignature),
                 "Invalid receiver signature"
             );
 
@@ -135,25 +148,27 @@ contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
     }
 
     /**
-    * @dev Function to claim ETH and/or ERC721 token
+    * @dev Function to claim ETH and/or ERC20 tokens
     * @param _weiAmount Amount of wei to be claimed
-    * @param _nftAddress NFT address
-    * @param _tokenId Token id to be claimed
+    * @param _tokenAddress Token address
+    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
+    * @param _approver Approver address
     * @param _linkdropSigner Address of linkdrop signer
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
-    function claimERC721
+    function claim
     (
         uint _weiAmount,
-        address _nftAddress,
-        uint _tokenId,
+        address _tokenAddress,
+        uint _tokenAmount,
         uint _expiration,
         address _linkId,
+        address _approver,
         address payable _linkdropSigner,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
@@ -162,19 +177,21 @@ contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
     external
     returns (bool)
     {
+
         // Check whether the proxy is deployed for linkdrop signer and deploy if not
         if (!isDeployed(_linkdropSigner)) {
             deployProxy(_linkdropSigner);
         }
 
         // Call claim function in the context of proxy contract
-        ILinkdropERC721(_deployed[_linkdropSigner]).claimERC721
+        ILinkdropERC20Approve(_deployed[_linkdropSigner]).claim
         (
             _weiAmount,
-            _nftAddress,
-            _tokenId,
+            _tokenAddress,
+            _tokenAmount,
             _expiration,
             _linkId,
+            _approver,
             _linkdropSignerSignature,
             _receiver,
             _receiverSignature

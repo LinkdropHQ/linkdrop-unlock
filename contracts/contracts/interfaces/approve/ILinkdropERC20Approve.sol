@@ -28,7 +28,7 @@ interface ILinkdropERC20Approve {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address _sender,
+        address _approver,
         bytes calldata _linkdropSignerSignature,
         address _receiver,
         bytes calldata _receiverSignature
@@ -42,7 +42,7 @@ interface ILinkdropERC20Approve {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address _sender,
+        address _approver,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
