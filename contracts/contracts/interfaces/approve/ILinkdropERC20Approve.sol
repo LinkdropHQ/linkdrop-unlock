@@ -1,6 +1,6 @@
 pragma solidity ^0.5.6;
 
-interface ILinkdropERC20 {
+interface ILinkdropERC20Approve {
 
     function verifyLinkdropSignerSignature
     (
@@ -28,6 +28,7 @@ interface ILinkdropERC20 {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
+        address _approver,
         bytes calldata _linkdropSignerSignature,
         address _receiver,
         bytes calldata _receiverSignature
@@ -41,10 +42,11 @@ interface ILinkdropERC20 {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
+        address _approver,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
     )
     external returns (bool);
-    
+
 }

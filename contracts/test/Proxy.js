@@ -27,7 +27,7 @@ let masterCopy
 let factory
 let proxy
 
-describe('Factory and Proxy tests', () => {
+describe('Factory/Proxy tests', () => {
   //   before(async () => {})
 
   it('should deploy master copy of linkdrop implementation', async () => {
