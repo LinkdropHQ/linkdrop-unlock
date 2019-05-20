@@ -4,11 +4,11 @@ import classNames from 'classnames'
 import { Slider, RetinaImage } from 'linkdrop-ui-kit'
 import { getImages } from 'helpers'
 
-export default ({ t, walletType, selectWallet, showSlider }) => {
+export default ({ t, walletType, selectWallet, showSlider, platform }) => {
   return <div className={styles.content}>
     <div onClick={_ => showSlider && showSlider()} className={styles.subtitle}>{t('titles.haveAnother')}</div>
     <Slider visibleSlides={4} className={styles.slider} step={4}>
-      {WALLETS.map(wallet => renderImage({ id: wallet, walletType, selectWallet }))}
+      {(platform === 'ios' ? IOS_WALLETS : ANDROID_WALLETS).map(wallet => renderImage({ id: wallet, walletType, selectWallet }))}
     </Slider>
   </div>
 }
@@ -24,4 +24,5 @@ const renderImage = ({ id, walletType, selectWallet }) => {
   </div>
 }
 
-const WALLETS = ['trust', 'coinbase', 'opera', 'imtoken', 'status', 'tokenpocket', 'gowallet', 'buntoy']
+const ANDROID_WALLETS = ['trust', 'coinbase', 'opera', 'imtoken', 'status', 'tokenpocket', 'gowallet', 'buntoy']
+const IOS_WALLETS = ['trust', 'coinbase', 'imtoken', 'status', 'tokenpocket', 'gowallet']
