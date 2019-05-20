@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './styles.module'
 import classNames from 'classnames'
 import Icons from '../icons'
+import PropTypes from 'prop-types'
 
 class Checkbox extends React.Component {
   constructor (props) {
@@ -36,6 +37,13 @@ class Checkbox extends React.Component {
       <div className={styles.title}>{title}</div>
     </div>
   }
+}
+
+Checkbox.propTypes = {
+  disabled: PropTypes.bool,
+  onChange: PropTypes.func,
+  checked: PropTypes.bool,
+  title: PropTypes.string
 }
 
 export default Checkbox
