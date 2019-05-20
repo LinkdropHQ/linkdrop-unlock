@@ -8,7 +8,7 @@ class TextControlBlock extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      blink: false
+      blink: props.blink
     }
   }
 
@@ -46,7 +46,8 @@ TextControlBlock.propTypes = {
   onClick: PropTypes.func,
   className: PropTypes.string,
   style: PropTypes.object,
-  icon: PropTypes.element
+  icon: PropTypes.element,
+  blink: PropTypes.bool
 }
 
 export default TextControlBlock
