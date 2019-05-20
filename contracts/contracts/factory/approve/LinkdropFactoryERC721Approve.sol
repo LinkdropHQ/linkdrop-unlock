@@ -64,6 +64,7 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
+    * @param _approver Approver address
     * @param _linkdropSigner Address of linkdrop signer
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
@@ -77,6 +78,7 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
         uint _tokenId,
         uint _expiration,
         address _linkId,
+        address _approver,
         address payable _linkdropSigner,
         bytes memory _linkdropSignerSignature,
         address _receiver,
@@ -96,6 +98,7 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
                 _tokenId,
                 _expiration,
                 _linkId,
+                _approver,
                 _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature
@@ -111,7 +114,7 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
             require(_proxy.balance >= _weiAmount, "Insufficient funds");
 
             // Make sure the token is available for proxy contract
-            require(IERC721(_nftAddress).getApproved(_tokenId) == _proxy, "Unavailable token");
+            require(IERC721(_nftAddress).isApprovedForAll(_approver, _proxy), "Unavailable token");
 
             // Verify that link key is legit and signed by linkdrop signer's private key
             require

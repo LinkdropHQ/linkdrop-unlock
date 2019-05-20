@@ -31,6 +31,7 @@ interface ILinkdropFactoryERC721Approve {
         uint _tokenId,
         uint _expiration,
         address _linkId,
+        address _approver,
         address payable _linkdropSigner,
         bytes calldata _linkdropSignerSignature,
         address _receiver,

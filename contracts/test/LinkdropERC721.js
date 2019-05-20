@@ -107,7 +107,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
-      factory.checkClaimParamsERC721(
+      factory[
+        'checkClaimParamsERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes,address)'
+      ](
         weiAmount,
         nftAddress,
         tokenId,

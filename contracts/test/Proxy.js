@@ -31,7 +31,9 @@ describe('Factory/Proxy tests', () => {
   //   before(async () => {})
 
   it('should deploy master copy of linkdrop implementation', async () => {
-    masterCopy = await deployContract(linkdropSigner, LinkdropMastercopy)
+    masterCopy = await deployContract(linkdropSigner, LinkdropMastercopy, [], {
+      gasLimit: 6000000
+    })
     expect(masterCopy.address).to.not.eq(ethers.constants.AddressZero)
   })
 

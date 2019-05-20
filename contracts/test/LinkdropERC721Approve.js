@@ -9,8 +9,8 @@ import {
   solidity
 } from 'ethereum-waffle'
 
-import LinkdropFactoryApprove from '../build/LinkdropFactoryApprove'
-import LinkdropMastercopyApprove from '../build/LinkdropMastercopyApprove'
+import LinkdropFactory from '../build/LinkdropFactory'
+import LinkdropMastercopy from '../build/LinkdropMastercopy'
 import NFTMock from '../build/NFTMock'
 
 import {
@@ -20,6 +20,9 @@ import {
 } from '../scripts/utils'
 
 const ethers = require('ethers')
+
+// Turn off annoying warnings
+ethers.errors.setLogLevel('error')
 
 chai.use(solidity)
 const { expect } = chai
@@ -48,14 +51,16 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
   })
 
   it('should deploy master copy of linkdrop implementation', async () => {
-    masterCopy = await deployContract(linkdropSigner, LinkdropMastercopyApprove)
+    masterCopy = await deployContract(linkdropSigner, LinkdropMastercopy, [], {
+      gasLimit: 6000000
+    })
     expect(masterCopy.address).to.not.eq(ethers.constants.AddressZero)
   })
 
   it('should deploy factory', async () => {
     factory = await deployContract(
       linkdropSigner,
-      LinkdropFactoryApprove,
+      LinkdropFactory,
       [masterCopy.address],
       {
         gasLimit: 6000000
@@ -77,7 +82,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
 
     proxy = new ethers.Contract(
       proxyAddress,
-      LinkdropMastercopyApprove.abi,
+      LinkdropMastercopy.abi,
       linkdropSigner
     )
 
@@ -109,6 +114,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
         expirationTime,
         link.linkId,
         linkdropSigner.address,
+        approver.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -167,7 +173,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
   it('non-linkdropSigner should not be able to pause contract', async () => {
     let proxyInstance = new ethers.Contract(
       proxyAddress,
-      LinkdropMastercopyApprove.abi,
+      LinkdropMastercopy.abi,
       nonsender
     )
     // Pausing
@@ -298,8 +304,8 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
   })
 
   it('should fail to claim nft by expired link', async () => {
-    // Approving nft from approver to Linkdrop Contract
-    await nftInstance.approve(proxy.address, tokenId)
+    // Approving all tokens from approver to Linkdrop Contract
+    await nftInstance.setApprovalForAll(proxy.address, true)
 
     link = await createLink(linkdropSigner, weiAmount, nftAddress, tokenId, 0)
     receiverAddress = ethers.Wallet.createRandom().address
@@ -380,8 +386,6 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
 
   it('should fail to claim nft with fake linkdropSigner signature', async () => {
     tokenId = 2
-    // Approving nft from linkdropSigner to Linkdrop Contract
-    await nftInstance.approve(proxy.address, tokenId)
 
     let wallet = ethers.Wallet.createRandom()
     let linkId = wallet.address
@@ -499,8 +503,6 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
 
   it('should succesfully claim nft and deploy proxy if not deployed yet', async () => {
     tokenId = 3
-    // Approving nft from approver to Linkdrop Contract
-    await nftInstance.approve(proxyAddress, tokenId)
 
     nftAddress = nftInstance.address
     expirationTime = 11234234223
@@ -514,7 +516,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
     // Contract not deployed yet
     proxy = new ethers.Contract(
       proxyAddress,
-      LinkdropMastercopyApprove.abi,
+      LinkdropMastercopy.abi,
       linkdropSigner
     )
 
@@ -557,8 +559,6 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
 
   it('should succesfully claim eth and nft simulteneously', async () => {
     tokenId = 4
-    // Approving nft from approver to Linkdrop Contract
-    await nftInstance.approve(proxyAddress, tokenId)
 
     weiAmount = 15 // wei
 
