@@ -21,6 +21,9 @@ import {
 
 const ethers = require('ethers')
 
+// Turn off annoying warnings
+ethers.errors.setLogLevel('error')
+
 chai.use(solidity)
 const { expect } = chai
 
@@ -48,7 +51,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
   })
 
   it('should deploy master copy of linkdrop implementation', async () => {
-    masterCopy = await deployContract(linkdropSigner, LinkdropMastercopy)
+    masterCopy = await deployContract(linkdropSigner, LinkdropMastercopy, [], {
+      gasLimit: 6000000
+    })
     expect(masterCopy.address).to.not.eq(ethers.constants.AddressZero)
   })
 
@@ -222,7 +227,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
     await proxy.pause({ gasLimit: 500000 })
 
     await expect(
-      factory.claimERC721(
+      factory[
+        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+      ](
         weiAmount,
         nftAddress,
         tokenId,
@@ -252,7 +259,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
-      factory.claimERC721(
+      factory[
+        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+      ](
         weiAmount,
         nftAddress,
         tokenId,
@@ -279,7 +288,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
-      factory.claimERC721(
+      factory[
+        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+      ](
         weiAmount,
         nftAddress,
         tokenId,
@@ -307,7 +318,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
-      factory.claimERC721(
+      factory[
+        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+      ](
         weiAmount,
         nftAddress,
         tokenId,
@@ -334,7 +347,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
-    await factory.claimERC721(
+    await factory[
+      'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+    ](
       weiAmount,
       nftAddress,
       tokenId,
@@ -361,7 +376,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
 
   it('should fail to claim link twice', async () => {
     await expect(
-      factory.claimERC721(
+      factory[
+        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+      ](
         weiAmount,
         nftAddress,
         tokenId,
@@ -393,7 +410,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
     let fakeSignature = await receiver.signMessage(messageToSign)
 
     await expect(
-      factory.claimERC721(
+      factory[
+        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+      ](
         weiAmount,
         nftAddress,
         tokenId,
@@ -430,7 +449,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
       receiverAddress
     )
     await expect(
-      factory.claimERC721(
+      factory[
+        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+      ](
         weiAmount,
         nftAddress,
         tokenId,
@@ -459,7 +480,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
     await proxy.cancel(link.linkId, { gasLimit: 100000 })
 
     await expect(
-      factory.claimERC721(
+      factory[
+        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+      ](
         weiAmount,
         nftAddress,
         tokenId,
@@ -533,7 +556,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
-      factory.claimERC721(
+      factory[
+        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+      ](
         weiAmount,
         nftAddress,
         tokenId,
@@ -586,7 +611,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
-    await factory.claimERC721(
+    await factory[
+      'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+    ](
       weiAmount,
       nftAddress,
       tokenId,

@@ -21,6 +21,9 @@ import {
 
 const ethers = require('ethers')
 
+// Turn off annoying warnings
+ethers.errors.setLogLevel('error')
+
 chai.use(solidity)
 const { expect } = chai
 
@@ -48,7 +51,12 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
   })
 
   it('should deploy master copy of linkdrop implementation', async () => {
-    masterCopy = await deployContract(linkdropSigner, LinkdropMastercopyApprove)
+    masterCopy = await deployContract(
+      linkdropSigner,
+      LinkdropMastercopyApprove,
+      [],
+      { gasLimit: 6000000 }
+    )
     expect(masterCopy.address).to.not.eq(ethers.constants.AddressZero)
   })
 
