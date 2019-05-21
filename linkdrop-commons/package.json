@@ -5,6 +5,6 @@
   "main": "index.js",
   "license": "MIT",
   "babel": {
-    "extends": "../babel.config.js"
+    "extends": "../.babelrc"
   }
 }
