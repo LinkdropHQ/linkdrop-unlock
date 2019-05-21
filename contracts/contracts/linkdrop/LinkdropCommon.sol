@@ -103,6 +103,28 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     }
 
     /**
+    * @dev Function to add new signing key, can only be called by linkdrop master
+    * @param _linkdropSigner Address corresponding to signing key
+    * @return True if success
+    */
+    function addSigner(address _linkdropSigner) external onlyLinkdropMaster returns (bool) {
+        require(_linkdropSigner != address(0), "Invalid address");
+        isLinkdropSigner[_linkdropSigner] = true;
+        return true;
+    }
+
+    /**
+    * @dev Function to remove signing key, can only be called by linkdrop master
+    * @param _linkdropSigner Address corresponding to signing key
+    * @return True if success
+    */
+    function removeSigner(address _linkdropSigner) external onlyLinkdropMaster returns (bool) {
+        require(_linkdropSigner != address(0), "Invalid address");
+        isLinkdropSigner[_linkdropSigner] = false;
+        return true;
+    }
+
+    /**
     * @dev Fallback function to accept ETH
     */
     function () external payable {}
