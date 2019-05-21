@@ -24,14 +24,13 @@ interface ILinkdropFactoryERC20Approve {
     external pure
     returns (bool);
 
-    function checkClaimParams
+    function checkClaimParamsApprove
     (
         uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address _approver,
         address payable _linkdropSigner,
         bytes calldata _linkdropSignerSignature,
         address _receiver,
@@ -41,14 +40,13 @@ interface ILinkdropFactoryERC20Approve {
     external view
     returns (bool);
 
-    function claim
+    function claimApprove
     (
         uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address _approver,
         address payable _linkdropSigner,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,

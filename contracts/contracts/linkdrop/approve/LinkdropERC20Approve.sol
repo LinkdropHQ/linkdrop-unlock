@@ -6,53 +6,6 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
 
-    /**
-    * @dev Function to verify linkdrop signer's signature
-    * @param _weiAmount Amount of wei to be claimed
-    * @param _tokenAddress Token address
-    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
-    * @param _expiration Unix timestamp of link expiration time
-    * @param _linkId Address corresponding to link key
-    * @param _signature ECDSA signature of linkdrop signer
-    * @return True if signed with linkdrop signer's private key
-    */
-    function verifyLinkdropSignerSignature
-    (
-        uint _weiAmount,
-        address _tokenAddress,
-        uint _tokenAmount,
-        uint _expiration,
-        address _linkId,
-        bytes memory _signature
-    )
-    public view
-    returns (bool)
-    {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
-        address signer = ECDSA.recover(prefixedHash, _signature);
-        return signer == linkdropSigner;
-    }
-
-    /**
-    * @dev Function to verify linkdrop receiver's signature
-    * @param _linkId Address corresponding to link key
-    * @param _receiver Address of linkdrop receiver
-    * @param _signature ECDSA signature of linkdrop receiver
-    * @return True if signed with link key
-    */
-    function verifyReceiverSignature
-    (
-        address _linkId,
-        address _receiver,
-        bytes memory _signature
-    )
-    public view
-    returns (bool)
-    {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_receiver)));
-        address signer = ECDSA.recover(prefixedHash, _signature);
-        return signer == _linkId;
-    }
 
     /**
     * @dev Function to verify claim params and make sure the link is not claimed or canceled
@@ -67,7 +20,7 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
     * @param _receiverSignature ECDSA signature of linkdrop receiver,
     * @return True if success
     */
-    function checkClaimParams
+    function checkClaimParamsApprove
     (
         uint _weiAmount,
         address _tokenAddress,
