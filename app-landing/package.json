@@ -6,10 +6,10 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "dev": "webpack --watch --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js",
-    "dev:server": "webpack-dev-server --hot --inline --config webpack.dev.js",
-    "test": "NODE_PATH=. mocha test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive"
+    "dev": "NODE_ENV=development webpack --watch --config webpack.dev.js",
+    "build": "NODE_ENV=production webpack --config webpack.prod.js",
+    "dev:server": "NODE_ENV=development webpack-dev-server --hot --inline --config webpack.dev.js",
+    "test": "NODE_ENV=development NODE_PATH=. mocha test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.4.0",

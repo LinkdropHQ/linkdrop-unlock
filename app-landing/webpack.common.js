@@ -98,6 +98,12 @@ module.exports = {
     }]
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      'CONFIG': JSON.stringify((process.env.NODE_ENV === 'development') ? require(path.resolve(__dirname, '../config/app.config')) : require(path.resolve(__dirname, 'app.config.prod'))),
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
+      }
+    })
   ]
 }

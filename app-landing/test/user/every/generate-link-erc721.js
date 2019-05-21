@@ -1,10 +1,10 @@
-/* global describe, it */
+/* global describe, it, CONFIG */
 import { expect } from 'chai'
 import generateLinkERC721Generator from 'data/store/saga/user/every/generate-link-erc721.js'
 import { put, select } from 'redux-saga/effects'
 import LinkdropSDK from 'sdk/src/index'
-import { jsonRpcUrl, claimHost } from 'config'
 import configs from 'config-landing'
+const { jsonRpcUrl, claimHost } = CONFIG
 
 describe('data/store/saga/user/every/generate-link-erc721.js ERC-721', () => {
   const networkId = '1'

@@ -1,7 +1,8 @@
+/* global CONFIG */
 import { put, select } from 'redux-saga/effects'
 import LinkdropSDK from 'sdk/src/index'
-import { jsonRpcUrl, claimHost } from 'config'
 import configs from 'config-landing'
+const { jsonRpcUrl, claimHost } = CONFIG
 
 const generator = function * ({ payload }) {
   try {

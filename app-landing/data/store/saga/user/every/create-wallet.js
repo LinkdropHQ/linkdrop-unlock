@@ -1,9 +1,10 @@
+/* global CONFIG */
 import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import LinkdropSDK from 'sdk/src/index'
-import { masterCopy, factory } from 'config'
-const localStorage = (typeof window === 'undefined' ? {} : window).localStorage
+const { factory, masterCopy } = CONFIG
 
+const localStorage = (typeof window === 'undefined' ? {} : window).localStorage
 const generator = function * () {
   try {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })

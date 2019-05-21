@@ -1,10 +1,10 @@
-/* global describe, it */
+/* global describe, it, CONFIG */
 import { expect } from 'chai'
 import createWalletGenerator from 'data/store/saga/user/every/create-wallet.js'
 import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import LinkdropSDK from 'sdk/src/index'
-import { masterCopy, factory } from 'config'
+const { factory, masterCopy } = CONFIG
 
 describe('data/store/saga/user/every/create-wallet.js', () => {
   const newWallet = ethers.Wallet.createRandom()
