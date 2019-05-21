@@ -17,6 +17,9 @@ function loadStories () {
   require('stories/nft-item.js')
   require('stories/alert.js')
   require('stories/iconed-link.js')
+  require('stories/checkbox.js')
+  require('stories/text-control-block.js')
+  require('stories/text-copy-block.js')
 }
 
 addDecorator(withInfo)

@@ -2,12 +2,13 @@ import React from 'react'
 import styles from './styles.module'
 import { Icons } from 'src'
 import classNames from 'classnames'
+import PropTypes from 'prop-types'
 
 class TextControlBlock extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      blink: false
+      blink: props.blink
     }
   }
 
@@ -38,6 +39,15 @@ class TextControlBlock extends React.Component {
       }}>{icon}</div>
     </div>
   }
+}
+
+TextControlBlock.propTypes = {
+  value: PropTypes.string,
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+  style: PropTypes.object,
+  icon: PropTypes.element,
+  blink: PropTypes.bool
 }
 
 export default TextControlBlock

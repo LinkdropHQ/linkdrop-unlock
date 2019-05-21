@@ -25,4 +25,23 @@ describe('button common component', () => {
     wrapper.find('button').simulate('click')
     expect(onButtonClick).to.have.property('callCount', 1)
   })
+
+  it('prevents click events if disabled', () => {
+    const onButtonClick = sinon.spy()
+    const wrapper = shallow(<Button disabled onClick={onButtonClick}>Hello</Button>)
+    wrapper.find('button').simulate('click')
+    expect(onButtonClick).to.have.property('callCount', 0)
+  })
+
+  it('renders disabled button with special class', () => {
+    const onButtonClick = sinon.spy()
+    const wrapper = shallow(<Button disabled onClick={onButtonClick}>Hello</Button>)
+    expect(wrapper.find('button').is('.disabled')).equals(true)
+  })
+
+  it('renders inverted button with special class', () => {
+    const onButtonClick = sinon.spy()
+    const wrapper = shallow(<Button inverted onClick={onButtonClick}>Hello</Button>)
+    expect(wrapper.find('button').is('.inverted')).equals(true)
+  })
 })

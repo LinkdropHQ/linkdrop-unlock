@@ -10,4 +10,9 @@ describe('Input common component', () => {
     const input = shallow(<Input value='i am filled with text' />)
     expect(input.find('input').props().value).to.equal('i am filled with text')
   })
+
+  it('renders disabled input with special class', () => {
+    const wrapper = shallow(<Input disabled />)
+    expect(wrapper.find('input').is('.disabled')).equals(true)
+  })
 })

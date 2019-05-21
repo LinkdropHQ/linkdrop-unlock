@@ -1,12 +1,13 @@
 import React from 'react'
 import styles from './styles.module'
 import classNames from 'classnames'
+import PropTypes from 'prop-types'
 
 class TextCopyBlock extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      blink: false
+      blink: props.blink
     }
   }
 
@@ -48,6 +49,14 @@ class TextCopyBlock extends React.Component {
       }), 1500)
     })
   }
+}
+
+TextCopyBlock.propTypes = {
+  value: PropTypes.string,
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+  style: PropTypes.object,
+  blink: PropTypes.bool
 }
 
 export default TextCopyBlock
