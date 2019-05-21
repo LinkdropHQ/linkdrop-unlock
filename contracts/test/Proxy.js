@@ -21,7 +21,7 @@ const { expect } = chai
 
 let provider = createMockProvider()
 
-let [linkdropSigner, receiver, user] = getWallets(provider)
+let [linkdropMaster, receiver, user] = getWallets(provider)
 
 let masterCopy
 let factory
@@ -31,7 +31,7 @@ describe('Factory/Proxy tests', () => {
   //   before(async () => {})
 
   it('should deploy master copy of linkdrop implementation', async () => {
-    masterCopy = await deployContract(linkdropSigner, LinkdropMastercopy, [], {
+    masterCopy = await deployContract(linkdropMaster, LinkdropMastercopy, [], {
       gasLimit: 6000000
     })
     expect(masterCopy.address).to.not.eq(ethers.constants.AddressZero)
@@ -39,7 +39,7 @@ describe('Factory/Proxy tests', () => {
 
   it('should deploy factory', async () => {
     factory = await deployContract(
-      linkdropSigner,
+      linkdropMaster,
       LinkdropFactory,
       [masterCopy.address],
       {
@@ -54,20 +54,20 @@ describe('Factory/Proxy tests', () => {
     // Compute next address with js function
     let expectedAddress = await computeProxyAddress(
       factory.address,
-      linkdropSigner.address,
+      linkdropMaster.address,
       masterCopy.address
     )
 
-    await factory.deployProxy(linkdropSigner.address)
+    await factory.deployProxy(linkdropMaster.address)
 
     proxy = new ethers.Contract(
       expectedAddress,
       LinkdropMastercopy.abi,
-      linkdropSigner
+      linkdropMaster
     )
 
-    let linkdropSignerAddress = await proxy.linkdropSigner()
-    expect(linkdropSignerAddress).to.eq(linkdropSigner.address)
+    let linkdropSignerAddress = await proxy.linkdropMaster()
+    expect(linkdropSignerAddress).to.eq(linkdropMaster.address)
   })
 
   it('should correctly precompute create2 address', async () => {
@@ -83,10 +83,10 @@ describe('Factory/Proxy tests', () => {
     proxy = new ethers.Contract(
       expectedAddress,
       LinkdropMastercopy.abi,
-      linkdropSigner
+      linkdropMaster
     )
 
-    let linkdropSignerAddr = await proxy.linkdropSigner()
+    let linkdropSignerAddr = await proxy.linkdropMaster()
     expect(linkdropSignerAddress).to.eq(linkdropSignerAddr)
   })
 
@@ -103,10 +103,10 @@ describe('Factory/Proxy tests', () => {
     proxy = new ethers.Contract(
       expectedAddress,
       LinkdropMastercopy.abi,
-      linkdropSigner
+      linkdropMaster
     )
 
-    let linkdropSignerAddr = await proxy.linkdropSigner()
+    let linkdropSignerAddr = await proxy.linkdropMaster()
     expect(linkdropSignerAddress).to.eq(linkdropSignerAddr)
   })
 })

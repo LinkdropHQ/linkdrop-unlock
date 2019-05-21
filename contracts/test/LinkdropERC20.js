@@ -29,7 +29,7 @@ const { expect } = chai
 
 let provider = createMockProvider()
 
-let [linkdropMaster, receiver, nonsender] = getWallets(provider)
+let [linkdropMaster, receiver, nonsender, linkdropSigner] = getWallets(provider)
 
 let masterCopy
 let factory
@@ -90,13 +90,50 @@ describe('ETH/ERC20 linkdrop tests', () => {
     expect(linkdropMaster.address).to.eq(master)
   })
 
+  it('linkdropMaster should be able to add new signing keys', async () => {
+    let isSigner = await proxy.isLinkdropSigner(linkdropSigner.address)
+    expect(isSigner).to.eq(false)
+    await proxy.addSigner(linkdropSigner.address, { gasLimit: 500000 })
+    isSigner = await proxy.isLinkdropSigner(linkdropSigner.address)
+    expect(isSigner).to.eq(true)
+
+    await proxy.addSigner(receiver.address, { gasLimit: 500000 })
+  })
+
+  it('non linkdropMaster should not be able to remove signing key', async () => {
+    let proxyInstance = new ethers.Contract(
+      proxyAddress,
+      LinkdropMastercopy.abi,
+      nonsender
+    )
+
+    let isSigner = await proxyInstance.isLinkdropSigner(receiver.address)
+    expect(isSigner).to.eq(true)
+
+    await expect(
+      proxyInstance.removeSigner(receiver.address, { gasLimit: 500000 })
+    ).to.be.revertedWith('Only linkdrop master')
+    isSigner = await proxyInstance.isLinkdropSigner(receiver.address)
+    expect(isSigner).to.eq(true)
+  })
+
+  it('linkdropMaster should be able to remove signing key', async () => {
+    let isSigner = await proxy.isLinkdropSigner(receiver.address)
+    expect(isSigner).to.eq(true)
+
+    await proxy.removeSigner(receiver.address, { gasLimit: 500000 })
+
+    isSigner = await proxy.isLinkdropSigner(receiver.address)
+    expect(isSigner).to.eq(false)
+  })
+
   it('should revert while checking claim params with unsufficient funds', async () => {
     weiAmount = 0
     tokenAddress = tokenInstance.address
     tokenAmount = 100
     expirationTime = 11234234223
     link = await createLink(
-      linkdropMaster,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -106,9 +143,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
-      factory[
-        'checkClaimParams(uint256,address,uint256,uint256,address,address,bytes,address,bytes,address)'
-      ](
+      factory.checkClaimParams(
         weiAmount,
         tokenAddress,
         tokenAmount,
@@ -141,7 +176,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
 
   it('signs receiver address with link key and verifies this signature onchain', async () => {
     link = await createLink(
-      linkdropMaster,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -188,7 +223,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
 
   it('linkdropMaster should be able to cancel link', async () => {
     link = await createLink(
-      linkdropMaster,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -204,7 +239,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
 
   it('should fail to claim tokens when paused', async () => {
     link = await createLink(
-      linkdropMaster,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -238,7 +273,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     await proxy.unpause({ gasLimit: 500000 })
 
     link = await createLink(
-      linkdropMaster,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -268,7 +303,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     await tokenInstance.transfer(proxy.address, tokenAmount)
 
     link = await createLink(
-      linkdropMaster,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -297,7 +332,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     // Transfering tokens from linkdropMaster to Linkdrop Contract
     await tokenInstance.transfer(proxy.address, tokenAmount)
     link = await createLink(
-      linkdropMaster,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -380,7 +415,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
 
   it('should fail to claim tokens with fake receiver signature', async () => {
     link = await createLink(
-      linkdropMaster,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -388,7 +423,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     )
 
     let fakeLink = await createLink(
-      linkdropMaster,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -417,7 +452,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
 
   it('should fail to claim tokens by canceled link', async () => {
     link = await createLink(
-      linkdropMaster,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -463,7 +498,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     weiAmount = 100 // wei
     tokenAmount = 0
     link = await createLink(
-      linkdropMaster,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -516,7 +551,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     )
 
     link = await createLink(
-      linkdropMaster,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -568,7 +603,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     await linkdropMaster.sendTransaction(tx)
 
     link = await createLink(
-      linkdropMaster,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
