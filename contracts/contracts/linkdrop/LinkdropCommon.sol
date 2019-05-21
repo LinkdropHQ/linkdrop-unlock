@@ -7,24 +7,25 @@ import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
 
     /**
-    * @dev Function to set the linkdrop signer, can only be called once
-    * @param _linkdropSigner Address of linkdrop signer
+    * @dev Function to set the linkdrop master, can only be called once
+    * @param _linkdropMaster Address corresponding to master key
     */
     function initializer
     (
-        address payable _linkdropSigner
+        address payable _linkdropMaster
     )
     public
     returns (bool)
     {
         require(_initialized == false, "Initialized");
-        linkdropSigner = _linkdropSigner;
+        linkdropMaster = _linkdropMaster;
+        isLinkdropSigner(linkdropMaster) = true;
         _initialized = true;
         return true;
     }
 
-    modifier onlyLinkdropSigner() {
-        require(msg.sender == linkdropSigner, "Only linkdrop signer");
+    modifier onlyLinkdropMaster() {
+        require(msg.sender == linkdropMaster, "Only linkdrop master");
         _;
     }
 
@@ -60,11 +61,11 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     }
 
     /**
-    * @dev Function to cancel a link, can only be called by linkdrop signer
+    * @dev Function to cancel a link, can only be called by linkdrop master
     * @param _linkId Address corresponding to link key
     * @return True if success
     */
-    function cancel(address _linkId) external onlyLinkdropSigner returns (bool) {
+    function cancel(address _linkId) external onlyLinkdropMaster returns (bool) {
         require(isClaimedLink(_linkId) == false, "Claimed link");
         _canceled[_linkId] = true;
         emit Canceled(_linkId, now);
@@ -72,29 +73,29 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     }
 
     /**
-    * @dev Function to withdraw eth to linkdrop signer, can only be called by linkdrop signer
+    * @dev Function to withdraw eth to linkdrop master, can only be called by linkdrop master
     * @return True if success
     */
-    function withdraw() external onlyLinkdropSigner returns (bool) {
-        linkdropSigner.transfer(address(this).balance);
+    function withdraw() external onlyLinkdropMaster returns (bool) {
+        linkdropMaster.transfer(address(this).balance);
         return true;
     }
 
     /**
-    * @dev Function to pause contract, can only be called by linkdrop signer
+    * @dev Function to pause contract, can only be called by linkdrop master
     * @return True if success
     */
-    function pause() external onlyLinkdropSigner whenNotPaused returns (bool) {
+    function pause() external onlyLinkdropMaster whenNotPaused returns (bool) {
         _paused = true;
         emit Paused(now);
         return true;
     }
 
     /**
-    * @dev Function to unpause contract, can only be called by linkdrop signer
+    * @dev Function to unpause contract, can only be called by linkdrop master
     * @return True if success
     */
-    function unpause() external onlyLinkdropSigner returns (bool) {
+    function unpause() external onlyLinkdropMaster returns (bool) {
         require(paused(), "Unpaused");
         _paused = false;
         emit Unpaused(now);

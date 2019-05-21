@@ -1,11 +1,58 @@
 pragma solidity ^0.5.6;
 
-import "../LinkdropCommon.sol";
-import "../interfaces/approve/ILinkdropERC20Approve.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "../interfaces/approve/ILinkdropERC20Approve.sol";
+import "../LinkdropCommon.sol";
 
 contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
 
+    /**
+    * @dev Function to verify linkdrop signer's signature
+    * @param _weiAmount Amount of wei to be claimed
+    * @param _tokenAddress Token address
+    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
+    * @param _expiration Unix timestamp of link expiration time
+    * @param _linkId Address corresponding to link key
+    * @param _signature ECDSA signature of linkdrop signer
+    * @return True if signed with linkdrop signer's private key
+    */
+    function verifyLinkdropSignerSignature
+    (
+        uint _weiAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
+        uint _expiration,
+        address _linkId,
+        bytes memory _signature
+    )
+    public view
+    returns (bool)
+    {
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
+        address signer = ECDSA.recover(prefixedHash, _signature);
+        return isLinkdropSigner(signer);
+    }
+
+    /**
+    * @dev Function to verify linkdrop receiver's signature
+    * @param _linkId Address corresponding to link key
+    * @param _receiver Address of linkdrop receiver
+    * @param _signature ECDSA signature of linkdrop receiver
+    * @return True if signed with link key
+    */
+    function verifyReceiverSignature
+    (
+        address _linkId,
+        address _receiver,
+        bytes memory _signature
+    )
+    public view
+    returns (bool)
+    {
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_receiver)));
+        address signer = ECDSA.recover(prefixedHash, _signature);
+        return signer == _linkId;
+    }
 
     /**
     * @dev Function to verify claim params and make sure the link is not claimed or canceled
@@ -14,7 +61,6 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _approver Approver address
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver,
@@ -27,7 +73,6 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address _approver,
         bytes memory _linkdropSignerSignature,
         address _receiver,
         bytes memory _receiverSignature
@@ -54,7 +99,7 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
 
         // Make sure tokens are available for this contract
         if (_tokenAddress != address(0)) {
-            require(IERC20(_tokenAddress).allowance(_approver, address(this)) >= _tokenAmount, "Insufficient amount of tokens");
+            require(IERC20(_tokenAddress).allowance(linkdropMaster, address(this)) >= _tokenAmount, "Insufficient amount of tokens");
         }
 
         // Verify that link key is legit and signed by linkdrop signer
@@ -81,20 +126,18 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _approver Approver address
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
-    function claim
+    function claimApprove
     (
         uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address _approver,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
@@ -106,14 +149,13 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
         // Make sure params are valid
         require
         (
-            checkClaimParams
+            checkClaimParamsApprove
             (
                 _weiAmount,
                 _tokenAddress,
                 _tokenAmount,
                 _expiration,
-                 _linkId,
-                 _approver,
+                _linkId,
                 _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature
@@ -125,7 +167,7 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
         claimedTo[_linkId] = _receiver;
 
         // Make sure transfer succeeds
-        require(_transferFunds(_weiAmount, _tokenAddress, _tokenAmount, _approver, _receiver), "Transfer failed");
+        require(_transferFunds(_weiAmount, _tokenAddress, _tokenAmount, _receiver), "Transfer failed");
 
         // Emit claim event
         emit Claimed(_linkId, _weiAmount, _tokenAddress, _tokenAmount, _receiver, now);
@@ -138,11 +180,10 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
     * @param _weiAmount Amount of wei to be claimed
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
-    * @param _approver Approver address
     * @param _receiver Address to transfer funds to
     * @return True if success
     */
-    function _transferFunds(uint _weiAmount, address _tokenAddress, uint _tokenAmount, address _approver, address payable _receiver)
+    function _transferFunds(uint _weiAmount, address _tokenAddress, uint _tokenAmount, address payable _receiver)
     internal returns (bool)
     {
         // Transfer ETH
@@ -152,7 +193,7 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
 
         // Transfer tokens
         if (_tokenAmount > 0) {
-            IERC20(_tokenAddress).transferFrom(_approver, _receiver, _tokenAmount);
+            IERC20(_tokenAddress).transferFrom(linkdropMaster, _receiver, _tokenAmount);
         }
 
         return true;
