@@ -20,7 +20,7 @@
     "cross-env": "5.0.5"
   },
   "babel": {
-    "extends": "../babel.config.js"
+    "extends": "../.babelrc"
   },
   "dependencies": {
     "cors": "^2.8.5",

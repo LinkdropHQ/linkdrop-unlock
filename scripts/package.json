@@ -10,6 +10,6 @@
     "query-string": "^6.4.2"
   },
   "babel": {
-    "extends": "../babel.config.js"
+    "extends": "../.babelrc"
   }
 }
