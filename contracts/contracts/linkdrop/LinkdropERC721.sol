@@ -1,10 +1,10 @@
 pragma solidity ^0.5.6;
 
-import "./LinkdropCommon.sol";
+import "./approve/LinkdropERC721Approve.sol";
 import "../interfaces/ILinkdropERC721.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 
-contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
+contract LinkdropERC721 is ILinkdropERC721, LinkdropERC721Approve {
 
     /**
     * @dev Function to verify linkdrop signer's signature

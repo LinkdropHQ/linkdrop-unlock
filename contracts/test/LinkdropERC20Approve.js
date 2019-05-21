@@ -11,7 +11,7 @@ import {
 
 import LinkdropFactory from '../build/LinkdropFactory'
 import LinkdropMastercopy from '../build/LinkdropMastercopy'
-import NFTMock from '../build/NFTMock'
+import TokenMock from '../build/TokenMock'
 
 import {
   computeProxyAddress,
@@ -29,25 +29,25 @@ const { expect } = chai
 
 let provider = createMockProvider()
 
-let [linkdropSigner, receiver, nonsender] = getWallets(provider)
+let [linkdropSigner, receiver, nonsender, approver] = getWallets(provider)
 
 let masterCopy
 let factory
 let proxy
 let proxyAddress
-let nftInstance
+let tokenInstance
 
 let link
 let receiverAddress
 let receiverSignature
 let weiAmount
-let nftAddress
-let tokenId
+let tokenAddress
+let tokenAmount
 let expirationTime
 
-describe('ETH/ERC721 linkdrop tests', () => {
+describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
   before(async () => {
-    nftInstance = await deployContract(linkdropSigner, NFTMock)
+    tokenInstance = await deployContract(approver, TokenMock)
   })
 
   it('should deploy master copy of linkdrop implementation', async () => {
@@ -87,62 +87,50 @@ describe('ETH/ERC721 linkdrop tests', () => {
     )
 
     let senderAddress = await proxy.linkdropSigner()
-    expect(senderAddress).to.eq(linkdropSigner.address)
+    expect(linkdropSigner.address).to.eq(senderAddress)
   })
 
-  it('should revert while checking claim params with unavailable token', async () => {
+  it('should revert while checking claim params with unsufficient funds', async () => {
     weiAmount = 0
-    nftAddress = nftInstance.address
-    tokenId = 1
+    tokenAddress = tokenInstance.address
+    tokenAmount = 100
     expirationTime = 11234234223
-
     link = await createLink(
       linkdropSigner,
       weiAmount,
-      nftAddress,
-      tokenId,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
-      factory[
-        'checkClaimParamsERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes,address)'
-      ](
+      factory.checkClaimParams(
         weiAmount,
-        nftAddress,
-        tokenId,
+        tokenAddress,
+        tokenAmount,
         expirationTime,
         link.linkId,
+        approver.address,
         linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
         proxyAddress
       )
-    ).to.be.revertedWith('Unavailable token')
+    ).to.be.revertedWith('Insufficient amount of tokens')
   })
 
   it('creates new link key and verifies its signature', async () => {
-    let senderAddress = linkdropSigner.address
-
     let senderAddr = await proxy.linkdropSigner()
-    expect(senderAddress).to.eq(senderAddr)
-
-    link = await createLink(
-      linkdropSigner,
-      weiAmount,
-      nftAddress,
-      tokenId,
-      expirationTime
-    )
+    expect(linkdropSigner.address).to.eq(senderAddr)
 
     expect(
-      await proxy.verifyLinkdropSignerSignatureERC721(
+      await proxy.verifyLinkdropSignerSignature(
         weiAmount,
-        nftAddress,
-        tokenId,
+        tokenAddress,
+        tokenAmount,
         expirationTime,
         link.linkId,
         link.linkdropSignerSignature
@@ -154,8 +142,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
     link = await createLink(
       linkdropSigner,
       weiAmount,
-      nftAddress,
-      tokenId,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
 
@@ -163,7 +151,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     expect(
-      await proxy.verifyReceiverSignatureERC721(
+      await proxy.verifyReceiverSignature(
         link.linkId,
         receiverAddress,
         receiverSignature
@@ -201,8 +189,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
     link = await createLink(
       linkdropSigner,
       weiAmount,
-      nftAddress,
-      tokenId,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
     await expect(proxy.cancel(link.linkId, { gasLimit: 200000 })).to.emit(
@@ -213,12 +201,12 @@ describe('ETH/ERC721 linkdrop tests', () => {
     expect(canceled).to.eq(true)
   })
 
-  it('should fail to claim nft when paused', async () => {
+  it('should fail to claim tokens when paused', async () => {
     link = await createLink(
       linkdropSigner,
       weiAmount,
-      nftAddress,
-      tokenId,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
 
@@ -230,13 +218,14 @@ describe('ETH/ERC721 linkdrop tests', () => {
 
     await expect(
       factory[
-        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
       ](
         weiAmount,
-        nftAddress,
-        tokenId,
+        tokenAddress,
+        tokenAmount,
         expirationTime,
         link.linkId,
+        approver.address,
         linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
@@ -246,15 +235,15 @@ describe('ETH/ERC721 linkdrop tests', () => {
     ).to.be.reverted
   })
 
-  it('should fail to claim nft not owned by proxy', async () => {
+  it('should fail to claim insufficient funds', async () => {
     // Unpause
     await proxy.unpause({ gasLimit: 500000 })
 
     link = await createLink(
       linkdropSigner,
       weiAmount,
-      nftAddress,
-      tokenId,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
     receiverAddress = ethers.Wallet.createRandom().address
@@ -262,72 +251,47 @@ describe('ETH/ERC721 linkdrop tests', () => {
 
     await expect(
       factory[
-        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
       ](
         weiAmount,
-        nftAddress,
-        tokenId,
+        tokenAddress,
+        tokenAmount,
         expirationTime,
         link.linkId,
+        approver.address,
         linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.reverted
+    ).to.be.revertedWith('Insufficient amount of tokens')
   })
 
-  it('should fail to claim unavailable token', async () => {
+  it('should fail to claim tokens by expired link', async () => {
+    // Approving tokens from linkdropSigner to Linkdrop Contract
+    await tokenInstance.approve(proxy.address, tokenAmount)
+
     link = await createLink(
       linkdropSigner,
       weiAmount,
-      nftAddress,
-      tokenId,
-      expirationTime
+      tokenAddress,
+      tokenAmount,
+      0
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
       factory[
-        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
       ](
         weiAmount,
-        nftAddress,
-        tokenId,
-        expirationTime,
-        link.linkId,
-        linkdropSigner.address,
-        link.linkdropSignerSignature,
-        receiverAddress,
-        receiverSignature,
-        { gasLimit: 500000 }
-      )
-    ).to.be.revertedWith('Unavailable token')
-  })
-
-  it('should fail to claim nft by expired link', async () => {
-    // Transfering nft from linkdropSigner to Linkdrop Contract
-    await nftInstance.transferFrom(
-      linkdropSigner.address,
-      proxy.address,
-      tokenId
-    )
-
-    link = await createLink(linkdropSigner, weiAmount, nftAddress, tokenId, 0)
-    receiverAddress = ethers.Wallet.createRandom().address
-    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
-
-    await expect(
-      factory[
-        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
-      ](
-        weiAmount,
-        nftAddress,
-        tokenId,
+        tokenAddress,
+        tokenAmount,
         0,
         link.linkId,
+        approver.address,
         linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
@@ -337,26 +301,31 @@ describe('ETH/ERC721 linkdrop tests', () => {
     ).to.be.revertedWith('Expired link')
   })
 
-  it('should succesfully claim nft with valid claim params', async () => {
+  it('should succesfully claim tokens with valid claim params', async () => {
+    // Approving tokens from linkdropSigner to Linkdrop Contract
+    await tokenInstance.approve(proxy.address, tokenAmount)
     link = await createLink(
       linkdropSigner,
       weiAmount,
-      nftAddress,
-      tokenId,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
+    let approverBalanceBefore = await tokenInstance.balanceOf(approver.address)
+
     await factory[
-      'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+      'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
     ](
       weiAmount,
-      nftAddress,
-      tokenId,
+      tokenAddress,
+      tokenAmount,
       expirationTime,
       link.linkId,
+      approver.address,
       linkdropSigner.address,
       link.linkdropSignerSignature,
       receiverAddress,
@@ -364,8 +333,11 @@ describe('ETH/ERC721 linkdrop tests', () => {
       { gasLimit: 800000 }
     )
 
-    let owner = await nftInstance.ownerOf(tokenId)
-    expect(owner).to.eq(receiverAddress)
+    let approverBalanceAfter = await tokenInstance.balanceOf(approver.address)
+    expect(approverBalanceAfter).to.eq(approverBalanceBefore.sub(tokenAmount))
+
+    let receiverTokenBalance = await tokenInstance.balanceOf(receiverAddress)
+    expect(receiverTokenBalance).to.eq(tokenAmount)
   })
 
   it('should be able to check link claimed from factory instance', async () => {
@@ -379,13 +351,14 @@ describe('ETH/ERC721 linkdrop tests', () => {
   it('should fail to claim link twice', async () => {
     await expect(
       factory[
-        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
       ](
         weiAmount,
-        nftAddress,
-        tokenId,
+        tokenAddress,
+        tokenAmount,
         expirationTime,
         link.linkId,
+        approver.address,
         linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
@@ -395,14 +368,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
     ).to.be.revertedWith('Claimed link')
   })
 
-  it('should fail to claim nft with fake linkdropSigner signature', async () => {
-    tokenId = 2
-    // Approving nft from linkdropSigner to Linkdrop Contract
-    await nftInstance.transferFrom(
-      linkdropSigner.address,
-      proxy.address,
-      tokenId
-    )
+  it('should fail to claim tokens with fake linkdropSigner signature', async () => {
+    // Approving tokens from linkdropSigner to Linkdrop Contract
+    await tokenInstance.approve(proxy.address, tokenAmount)
 
     let wallet = ethers.Wallet.createRandom()
     let linkId = wallet.address
@@ -413,13 +381,14 @@ describe('ETH/ERC721 linkdrop tests', () => {
 
     await expect(
       factory[
-        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
       ](
         weiAmount,
-        nftAddress,
-        tokenId,
+        tokenAddress,
+        tokenAmount,
         expirationTime,
         linkId,
+        approver.address,
         linkdropSigner.address,
         fakeSignature,
         receiverAddress,
@@ -429,20 +398,20 @@ describe('ETH/ERC721 linkdrop tests', () => {
     ).to.be.revertedWith('Invalid linkdrop signer signature')
   })
 
-  it('should fail to claim nft with fake receiver signature', async () => {
+  it('should fail to claim tokens with fake receiver signature', async () => {
     link = await createLink(
       linkdropSigner,
       weiAmount,
-      nftAddress,
-      tokenId,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
 
     let fakeLink = await createLink(
       linkdropSigner,
       weiAmount,
-      nftAddress,
-      tokenId,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
     receiverAddress = ethers.Wallet.createRandom().address
@@ -452,13 +421,14 @@ describe('ETH/ERC721 linkdrop tests', () => {
     )
     await expect(
       factory[
-        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
       ](
         weiAmount,
-        nftAddress,
-        tokenId,
+        tokenAddress,
+        tokenAmount,
         expirationTime,
         link.linkId,
+        approver.address,
         linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
@@ -468,12 +438,12 @@ describe('ETH/ERC721 linkdrop tests', () => {
     ).to.be.revertedWith('Invalid receiver signature')
   })
 
-  it('should fail to claim nft by canceled link', async () => {
+  it('should fail to claim tokens by canceled link', async () => {
     link = await createLink(
       linkdropSigner,
       weiAmount,
-      nftAddress,
-      tokenId,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
     receiverAddress = ethers.Wallet.createRandom().address
@@ -483,13 +453,14 @@ describe('ETH/ERC721 linkdrop tests', () => {
 
     await expect(
       factory[
-        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
       ](
         weiAmount,
-        nftAddress,
-        tokenId,
+        tokenAddress,
+        tokenAmount,
         expirationTime,
         link.linkId,
+        approver.address,
         linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
@@ -499,7 +470,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
     ).to.be.revertedWith('Canceled link')
   })
 
-  it('should be able to send ethers to proxy', async () => {
+  it('should be able to get balance and send ethers to proxy', async () => {
     let balanceBefore = await provider.getBalance(proxy.address)
 
     let wei = ethers.utils.parseEther('2')
@@ -510,7 +481,40 @@ describe('ETH/ERC721 linkdrop tests', () => {
     }
     await linkdropSigner.sendTransaction(tx)
     let balanceAfter = await provider.getBalance(proxy.address)
+
     expect(balanceAfter).to.eq(balanceBefore.add(wei))
+  })
+
+  it('should succesully claim ethers only', async () => {
+    weiAmount = 100 // wei
+    tokenAmount = 0
+    link = await createLink(
+      linkdropSigner,
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime
+    )
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      factory[
+        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
+      ](
+        weiAmount,
+        tokenAddress,
+        tokenAmount,
+        expirationTime,
+        link.linkId,
+        approver.address,
+        linkdropSigner.address,
+        link.linkdropSignerSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    ).to.emit(proxy, 'Claimed')
   })
 
   it('should be able to withdraw ethers from proxy to linkdropSigner', async () => {
@@ -521,19 +525,13 @@ describe('ETH/ERC721 linkdrop tests', () => {
     expect(balanceAfter).to.eq(0)
   })
 
-  it('should succesfully claim nft and deploy proxy if not deployed yet', async () => {
-    tokenId = 3
-    // Transfering nft from linkdropSigner to Linkdrop Contract
-    await nftInstance.transferFrom(
-      linkdropSigner.address,
-      proxyAddress,
-      tokenId
-    )
-
-    nftAddress = nftInstance.address
+  it('should succesfully claim tokens and deploy proxy is not deployed yet', async () => {
+    weiAmount = 0 // wei
+    tokenAddress = tokenInstance.address
+    tokenAmount = 123
     expirationTime = 11234234223
 
-    proxyAddress = await computeProxyAddress(
+    let proxyAddress = await computeProxyAddress(
       factory.address,
       linkdropSigner.address,
       masterCopy.address
@@ -549,51 +547,50 @@ describe('ETH/ERC721 linkdrop tests', () => {
     link = await createLink(
       linkdropSigner,
       weiAmount,
-      nftAddress,
-      tokenId,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
+    // Approving tokens from linkdropSigner to Linkdrop Contract
+    await tokenInstance.approve(proxyAddress, tokenAmount)
     await expect(
       factory[
-        'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
       ](
         weiAmount,
-        nftAddress,
-        tokenId,
+        tokenAddress,
+        tokenAmount,
         expirationTime,
         link.linkId,
-        linkdropSigner.address,
+        approver.address,
+        linkdropSigner.address, // New
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
         { gasLimit: 500000 }
       )
     )
-      .to.emit(proxy, 'ClaimedERC721')
-      .to.emit(nftInstance, 'Transfer')
+      .to.emit(proxy, 'Claimed')
+      .to.emit(tokenInstance, 'Transfer') // should transfer claimed tokens to receiver
 
     // Now when deployed, check linkdropSigner
     let senderAddr = await proxy.linkdropSigner()
     expect(linkdropSigner.address).to.eq(senderAddr)
 
-    let owner = await nftInstance.ownerOf(tokenId)
-    expect(owner).to.eq(receiverAddress)
+    let receiverTokenBalance = await tokenInstance.balanceOf(receiverAddress)
+    expect(receiverTokenBalance).to.eq(tokenAmount)
   })
 
-  it('should succesfully claim eth and nft simulteneously', async () => {
-    tokenId = 4
-    // Transfering nft from linkdropSigner to Linkdrop Contract
-    await nftInstance.transferFrom(
-      linkdropSigner.address,
-      proxyAddress,
-      tokenId
-    )
-
+  it('should succesfully claim tokens and ethers simultaneously', async () => {
     weiAmount = 15 // wei
+    tokenAmount = 20
+
+    // Approving tokens from linkdropSigner to Linkdrop Contract
+    await tokenInstance.approve(proxy.address, 20)
 
     // Send ethers to Linkdrop contract
     let tx = {
@@ -605,33 +602,49 @@ describe('ETH/ERC721 linkdrop tests', () => {
     link = await createLink(
       linkdropSigner,
       weiAmount,
-      nftAddress,
-      tokenId,
+      tokenAddress,
+      tokenAmount,
       expirationTime
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
+    let proxyEthBalanceBefore = await provider.getBalance(proxy.address)
+    let approverTokenBalanceBefore = await tokenInstance.balanceOf(
+      approver.address
+    )
+
     await factory[
-      'claimERC721(uint256,address,uint256,uint256,address,address,bytes,address,bytes)'
+      'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
     ](
       weiAmount,
-      nftAddress,
-      tokenId,
+      tokenAddress,
+      tokenAmount,
       expirationTime,
       link.linkId,
+      approver.address,
       linkdropSigner.address,
       link.linkdropSignerSignature,
       receiverAddress,
       receiverSignature,
-      { gasLimit: 800000 }
+      { gasLimit: 500000 }
     )
 
-    let owner = await nftInstance.ownerOf(tokenId)
-    expect(owner).to.eq(receiverAddress)
+    let proxyEthBalanceAfter = await provider.getBalance(proxy.address)
+    expect(proxyEthBalanceAfter).to.eq(proxyEthBalanceBefore.sub(weiAmount))
+
+    let approverTokenBalanceAfter = await await tokenInstance.balanceOf(
+      approver.address
+    )
+    expect(approverTokenBalanceAfter).to.eq(
+      approverTokenBalanceBefore.sub(tokenAmount)
+    )
 
     let receiverEthBalance = await provider.getBalance(receiverAddress)
     expect(receiverEthBalance).to.eq(weiAmount)
+
+    let receiverTokenBalance = await tokenInstance.balanceOf(receiverAddress)
+    expect(receiverTokenBalance).to.eq(tokenAmount)
   })
 })

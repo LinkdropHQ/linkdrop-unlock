@@ -1,26 +1,26 @@
 pragma solidity ^0.5.6;
 
-import "./approve/LinkdropERC20Approve.sol";
-import "../interfaces/ILinkdropERC20.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "../LinkdropCommon.sol";
+import "../../interfaces/approve/ILinkdropERC721Approve.sol";
+import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 
-contract LinkdropERC20 is ILinkdropERC20, LinkdropERC20Approve {
+contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
 
     /**
     * @dev Function to verify linkdrop signer's signature
     * @param _weiAmount Amount of wei to be claimed
-    * @param _tokenAddress Token address
-    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
+    * @param _nftAddress NFT address
+    * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _signature ECDSA signature of linkdrop signer
     * @return True if signed with linkdrop signer's private key
     */
-    function verifyLinkdropSignerSignature
+    function verifyLinkdropSignerSignatureERC721
     (
         uint _weiAmount,
-        address _tokenAddress,
-        uint _tokenAmount,
+        address _nftAddress,
+        uint _tokenId,
         uint _expiration,
         address _linkId,
         bytes memory _signature
@@ -28,7 +28,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropERC20Approve {
     public view
     returns (bool)
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
         return signer == linkdropSigner;
     }
@@ -40,7 +40,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropERC20Approve {
     * @param _signature ECDSA signature of linkdrop receiver
     * @return True if signed with link key
     */
-    function verifyReceiverSignature
+    function verifyReceiverSignatureERC721
     (
         address _linkId,
         address _receiver,
@@ -57,22 +57,24 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropERC20Approve {
     /**
     * @dev Function to verify claim params and make sure the link is not claimed or canceled
     * @param _weiAmount Amount of wei to be claimed
-    * @param _tokenAddress Token address
-    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
+    * @param _nftAddress NFT address
+    * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
+    * @param _approver Approver address
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
-    * @param _receiverSignature ECDSA signature of linkdrop receiver,
+    * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
-    function checkClaimParams
+    function checkClaimParamsERC721
     (
         uint _weiAmount,
-        address _tokenAddress,
-        uint _tokenAmount,
+        address _nftAddress,
+        uint _tokenId,
         uint _expiration,
         address _linkId,
+        address _approver,
         bytes memory _linkdropSignerSignature,
         address _receiver,
         bytes memory _receiverSignature
@@ -80,10 +82,8 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropERC20Approve {
     public view
     returns (bool)
     {
-        // If tokens are being claimed
-        if (_tokenAmount > 0) {
-            require(_tokenAddress != address(0), "Invalid token address");
-        }
+        // Make sure nft address is not equal to address(0)
+        require(_nftAddress != address(0), "Invalid nft address");
 
         // Make sure link is not claimed
         require(isClaimedLink(_linkId) == false, "Claimed link");
@@ -95,24 +95,22 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropERC20Approve {
         require(_expiration >= now, "Expired link");
 
         // Make sure eth amount is available for this contract
-        require(address(this).balance >= _weiAmount, "Insufficient amount of eth");
+        require(address(this).balance >= _weiAmount, "Insufficient funds");
 
-        // Make sure tokens are available for this contract
-        if (_tokenAddress != address(0)) {
-            require(IERC20(_tokenAddress).balanceOf(address(this)) >= _tokenAmount, "Insufficient amount of tokens");
-        }
+        // Make sure nft is available for this contract
+        require(IERC721(_nftAddress).isApprovedForAll(_approver, address(this)), "Unavailable token");
 
-        // Verify that link key is legit and signed by linkdrop signer
+        // Verify that link key is legit and signed by linkdrop signer's private key
         require
         (
-            verifyLinkdropSignerSignature(_weiAmount, _tokenAddress, _tokenAmount, _expiration, _linkId, _linkdropSignerSignature),
+            verifyLinkdropSignerSignatureERC721(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId, _linkdropSignerSignature),
             "Invalid linkdrop signer signature"
         );
 
         // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
         require
         (
-            verifyReceiverSignature(_linkId, _receiver, _receiverSignature),
+            verifyReceiverSignatureERC721(_linkId, _receiver, _receiverSignature),
             "Invalid receiver signature"
         );
 
@@ -120,24 +118,26 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropERC20Approve {
     }
 
     /**
-    * @dev Function to claim ETH and/or ERC20 tokens. Can only be called when contract is not paused
+    * @dev Function to claim ETH and/or ERC721 token. Can only be called when contract is not paused
     * @param _weiAmount Amount of wei to be claimed
-    * @param _tokenAddress Token address
-    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
+    * @param _nftAddress NFT address
+    * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
+    * @param _approver Approver address
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
-    function claim
+    function claimERC721
     (
         uint _weiAmount,
-        address _tokenAddress,
-        uint _tokenAmount,
+        address _nftAddress,
+        uint _tokenId,
         uint _expiration,
         address _linkId,
+        address _approver,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
@@ -146,16 +146,18 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropERC20Approve {
     whenNotPaused
     returns (bool)
     {
+
         // Make sure params are valid
         require
         (
-            checkClaimParams
+            checkClaimParamsERC721
             (
                 _weiAmount,
-                _tokenAddress,
-                _tokenAmount,
+                _nftAddress,
+                _tokenId,
                 _expiration,
-                 _linkId,
+                _linkId,
+                _approver,
                 _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature
@@ -167,23 +169,24 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropERC20Approve {
         claimedTo[_linkId] = _receiver;
 
         // Make sure transfer succeeds
-        require(_transferFunds(_weiAmount, _tokenAddress, _tokenAmount, _receiver), "Transfer failed");
+        require(_transferFundsERC721(_weiAmount, _nftAddress, _tokenId, _approver, _receiver), "Transfer failed");
 
-        // Emit claim event
-        emit Claimed(_linkId, _weiAmount, _tokenAddress, _tokenAmount, _receiver, now);
+        // Log claim
+        emit ClaimedERC721(_linkId, _weiAmount, _nftAddress, _tokenId, _receiver, now);
 
         return true;
     }
 
     /**
-    * @dev Internal function to transfer ETH and/or ERC20 tokens
+    * @dev Internal function to transfer ETH and/or ERC721 tokens
     * @param _weiAmount Amount of wei to be claimed
-    * @param _tokenAddress Token address
-    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
+    * @param _nftAddress NFT address
+    * @param _tokenId Amount of tokens to be claimed (in atomic value)
+    * @param _approver Approver address
     * @param _receiver Address to transfer funds to
     * @return True if success
     */
-    function _transferFunds(uint _weiAmount, address _tokenAddress, uint _tokenAmount, address payable _receiver)
+    function _transferFundsERC721(uint _weiAmount, address _nftAddress, uint _tokenId, address _approver, address payable _receiver)
     internal returns (bool)
     {
         // Transfer ETH
@@ -191,10 +194,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropERC20Approve {
             _receiver.transfer(_weiAmount);
         }
 
-        // Transfer tokens
-        if (_tokenAmount > 0) {
-            IERC20(_tokenAddress).transfer(_receiver, _tokenAmount);
-        }
+        IERC721(_nftAddress).safeTransferFrom(_approver, _receiver, _tokenId);
 
         return true;
     }

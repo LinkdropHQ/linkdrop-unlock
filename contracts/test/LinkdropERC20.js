@@ -21,12 +21,15 @@ import {
 
 const ethers = require('ethers')
 
+// Turn off annoying warnings
+ethers.errors.setLogLevel('error')
+
 chai.use(solidity)
 const { expect } = chai
 
 let provider = createMockProvider()
 
-let [sender, receiver, nonsender] = getWallets(provider)
+let [linkdropSigner, receiver, nonsender] = getWallets(provider)
 
 let masterCopy
 let factory
@@ -42,19 +45,21 @@ let tokenAddress
 let tokenAmount
 let expirationTime
 
-describe('ETH + ERC20 Linkdrop tests', () => {
+describe('ETH/ERC20 linkdrop tests', () => {
   before(async () => {
-    tokenInstance = await deployContract(sender, TokenMock)
+    tokenInstance = await deployContract(linkdropSigner, TokenMock)
   })
 
   it('should deploy master copy of linkdrop implementation', async () => {
-    masterCopy = await deployContract(sender, LinkdropMastercopy)
+    masterCopy = await deployContract(linkdropSigner, LinkdropMastercopy, [], {
+      gasLimit: 6000000
+    })
     expect(masterCopy.address).to.not.eq(ethers.constants.AddressZero)
   })
 
   it('should deploy factory', async () => {
     factory = await deployContract(
-      sender,
+      linkdropSigner,
       LinkdropFactory,
       [masterCopy.address],
       {
@@ -69,16 +74,20 @@ describe('ETH + ERC20 Linkdrop tests', () => {
     // Compute next address with js function
     proxyAddress = await computeProxyAddress(
       factory.address,
-      sender.address,
+      linkdropSigner.address,
       masterCopy.address
     )
 
-    await factory.deployProxy(sender.address)
+    await factory.deployProxy(linkdropSigner.address)
 
-    proxy = new ethers.Contract(proxyAddress, LinkdropMastercopy.abi, sender)
+    proxy = new ethers.Contract(
+      proxyAddress,
+      LinkdropMastercopy.abi,
+      linkdropSigner
+    )
 
     let senderAddress = await proxy.linkdropSigner()
-    expect(sender.address).to.eq(senderAddress)
+    expect(linkdropSigner.address).to.eq(senderAddress)
   })
 
   it('should revert while checking claim params with unsufficient funds', async () => {
@@ -87,7 +96,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
     tokenAmount = 100
     expirationTime = 11234234223
     link = await createLink(
-      sender,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -97,13 +106,15 @@ describe('ETH + ERC20 Linkdrop tests', () => {
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
-      factory.checkClaimParams(
+      factory[
+        'checkClaimParams(uint256,address,uint256,uint256,address,address,bytes,address,bytes,address)'
+      ](
         weiAmount,
         tokenAddress,
         tokenAmount,
         expirationTime,
         link.linkId,
-        sender.address,
+        linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -114,7 +125,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
 
   it('creates new link key and verifies its signature', async () => {
     let senderAddr = await proxy.linkdropSigner()
-    expect(sender.address).to.eq(senderAddr)
+    expect(linkdropSigner.address).to.eq(senderAddr)
 
     expect(
       await proxy.verifyLinkdropSignerSignature(
@@ -130,7 +141,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
 
   it('signs receiver address with link key and verifies this signature onchain', async () => {
     link = await createLink(
-      sender,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -149,7 +160,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
     ).to.be.true
   })
 
-  it('non-sender should not be able to pause contract', async () => {
+  it('non-linkdropSigner should not be able to pause contract', async () => {
     let proxyInstance = new ethers.Contract(
       proxyAddress,
       LinkdropMastercopy.abi,
@@ -161,23 +172,23 @@ describe('ETH + ERC20 Linkdrop tests', () => {
     )
   })
 
-  it('sender should be able to pause contract', async () => {
+  it('linkdropSigner should be able to pause contract', async () => {
     // Pausing
     await proxy.pause({ gasLimit: 500000 })
     let paused = await proxy.paused()
     expect(paused).to.eq(true)
   })
 
-  it('sender should be able to unpause contract', async () => {
+  it('linkdropSigner should be able to unpause contract', async () => {
     // Unpausing
     await proxy.unpause({ gasLimit: 500000 })
     let paused = await proxy.paused()
     expect(paused).to.eq(false)
   })
 
-  it('sender should be able to cancel link', async () => {
+  it('linkdropSigner should be able to cancel link', async () => {
     link = await createLink(
-      sender,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -193,7 +204,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
 
   it('should fail to claim tokens when paused', async () => {
     link = await createLink(
-      sender,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -213,7 +224,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
         tokenAmount,
         expirationTime,
         link.linkId,
-        sender.address,
+        linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -227,7 +238,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
     await proxy.unpause({ gasLimit: 500000 })
 
     link = await createLink(
-      sender,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -243,7 +254,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
         tokenAmount,
         expirationTime,
         link.linkId,
-        sender.address,
+        linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -253,10 +264,16 @@ describe('ETH + ERC20 Linkdrop tests', () => {
   })
 
   it('should fail to claim tokens by expired link', async () => {
-    // Transfering tokens from sender to Linkdrop Contract
+    // Transfering tokens from linkdropSigner to Linkdrop Contract
     await tokenInstance.transfer(proxy.address, tokenAmount)
 
-    link = await createLink(sender, weiAmount, tokenAddress, tokenAmount, 0)
+    link = await createLink(
+      linkdropSigner,
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
+      0
+    )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
@@ -267,7 +284,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
         tokenAmount,
         0,
         link.linkId,
-        sender.address,
+        linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -277,10 +294,10 @@ describe('ETH + ERC20 Linkdrop tests', () => {
   })
 
   it('should succesfully claim tokens with valid claim params', async () => {
-    // Transfering tokens from sender to Linkdrop Contract
+    // Transfering tokens from linkdropSigner to Linkdrop Contract
     await tokenInstance.transfer(proxy.address, tokenAmount)
     link = await createLink(
-      sender,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -298,7 +315,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       link.linkId,
-      sender.address,
+      linkdropSigner.address,
       link.linkdropSignerSignature,
       receiverAddress,
       receiverSignature,
@@ -313,7 +330,10 @@ describe('ETH + ERC20 Linkdrop tests', () => {
   })
 
   it('should be able to check link claimed from factory instance', async () => {
-    let claimed = await factory.isClaimedLink(sender.address, link.linkId)
+    let claimed = await factory.isClaimedLink(
+      linkdropSigner.address,
+      link.linkId
+    )
     expect(claimed).to.eq(true)
   })
 
@@ -325,7 +345,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
         tokenAmount,
         expirationTime,
         link.linkId,
-        sender.address,
+        linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -334,7 +354,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
     ).to.be.revertedWith('Claimed link')
   })
 
-  it('should fail to claim tokens with fake sender signature', async () => {
+  it('should fail to claim tokens with fake linkdropSigner signature', async () => {
     let wallet = ethers.Wallet.createRandom()
     let linkId = wallet.address
 
@@ -349,7 +369,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
         tokenAmount,
         expirationTime,
         linkId,
-        sender.address,
+        linkdropSigner.address,
         fakeSignature,
         receiverAddress,
         receiverSignature,
@@ -360,7 +380,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
 
   it('should fail to claim tokens with fake receiver signature', async () => {
     link = await createLink(
-      sender,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -368,7 +388,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
     )
 
     let fakeLink = await createLink(
-      sender,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -386,7 +406,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
         tokenAmount,
         expirationTime,
         link.linkId,
-        sender.address,
+        linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -397,7 +417,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
 
   it('should fail to claim tokens by canceled link', async () => {
     link = await createLink(
-      sender,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -415,7 +435,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
         tokenAmount,
         expirationTime,
         link.linkId,
-        sender.address,
+        linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -433,7 +453,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
       to: proxy.address,
       value: wei
     }
-    await sender.sendTransaction(tx)
+    await linkdropSigner.sendTransaction(tx)
     let balanceAfter = await provider.getBalance(proxy.address)
 
     expect(balanceAfter).to.eq(balanceBefore.add(wei))
@@ -443,7 +463,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
     weiAmount = 100 // wei
     tokenAmount = 0
     link = await createLink(
-      sender,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -459,7 +479,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
         tokenAmount,
         expirationTime,
         link.linkId,
-        sender.address,
+        linkdropSigner.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -468,7 +488,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
     ).to.emit(proxy, 'Claimed')
   })
 
-  it('should be able to withdraw ethers from proxy to sender', async () => {
+  it('should be able to withdraw ethers from proxy to linkdropSigner', async () => {
     let balanceBefore = await provider.getBalance(proxy.address)
     expect(balanceBefore).to.not.eq(0)
     await proxy.withdraw({ gasLimit: 200000 })
@@ -484,15 +504,19 @@ describe('ETH + ERC20 Linkdrop tests', () => {
 
     let proxyAddress = await computeProxyAddress(
       factory.address,
-      sender.address,
+      linkdropSigner.address,
       masterCopy.address
     )
 
     // Contract not deployed yet
-    proxy = new ethers.Contract(proxyAddress, LinkdropMastercopy.abi, sender)
+    proxy = new ethers.Contract(
+      proxyAddress,
+      LinkdropMastercopy.abi,
+      linkdropSigner
+    )
 
     link = await createLink(
-      sender,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -502,7 +526,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
-    // Transfering tokens from sender to Linkdrop Contract
+    // Transfering tokens from linkdropSigner to Linkdrop Contract
     await tokenInstance.transfer(proxyAddress, tokenAmount)
     await expect(
       factory.claim(
@@ -511,7 +535,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
         tokenAmount,
         expirationTime,
         link.linkId,
-        sender.address, // New
+        linkdropSigner.address, // New
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -521,9 +545,9 @@ describe('ETH + ERC20 Linkdrop tests', () => {
       .to.emit(proxy, 'Claimed')
       .to.emit(tokenInstance, 'Transfer') // should transfer claimed tokens to receiver
 
-    // Now when deployed, check sender
+    // Now when deployed, check linkdropSigner
     let senderAddr = await proxy.linkdropSigner()
-    expect(sender.address).to.eq(senderAddr)
+    expect(linkdropSigner.address).to.eq(senderAddr)
 
     let receiverTokenBalance = await tokenInstance.balanceOf(receiverAddress)
     expect(receiverTokenBalance).to.eq(tokenAmount)
@@ -533,7 +557,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
     weiAmount = 15 // wei
     tokenAmount = 20
 
-    // Transfering tokens from sender to Linkdrop Contract
+    // Transfering tokens from linkdropSigner to Linkdrop Contract
     await tokenInstance.transfer(proxy.address, 20)
 
     // Send ethers to Linkdrop contract
@@ -541,10 +565,10 @@ describe('ETH + ERC20 Linkdrop tests', () => {
       to: proxy.address,
       value: weiAmount
     }
-    await sender.sendTransaction(tx)
+    await linkdropSigner.sendTransaction(tx)
 
     link = await createLink(
-      sender,
+      linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -563,7 +587,7 @@ describe('ETH + ERC20 Linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       link.linkId,
-      sender.address,
+      linkdropSigner.address,
       link.linkdropSignerSignature,
       receiverAddress,
       receiverSignature,

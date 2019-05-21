@@ -1,10 +1,11 @@
 pragma solidity ^0.5.6;
 
-import "../interfaces/ILinkdropERC20.sol";
-import "./approve/LinkdropFactoryERC20Approve.sol";
+import "../../interfaces/approve/ILinkdropERC20Approve.sol";
+import "../../interfaces/approve/ILinkdropFactoryERC20Approve.sol";
+import "../LinkdropFactoryCommon.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
-contract LinkdropFactoryERC20 is LinkdropFactoryERC20Approve {
+contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFactoryCommon {
 
     /**
     * @dev Function to verify linkdrop signer's signature
@@ -63,6 +64,7 @@ contract LinkdropFactoryERC20 is LinkdropFactoryERC20Approve {
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
+    * @param _approver Approver address
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
@@ -75,6 +77,7 @@ contract LinkdropFactoryERC20 is LinkdropFactoryERC20Approve {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
+        address _approver,
         address payable _linkdropSigner,
         bytes memory _linkdropSignerSignature,
         address _receiver,
@@ -87,13 +90,14 @@ contract LinkdropFactoryERC20 is LinkdropFactoryERC20Approve {
         // If proxy is deployed
         if (isDeployed(_linkdropSigner)) {
 
-            return ILinkdropERC20(_deployed[_linkdropSigner]).checkClaimParams
+            return ILinkdropERC20Approve(_deployed[_linkdropSigner]).checkClaimParams
             (
                 _weiAmount,
                 _tokenAddress,
                 _tokenAmount,
                 _expiration,
                 _linkId,
+                _approver,
                 _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature
@@ -109,7 +113,7 @@ contract LinkdropFactoryERC20 is LinkdropFactoryERC20Approve {
             );
 
             if (_tokenAddress != address(0)) {
-                require(IERC20(_tokenAddress).balanceOf(_proxy) >= _tokenAmount, "Insufficient amount of tokens");
+                require(IERC20(_tokenAddress).allowance(_approver, _proxy) >= _tokenAmount, "Insufficient amount of tokens");
             }
 
             // Verify that link key is legit and signed by linkdrop signer's private key
@@ -150,6 +154,7 @@ contract LinkdropFactoryERC20 is LinkdropFactoryERC20Approve {
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
+    * @param _approver Approver address
     * @param _linkdropSigner Address of linkdrop signer
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
@@ -163,6 +168,7 @@ contract LinkdropFactoryERC20 is LinkdropFactoryERC20Approve {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
+        address _approver,
         address payable _linkdropSigner,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
@@ -178,13 +184,14 @@ contract LinkdropFactoryERC20 is LinkdropFactoryERC20Approve {
         }
 
         // Call claim function in the context of proxy contract
-        ILinkdropERC20(_deployed[_linkdropSigner]).claim
+        ILinkdropERC20Approve(_deployed[_linkdropSigner]).claim
         (
             _weiAmount,
             _tokenAddress,
             _tokenAmount,
             _expiration,
             _linkId,
+            _approver,
             _linkdropSignerSignature,
             _receiver,
             _receiverSignature

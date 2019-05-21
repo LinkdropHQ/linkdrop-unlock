@@ -1,10 +1,10 @@
 pragma solidity ^0.5.6;
 
 import "../interfaces/ILinkdropERC721.sol";
-import "./LinkdropFactoryCommon.sol";
+import "./approve/LinkdropFactoryERC721Approve.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 
-contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
+contract LinkdropFactoryERC721 is LinkdropFactoryERC721Approve {
 
     /**
     * @dev Function to verify linkdrop signer's signature
@@ -63,6 +63,7 @@ contract LinkdropFactoryERC721 is LinkdropFactoryCommon {
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
+    * @param _linkdropSigner Address of linkdrop signer
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
