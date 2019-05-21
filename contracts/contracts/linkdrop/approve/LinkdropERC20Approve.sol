@@ -30,7 +30,7 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return isLinkdropSigner(signer);
+        return isLinkdropSigner[signer];
     }
 
     /**
@@ -167,7 +167,7 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
         claimedTo[_linkId] = _receiver;
 
         // Make sure transfer succeeds
-        require(_transferFunds(_weiAmount, _tokenAddress, _tokenAmount, _receiver), "Transfer failed");
+        require(_transferFundsApproved(_weiAmount, _tokenAddress, _tokenAmount, _receiver), "Transfer failed");
 
         // Emit claim event
         emit Claimed(_linkId, _weiAmount, _tokenAddress, _tokenAmount, _receiver, now);
@@ -183,7 +183,7 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
     * @param _receiver Address to transfer funds to
     * @return True if success
     */
-    function _transferFunds(uint _weiAmount, address _tokenAddress, uint _tokenAmount, address payable _receiver)
+    function _transferFundsApproved(uint _weiAmount, address _tokenAddress, uint _tokenAmount, address payable _receiver)
     internal returns (bool)
     {
         // Transfer ETH

@@ -30,7 +30,7 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return isLinkdropSigner(signer);
+        return isLinkdropSigner[signer];
     }
 
     /**
@@ -164,7 +164,7 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
         claimedTo[_linkId] = _receiver;
 
         // Make sure transfer succeeds
-        require(_transferFundsERC721(_weiAmount, _nftAddress, _tokenId, _receiver), "Transfer failed");
+        require(_transferFundsApprovedERC721(_weiAmount, _nftAddress, _tokenId, _receiver), "Transfer failed");
 
         // Log claim
         emit ClaimedERC721(_linkId, _weiAmount, _nftAddress, _tokenId, _receiver, now);
@@ -180,7 +180,7 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
     * @param _receiver Address to transfer funds to
     * @return True if success
     */
-    function _transferFundsERC721(uint _weiAmount, address _nftAddress, uint _tokenId, address payable _receiver)
+    function _transferFundsApprovedERC721(uint _weiAmount, address _nftAddress, uint _tokenId, address payable _receiver)
     internal returns (bool)
     {
         // Transfer ETH

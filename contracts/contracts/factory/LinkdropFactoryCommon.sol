@@ -8,50 +8,50 @@ import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 contract LinkdropFactoryCommon is LinkdropFactoryStorage, CloneFactory {
 
     /**
-    * @dev Indicates whether a proxy contract for linkdrop signer is deployed or not
-    * @param _linkdropSigner Address of lindkrop signer
+    * @dev Indicates whether a proxy contract for linkdrop master is deployed or not
+    * @param _linkdropMaster Address of linkdrop master
     * @return True if deployed
     */
-    function isDeployed(address _linkdropSigner) public view returns (bool) {
-        return (_deployed[_linkdropSigner] != address(0));
+    function isDeployed(address _linkdropMaster) public view returns (bool) {
+        return (_deployed[_linkdropMaster] != address(0));
     }
 
     /**
     * @dev Indicates whether a link is claimed or not
-    * @param _linkdropSigner Address of lindkrop signer
+    * @param _linkdropMaster Address of lindkrop signer
     * @param _linkId Address corresponding to link key
     * @return True if claimed
     */
-    function isClaimedLink(address payable _linkdropSigner, address _linkId) public view returns (bool) {
+    function isClaimedLink(address payable _linkdropMaster, address _linkId) public view returns (bool) {
 
-        if (!isDeployed(_linkdropSigner)) {
+        if (!isDeployed(_linkdropMaster)) {
             return false;
         }
         else {
-            address payable proxy = address(uint160(_deployed[_linkdropSigner]));
+            address payable proxy = address(uint160(_deployed[_linkdropMaster]));
             return ILinkdropCommon(proxy).isClaimedLink(_linkId);
         }
 
     }
 
     /**
-    * @dev Function to deploy a proxy contract for linkdrop signer
-    * @param _linkdropSigner Address of linkdrop signer
+    * @dev Function to deploy a proxy contract for linkdrop master
+    * @param _linkdropMaster Address of linkdrop master
     * @return Proxy contract address
     */
-    function deployProxy(address payable _linkdropSigner)
+    function deployProxy(address payable _linkdropMaster)
     public
     returns (address payable)
     {
 
         // Create clone of the mastercopy
-        address payable proxy = createClone(masterCopy, keccak256(abi.encodePacked(_linkdropSigner)));
+        address payable proxy = createClone(masterCopy, keccak256(abi.encodePacked(_linkdropMaster)));
 
-        _deployed[_linkdropSigner] = proxy;
+        _deployed[_linkdropMaster] = proxy;
 
-        // Initialize linkdrop signer in newly deployed proxy contract
-        require(ILinkdropCommon(proxy).initializer(_linkdropSigner), "Failed to initialize");
-        emit Deployed(proxy, keccak256(abi.encodePacked(_linkdropSigner)), now);
+        // Initialize linkdrop master in newly deployed proxy contract
+        require(ILinkdropCommon(proxy).initializer(_linkdropMaster), "Failed to initialize");
+        emit Deployed(proxy, keccak256(abi.encodePacked(_linkdropMaster)), now);
 
         return proxy;
     }

@@ -34,7 +34,7 @@ interface ILinkdropERC721Approve {
     )
     external view returns (bool);
 
-    function claimERC721
+    function claimERC721Approve
     (
         uint _weiAmount,
         address _nftAddress,

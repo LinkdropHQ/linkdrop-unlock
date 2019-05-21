@@ -30,7 +30,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return isLinkdropSigner(signer);
+        return isLinkdropSigner[signer];
     }
 
     /**

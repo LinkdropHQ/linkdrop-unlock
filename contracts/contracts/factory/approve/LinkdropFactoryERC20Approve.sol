@@ -64,21 +64,20 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _approver Approver address
+    * @param _linkdropMaster Address corresponding to linkdrop master key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
-    function checkClaimParams
+    function checkClaimParamsApprove
     (
         uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address _approver,
-        address payable _linkdropSigner,
+        address payable _linkdropMaster,
         bytes memory _linkdropSignerSignature,
         address _receiver,
         bytes memory _receiverSignature,
@@ -88,16 +87,15 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
     returns (bool)
     {
         // If proxy is deployed
-        if (isDeployed(_linkdropSigner)) {
+        if (isDeployed(_linkdropMaster)) {
 
-            return ILinkdropERC20Approve(_deployed[_linkdropSigner]).checkClaimParams
+            return ILinkdropERC20Approve(_deployed[_linkdropMaster]).checkClaimParamsApprove
             (
                 _weiAmount,
                 _tokenAddress,
                 _tokenAmount,
                 _expiration,
                 _linkId,
-                _approver,
                 _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature
@@ -113,7 +111,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
             );
 
             if (_tokenAddress != address(0)) {
-                require(IERC20(_tokenAddress).allowance(_approver, _proxy) >= _tokenAmount, "Insufficient amount of tokens");
+                require(IERC20(_tokenAddress).allowance(_linkdropMaster, _proxy) >= _tokenAmount, "Insufficient amount of tokens");
             }
 
             // Verify that link key is legit and signed by linkdrop signer's private key
@@ -126,7 +124,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
                     _tokenAmount,
                     _expiration,
                     _linkId,
-                    _linkdropSigner,
+                    _linkdropMaster,
                     _linkdropSignerSignature
                 ),
                 "Invalid linkdrop signer signature"
@@ -154,22 +152,20 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _approver Approver address
-    * @param _linkdropSigner Address of linkdrop signer
+    * @param _linkdropMaster Address corresponding to linkdrop master key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
-    function claim
+    function claimApprove
     (
         uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address _approver,
-        address payable _linkdropSigner,
+        address payable _linkdropMaster,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
@@ -178,20 +174,19 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
     returns (bool)
     {
 
-        // Check whether the proxy is deployed for linkdrop signer and deploy if not
-        if (!isDeployed(_linkdropSigner)) {
-            deployProxy(_linkdropSigner);
+        // Check whether the proxy is deployed for linkdrop master and deploy if not
+        if (!isDeployed(_linkdropMaster)) {
+            deployProxy(_linkdropMaster);
         }
 
         // Call claim function in the context of proxy contract
-        ILinkdropERC20Approve(_deployed[_linkdropSigner]).claim
+        ILinkdropERC20Approve(_deployed[_linkdropMaster]).claimApprove
         (
             _weiAmount,
             _tokenAddress,
             _tokenAmount,
             _expiration,
             _linkId,
-            _approver,
             _linkdropSignerSignature,
             _receiver,
             _receiverSignature

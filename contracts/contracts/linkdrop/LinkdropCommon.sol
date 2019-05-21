@@ -19,7 +19,7 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     {
         require(_initialized == false, "Initialized");
         linkdropMaster = _linkdropMaster;
-        isLinkdropSigner(linkdropMaster) = true;
+        isLinkdropSigner[linkdropMaster] = true;
         _initialized = true;
         return true;
     }

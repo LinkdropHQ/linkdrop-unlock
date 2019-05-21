@@ -31,7 +31,7 @@ interface ILinkdropFactoryERC20 {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address payable _linkdropSigner,
+        address payable _linkdropMaster,
         bytes calldata _linkdropSignerSignature,
         address _receiver,
         bytes calldata _receiverSignature,
@@ -47,7 +47,7 @@ interface ILinkdropFactoryERC20 {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address payable _linkdropSigner,
+        address payable _linkdropMaster,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature

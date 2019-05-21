@@ -29,7 +29,7 @@ const { expect } = chai
 
 let provider = createMockProvider()
 
-let [linkdropSigner, receiver, nonsender, approver] = getWallets(provider)
+let [linkdropMaster, receiver, nonsender] = getWallets(provider)
 
 let masterCopy
 let factory
@@ -47,11 +47,11 @@ let expirationTime
 
 describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
   before(async () => {
-    tokenInstance = await deployContract(approver, TokenMock)
+    tokenInstance = await deployContract(linkdropMaster, TokenMock)
   })
 
   it('should deploy master copy of linkdrop implementation', async () => {
-    masterCopy = await deployContract(linkdropSigner, LinkdropMastercopy, [], {
+    masterCopy = await deployContract(linkdropMaster, LinkdropMastercopy, [], {
       gasLimit: 6000000
     })
     expect(masterCopy.address).to.not.eq(ethers.constants.AddressZero)
@@ -59,7 +59,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
 
   it('should deploy factory', async () => {
     factory = await deployContract(
-      linkdropSigner,
+      linkdropMaster,
       LinkdropFactory,
       [masterCopy.address],
       {
@@ -74,20 +74,20 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     // Compute next address with js function
     proxyAddress = await computeProxyAddress(
       factory.address,
-      linkdropSigner.address,
+      linkdropMaster.address,
       masterCopy.address
     )
 
-    await factory.deployProxy(linkdropSigner.address)
+    await factory.deployProxy(linkdropMaster.address)
 
     proxy = new ethers.Contract(
       proxyAddress,
       LinkdropMastercopy.abi,
-      linkdropSigner
+      linkdropMaster
     )
 
-    let senderAddress = await proxy.linkdropSigner()
-    expect(linkdropSigner.address).to.eq(senderAddress)
+    let master = await proxy.linkdropMaster()
+    expect(linkdropMaster.address).to.eq(master)
   })
 
   it('should revert while checking claim params with unsufficient funds', async () => {
@@ -96,7 +96,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     tokenAmount = 100
     expirationTime = 11234234223
     link = await createLink(
-      linkdropSigner,
+      linkdropMaster,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -112,8 +112,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
         tokenAmount,
         expirationTime,
         link.linkId,
-        approver.address,
-        linkdropSigner.address,
+
+        linkdropMaster.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -123,8 +123,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
   })
 
   it('creates new link key and verifies its signature', async () => {
-    let senderAddr = await proxy.linkdropSigner()
-    expect(linkdropSigner.address).to.eq(senderAddr)
+    let senderAddr = await proxy.linkdropMaster()
+    expect(linkdropMaster.address).to.eq(senderAddr)
 
     expect(
       await proxy.verifyLinkdropSignerSignature(
@@ -140,7 +140,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
 
   it('signs receiver address with link key and verifies this signature onchain', async () => {
     link = await createLink(
-      linkdropSigner,
+      linkdropMaster,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -159,7 +159,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     ).to.be.true
   })
 
-  it('non-linkdropSigner should not be able to pause contract', async () => {
+  it('non-linkdropMaster should not be able to pause contract', async () => {
     let proxyInstance = new ethers.Contract(
       proxyAddress,
       LinkdropMastercopy.abi,
@@ -167,27 +167,27 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     )
     // Pausing
     await expect(proxyInstance.pause({ gasLimit: 500000 })).to.be.revertedWith(
-      'Only linkdrop signer'
+      'Only linkdrop master'
     )
   })
 
-  it('linkdropSigner should be able to pause contract', async () => {
+  it('linkdropMaster should be able to pause contract', async () => {
     // Pausing
     await proxy.pause({ gasLimit: 500000 })
     let paused = await proxy.paused()
     expect(paused).to.eq(true)
   })
 
-  it('linkdropSigner should be able to unpause contract', async () => {
+  it('linkdropMaster should be able to unpause contract', async () => {
     // Unpausing
     await proxy.unpause({ gasLimit: 500000 })
     let paused = await proxy.paused()
     expect(paused).to.eq(false)
   })
 
-  it('linkdropSigner should be able to cancel link', async () => {
+  it('linkdropMaster should be able to cancel link', async () => {
     link = await createLink(
-      linkdropSigner,
+      linkdropMaster,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -203,7 +203,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
 
   it('should fail to claim tokens when paused', async () => {
     link = await createLink(
-      linkdropSigner,
+      linkdropMaster,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -217,16 +217,13 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     await proxy.pause({ gasLimit: 500000 })
 
     await expect(
-      factory[
-        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
-      ](
+      factory.claimApprove(
         weiAmount,
         tokenAddress,
         tokenAmount,
         expirationTime,
         link.linkId,
-        approver.address,
-        linkdropSigner.address,
+        linkdropMaster.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -240,7 +237,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     await proxy.unpause({ gasLimit: 500000 })
 
     link = await createLink(
-      linkdropSigner,
+      linkdropMaster,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -250,16 +247,13 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
-      factory[
-        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
-      ](
+      factory.claimApprove(
         weiAmount,
         tokenAddress,
         tokenAmount,
         expirationTime,
         link.linkId,
-        approver.address,
-        linkdropSigner.address,
+        linkdropMaster.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -269,11 +263,11 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
   })
 
   it('should fail to claim tokens by expired link', async () => {
-    // Approving tokens from linkdropSigner to Linkdrop Contract
+    // Approving tokens from linkdropMaster to Linkdrop Contract
     await tokenInstance.approve(proxy.address, tokenAmount)
 
     link = await createLink(
-      linkdropSigner,
+      linkdropMaster,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -283,16 +277,13 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
-      factory[
-        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
-      ](
+      factory.claimApprove(
         weiAmount,
         tokenAddress,
         tokenAmount,
         0,
         link.linkId,
-        approver.address,
-        linkdropSigner.address,
+        linkdropMaster.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -302,10 +293,10 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
   })
 
   it('should succesfully claim tokens with valid claim params', async () => {
-    // Approving tokens from linkdropSigner to Linkdrop Contract
+    // Approving tokens from linkdropMaster to Linkdrop Contract
     await tokenInstance.approve(proxy.address, tokenAmount)
     link = await createLink(
-      linkdropSigner,
+      linkdropMaster,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -315,25 +306,26 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
-    let approverBalanceBefore = await tokenInstance.balanceOf(approver.address)
+    let approverBalanceBefore = await tokenInstance.balanceOf(
+      linkdropMaster.address
+    )
 
-    await factory[
-      'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
-    ](
+    await factory.claimApprove(
       weiAmount,
       tokenAddress,
       tokenAmount,
       expirationTime,
       link.linkId,
-      approver.address,
-      linkdropSigner.address,
+      linkdropMaster.address,
       link.linkdropSignerSignature,
       receiverAddress,
       receiverSignature,
       { gasLimit: 800000 }
     )
 
-    let approverBalanceAfter = await tokenInstance.balanceOf(approver.address)
+    let approverBalanceAfter = await tokenInstance.balanceOf(
+      linkdropMaster.address
+    )
     expect(approverBalanceAfter).to.eq(approverBalanceBefore.sub(tokenAmount))
 
     let receiverTokenBalance = await tokenInstance.balanceOf(receiverAddress)
@@ -342,7 +334,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
 
   it('should be able to check link claimed from factory instance', async () => {
     let claimed = await factory.isClaimedLink(
-      linkdropSigner.address,
+      linkdropMaster.address,
       link.linkId
     )
     expect(claimed).to.eq(true)
@@ -350,16 +342,13 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
 
   it('should fail to claim link twice', async () => {
     await expect(
-      factory[
-        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
-      ](
+      factory.claimApprove(
         weiAmount,
         tokenAddress,
         tokenAmount,
         expirationTime,
         link.linkId,
-        approver.address,
-        linkdropSigner.address,
+        linkdropMaster.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -368,8 +357,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     ).to.be.revertedWith('Claimed link')
   })
 
-  it('should fail to claim tokens with fake linkdropSigner signature', async () => {
-    // Approving tokens from linkdropSigner to Linkdrop Contract
+  it('should fail to claim tokens with fake linkdropMaster signature', async () => {
+    // Approving tokens from linkdropMaster to Linkdrop Contract
     await tokenInstance.approve(proxy.address, tokenAmount)
 
     let wallet = ethers.Wallet.createRandom()
@@ -380,16 +369,13 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     let fakeSignature = await receiver.signMessage(messageToSign)
 
     await expect(
-      factory[
-        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
-      ](
+      factory.claimApprove(
         weiAmount,
         tokenAddress,
         tokenAmount,
         expirationTime,
         linkId,
-        approver.address,
-        linkdropSigner.address,
+        linkdropMaster.address,
         fakeSignature,
         receiverAddress,
         receiverSignature,
@@ -400,7 +386,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
 
   it('should fail to claim tokens with fake receiver signature', async () => {
     link = await createLink(
-      linkdropSigner,
+      linkdropMaster,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -408,7 +394,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     )
 
     let fakeLink = await createLink(
-      linkdropSigner,
+      linkdropMaster,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -420,16 +406,13 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       receiverAddress
     )
     await expect(
-      factory[
-        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
-      ](
+      factory.claimApprove(
         weiAmount,
         tokenAddress,
         tokenAmount,
         expirationTime,
         link.linkId,
-        approver.address,
-        linkdropSigner.address,
+        linkdropMaster.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -440,7 +423,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
 
   it('should fail to claim tokens by canceled link', async () => {
     link = await createLink(
-      linkdropSigner,
+      linkdropMaster,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -452,16 +435,13 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     await proxy.cancel(link.linkId, { gasLimit: 100000 })
 
     await expect(
-      factory[
-        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
-      ](
+      factory.claimApprove(
         weiAmount,
         tokenAddress,
         tokenAmount,
         expirationTime,
         link.linkId,
-        approver.address,
-        linkdropSigner.address,
+        linkdropMaster.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -479,7 +459,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       to: proxy.address,
       value: wei
     }
-    await linkdropSigner.sendTransaction(tx)
+    await linkdropMaster.sendTransaction(tx)
     let balanceAfter = await provider.getBalance(proxy.address)
 
     expect(balanceAfter).to.eq(balanceBefore.add(wei))
@@ -489,7 +469,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     weiAmount = 100 // wei
     tokenAmount = 0
     link = await createLink(
-      linkdropSigner,
+      linkdropMaster,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -499,16 +479,13 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
-      factory[
-        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
-      ](
+      factory.claimApprove(
         weiAmount,
         tokenAddress,
         tokenAmount,
         expirationTime,
         link.linkId,
-        approver.address,
-        linkdropSigner.address,
+        linkdropMaster.address,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -517,7 +494,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     ).to.emit(proxy, 'Claimed')
   })
 
-  it('should be able to withdraw ethers from proxy to linkdropSigner', async () => {
+  it('should be able to withdraw ethers from proxy to linkdropMaster', async () => {
     let balanceBefore = await provider.getBalance(proxy.address)
     expect(balanceBefore).to.not.eq(0)
     await proxy.withdraw({ gasLimit: 200000 })
@@ -533,7 +510,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
 
     let proxyAddress = await computeProxyAddress(
       factory.address,
-      linkdropSigner.address,
+      linkdropMaster.address,
       masterCopy.address
     )
 
@@ -541,11 +518,11 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     proxy = new ethers.Contract(
       proxyAddress,
       LinkdropMastercopy.abi,
-      linkdropSigner
+      linkdropMaster
     )
 
     link = await createLink(
-      linkdropSigner,
+      linkdropMaster,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -555,19 +532,16 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
-    // Approving tokens from linkdropSigner to Linkdrop Contract
+    // Approving tokens from linkdropMaster to Linkdrop Contract
     await tokenInstance.approve(proxyAddress, tokenAmount)
     await expect(
-      factory[
-        'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
-      ](
+      factory.claimApprove(
         weiAmount,
         tokenAddress,
         tokenAmount,
         expirationTime,
         link.linkId,
-        approver.address,
-        linkdropSigner.address, // New
+        linkdropMaster.address, // New
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -577,9 +551,9 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       .to.emit(proxy, 'Claimed')
       .to.emit(tokenInstance, 'Transfer') // should transfer claimed tokens to receiver
 
-    // Now when deployed, check linkdropSigner
-    let senderAddr = await proxy.linkdropSigner()
-    expect(linkdropSigner.address).to.eq(senderAddr)
+    // Now when deployed, check linkdropMaster
+    let senderAddr = await proxy.linkdropMaster()
+    expect(linkdropMaster.address).to.eq(senderAddr)
 
     let receiverTokenBalance = await tokenInstance.balanceOf(receiverAddress)
     expect(receiverTokenBalance).to.eq(tokenAmount)
@@ -589,7 +563,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     weiAmount = 15 // wei
     tokenAmount = 20
 
-    // Approving tokens from linkdropSigner to Linkdrop Contract
+    // Approving tokens from linkdropMaster to Linkdrop Contract
     await tokenInstance.approve(proxy.address, 20)
 
     // Send ethers to Linkdrop contract
@@ -597,10 +571,10 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       to: proxy.address,
       value: weiAmount
     }
-    await linkdropSigner.sendTransaction(tx)
+    await linkdropMaster.sendTransaction(tx)
 
     link = await createLink(
-      linkdropSigner,
+      linkdropMaster,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -612,19 +586,16 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
 
     let proxyEthBalanceBefore = await provider.getBalance(proxy.address)
     let approverTokenBalanceBefore = await tokenInstance.balanceOf(
-      approver.address
+      linkdropMaster.address
     )
 
-    await factory[
-      'claim(uint256,address,uint256,uint256,address,address,address,bytes,address,bytes)'
-    ](
+    await factory.claimApprove(
       weiAmount,
       tokenAddress,
       tokenAmount,
       expirationTime,
       link.linkId,
-      approver.address,
-      linkdropSigner.address,
+      linkdropMaster.address,
       link.linkdropSignerSignature,
       receiverAddress,
       receiverSignature,
@@ -634,8 +605,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     let proxyEthBalanceAfter = await provider.getBalance(proxy.address)
     expect(proxyEthBalanceAfter).to.eq(proxyEthBalanceBefore.sub(weiAmount))
 
-    let approverTokenBalanceAfter = await await tokenInstance.balanceOf(
-      approver.address
+    let approverTokenBalanceAfter = await tokenInstance.balanceOf(
+      linkdropMaster.address
     )
     expect(approverTokenBalanceAfter).to.eq(
       approverTokenBalanceBefore.sub(tokenAmount)

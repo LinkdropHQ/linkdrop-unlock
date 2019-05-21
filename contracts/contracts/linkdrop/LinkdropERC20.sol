@@ -30,7 +30,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return isLinkdropSigner(signer);
+        return isLinkdropSigner[signer];
     }
 
     /**
