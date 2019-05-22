@@ -1,7 +1,7 @@
 import { createLink } from './utils'
 const ethers = require('ethers')
 
-export const generateLink = async (
+export const generateLink = async ({
   jsonRpcUrl,
   networkId,
   host,
@@ -9,8 +9,9 @@ export const generateLink = async (
   weiAmount,
   tokenAddress,
   tokenAmount,
-  expirationTime
-) => {
+  expirationTime,
+  isApprove
+}) => {
   if (jsonRpcUrl == null || jsonRpcUrl === '') {
     throw new Error('Please provide json rpc url')
   }
@@ -42,6 +43,11 @@ export const generateLink = async (
   if (expirationTime == null || expirationTime === '') {
     throw new Error('Please provide expiration time')
   }
+
+  if (isApprove == null || typeof isApprove !== 'boolean') {
+    throw new Error('Please provide valid isApprove argument')
+  }
+
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
   const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
   const { linkKey, linkId, linkdropSignerSignature } = await createLink(
@@ -62,10 +68,15 @@ export const generateLink = async (
     url = `${url}&n=${networkId}`
   }
 
+  // Add isApprove param to url if that's the case
+  if (isApprove === true) {
+    url = `${url}&isApprove=${isApprove}`
+  }
+
   return { url, linkId, linkKey, linkdropSignerSignature }
 }
 
-export const generateLinkERC721 = async (
+export const generateLinkERC721 = async ({
   jsonRpcUrl,
   networkId,
   host,
@@ -73,8 +84,9 @@ export const generateLinkERC721 = async (
   weiAmount,
   nftAddress,
   tokenId,
-  expirationTime
-) => {
+  expirationTime,
+  isApprove
+}) => {
   if (jsonRpcUrl == null || jsonRpcUrl === '') {
     throw new Error('Please provide json rpc url')
   }
@@ -111,6 +123,10 @@ export const generateLinkERC721 = async (
     throw new Error('Please provide expiration time')
   }
 
+  if (isApprove == null || typeof isApprove !== 'boolean') {
+    throw new Error('Please provide valid isApprove argument')
+  }
+
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
   const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
   const { linkKey, linkId, linkdropSignerSignature } = await createLink(
@@ -129,6 +145,11 @@ export const generateLinkERC721 = async (
   // Add network param to url if not mainnet
   if (String(networkId) !== '1') {
     url = `${url}&n=${networkId}`
+  }
+
+  // Add isApprove param to url if that's the case
+  if (isApprove === true) {
+    url = `${url}&isApprove=${isApprove}`
   }
 
   return { url, linkId, linkKey, linkdropSignerSignature }

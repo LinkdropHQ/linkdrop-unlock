@@ -2,7 +2,7 @@ import { signReceiverAddress } from './utils'
 const ethers = require('ethers')
 const axios = require('axios')
 
-export const claim = async (
+export const claim = async ({
   jsonRpcUrl,
   host,
   weiAmount,
@@ -10,10 +10,11 @@ export const claim = async (
   tokenAmount,
   expirationTime,
   linkKey,
-  linkdropSignerAddress,
+  linkdropMasterAddress,
   linkdropSignerSignature,
-  receiverAddress
-) => {
+  receiverAddress,
+  isApprove
+}) => {
   if (jsonRpcUrl == null || jsonRpcUrl === '') {
     throw new Error('Please provide json rpc url')
   }
@@ -42,16 +43,20 @@ export const claim = async (
     throw new Error('Please provide link key')
   }
 
-  if (linkdropSignerAddress == null || linkdropSignerAddress === '') {
-    throw new Error('Please provide linkdropSigner address')
+  if (linkdropMasterAddress == null || linkdropMasterAddress === '') {
+    throw new Error('Please provide linkdropMaster address')
   }
 
   if (linkdropSignerSignature == null || linkdropSignerSignature === '') {
-    throw new Error('Please provide linkdropSigner signature')
+    throw new Error('Please provide linkdropMaster signature')
   }
 
   if (receiverAddress == null || receiverAddress === '') {
     throw new Error('Please provide receiver address')
+  }
+
+  if (isApprove == null || typeof isApprove !== 'boolean') {
+    throw new Error('Please provide valid isApprove argument')
   }
 
   // Get provider
@@ -69,10 +74,11 @@ export const claim = async (
     tokenAmount,
     expirationTime,
     linkId,
-    linkdropSignerAddress,
+    linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature
+    receiverSignature,
+    isApprove
   }
   try {
     const response = await axios.post(
@@ -102,7 +108,7 @@ export const claim = async (
   }
 }
 
-export const claimERC721 = async (
+export const claimERC721 = async ({
   jsonRpcUrl,
   host,
   weiAmount,
@@ -110,10 +116,11 @@ export const claimERC721 = async (
   tokenId,
   expirationTime,
   linkKey,
-  linkdropSignerAddress,
+  linkdropMasterAddress,
   linkdropSignerSignature,
-  receiverAddress
-) => {
+  receiverAddress,
+  isApprove
+}) => {
   if (jsonRpcUrl == null || jsonRpcUrl === '') {
     throw new Error('Please provide json rpc url')
   }
@@ -146,16 +153,20 @@ export const claimERC721 = async (
     throw new Error('Please provide link key')
   }
 
-  if (linkdropSignerAddress == null || linkdropSignerAddress === '') {
-    throw new Error('Please provide linkdropSigner address')
+  if (linkdropMasterAddress == null || linkdropMasterAddress === '') {
+    throw new Error('Please provide linkdropMaster address')
   }
 
   if (linkdropSignerSignature == null || linkdropSignerSignature === '') {
-    throw new Error('Please provide linkdropSigner signature')
+    throw new Error('Please provide linkdropMaster signature')
   }
 
   if (receiverAddress == null || receiverAddress === '') {
     throw new Error('Please provide receiver address')
+  }
+
+  if (isApprove == null || typeof isApprove !== 'boolean') {
+    throw new Error('Please provide valid isApprove argument')
   }
 
   // Get provider
@@ -173,10 +184,11 @@ export const claimERC721 = async (
     tokenId,
     expirationTime,
     linkId,
-    linkdropSignerAddress,
+    linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature
+    receiverSignature,
+    isApprove
   }
   try {
     const response = await axios.post(
