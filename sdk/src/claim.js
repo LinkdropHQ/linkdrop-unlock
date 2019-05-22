@@ -15,11 +15,11 @@ export const claim = async ({
   receiverAddress,
   isApprove
 }) => {
-  if (jsonRpcUrl == null || jsonRpcUrl === '') {
+  if (jsonRpcUrl === null || jsonRpcUrl === '') {
     throw new Error('Please provide json rpc url')
   }
 
-  if (host == null || host === '') {
+  if (host === null || host === '') {
     throw new Error('Please provide host')
   }
 
@@ -27,7 +27,7 @@ export const claim = async ({
     throw new Error('Please provide amount of eth to claim')
   }
 
-  if (tokenAddress == null || tokenAddress === '') {
+  if (tokenAddress === null || tokenAddress === '') {
     throw new Error('Please provide ERC20 token address')
   }
 
@@ -35,28 +35,30 @@ export const claim = async ({
     throw new Error('Please provide amount of tokens to claim')
   }
 
-  if (expirationTime == null || expirationTime === '') {
+  if (expirationTime === null || expirationTime === '') {
     throw new Error('Please provide expiration time')
   }
 
-  if (linkKey == null || linkKey === '') {
+  if (linkKey === null || linkKey === '') {
     throw new Error('Please provide link key')
   }
 
-  if (linkdropMasterAddress == null || linkdropMasterAddress === '') {
+  if (linkdropMasterAddress === null || linkdropMasterAddress === '') {
     throw new Error('Please provide linkdropMaster address')
   }
 
-  if (linkdropSignerSignature == null || linkdropSignerSignature === '') {
+  if (linkdropSignerSignature === null || linkdropSignerSignature === '') {
     throw new Error('Please provide linkdropMaster signature')
   }
 
-  if (receiverAddress == null || receiverAddress === '') {
+  if (receiverAddress === null || receiverAddress === '') {
     throw new Error('Please provide receiver address')
   }
 
-  if (isApprove == null || typeof isApprove !== 'boolean') {
-    throw new Error('Please provide valid isApprove argument')
+  if (isApprove) {
+    if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
+      throw new Error('Please provide valid isApprove argument')
+    }
   }
 
   // Get provider
@@ -121,11 +123,11 @@ export const claimERC721 = async ({
   receiverAddress,
   isApprove
 }) => {
-  if (jsonRpcUrl == null || jsonRpcUrl === '') {
+  if (jsonRpcUrl === null || jsonRpcUrl === '') {
     throw new Error('Please provide json rpc url')
   }
 
-  if (host == null || host === '') {
+  if (host === null || host === '') {
     throw new Error('Please provide host')
   }
 
@@ -134,7 +136,7 @@ export const claimERC721 = async ({
   }
 
   if (
-    nftAddress == null ||
+    nftAddress === null ||
     nftAddress === '' ||
     nftAddress === ethers.constants.AddressZero
   ) {
@@ -145,28 +147,30 @@ export const claimERC721 = async ({
     throw new Error('Please provide token id to claim')
   }
 
-  if (expirationTime == null || expirationTime === '') {
+  if (expirationTime === null || expirationTime === '') {
     throw new Error('Please provide expiration time')
   }
 
-  if (linkKey == null || linkKey === '') {
+  if (linkKey === null || linkKey === '') {
     throw new Error('Please provide link key')
   }
 
-  if (linkdropMasterAddress == null || linkdropMasterAddress === '') {
+  if (linkdropMasterAddress === null || linkdropMasterAddress === '') {
     throw new Error('Please provide linkdropMaster address')
   }
 
-  if (linkdropSignerSignature == null || linkdropSignerSignature === '') {
+  if (linkdropSignerSignature === null || linkdropSignerSignature === '') {
     throw new Error('Please provide linkdropMaster signature')
   }
 
-  if (receiverAddress == null || receiverAddress === '') {
+  if (receiverAddress === null || receiverAddress === '') {
     throw new Error('Please provide receiver address')
   }
 
-  if (isApprove == null || typeof isApprove !== 'boolean') {
-    throw new Error('Please provide valid isApprove argument')
+  if (isApprove) {
+    if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
+      throw new Error('Please provide valid isApprove argument')
+    }
   }
 
   // Get provider

@@ -9,79 +9,108 @@ const config = require(configPath)
 
 let {
   jsonRpcUrl,
-  linkdropSignerPrivateKey,
+  linkdropMasterPrivateKey,
   weiAmount,
   tokenAddress,
   tokenAmount,
-  linksNumber
+  linksNumber,
+  isApprove
 } = config
+
+if (
+  isApprove === null ||
+  (String(isApprove) !== 'true' && String(isApprove) !== 'false')
+) {
+  throw new Error('Please provide valid isApprove argument')
+}
 
 ;(async () => {
   console.log('Generating links...\n')
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
+  const linkdropMaster = new ethers.Wallet(linkdropMasterPrivateKey, provider)
 
   const factoryAddress = getFactoryAddress()
   const masterCopyAddress = getMasterCopyAddress()
 
   const proxyAddress = LinkdropSDK.computeProxyAddress(
     factoryAddress,
-    linkdropSigner.address,
+    linkdropMaster.address,
     masterCopyAddress
   )
 
   // Send tokens to proxy
   if (tokenAmount > 0 && tokenAddress !== ethers.constants.AddressZero) {
     const cost = tokenAmount * linksNumber
-    let amountToSend
+    let amount
 
     const tokenContract = await new ethers.Contract(
       tokenAddress,
       TokenMock.abi,
-      linkdropSigner
+      linkdropMaster
     )
     const tokenSymbol = await tokenContract.symbol()
     const tokenDecimals = await tokenContract.decimals()
     const proxyBalance = await tokenContract.balanceOf(proxyAddress)
 
-    if (proxyBalance < cost) {
-      amountToSend = cost - proxyBalance
-      const tx = await tokenContract.transfer(proxyAddress, amountToSend, {
-        gasLimit: 600000
-      })
+    try {
+      if (proxyBalance < cost) {
+        amount = cost - proxyBalance
 
-      // Get human readable format of amount to send
-      amountToSend /= Math.pow(10, tokenDecimals)
-      console.log(
-        `⤴️  Sending ${amountToSend} ${tokenSymbol} to ${proxyAddress} `
-      )
-      console.log(`#️⃣  Tx Hash: ${tx.hash}`)
-    }
-  }
+        let tx
 
-  // Send eth to proxy
-  if (weiAmount > 0) {
-    let cost = weiAmount * linksNumber
-    let amountToSend
+        if (String(isApprove) === 'false') {
+          // Top up
+          tx = await tokenContract.transfer(proxyAddress, amount, {
+            gasLimit: 600000
+          })
 
-    const tokenSymbol = 'ETH'
-    const tokenDecimals = 18
-    const proxyBalance = await provider.getBalance(proxyAddress)
+          // Get human readable format of amount to send
+          amount /= Math.pow(10, tokenDecimals)
+          console.log(
+            `⤴️  Transfering ${amount} ${tokenSymbol} to ${proxyAddress} `
+          )
+        } else if (String(isApprove) === 'true') {
+          // Approve
+          tx = await tokenContract.approve(proxyAddress, amount, {
+            gasLimit: 600000
+          })
 
-    if (proxyBalance < cost) {
-      amountToSend = cost - proxyBalance
-      const tx = await linkdropSigner.sendTransaction({
-        to: proxyAddress,
-        value: amountToSend
-      })
+          // Get human readable format of amount to approve
+          amount /= Math.pow(10, tokenDecimals)
+          console.log(
+            `⤴️  Approving ${amount} ${tokenSymbol} to ${proxyAddress} `
+          )
+          console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+        }
 
-      // Get human readable format of amount to send
-      amountToSend /= Math.pow(10, tokenDecimals)
-      console.log(
-        `⤴️  Sending ${amountToSend} ${tokenSymbol} to ${proxyAddress} `
-      )
-      console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+        // Send eth to proxy
+        if (weiAmount > 0) {
+          let cost = weiAmount * linksNumber
+          let amountToSend
+
+          const tokenSymbol = 'ETH'
+          const tokenDecimals = 18
+          const proxyBalance = await provider.getBalance(proxyAddress)
+
+          if (proxyBalance < cost) {
+            amountToSend = cost - proxyBalance
+            const tx = await linkdropMaster.sendTransaction({
+              to: proxyAddress,
+              value: amountToSend
+            })
+
+            // Get human readable format of amount to send
+            amountToSend /= Math.pow(10, tokenDecimals)
+            console.log(
+              `⤴️  Transfering ${amountToSend} ${tokenSymbol} to ${proxyAddress} `
+            )
+            console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+          }
+        }
+      }
+    } catch (err) {
+      console.error(err)
     }
   }
 

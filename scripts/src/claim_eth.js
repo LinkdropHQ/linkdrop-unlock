@@ -24,11 +24,12 @@ const claimETH = async () => {
     tokenAmount,
     expirationTime,
     linkKey,
-    linkdropSignerAddress,
-    linkdropSignerSignature
+    linkdropMasterAddress,
+    linkdropSignerSignature,
+    isApprove
   } = await getUrlParams(0)
 
-  await LinkdropSDK.claim(
+  await LinkdropSDK.claim({
     jsonRpcUrl,
     host,
     weiAmount,
@@ -36,10 +37,11 @@ const claimETH = async () => {
     tokenAmount,
     expirationTime,
     linkKey,
-    linkdropSignerAddress,
+    linkdropMasterAddress,
     linkdropSignerSignature,
-    receiverAddress
-  )
+    receiverAddress,
+    isApprove
+  })
 }
 
 claimETH()

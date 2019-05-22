@@ -25,11 +25,12 @@ const claimERC721 = async () => {
     tokenId,
     expirationTime,
     linkKey,
-    linkdropSignerAddress,
-    linkdropSignerSignature
+    linkdropMasterAddress,
+    linkdropSignerSignature,
+    isApprove
   } = await getUrlParams(0)
 
-  await LinkdropSDK.claimERC721(
+  await LinkdropSDK.claimERC721({
     jsonRpcUrl,
     host,
     weiAmount,
@@ -37,10 +38,11 @@ const claimERC721 = async () => {
     tokenId,
     expirationTime,
     linkKey,
-    linkdropSignerAddress,
+    linkdropMasterAddress,
     linkdropSignerSignature,
-    receiverAddress
-  )
+    receiverAddress,
+    isApprove
+  })
 }
 
 claimERC721()

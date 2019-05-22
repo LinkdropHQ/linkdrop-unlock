@@ -6,7 +6,7 @@ const claimTxSchema = new mongoose.Schema({
   tokenAmount: { type: Number, required: true },
   expirationTime: { type: Number, required: true },
   linkId: { type: String, required: true, unique: true },
-  linkdropSignerAddress: { type: String, required: true },
+  linkdropMasterAddress: { type: String, required: true },
   receiverAddress: { type: String, required: true },
   proxyAddress: { type: String, required: true },
   txHash: { type: String, required: true, unique: true }

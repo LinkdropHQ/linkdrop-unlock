@@ -73,8 +73,10 @@ export const claim = async (req, res) => {
     throw new Error('Please provide receiver signature')
   }
 
-  if (isApprove == null || typeof isApprove !== 'boolean') {
-    throw new Error('Please provide valid isApprove argument')
+  if (isApprove) {
+    if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
+      throw new Error('Please provide valid isApprove argument')
+    }
   }
 
   const proxyFactory = new ethers.Contract(
@@ -112,7 +114,7 @@ export const claim = async (req, res) => {
       let tx, txHash
 
       // Top up pattern
-      if (!isApprove) {
+      if (!isApprove || String(isApprove) === 'false') {
         // Check claim params
         await proxyFactory.checkClaimParams(
           weiAmount,
@@ -142,7 +144,7 @@ export const claim = async (req, res) => {
           receiverSignature,
           { gasLimit: 500000 }
         )
-      } else if (isApprove) {
+      } else if (isApprove && String(isApprove === 'true')) {
         // Approve pattern
         // Check claim params
         await proxyFactory.checkClaimParamsApprove(
@@ -276,8 +278,10 @@ export const claimERC721 = async (req, res) => {
     throw new Error('Please provide receiver signature')
   }
 
-  if (isApprove == null || typeof isApprove !== 'boolean') {
-    throw new Error('Please provide valid isApprove argument')
+  if (isApprove) {
+    if (String(isApprove) !== 'true' && String(isApprove) !== false) {
+      throw new Error('Please provide isApprove argument')
+    }
   }
 
   const proxyFactory = new ethers.Contract(
@@ -315,7 +319,7 @@ export const claimERC721 = async (req, res) => {
     try {
       let tx, txHash
       // Top up pattern
-      if (!isApprove) {
+      if (!isApprove || String(isApprove) === false) {
         // Check claim params
         await proxyFactory.checkClaimParamsERC721(
           weiAmount,
@@ -345,7 +349,7 @@ export const claimERC721 = async (req, res) => {
           receiverSignature,
           { gasLimit: 500000 }
         )
-      } else if (isApprove) {
+      } else if (isApprove && String(isApprove === 'true')) {
         // Approve pattern
         // Check claim params
         await proxyFactory.checkClaimParamsERC721Approve(
