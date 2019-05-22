@@ -8,14 +8,14 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
 
     /**
-    * @dev Function to verify linkdrop master's signature
+    * @dev Function to verify linkdrop signer's signature
     * @param _weiAmount Amount of wei to be claimed
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _linkdropSigner Address of linkdrop signer
-    * @param _linkdropSignerSignature ECDSA signature of linkdrop master
+    * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @return True if signed with linkdrop signer's private key
     */
     function verifyLinkdropSignerSignature

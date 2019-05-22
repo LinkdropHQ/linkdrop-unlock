@@ -5,12 +5,7 @@ import "./LinkdropFactoryERC721.sol";
 import "./approve/LinkdropFactoryERC20Approve.sol";
 import "./approve/LinkdropFactoryERC721Approve.sol";
 
-contract LinkdropFactory is
-LinkdropFactoryERC20,
-LinkdropFactoryERC721,
-LinkdropFactoryERC20Approve,
-LinkdropFactoryERC721Approve
-{
+contract LinkdropFactory is LinkdropFactoryERC20, LinkdropFactoryERC721, LinkdropFactoryERC20Approve, LinkdropFactoryERC721Approve {
 
     /**
     * @dev Constructor that sets the linkdrop mastercopy address

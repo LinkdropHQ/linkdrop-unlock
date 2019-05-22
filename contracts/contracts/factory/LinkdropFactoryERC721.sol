@@ -8,14 +8,14 @@ import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon {
 
     /**
-    * @dev Function to verify linkdrop master's signature
+    * @dev Function to verify linkdrop signer's signature
     * @param _weiAmount Amount of wei to be claimed
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _linkdropSigner Address of linkdrop signer
-    * @param _linkdropSignerSignature ECDSA signature of linkdrop master
+    * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @return True if signed with linkdrop signer's private key
     */
     function verifyLinkdropSignerSignatureERC721
