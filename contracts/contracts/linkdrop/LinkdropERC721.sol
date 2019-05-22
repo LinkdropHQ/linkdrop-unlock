@@ -1,10 +1,10 @@
 pragma solidity ^0.5.6;
 
-import "./approve/LinkdropERC721Approve.sol";
-import "../interfaces/ILinkdropERC721.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
+import "../interfaces/ILinkdropERC721.sol";
+import "./LinkdropCommon.sol";
 
-contract LinkdropERC721 is ILinkdropERC721, LinkdropERC721Approve {
+contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
 
     /**
     * @dev Function to verify linkdrop signer's signature
@@ -30,7 +30,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropERC721Approve {
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return signer == linkdropSigner;
+        return isLinkdropSigner[signer];
     }
 
     /**

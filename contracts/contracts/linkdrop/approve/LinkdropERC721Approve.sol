@@ -30,7 +30,7 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return signer == linkdropSigner;
+        return isLinkdropSigner[signer];
     }
 
     /**
@@ -61,20 +61,18 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _approver Approver address
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
-    function checkClaimParamsERC721
+    function checkClaimParamsERC721Approve
     (
         uint _weiAmount,
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
         address _linkId,
-        address _approver,
         bytes memory _linkdropSignerSignature,
         address _receiver,
         bytes memory _receiverSignature
@@ -98,7 +96,7 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
         require(address(this).balance >= _weiAmount, "Insufficient funds");
 
         // Make sure nft is available for this contract
-        require(IERC721(_nftAddress).isApprovedForAll(_approver, address(this)), "Unavailable token");
+        require(IERC721(_nftAddress).isApprovedForAll(linkdropMaster, address(this)), "Unavailable token");
 
         // Verify that link key is legit and signed by linkdrop signer's private key
         require
@@ -124,20 +122,18 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
-    * @param _approver Approver address
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
-    function claimERC721
+    function claimERC721Approve
     (
         uint _weiAmount,
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
         address _linkId,
-        address _approver,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
@@ -150,14 +146,13 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
         // Make sure params are valid
         require
         (
-            checkClaimParamsERC721
+            checkClaimParamsERC721Approve
             (
                 _weiAmount,
                 _nftAddress,
                 _tokenId,
                 _expiration,
                 _linkId,
-                _approver,
                 _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature
@@ -169,7 +164,7 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
         claimedTo[_linkId] = _receiver;
 
         // Make sure transfer succeeds
-        require(_transferFundsERC721(_weiAmount, _nftAddress, _tokenId, _approver, _receiver), "Transfer failed");
+        require(_transferFundsApprovedERC721(_weiAmount, _nftAddress, _tokenId, _receiver), "Transfer failed");
 
         // Log claim
         emit ClaimedERC721(_linkId, _weiAmount, _nftAddress, _tokenId, _receiver, now);
@@ -182,11 +177,10 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
     * @param _weiAmount Amount of wei to be claimed
     * @param _nftAddress NFT address
     * @param _tokenId Amount of tokens to be claimed (in atomic value)
-    * @param _approver Approver address
     * @param _receiver Address to transfer funds to
     * @return True if success
     */
-    function _transferFundsERC721(uint _weiAmount, address _nftAddress, uint _tokenId, address _approver, address payable _receiver)
+    function _transferFundsApprovedERC721(uint _weiAmount, address _nftAddress, uint _tokenId, address payable _receiver)
     internal returns (bool)
     {
         // Transfer ETH
@@ -194,7 +188,7 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
             _receiver.transfer(_weiAmount);
         }
 
-        IERC721(_nftAddress).safeTransferFrom(_approver, _receiver, _tokenId);
+        IERC721(_nftAddress).safeTransferFrom(linkdropMaster, _receiver, _tokenId);
 
         return true;
     }

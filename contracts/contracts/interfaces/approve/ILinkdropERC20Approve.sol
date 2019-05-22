@@ -21,28 +21,26 @@ interface ILinkdropERC20Approve {
     )
     external view returns (bool);
 
-    function checkClaimParams
+    function checkClaimParamsApprove
     (
         uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address _approver,
         bytes calldata _linkdropSignerSignature,
         address _receiver,
         bytes calldata _receiverSignature
     )
     external view returns (bool);
 
-    function claim
+    function claimApprove
     (
         uint _weiAmount,
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        address _approver,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature

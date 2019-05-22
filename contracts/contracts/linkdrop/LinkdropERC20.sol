@@ -1,10 +1,10 @@
 pragma solidity ^0.5.6;
 
-import "./approve/LinkdropERC20Approve.sol";
-import "../interfaces/ILinkdropERC20.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "../interfaces/ILinkdropERC20.sol";
+import "./LinkdropCommon.sol";
 
-contract LinkdropERC20 is ILinkdropERC20, LinkdropERC20Approve {
+contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
 
     /**
     * @dev Function to verify linkdrop signer's signature
@@ -30,7 +30,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropERC20Approve {
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return signer == linkdropSigner;
+        return isLinkdropSigner[signer];
     }
 
     /**

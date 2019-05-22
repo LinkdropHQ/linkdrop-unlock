@@ -24,15 +24,14 @@ interface ILinkdropFactoryERC721Approve {
     external pure
     returns (bool);
 
-    function checkClaimParamsERC721
+    function checkClaimParamsERC721Approve
     (
         uint _weiAmount,
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
         address _linkId,
-        address _approver,
-        address payable _linkdropSigner,
+        address payable _linkdropMaster,
         bytes calldata _linkdropSignerSignature,
         address _receiver,
         bytes calldata _receiverSignature,
@@ -41,15 +40,14 @@ interface ILinkdropFactoryERC721Approve {
     external view
     returns (bool);
 
-    function claimERC721
+    function claimERC721Approve
     (
         uint _weiAmount,
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
         address _linkId,
-        address _approver,
-        address payable _linkdropSigner,
+        address payable _linkdropMaster,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
