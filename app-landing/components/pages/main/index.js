@@ -79,9 +79,7 @@ class Main extends React.Component {
 
   renderTexts ({ step }) {
     return <div className={styles.texts}>
-      <h1 className={styles.mainTitle}>
-        {this.t('titles.main')}
-      </h1>
+      <h1 className={styles.mainTitle} dangerouslySetInnerHTML={{ __html: this.t('titles.main') }} />
       {this.renderMainDescription()}
       {this.renderAccess()}
     </div>
