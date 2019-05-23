@@ -9,6 +9,7 @@ import FinalScreen from './final-screen'
 import LearnMore from './learn-more'
 import TrustedBy from './trusted-by'
 import LoadingScreen from './loading-screen'
+import MetamaskInjectedScreen from './metamask-injected-screen'
 import { getHashVariables } from 'linkdrop-commons'
 import { Web3Consumer } from 'web3-react'
 
@@ -117,6 +118,7 @@ class Main extends React.Component {
 
   renderContent ({ step, errors }) {
     const { startCheckingBalanceImmediately } = this.state
+    return <MetamaskInjectedScreen />
     switch (step) {
       case 1:
         // screen with proxy adress where to send tokens

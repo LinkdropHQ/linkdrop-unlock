@@ -15,6 +15,10 @@ class Tokens {
     // checking current balance on account in network id
     this.actions.dispatch({ type: '*TOKENS.CHECK_BALANCE', payload: { account, networkId } })
   }
+
+  getAssets ({ account }) {
+    this.actions.dispatch({ type: '*TOKENS.GET_ASSETS', payload: { account } })
+  }
 }
 
 export default Tokens
