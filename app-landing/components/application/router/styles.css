@@ -1,5 +1,3 @@
-@import "variables/variables.scss";
-
 @font-face {
   font-family: 'Inter-Regular';
   src: url('~assets/fonts/Inter-Regular.woff2') format('woff2'), /* Super Modern Browsers */

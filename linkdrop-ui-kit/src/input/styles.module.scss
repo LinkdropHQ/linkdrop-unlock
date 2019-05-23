@@ -1,13 +1,13 @@
-@import "../variables/variables.scss";
+@import "variables";
 
 .container {
   border-radius: 5px;
   height: 50px;
   line-height: 50px;
   outline: none;
-  border: 1px solid $black;
+  border: 1px solid blackColor;
   font-size: 22px;
-  color: $black;
+  color: blackColor;
   outline: none;
   padding: 0 10px;
 }
@@ -22,6 +22,6 @@
 }
 
 .container::placeholder {
-  color: $black;
+  color: blackColor;
   opacity: 1;
 }

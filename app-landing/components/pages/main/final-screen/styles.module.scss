@@ -1,4 +1,4 @@
-@import "variables/variables.scss";
+@import "variables";
 
 .container {
   display: flex;
@@ -21,7 +21,7 @@
   left: -400px;
   padding-top: 164px;
   padding-top: 0;
-  background: $white;
+  background: whiteColor;
 }
 
 .description {

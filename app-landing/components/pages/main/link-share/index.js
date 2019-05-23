@@ -5,6 +5,7 @@ import { Alert, Button, TextControlBlock, Icons } from 'linkdrop-ui-kit'
 import classNames from 'classnames'
 import { LinkBlock, QrShare } from 'components/pages/common'
 import { copyToClipboard, getHashVariables } from 'linkdrop-commons'
+import variables from 'variables'
 
 @actions(({ user: { link, loading }, tokens: { standard } }) => ({ link, loading, standard }))
 @translate('pages.main')
@@ -45,7 +46,7 @@ class LinkShare extends React.Component {
   renderMainScreen ({ onClick, link }) {
     if (!link) return null
     return <div className={classNames(styles.container, styles.main)}>
-      <Alert className={styles.alert} icon={<Icons.Check fill={ALERT_COLOR} stroke={ALERT_COLOR} />} style={{ borderColor: ALERT_COLOR }} />
+      <Alert className={styles.alert} icon={<Icons.Check fill={variables.greenColor} stroke={variables.greenColor} />} style={{ borderColor: variables.greenColor }} />
       <div className={styles.title}>{this.t('titles.linkDone')}</div>
       <TextControlBlock
         icon={<Icons.Qr />}
@@ -72,5 +73,3 @@ class LinkShare extends React.Component {
 }
 
 export default LinkShare
-
-const ALERT_COLOR = '#2BC64F'

@@ -54,7 +54,10 @@ module.exports = {
       path.resolve('./src'),
       path.resolve('./node_modules'),
       path.resolve('../node_modules')
-    ]
+    ],
+    alias: {
+      variables: path.resolve(__dirname, '../linkdrop-commons/variables/index.module.scss')
+    }
   },
   module: {
     rules: [{

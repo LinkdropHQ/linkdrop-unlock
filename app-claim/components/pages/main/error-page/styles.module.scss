@@ -1,4 +1,4 @@
-@import "variables/variables.scss";
+@import "variables";
 
 .title {
   margin-bottom: 30px;
@@ -25,7 +25,7 @@
   }
 
   a {
-    color: $black;
+    color: blackColor;
   }
 
   div {

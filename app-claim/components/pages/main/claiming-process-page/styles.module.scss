@@ -1,4 +1,4 @@
-@import "variables/variables.scss";
+@import "variables";
 
 .title {
   font-size: 24px;
@@ -16,7 +16,7 @@
   margin-bottom: 8px;
 
   a {
-    color: $black;
+    color: blackColor;
   }
 }
 

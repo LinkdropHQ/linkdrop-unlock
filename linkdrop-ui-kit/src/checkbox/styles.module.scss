@@ -1,4 +1,4 @@
-@import "../variables/variables.scss";
+@import "variables";
 
 .container {
   display: flex;
@@ -16,7 +16,7 @@
   width: 20px;
   position: relative;
   height: 20px;
-  border: 1px solid $black;
+  border: 1px solid blackColor;
 }
 
 .title {

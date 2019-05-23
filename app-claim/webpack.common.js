@@ -57,7 +57,8 @@ module.exports = {
       wallets: path.resolve(__dirname, '../config/wallets'),
       config: path.resolve(__dirname, '../config/app.config'),
       'config-claim': path.resolve(__dirname, '../config/claim'),
-      contracts: path.resolve(__dirname, '../contracts/build')
+      contracts: path.resolve(__dirname, '../contracts/build'),
+      variables: path.resolve(__dirname, '../linkdrop-commons/variables/index.module.scss')
     }
   },
   module: {
