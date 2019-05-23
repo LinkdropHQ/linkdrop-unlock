@@ -26,6 +26,19 @@
   margin-bottom: 20px;
 }
 
+.telegramConnect {
+  position: absolute;
+  bottom: 25px;
+  width: 100%;
+  font-size: 14px;
+  left: 0;
+  text-align: center;
+
+  a {
+    color: $black;
+  }
+}
+
 .container {
   display: flex;
   flex-direction: column;

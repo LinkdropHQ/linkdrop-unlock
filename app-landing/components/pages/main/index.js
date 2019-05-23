@@ -10,6 +10,7 @@ import LearnMore from './learn-more'
 import TrustedBy from './trusted-by'
 import LoadingScreen from './loading-screen'
 import { getHashVariables } from 'linkdrop-commons'
+import { Web3Consumer } from 'web3-react'
 
 @actions(({ user: { step, balance, wallet, link, errors } }) => ({ step, balance, wallet, link, errors }))
 @translate('pages.main')
@@ -46,29 +47,31 @@ class Main extends React.Component {
   render () {
     const { step, errors } = this.props
     const { modalShow } = this.state
-    return <div className={styles.container}>
-      <ModalWindow visible={modalShow}>
-        <div className={styles.modalContent}>
-          <h2 className={styles.modalTitle}>{this.t('titles.beCareful')}</h2>
-          <div className={styles.modalDescription} dangerouslySetInnerHTML={{ __html: this.t('descriptions.bugBountyNote') }} />
-          <Button className={styles.buttonOrange} onClick={_ => this.onModalClose()}>
-            {this.t('buttons.understood')}
-          </Button>
+    return <Web3Consumer>
+      {context => <div className={styles.container}>
+        <ModalWindow visible={modalShow}>
+          <div className={styles.modalContent}>
+            <h2 className={styles.modalTitle}>{this.t('titles.beCareful')}</h2>
+            <div className={styles.modalDescription} dangerouslySetInnerHTML={{ __html: this.t('descriptions.bugBountyNote') }} />
+            <Button className={styles.buttonOrange} onClick={_ => this.onModalClose()}>
+              {this.t('buttons.understood')}
+            </Button>
+          </div>
+        </ModalWindow>
+        <div className={styles.headerContent}>
+          <div className={styles.leftBlock}>
+            {this.renderContent({ step, errors })}
+          </div>
+          <div className={styles.rightBlock}>
+            {this.renderTexts({ step })}
+          </div>
         </div>
-      </ModalWindow>
-      <div className={styles.headerContent}>
-        <div className={styles.leftBlock}>
-          {this.renderContent({ step, errors })}
-        </div>
-        <div className={styles.rightBlock}>
-          {this.renderTexts({ step })}
-        </div>
-      </div>
-      {/* currently disabled */}
-      {false && <LearnMore />}
-      {false && <TrustedBy />}
-      {/* currently disabled */}
-    </div>
+        {/* currently disabled */}
+        {false && <LearnMore />}
+        {false && <TrustedBy />}
+        {/* currently disabled */}
+      </div>}
+    </Web3Consumer>
   }
 
   onModalClose () {
@@ -79,9 +82,7 @@ class Main extends React.Component {
 
   renderTexts ({ step }) {
     return <div className={styles.texts}>
-      <h1 className={styles.mainTitle}>
-        {this.t('titles.main')}
-      </h1>
+      <h1 className={styles.mainTitle} dangerouslySetInnerHTML={{ __html: this.t('titles.main') }} />
       {this.renderMainDescription()}
       {this.renderAccess()}
     </div>

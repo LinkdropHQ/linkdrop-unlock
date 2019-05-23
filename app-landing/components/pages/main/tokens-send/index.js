@@ -61,7 +61,7 @@ class TokensSend extends React.Component {
         <div className={styles.qr}>
           <QRCode size={170} value={wallet} />
         </div>
-        {n === '4' && <div className={styles.network}>Rinkeby network</div>}
+        {n === '4' && <div className={styles.network}>Rinkeby testnet</div>}
         <TextCopyBlock
           value={wallet}
           className={styles.copyBlock}
@@ -144,6 +144,7 @@ class TokensSend extends React.Component {
         >
           {text('common.buttons.addToken')}
         </Button>}
+        <div className={styles.telegramConnect} dangerouslySetInnerHTML={{ __html: this.t('titles.telegramConnect') }} />
       </div>
     </LinkBlock>
   }

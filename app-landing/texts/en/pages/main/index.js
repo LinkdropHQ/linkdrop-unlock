@@ -1,8 +1,8 @@
 export default {
   titles: {
     sendTokens: 'Try to send any tokens or NFTs via link',
-    main: 'Try the demo and send tokens via link',
-    sendTokensToAddress: 'Scan or copy address<br />to send tokens',
+    main: 'Send digital assets<br>encoded in links',
+    sendTokensToAddress: 'Scan or copy<br>to send digital assets',
     shareLink: 'Copy and share the link',
     linkDone: 'Your\'re done!',
     scanCode: 'Scan QR-code to get link',
@@ -19,7 +19,7 @@ export default {
     noGas: 'No gas or any fees',
     tokenTypes: 'ETH, ERC20 & ERC721 tokens',
     yourEmail: 'Your email',
-    wantMoreLinksInstruction: 'Request early access to generate more links',
+    wantMoreLinksInstruction: 'Request early access to the Linkdrop Dashboard',
     everydayUsers: 'We link everyday users to digital assets',
     seeGit: 'See the Github',
     join: 'Join Community',
@@ -34,14 +34,15 @@ export default {
     erc20: 'ERC-20',
     eth: 'ETH',
     tokenId: 'Token ID',
-    beCareful: 'Be careful!'
+    beCareful: 'Be careful!',
+    telegramConnect: 'If you have any troubles—shoot us in <a target="_blank" href="https://t.me/LinkdropOrg">Telegram</a>'
   },
   descriptions: {
     sendTokens: 'Simply send your funds to our secure contract and generate the crypto link',
     massGenerate: 'Linkdrop lets you<br/>mass-generate & track links',
     newLinkInstruction: 'To create a new link—first claim this one',
     sendLinks: 'Linkdrop enables you to send links with included digital assets and onboarding properties',
-    bugBountyNote: 'Don’t send any MainNet tokens.<br>Demo works only with Rinkeby Network'
+    bugBountyNote: 'This demo-app is only fit to be used<br>on the Ethereum Rinkeby testnet'
   },
   buttons: {
     continue: 'Continue',

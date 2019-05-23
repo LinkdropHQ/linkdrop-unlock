@@ -7,6 +7,10 @@
   justify-content: space-between;
   margin: 0 auto 70px;
   align-items: center;
+
+  svg {
+    flex: 1 0 160px;
+  }
 }
 
 .notification {
@@ -16,7 +20,7 @@
   color: whiteColor;
   display: flex;
   align-items: center;
-  max-width: 670px;
+  max-width: 742px;
   min-height: 50px;
   padding: 6px 20px;
   width: 100%;
