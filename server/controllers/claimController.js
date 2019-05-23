@@ -18,10 +18,11 @@ export const claim = async (req, res) => {
     tokenAmount,
     expirationTime,
     linkId,
-    linkdropSignerAddress,
+    linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature
+    receiverSignature,
+    isApprove
   } = req.body
 
   const claimParams = {
@@ -30,7 +31,7 @@ export const claim = async (req, res) => {
     tokenAmount,
     expirationTime,
     linkId,
-    linkdropSignerAddress,
+    linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
     receiverSignature
@@ -56,12 +57,12 @@ export const claim = async (req, res) => {
     throw new Error('Please provide the link id')
   }
 
-  if (!linkdropSignerAddress) {
-    throw new Error(`Please provide linkdropSigner's address`)
+  if (!linkdropMasterAddress) {
+    throw new Error(`Please provide linkdrop master's address`)
   }
 
   if (!linkdropSignerSignature) {
-    throw new Error('Please provide linkdropSigner signature')
+    throw new Error(`Please provide linkdrop signer's signature`)
   }
 
   if (!receiverAddress) {
@@ -70,6 +71,12 @@ export const claim = async (req, res) => {
 
   if (!receiverSignature) {
     throw new Error('Please provide receiver signature')
+  }
+
+  if (isApprove) {
+    if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
+      throw new Error('Please provide valid isApprove argument')
+    }
   }
 
   const proxyFactory = new ethers.Contract(
@@ -83,7 +90,7 @@ export const claim = async (req, res) => {
 
     const proxyAddress = await LinkdropSDK.computeProxyAddress(
       factory,
-      linkdropSignerAddress,
+      linkdropMasterAddress,
       masterCopyAddress
     )
 
@@ -93,7 +100,7 @@ export const claim = async (req, res) => {
       tokenAddress,
       tokenAmount,
       linkId,
-      linkdropSignerAddress
+      linkdropMasterAddress
     })
 
     if (oldClaimTx && oldClaimTx.txHash) {
@@ -103,39 +110,74 @@ export const claim = async (req, res) => {
       })
     }
 
-    // Check claim params
     try {
-      await proxyFactory.checkClaimParams(
-        weiAmount,
-        tokenAddress,
-        tokenAmount,
-        expirationTime,
-        linkId,
-        linkdropSignerAddress,
-        linkdropSignerSignature,
-        receiverAddress,
-        receiverSignature,
-        proxyAddress
-      )
+      let tx, txHash
 
-      // Claim
-      console.log('\n🔦️  Claiming...\n', claimParams)
+      // Top up pattern
+      if (!isApprove || String(isApprove) === 'false') {
+        // Check claim params
+        await proxyFactory.checkClaimParams(
+          weiAmount,
+          tokenAddress,
+          tokenAmount,
+          expirationTime,
+          linkId,
+          linkdropMasterAddress,
+          linkdropSignerSignature,
+          receiverAddress,
+          receiverSignature,
+          proxyAddress
+        )
 
-      const tx = await proxyFactory.claim(
-        weiAmount,
-        tokenAddress,
-        tokenAmount,
-        expirationTime,
-        linkId,
-        linkdropSignerAddress,
-        linkdropSignerSignature,
-        receiverAddress,
-        receiverSignature,
-        { gasLimit: 500000 }
-      )
+        // Claim
+        console.log('\n🔦️  Claiming...\n', claimParams)
 
-      const txHash = tx.hash
+        tx = await proxyFactory.claim(
+          weiAmount,
+          tokenAddress,
+          tokenAmount,
+          expirationTime,
+          linkId,
+          linkdropMasterAddress,
+          linkdropSignerSignature,
+          receiverAddress,
+          receiverSignature,
+          { gasLimit: 500000 }
+        )
+      } else if (isApprove && String(isApprove === 'true')) {
+        // Approve pattern
+        // Check claim params
+        await proxyFactory.checkClaimParamsApprove(
+          weiAmount,
+          tokenAddress,
+          tokenAmount,
+          expirationTime,
+          linkId,
+          linkdropMasterAddress,
+          linkdropSignerSignature,
+          receiverAddress,
+          receiverSignature,
+          proxyAddress
+        )
 
+        // Claim
+        console.log('\n🔦️  Claiming...\n', claimParams)
+
+        tx = await proxyFactory.claimApprove(
+          weiAmount,
+          tokenAddress,
+          tokenAmount,
+          expirationTime,
+          linkId,
+          linkdropMasterAddress,
+          linkdropSignerSignature,
+          receiverAddress,
+          receiverSignature,
+          { gasLimit: 500000 }
+        )
+      }
+
+      txHash = tx.hash
       console.log(`#️⃣  Tx Hash: ${txHash}`)
 
       // Save claim tx to database
@@ -145,7 +187,7 @@ export const claim = async (req, res) => {
         tokenAmount,
         expirationTime,
         linkId,
-        linkdropSignerAddress,
+        linkdropMasterAddress,
         receiverAddress,
         proxyAddress,
         txHash
@@ -181,10 +223,11 @@ export const claimERC721 = async (req, res) => {
     tokenId,
     expirationTime,
     linkId,
-    linkdropSignerAddress,
+    linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature
+    receiverSignature,
+    isApprove
   } = req.body
 
   const claimParams = {
@@ -193,7 +236,7 @@ export const claimERC721 = async (req, res) => {
     tokenId,
     expirationTime,
     linkId,
-    linkdropSignerAddress,
+    linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
     receiverSignature
@@ -219,12 +262,12 @@ export const claimERC721 = async (req, res) => {
     throw new Error('Please provide the link id')
   }
 
-  if (!linkdropSignerAddress) {
-    throw new Error(`Please provide linkdropSigner's address`)
+  if (!linkdropMasterAddress) {
+    throw new Error(`Please provide linkdrop master's address`)
   }
 
   if (!linkdropSignerSignature) {
-    throw new Error('Please provide linkdropSigner signature')
+    throw new Error(`Please provide linkdrop signer's signature`)
   }
 
   if (!receiverAddress) {
@@ -233,6 +276,12 @@ export const claimERC721 = async (req, res) => {
 
   if (!receiverSignature) {
     throw new Error('Please provide receiver signature')
+  }
+
+  if (isApprove) {
+    if (String(isApprove) !== 'true' && String(isApprove) !== false) {
+      throw new Error('Please provide isApprove argument')
+    }
   }
 
   const proxyFactory = new ethers.Contract(
@@ -246,7 +295,7 @@ export const claimERC721 = async (req, res) => {
 
     const proxyAddress = await LinkdropSDK.computeProxyAddress(
       factory,
-      linkdropSignerAddress,
+      linkdropMasterAddress,
       masterCopyAddress
     )
 
@@ -257,7 +306,7 @@ export const claimERC721 = async (req, res) => {
       nftAddress,
       tokenId,
       linkId,
-      linkdropSignerAddress
+      linkdropMasterAddress
     })
 
     if (oldClaimTx && oldClaimTx.txHash) {
@@ -267,38 +316,72 @@ export const claimERC721 = async (req, res) => {
       })
     }
 
-    // Check claim params
     try {
-      await proxyFactory.checkClaimParamsERC721(
-        weiAmount,
-        nftAddress,
-        tokenId,
-        expirationTime,
-        linkId,
-        linkdropSignerAddress,
-        linkdropSignerSignature,
-        receiverAddress,
-        receiverSignature,
-        proxyAddress
-      )
+      let tx, txHash
+      // Top up pattern
+      if (!isApprove || String(isApprove) === false) {
+        // Check claim params
+        await proxyFactory.checkClaimParamsERC721(
+          weiAmount,
+          nftAddress,
+          tokenId,
+          expirationTime,
+          linkId,
+          linkdropMasterAddress,
+          linkdropSignerSignature,
+          receiverAddress,
+          receiverSignature,
+          proxyAddress
+        )
 
-      // Claim
-      console.log('\n🔦️  Claiming...\n', claimParams)
+        // Claim
+        console.log('\n🔦️  Claiming...\n', claimParams)
 
-      const tx = await proxyFactory.claimERC721(
-        weiAmount,
-        nftAddress,
-        tokenId,
-        expirationTime,
-        linkId,
-        linkdropSignerAddress,
-        linkdropSignerSignature,
-        receiverAddress,
-        receiverSignature,
-        { gasLimit: 500000 }
-      )
-      const txHash = tx.hash
+        tx = await proxyFactory.claimERC721(
+          weiAmount,
+          nftAddress,
+          tokenId,
+          expirationTime,
+          linkId,
+          linkdropMasterAddress,
+          linkdropSignerSignature,
+          receiverAddress,
+          receiverSignature,
+          { gasLimit: 500000 }
+        )
+      } else if (isApprove && String(isApprove === 'true')) {
+        // Approve pattern
+        // Check claim params
+        await proxyFactory.checkClaimParamsERC721Approve(
+          weiAmount,
+          nftAddress,
+          tokenId,
+          expirationTime,
+          linkId,
+          linkdropMasterAddress,
+          linkdropSignerSignature,
+          receiverAddress,
+          receiverSignature,
+          proxyAddress
+        )
 
+        // Claim
+        console.log('\n🔦️  Claiming...\n', claimParams)
+
+        tx = await proxyFactory.claimERC721Approve(
+          weiAmount,
+          nftAddress,
+          tokenId,
+          expirationTime,
+          linkId,
+          linkdropMasterAddress,
+          linkdropSignerSignature,
+          receiverAddress,
+          receiverSignature,
+          { gasLimit: 500000 }
+        )
+      }
+      txHash = tx.hash
       console.log(`#️⃣  Tx Hash: ${txHash}`)
 
       // Save claim tx to database
@@ -308,7 +391,7 @@ export const claimERC721 = async (req, res) => {
         tokenId,
         expirationTime,
         linkId,
-        linkdropSignerAddress,
+        linkdropMasterAddress,
         receiverAddress,
         proxyAddress,
         txHash
