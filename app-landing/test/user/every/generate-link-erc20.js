@@ -53,16 +53,17 @@ describe('data/store/saga/user/every/generate-link-erc20.js ERC-20', () => {
     expect(
       gen.next(tokenAddress).value
     ).to.deep.equal(
-      LinkdropSDK.generateLink(
+      LinkdropSDK.generateLink({
         jsonRpcUrl,
         networkId,
-        claimHost,
-        privateKey,
-        0,
-        tokenAddress,
-        balance,
-        configs.expirationTime
-      )
+        host: claimHost,
+        linkdropMasterPrivateKey: privateKey,
+        weiAmount: 0,
+        tokenAddress: tokenAddress,
+        tokenAmount: balance,
+        expirationTime: configs.expirationTime,
+        isApprove: false
+      })
     )
   })
 
@@ -130,16 +131,17 @@ describe('data/store/saga/user/every/generate-link-erc20.js ETH', () => {
     expect(
       gen.next(tokenAddress).value
     ).to.deep.equal(
-      LinkdropSDK.generateLink(
+      LinkdropSDK.generateLink({
         jsonRpcUrl,
         networkId,
-        claimHost,
-        privateKey,
-        balance,
-        '0x0000000000000000000000000000000000000000',
-        0,
-        configs.expirationTime
-      )
+        host: claimHost,
+        linkdropMasterPrivateKey: privateKey,
+        weiAmount: balance,
+        tokenAddress: '0x0000000000000000000000000000000000000000',
+        tokenAmount: 0,
+        expirationTime: configs.expirationTime,
+        isApprove: false
+      })
     )
   })
 

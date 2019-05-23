@@ -17,7 +17,7 @@ class ClaimingProcessPage extends React.Component {
       tokenAmount,
       expirationTime,
       linkKey,
-      linkdropSignerAddress,
+      linkdropMasterAddress,
       linkdropSignerSignature,
       nftAddress,
       tokenId,
@@ -28,10 +28,10 @@ class ClaimingProcessPage extends React.Component {
     // tokenAmount: token amount in atomic values - can be received from url params
     // expirationTime: link expiration time - can be received from url params
     if (nftAddress && tokenId) {
-      return this.actions().tokens.claimTokensERC721({ wallet, nftAddress, weiAmount, tokenId, expirationTime, linkKey, linkdropSignerAddress, linkdropSignerSignature })
+      return this.actions().tokens.claimTokensERC721({ wallet, nftAddress, weiAmount, tokenId, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature })
     }
 
-    this.actions().tokens.claimTokensERC20({ wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropSignerAddress, linkdropSignerSignature })
+    this.actions().tokens.claimTokensERC20({ wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature })
   }
 
   componentWillReceiveProps ({ transactionId: id, transactionStatus: status }) {
