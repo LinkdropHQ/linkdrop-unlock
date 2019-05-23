@@ -1,4 +1,4 @@
-@import "../variables/variables.scss";
+@import "variables";
 
 .container {
   display: flex;
@@ -11,29 +11,29 @@
   height: 60px;
   font-size: 18px;
   font-family: 'Inter-Medium';
-  color: $grey;
+  color: greyColor;
   transition: all .3s;
 
   span {
-    color: $black;
+    color: blackColor;
     transition: all .3s;
   }
 
   &.withLink {
     a {
       text-decoration: none;
-      color: $grey;
+      color: greyColor;
     }
     span {
-      color: $black;
+      color: blackColor;
     }
     &:hover {
       a {
         text-decoration: none;
-        color: $textGrey;
+        color: textGreyColor;
       }
       span {
-        color: $textGrey;
+        color: textGreyColor;
       }
     }
   }

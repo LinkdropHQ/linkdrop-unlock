@@ -3,6 +3,7 @@ import styles from './styles.module'
 import { Icons } from 'linkdrop-ui-kit'
 import { translate } from 'decorators'
 import classNames from 'classnames'
+import variables from 'variables'
 
 @translate('components.loadingBar')
 class LoadingBar extends React.Component {
@@ -29,7 +30,7 @@ class LoadingBar extends React.Component {
     }
 
     return <div className={styles.icon}>
-      <Icons.CheckSmall fill='#2BC64F' />
+      <Icons.CheckSmall fill={variables.greenColor} />
     </div>
   }
 

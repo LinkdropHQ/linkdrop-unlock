@@ -1,4 +1,4 @@
-@import "variables/variables.scss";
+@import "variables";
 
 .container {
   display: flex;
@@ -20,11 +20,11 @@
 .secondary {
   left: -400px;
   padding-top: 0;
-  background: $white;
+  background: whiteColor;
 }
 
 .title {
-  color: $green;
+  color: greenColor;
   margin-bottom: 64px;
 }
 

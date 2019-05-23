@@ -1,4 +1,4 @@
-@import "variables/variables.scss";
+@import "variables";
 
 .container {
   max-width: 1180px;
@@ -49,7 +49,7 @@
 }
 
 .buttonOrange {
-  background: $orange;
+  background: orangeColor;
   max-width: 260px;
 }
 

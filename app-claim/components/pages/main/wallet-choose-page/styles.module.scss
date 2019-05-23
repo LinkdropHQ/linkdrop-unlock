@@ -1,4 +1,4 @@
-@import "variables/variables.scss";
+@import "variables";
 
 .title {
   font-size: 24px;
@@ -75,7 +75,7 @@
   align-items: center;
   justify-content: center;
   outline: none!important;
-  background: $white;
+  background: whiteColor;
 
   img {
     max-width: 100%;
@@ -88,8 +88,8 @@
   overflow: hidden;
 
   &:hover {
-    background: $bgHoverGrey;
-    border-color: $borderHoverGrey;
+    background: bgHoverGreyColor;
+    border-color: borderHoverGreyColor;
   }
 }
 

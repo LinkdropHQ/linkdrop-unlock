@@ -1,4 +1,4 @@
-@import "variables/variables.scss";
+@import "variables";
 
 .input {
   width: 100%;
@@ -39,11 +39,11 @@
 
     .copyBlock {
       margin-bottom: 20px;
-      border-color: $orange;
+      border-color: orangeColor;
 
       & > div {
         &:first-child {
-          color: $orange;
+          color: orangeColor;
         }
       }
     }
@@ -67,10 +67,10 @@
 .terms, .alert {
   margin-top: 20px;
   font-size: 14px;
-  color: $black;
+  color: blackColor;
 
   a {
-    color: $black;
+    color: blackColor;
   }
 
   span {
@@ -86,9 +86,9 @@
 }
 
 .network {
-  background: $orange;
+  background: orangeColor;
   border-radius: 3px;
-  color: $white;
+  color: whiteColor;
   font-size: 14px;
   height: 20px;
   padding: 0px 5px;
