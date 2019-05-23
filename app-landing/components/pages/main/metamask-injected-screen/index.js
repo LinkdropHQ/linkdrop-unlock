@@ -1,13 +1,14 @@
 import React from 'react'
-import { translate } from 'decorators'
+import { translate, actions } from 'decorators'
 import styles from './styles.module'
 import { Select, Input } from 'linkdrop-ui-kit'
 import { LinkBlock } from 'components/pages/common'
 
+@actions(() => ({}))
 @translate('pages.main')
 class MetamaskInjectedScreen extends React.Component {
   componentDidMount () {
-    const { wallet } = this.props
+    const { account } = this.props
     this.actions().tokens.getAssets({ account })
   }
 

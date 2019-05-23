@@ -61,7 +61,7 @@ class Main extends React.Component {
         </ModalWindow>
         <div className={styles.headerContent}>
           <div className={styles.leftBlock}>
-            {this.renderContent({ step, errors })}
+            {this.renderContent({ step, errors, context })}
           </div>
           <div className={styles.rightBlock}>
             {this.renderTexts({ step })}
@@ -116,9 +116,9 @@ class Main extends React.Component {
     </div>
   }
 
-  renderContent ({ step, errors }) {
+  renderContent ({ step, errors, context }) {
     const { startCheckingBalanceImmediately } = this.state
-    return <MetamaskInjectedScreen />
+    return <MetamaskInjectedScreen account={context.account} />
     switch (step) {
       case 1:
         // screen with proxy adress where to send tokens
