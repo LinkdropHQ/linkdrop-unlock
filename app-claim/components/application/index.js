@@ -10,7 +10,7 @@ class Application extends React.Component {
   render () {
     return <Web3Provider
       connectors={connectors}
-      libraryName={'ethers.js'}
+      libraryName='ethers.js'
     >
       <Provider store={store()}>
         <RouterProvider />
