@@ -6,18 +6,19 @@ const generator = function * ({ payload }) {
   try {
     const { wallet, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    const { success, txHash, error } = yield LinkdropSDK.claimERC721(
+    const { success, txHash, error } = yield LinkdropSDK.claimERC721({
       jsonRpcUrl,
-      apiHost,
+      host: apiHost,
       weiAmount,
       nftAddress,
       tokenId,
       expirationTime,
       linkKey,
-      linkdropSignerAddress,
+      linkdropMasterAddress: linkdropSignerAddress,
       linkdropSignerSignature,
-      wallet
-    )
+      receiverAddress: wallet,
+      isApprove: false
+    })
 
     if (success) {
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })

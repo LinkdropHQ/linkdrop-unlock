@@ -8,18 +8,19 @@ const generator = function * ({ payload }) {
     const { wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropSignerAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const ethersContractZeroAddress = ethers.constants.AddressZero
-    const { success, txHash, error: { reason = [] } = {} } = yield LinkdropSDK.claim(
+    const { success, txHash, error: { reason = [] } = {} } = yield LinkdropSDK.claim({
       jsonRpcUrl,
-      apiHost,
-      tokenAddress === ethersContractZeroAddress ? weiAmount : '0',
+      host: apiHost,
+      weiAmount: tokenAddress === ethersContractZeroAddress ? weiAmount : '0',
       tokenAddress,
-      tokenAddress === ethersContractZeroAddress ? '0' : tokenAmount,
+      tokenAmount: tokenAddress === ethersContractZeroAddress ? '0' : tokenAmount,
       expirationTime,
       linkKey,
-      linkdropSignerAddress,
+      linkdropMasterAddress: linkdropSignerAddress,
       linkdropSignerSignature,
-      wallet
-    )
+      receiverAddress: wallet,
+      isApprove: false
+    })
 
     if (success) {
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })

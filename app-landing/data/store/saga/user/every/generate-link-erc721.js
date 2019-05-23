@@ -11,16 +11,17 @@ const generator = function * ({ payload }) {
     const { networkId } = payload
     const privateKey = yield select(generator.selectors.privateKey)
     const tokenAddress = yield select(generator.selectors.tokenAddress)
-    const link = yield LinkdropSDK.generateLinkERC721(
+    const link = yield LinkdropSDK.generateLinkERC721({
       jsonRpcUrl,
       networkId,
-      claimHost,
-      privateKey,
-      balance || 0,
-      tokenAddress,
+      host: claimHost,
+      linkdropMasterPrivateKey: privateKey,
+      weiAmount: balance || 0,
+      nftAddress: tokenAddress,
       tokenId,
-      configs.expirationTime
-    )
+      expirationTime: configs.expirationTime,
+      isApprove: false
+    })
 
     yield put({ type: 'USER.SET_LINK', payload: { link: link.url } })
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
