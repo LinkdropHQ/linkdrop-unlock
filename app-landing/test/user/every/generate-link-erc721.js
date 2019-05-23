@@ -62,16 +62,17 @@ describe('data/store/saga/user/every/generate-link-erc721.js ERC-721', () => {
     expect(
       gen.next(tokenAddress).value
     ).to.deep.equal(
-      LinkdropSDK.generateLinkERC721(
+      LinkdropSDK.generateLinkERC721({
         jsonRpcUrl,
         networkId,
-        claimHost,
-        privateKey,
-        0,
-        tokenAddress,
+        host: claimHost,
+        linkdropMasterPrivateKey: privateKey,
+        weiAmount: 0,
+        nftAddress: tokenAddress,
         tokenId,
-        configs.expirationTime
-      )
+        expirationTime: configs.expirationTime,
+        isApprove: false
+      })
     )
   })
 

@@ -5,6 +5,7 @@
     "linkdropSignerPrivateKey": "",
     "masterCopy": "",
     "factory": "",
+    "isApprove": "",
     "receiverAddress": "",
     "weiAmount": "",
     "tokenAddress": "",

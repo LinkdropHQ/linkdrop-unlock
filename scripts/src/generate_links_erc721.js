@@ -9,80 +9,110 @@ const config = require(configPath)
 
 let {
   jsonRpcUrl,
-  linkdropSignerPrivateKey,
+  linkdropMasterPrivateKey,
   weiAmount,
   nftAddress,
-  nftIds
+  nftIds,
+  isApprove
 } = config
+
+if (
+  isApprove === null ||
+  (String(isApprove) !== 'true' && String(isApprove) !== 'false')
+) {
+  throw new Error('Please provide valid isApprove argument')
+}
 
 ;(async () => {
   console.log('Generating links...\n')
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
+  const linkdropMaster = new ethers.Wallet(linkdropMasterPrivateKey, provider)
 
   const factoryAddress = getFactoryAddress()
   const masterCopyAddress = getMasterCopyAddress()
 
   let proxyAddress = LinkdropSDK.computeProxyAddress(
     factoryAddress,
-    linkdropSigner.address,
+    linkdropMaster.address,
     masterCopyAddress
   )
 
   const nftContract = await new ethers.Contract(
     nftAddress,
     NFTMock.abi,
-    linkdropSigner
+    linkdropMaster
   )
   const nftSymbol = await nftContract.symbol()
 
   // If owner of tokenId is not proxy contract -> send it to proxy
   let tokenIds = JSON.parse(nftIds)
+  let tx
+  try {
+    // Top up
+    if (String(isApprove) === 'false') {
+      for (let i = 0; i < tokenIds.length; i++) {
+        let owner = await nftContract.ownerOf(tokenIds[i])
+        if (
+          owner.toString().toLowerCase() !==
+          proxyAddress.toString().toLowerCase()
+        ) {
+          console.log(
+            `⤴️  Transfering ${nftSymbol} with tokenId=${
+              tokenIds[i]
+            } to ${proxyAddress} `
+          )
 
-  for (let i = 0; i < tokenIds.length; i++) {
-    let owner = await nftContract.ownerOf(tokenIds[i])
-    if (
-      owner.toString().toLowerCase() !== proxyAddress.toString().toLowerCase()
-    ) {
-      console.log(
-        `⤴️  Sending ${nftSymbol} with tokenId=${
-          tokenIds[i]
-        } to ${proxyAddress} `
+          tx = await nftContract.transferFrom(
+            linkdropMaster.address,
+            proxyAddress,
+            tokenIds[i],
+            { gasLimit: 500000 }
+          )
+          console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+        }
+      }
+    } else if (String(isApprove) === 'true') {
+      // Approve
+      let isApprovedForAll = await nftContract.isApprovedForAll(
+        linkdropMaster.address,
+        proxyAddress
       )
-      const tx = await nftContract.transferFrom(
-        linkdropSigner.address,
-        proxyAddress,
-        tokenIds[i],
-        { gasLimit: 500000 }
-      ) // This should be changed to safeTransferFrom
-      console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+      if (!isApprovedForAll) {
+        console.log(`⤴️  Approving all tokens to ${proxyAddress} `)
+        tx = await nftContract.setApprovalForAll(proxyAddress, true, {
+          gasLimit: 500000
+        })
+        console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+      }
     }
-  }
 
-  // Send eth to proxy
-  if (weiAmount > 0) {
-    let cost = weiAmount * tokenIds.length
-    let amountToSend
+    // Send eth to proxy
+    if (weiAmount > 0) {
+      let cost = weiAmount * tokenIds.length
+      let amountToSend
 
-    const tokenSymbol = 'ETH'
-    const tokenDecimals = 18
-    const proxyBalance = await provider.getBalance(proxyAddress)
+      const tokenSymbol = 'ETH'
+      const tokenDecimals = 18
+      const proxyBalance = await provider.getBalance(proxyAddress)
 
-    if (proxyBalance < cost) {
-      amountToSend = cost - proxyBalance
-      const tx = await linkdropSigner.sendTransaction({
-        to: proxyAddress,
-        value: amountToSend
-      })
+      if (proxyBalance < cost) {
+        amountToSend = cost - proxyBalance
+        tx = await linkdropMaster.sendTransaction({
+          to: proxyAddress,
+          value: amountToSend
+        })
 
-      // Get human readable format of amount to send
-      amountToSend /= Math.pow(10, tokenDecimals)
-      console.log(
-        `⤴️  Sending ${amountToSend} ${tokenSymbol} to ${proxyAddress} `
-      )
-      console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+        // Get human readable format of amount to send
+        amountToSend /= Math.pow(10, tokenDecimals)
+        console.log(
+          `⤴️  Sending ${amountToSend} ${tokenSymbol} to ${proxyAddress} `
+        )
+        console.log(`#️⃣  Tx Hash: ${tx.hash}`)
+      }
     }
+  } catch (err) {
+    console.error(err)
   }
 
   let links = await generateLinksERC721()

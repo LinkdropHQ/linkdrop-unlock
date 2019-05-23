@@ -13,7 +13,7 @@ const config = require(configPath)
 
 let {
   networkId,
-  linkdropSignerPrivateKey,
+  linkdropMasterPrivateKey,
   weiAmount,
   tokenAddress,
   tokenAmount,
@@ -21,7 +21,8 @@ let {
   jsonRpcUrl,
   host,
   nftAddress,
-  nftIds
+  nftIds,
+  isApprove
 } = config
 
 if (jsonRpcUrl == null || jsonRpcUrl === '') {
@@ -29,12 +30,12 @@ if (jsonRpcUrl == null || jsonRpcUrl === '') {
 }
 
 // Make sure we have these set in config.json
-if (linkdropSignerPrivateKey == null || linkdropSignerPrivateKey === '') {
-  throw new Error(`Please provide linkdropSigner's private key`)
+if (linkdropMasterPrivateKey == null || linkdropMasterPrivateKey === '') {
+  throw new Error(`Please provide linkdropMaster's private key`)
 }
 
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
+const linkdropMaster = new ethers.Wallet(linkdropMasterPrivateKey, provider)
 
 const expirationTime = 1900000000000000
 
@@ -44,7 +45,7 @@ export const deployMasterCopy = async () => {
   let factory = new ethers.ContractFactory(
     LinkdropMastercopy.abi,
     LinkdropMastercopy.bytecode,
-    linkdropSigner
+    linkdropMaster
   )
 
   mastercopy = await factory.deploy()
@@ -71,7 +72,7 @@ export const deployFactory = async masterCopy => {
   let factory = new ethers.ContractFactory(
     LinkdropFactory.abi,
     LinkdropFactory.bytecode,
-    linkdropSigner
+    linkdropMaster
   )
 
   proxyFactory = await factory.deploy(masterCopy, {
@@ -99,7 +100,7 @@ export const deployERC20 = async () => {
   let factory = new ethers.ContractFactory(
     TokenMock.abi,
     TokenMock.bytecode,
-    linkdropSigner
+    linkdropMaster
   )
 
   tokenMock = await factory.deploy({
@@ -123,7 +124,7 @@ export const deployERC721 = async () => {
   let factory = new ethers.ContractFactory(
     NFTMock.abi,
     NFTMock.bytecode,
-    linkdropSigner
+    linkdropMaster
   )
 
   nftMock = await factory.deploy({
@@ -148,6 +149,13 @@ export const generateLinksETH = async () => {
     throw new Error('Please provide links number')
   }
 
+  if (
+    isApprove === null ||
+    (String(isApprove) !== 'true' && String(isApprove) !== 'false')
+  ) {
+    throw new Error('Please provide valid isApprove argument')
+  }
+
   tokenAddress = ethers.constants.AddressZero
   tokenAmount = 0
 
@@ -159,16 +167,17 @@ export const generateLinksETH = async () => {
       linkId,
       linkKey,
       linkdropSignerSignature
-    } = await LinkdropSDK.generateLink(
+    } = await LinkdropSDK.generateLink({
       jsonRpcUrl,
       networkId,
       host,
-      linkdropSignerPrivateKey,
+      linkdropMasterPrivateKey,
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
-    )
+      expirationTime,
+      isApprove
+    })
 
     let link = { i, linkId, linkKey, linkdropSignerSignature, url }
     links.push(link)
@@ -193,6 +202,13 @@ export const generateLinksERC20 = async () => {
     throw new Error('Please provide links number')
   }
 
+  if (
+    isApprove === null ||
+    (String(isApprove) !== 'true' && String(isApprove) !== 'false')
+  ) {
+    throw new Error('Please provide valid isApprove argument')
+  }
+
   let links = []
 
   for (let i = 0; i < linksNumber; i++) {
@@ -201,16 +217,17 @@ export const generateLinksERC20 = async () => {
       linkId,
       linkKey,
       linkdropSignerSignature
-    } = await LinkdropSDK.generateLink(
+    } = await LinkdropSDK.generateLink({
       jsonRpcUrl,
       networkId,
       host,
-      linkdropSignerPrivateKey,
+      linkdropMasterPrivateKey,
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
-    )
+      expirationTime,
+      isApprove
+    })
 
     let link = { i, linkId, linkKey, linkdropSignerSignature, url }
     links.push(link)
@@ -235,6 +252,13 @@ export const generateLinksERC721 = async () => {
     throw new Error('Please provide NFT ids')
   }
 
+  if (
+    isApprove === null ||
+    (String(isApprove) !== 'true' && String(isApprove) !== 'false')
+  ) {
+    throw new Error('Please provide valid isApprove argument')
+  }
+
   let links = []
   let tokenIds = JSON.parse(nftIds)
 
@@ -244,16 +268,17 @@ export const generateLinksERC721 = async () => {
       linkId,
       linkKey,
       linkdropSignerSignature
-    } = await LinkdropSDK.generateLinkERC721(
+    } = await LinkdropSDK.generateLinkERC721({
       jsonRpcUrl,
       networkId,
       host,
-      linkdropSignerPrivateKey,
+      linkdropMasterPrivateKey,
       weiAmount,
       nftAddress,
-      tokenIds[i],
-      expirationTime
-    )
+      tokenId: tokenIds[i],
+      expirationTime,
+      isApprove
+    })
     let link = { i, linkId, linkKey, linkdropSignerSignature, url }
     links.push(link)
   }

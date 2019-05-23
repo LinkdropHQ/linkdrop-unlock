@@ -13,16 +13,17 @@ const generator = function * ({ payload }) {
     const ethersContractZeroAddress = ethers.constants.AddressZero
     const tokenAddress = yield select(generator.selectors.tokenAddress)
 
-    const link = yield LinkdropSDK.generateLink(
+    const link = yield LinkdropSDK.generateLink({
       jsonRpcUrl,
       networkId,
-      claimHost,
-      privateKey,
-      tokenAddress ? 0 : balance,
-      tokenAddress || ethersContractZeroAddress,
-      tokenAddress ? balance : 0,
-      configs.expirationTime
-    )
+      host: claimHost,
+      linkdropMasterPrivateKey: privateKey,
+      weiAmount: tokenAddress ? 0 : balance,
+      tokenAddress: tokenAddress || ethersContractZeroAddress,
+      tokenAmount: tokenAddress ? balance : 0,
+      expirationTime: configs.expirationTime,
+      isApprove: false
+    })
 
     yield put({ type: 'USER.SET_LINK', payload: { link: link.url } })
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
