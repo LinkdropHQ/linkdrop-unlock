@@ -5,7 +5,8 @@ const initialState = {
   symbol: null,
   tokenAddress: null,
   standard: null,
-  tokenId: null
+  tokenId: null,
+  assets: []
 }
 
 export default (state = initialState, action = {}) => {
@@ -22,5 +23,6 @@ const ACTIONS = {
   'TOKENS.SET_SYMBOL': reducers.setSymbol,
   'TOKENS.SET_TOKEN_ADDRESS': reducers.setTokenAddress,
   'TOKENS.SET_TOKEN_STANDARD': reducers.setTokenStandard,
-  'TOKENS.SET_TOKEN_ID': reducers.setTokenId
+  'TOKENS.SET_TOKEN_ID': reducers.setTokenId,
+  'TOKENS.SET_ASSETS': reducers.setAssets
 }

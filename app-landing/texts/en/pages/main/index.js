@@ -35,6 +35,7 @@ export default {
     eth: 'ETH',
     tokenId: 'Token ID',
     beCareful: 'Be careful!',
+    chooseAsset: 'Choose asset',
     telegramConnect: 'If you have any troubles—shoot us in <a target="_blank" href="https://t.me/LinkdropOrg">Telegram</a>'
   },
   descriptions: {
