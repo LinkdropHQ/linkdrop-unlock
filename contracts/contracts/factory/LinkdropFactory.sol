@@ -13,6 +13,7 @@ contract LinkdropFactory is LinkdropFactoryERC20, LinkdropFactoryERC721, Linkdro
     */
     constructor(address payable _masterCopy) public {
         masterCopy = _masterCopy;
+        version[masterCopy] = 1;
     }
 
 }

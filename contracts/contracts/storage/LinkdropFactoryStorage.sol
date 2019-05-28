@@ -5,6 +5,8 @@ contract LinkdropFactoryStorage {
     // Address of implementation contract, where proxy will route functions
     address payable public masterCopy;
 
+    mapping (address => uint) public version;
+
     // Maps sender address to its corresponding proxy address
     mapping (address => address) internal _deployed;
 

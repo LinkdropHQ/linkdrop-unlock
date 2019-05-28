@@ -12,7 +12,8 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     */
     function initializer
     (
-        address payable _linkdropMaster
+        address payable _linkdropMaster,
+        uint _version
     )
     public
     returns (bool)
@@ -20,6 +21,7 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
         require(_initialized == false, "Initialized");
         linkdropMaster = _linkdropMaster;
         isLinkdropSigner[linkdropMaster] = true;
+        version = _version;
         _initialized = true;
         return true;
     }
@@ -121,6 +123,12 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     function removeSigner(address _linkdropSigner) external onlyLinkdropMaster returns (bool) {
         require(_linkdropSigner != address(0), "Invalid address");
         isLinkdropSigner[_linkdropSigner] = false;
+        return true;
+    }
+
+    // Withdraws all ETH to linkdropMaster
+    function die() external returns (bool) {
+        selfdestruct(linkdropMaster);
         return true;
     }
 

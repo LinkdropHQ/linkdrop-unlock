@@ -4,8 +4,33 @@ import "./CloneFactory.sol";
 import "../storage/LinkdropFactoryStorage.sol";
 import "../interfaces/ILinkdropCommon.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
+import "openzeppelin-solidity/contracts/math/Safemath.sol";
 
 contract LinkdropFactoryCommon is LinkdropFactoryStorage, CloneFactory {
+    using SafeMath for uint;
+
+    function updateMasterCopy(address payable _masterCopy)
+    external
+    returns (bool)
+    {
+        version[_masterCopy] = version[masterCopy].add(1);
+        masterCopy = _masterCopy;
+        return true;
+    }
+
+    function getCurrentVersion() public view returns (uint) {
+        return version[masterCopy];
+    }
+
+    function upgradeProxy()
+    public
+    returns (address payable)
+    {
+        require(isDeployed(msg.sender), "Not deployed");
+        address payable proxy = address(uint160(_deployed[msg.sender]));
+        //require(ILinkdropCommon(proxy).die(), "Fucked up");
+        deployProxy(msg.sender);
+    }
 
     /**
     * @dev Indicates whether a proxy contract for linkdrop master is deployed or not
@@ -49,8 +74,8 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage, CloneFactory {
 
         _deployed[_linkdropMaster] = proxy;
 
-        // Initialize linkdrop master in newly deployed proxy contract
-        require(ILinkdropCommon(proxy).initializer(_linkdropMaster), "Failed to initialize");
+        // Initialize linkdrop master and contract version in newly deployed proxy contract
+        require(ILinkdropCommon(proxy).initializer(_linkdropMaster, getCurrentVersion()), "Failed to initialize");
         emit Deployed(proxy, keccak256(abi.encodePacked(_linkdropMaster)), now);
 
         return proxy;

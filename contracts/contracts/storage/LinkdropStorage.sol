@@ -5,6 +5,8 @@ contract LinkdropStorage {
     // Address corresponding to linkdrop master key
     address payable public linkdropMaster;
 
+    uint public version;
+
     // Indicates whether an address corresponds to linkdrop signing key
     mapping (address => bool) public isLinkdropSigner;
 
