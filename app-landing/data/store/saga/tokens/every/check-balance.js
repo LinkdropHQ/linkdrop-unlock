@@ -21,7 +21,7 @@ const generator = function * ({ payload }) {
     // check of erc-20 (only on mainnet) balance
     if (Number(networkId) === 1 && !tokenAddress) {
       const data = yield call(getTokensTrustWallet, { wallet: account })
-      tokenAddress = ((data.docs[0] || {}).contract || {}).address
+      tokenAddress = (((data.docs || [])[0] || {}).contract || {}).address
     }
     if (tokenAddress) {
       const tokenContract = yield new ethers.Contract(tokenAddress, TokenMock.abi, provider)
