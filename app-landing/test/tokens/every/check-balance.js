@@ -163,7 +163,7 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
     expect(
       gen.next().value
     ).to.deep.equal(
-      put({ type: 'USER.SET_BALANCE', payload: { balanceFormatted, balance } })
+      put({ type: 'TOKENS.SET_BALANCE', payload: { balanceFormatted, balance } })
     )
   })
 
