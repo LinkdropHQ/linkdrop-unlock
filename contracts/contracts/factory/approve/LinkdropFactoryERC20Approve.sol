@@ -89,7 +89,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
         // If proxy is deployed
         if (isDeployed(_linkdropMaster)) {
 
-            return ILinkdropERC20Approve(_deployed[_linkdropMaster]).checkClaimParamsApprove
+            return ILinkdropERC20Approve(deployed[_linkdropMaster]).checkClaimParamsApprove
             (
                 _weiAmount,
                 _tokenAddress,
@@ -180,7 +180,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
         }
 
         // Call claim function in the context of proxy contract
-        ILinkdropERC20Approve(_deployed[_linkdropMaster]).claimApprove
+        ILinkdropERC20Approve(deployed[_linkdropMaster]).claimApprove
         (
             _weiAmount,
             _tokenAddress,

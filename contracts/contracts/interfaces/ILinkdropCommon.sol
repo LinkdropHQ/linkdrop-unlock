@@ -12,7 +12,7 @@ interface ILinkdropCommon {
     function unpause() external returns (bool);
     function addSigner(address _linkdropSigner) external returns (bool);
     function removeSigner(address _linkdropSigner) external returns (bool);
-    function die() external returns(bool);
+    function destroy() external;
     function () external payable;
 
 }

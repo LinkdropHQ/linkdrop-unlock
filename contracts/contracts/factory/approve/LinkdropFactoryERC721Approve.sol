@@ -89,7 +89,7 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
         // If proxy is deployed
         if (isDeployed(_linkdropMaster)) {
 
-            return ILinkdropERC721Approve(_deployed[_linkdropMaster]).checkClaimParamsERC721Approve
+            return ILinkdropERC721Approve(deployed[_linkdropMaster]).checkClaimParamsERC721Approve
             (
                 _weiAmount,
                 _nftAddress,
@@ -169,7 +169,7 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
         }
 
         // Call claim function in the context of proxy contract
-        ILinkdropERC721Approve(_deployed[_linkdropMaster]).claimERC721Approve
+        ILinkdropERC721Approve(deployed[_linkdropMaster]).claimERC721Approve
         (
             _weiAmount,
             _nftAddress,

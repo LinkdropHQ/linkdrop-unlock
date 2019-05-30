@@ -89,7 +89,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         // If proxy is deployed
         if (isDeployed(_linkdropMaster)) {
 
-            return ILinkdropERC20(_deployed[_linkdropMaster]).checkClaimParams
+            return ILinkdropERC20(deployed[_linkdropMaster]).checkClaimParams
             (
                 _weiAmount,
                 _tokenAddress,
@@ -180,7 +180,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         }
 
         // Call claim function in the context of proxy contract
-        ILinkdropERC20(_deployed[_linkdropMaster]).claim
+        ILinkdropERC20(deployed[_linkdropMaster]).claim
         (
             _weiAmount,
             _tokenAddress,

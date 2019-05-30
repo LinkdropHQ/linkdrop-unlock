@@ -1,36 +1,12 @@
 pragma solidity ^0.5.6;
 
-import "./CloneFactory.sol";
 import "../storage/LinkdropFactoryStorage.sol";
 import "../interfaces/ILinkdropCommon.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 import "openzeppelin-solidity/contracts/math/Safemath.sol";
 
-contract LinkdropFactoryCommon is LinkdropFactoryStorage, CloneFactory {
+contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     using SafeMath for uint;
-
-    function updateMasterCopy(address payable _masterCopy)
-    external
-    returns (bool)
-    {
-        version[_masterCopy] = version[masterCopy].add(1);
-        masterCopy = _masterCopy;
-        return true;
-    }
-
-    function getCurrentVersion() public view returns (uint) {
-        return version[masterCopy];
-    }
-
-    function upgradeProxy()
-    public
-    returns (address payable)
-    {
-        require(isDeployed(msg.sender), "Not deployed");
-        address payable proxy = address(uint160(_deployed[msg.sender]));
-        //require(ILinkdropCommon(proxy).die(), "Fucked up");
-        deployProxy(msg.sender);
-    }
 
     /**
     * @dev Indicates whether a proxy contract for linkdrop master is deployed or not
@@ -38,7 +14,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage, CloneFactory {
     * @return True if deployed
     */
     function isDeployed(address _linkdropMaster) public view returns (bool) {
-        return (_deployed[_linkdropMaster] != address(0));
+        return (deployed[_linkdropMaster] != address(0));
     }
 
     /**
@@ -53,7 +29,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage, CloneFactory {
             return false;
         }
         else {
-            address payable proxy = address(uint160(_deployed[_linkdropMaster]));
+            address payable proxy = address(uint160(deployed[_linkdropMaster]));
             return ILinkdropCommon(proxy).isClaimedLink(_linkId);
         }
 
@@ -66,20 +42,68 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage, CloneFactory {
     */
     function deployProxy(address payable _linkdropMaster)
     public
-    returns (address payable)
+    returns (address payable proxy)
     {
 
-        // Create clone of the mastercopy
-        address payable proxy = createClone(masterCopy, keccak256(abi.encodePacked(_linkdropMaster)));
+        bytes32 salt = keccak256(abi.encodePacked(_linkdropMaster));
 
-        _deployed[_linkdropMaster] = proxy;
+        // Bootstrap compiled from https://github.com/ricmoo/will-o-the-wisp/blob/master/scripts/deploy-springboard.js
+        // let bootstrap := 0x6394198df16000526103ff60206004601c335afa6040516060f3
+        bytes memory initcode = _initcode;
+
+        assembly {
+            proxy := create2(0, add(initcode, 0x20), mload(initcode), salt)
+        }
+
+        deployed[_linkdropMaster] = proxy;
 
         // Initialize linkdrop master and contract version in newly deployed proxy contract
-        require(ILinkdropCommon(proxy).initializer(_linkdropMaster, getCurrentVersion()), "Failed to initialize");
-        emit Deployed(proxy, keccak256(abi.encodePacked(_linkdropMaster)), now);
-
+        require(ILinkdropCommon(proxy).initializer(_linkdropMaster, version), "Failed to initialize");
+        emit Deployed(_linkdropMaster, proxy, salt, now);
         return proxy;
     }
 
+    /**
+    * @dev Function to destroy proxy contract, called by proxy owner
+    * @return True is destroyed succesfully
+    */
+    function destroyProxy()
+    public
+    returns (bool)
+    {
+        address payable proxyOwner = msg.sender;
+        require(isDeployed(proxyOwner), "Not deployed");
+        address payable proxy = address(uint160(deployed[proxyOwner]));
+        ILinkdropCommon(proxy).destroy();
+        delete deployed[proxyOwner];
+        emit Destroyed(proxyOwner, proxy, now);
+        return true;
+    }
+
+    /**
+    * @dev Function to fetch the actual contract bytecode to install. Called by proxy when executing initcode
+    * @return Contract bytecode to install
+    */
+    function getPendingRuntimeCode()
+    public view
+    returns (bytes memory)
+    {
+        return _bytecode;
+    }
+
+    /**
+    * @dev Function to update the runtime bytecode. Can only be called by factory owner
+    * @param __bytecode Contract bytecode to install
+    * @return True if updated succesfully
+    */
+    function updateBytecode(bytes memory __bytecode)
+    public returns (bool)
+    {
+        require(msg.sender == owner, "Only factory owner");
+        _bytecode = __bytecode;
+        version = version.add(1);
+        emit UpdatedBytecode(_bytecode, version, now);
+        return true;
+    }
 
 }

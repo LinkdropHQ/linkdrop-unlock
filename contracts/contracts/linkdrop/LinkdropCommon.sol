@@ -7,7 +7,7 @@ import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
 
     /**
-    * @dev Function to set the linkdrop master, can only be called once
+    * @dev Function called only once to set owner, linkdrop master and contract version
     * @param _linkdropMaster Address corresponding to master key
     */
     function initializer
@@ -18,7 +18,8 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     public
     returns (bool)
     {
-        require(_initialized == false, "Initialized");
+        require(!_initialized, "Initialized");
+        owner = msg.sender;
         linkdropMaster = _linkdropMaster;
         isLinkdropSigner[linkdropMaster] = true;
         version = _version;
@@ -68,7 +69,7 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     * @return True if success
     */
     function cancel(address _linkId) external onlyLinkdropMaster returns (bool) {
-        require(isClaimedLink(_linkId) == false, "Claimed link");
+        require(!isClaimedLink(_linkId), "Claimed link");
         _canceled[_linkId] = true;
         emit Canceled(_linkId, now);
         return true;
@@ -126,10 +127,13 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
         return true;
     }
 
-    // Withdraws all ETH to linkdropMaster
-    function die() external returns (bool) {
+    /**
+    * @dev Function to destroy this contract, can only be called by owner (factory) or linkdrop master
+    * Withdraws all the remaining ETH to linkdrop master
+    */
+    function destroy() external {
+        require (msg.sender == owner || msg.sender == linkdropMaster, "Only owner or linkdrop master");
         selfdestruct(linkdropMaster);
-        return true;
     }
 
     /**
