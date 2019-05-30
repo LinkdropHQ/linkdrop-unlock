@@ -13,7 +13,7 @@ export default {
       },
       ios: {
         support: true,
-        deepLink: (url) => `https://links.trustwalletapp.com/a/key_live_lfvIpVeI9TFWxPCqwU8rZnogFqhnzs4D?&event=openURL&url=${encodeURIComponent(url)}`
+        deepLink: (url) => `https://link.trustwallet.com/open_url?coin_id=60&url=${encodeURIComponent(url)}`
       }
     }
   },

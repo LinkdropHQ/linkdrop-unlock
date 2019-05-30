@@ -11,18 +11,13 @@ class Tokens {
     this.actions.dispatch({ type: '*TOKENS.CHECK_TOKENS_MANUALLY', payload: { isERC721, networkId, tokenId } })
   }
 
-  checkBalance ({ account, networkId }) {
+  checkBalance ({ account, networkId, tokenAddress }) {
     // checking current balance on account in network id
-    this.actions.dispatch({ type: '*TOKENS.CHECK_BALANCE', payload: { account, networkId } })
+    this.actions.dispatch({ type: '*TOKENS.CHECK_BALANCE', payload: { account, networkId, tokenAddress } })
   }
 
   getAssets ({ account }) {
     this.actions.dispatch({ type: '*TOKENS.GET_ASSETS', payload: { account } })
-  }
-
-  checkERC20Balance ({ account, networkId, tokenAddress, assetDecimals }) {
-    // checking current balance on account in network id
-    this.actions.dispatch({ type: '*TOKENS.CHECK_ERC20_BALANCE', payload: { account, networkId, tokenAddress, assetDecimals } })
   }
 }
 

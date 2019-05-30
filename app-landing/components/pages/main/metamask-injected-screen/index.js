@@ -11,7 +11,7 @@ import { LoadingBar } from 'components/common'
 import configs from 'config-landing'
 
 @actions(({
-  user: { loading, wallet, alert },
+  user: { loading, wallet },
   metamask: { mmStatus, mmBalanceFormatted, mmAssetBalanceFormatted, mmAssetSymbol, mmLoading, mmAssetDecimals },
   tokens: { assets, balanceFormatted, assetBalanceFormatted }
 }) => ({
@@ -25,7 +25,6 @@ import configs from 'config-landing'
   wallet,
   mmLoading,
   mmStatus,
-  alert,
   mmAssetDecimals
 }))
 @translate('pages.main')
@@ -52,13 +51,13 @@ class MetamaskInjectedScreen extends React.Component {
 
   componentWillReceiveProps ({ balanceFormatted, symbol, mmStatus, wallet, assetBalanceFormatted }) {
     const { n = '4' } = getHashVariables()
+    const { assetAddress } = this.state
     const { balanceFormatted: prevBalanceFormatted, onFinish, mmStatus: prevMmStatus, assetBalanceFormatted: prevAssetBalanceFormatted } = this.props
     if (mmStatus && mmStatus === 'finished' && mmStatus !== prevMmStatus) {
       this.setState({
         searchStarted: true
       }, _ => {
-        this.intervalCheck = window.setInterval(_ => this.actions().tokens.checkBalance({ account: wallet, networkId: n }), configs.balanceCheckInterval)
-        this.alertTimeout = window.setTimeout(_ => this.actions().user.setAlert({ alert: this.t('errors.addManually') }), configs.showManualTimeout)
+        this.intervalCheck = window.setInterval(_ => this.actions().tokens.checkBalance({ account: wallet, networkId: n, tokenAddress: assetAddress }), configs.balanceCheckInterval)
       })
       return
     }
@@ -75,7 +74,7 @@ class MetamaskInjectedScreen extends React.Component {
 
   render () {
     const { n = '4' } = getHashVariables()
-    const { assets, alert, mmAssetDecimals, account, mmBalanceFormatted, mmLoading, symbol, mmAssetBalanceFormatted, wallet } = this.props
+    const { assets, mmAssetDecimals, account, mmBalanceFormatted, mmLoading, symbol, mmAssetBalanceFormatted, wallet } = this.props
     const { currentAsset, assetAddress, assetAmount, ethAmount, searchStarted, tokensUploaded, manualTokenCheck } = this.state
     const options = this.getOptions({ networkId: n, assets })
     return <LinkBlock title={this.t('titles.sendWithMetamask')}>
@@ -93,7 +92,7 @@ class MetamaskInjectedScreen extends React.Component {
         {this.renderBalances({ mmBalanceFormatted, mmLoading, assetAddress, symbol, mmAssetBalanceFormatted, currentAsset })}
         {this.renderEthValueInput({ networkId: n, account, value: ethAmount, currentAsset })}
         {this.renderTokenValueInput({ networkId: n, account, currentAsset, symbol, value: assetAmount })}
-        {this.renderButton({ mmAssetDecimals, wallet, assetAmount, ethAmount, account, networkId: n, currentAsset, assetAddress, searchStarted, tokensUploaded, alert, manualTokenCheck, symbol, mmAssetBalanceFormatted })}
+        {this.renderButton({ mmAssetDecimals, wallet, assetAmount, ethAmount, account, networkId: n, currentAsset, assetAddress, searchStarted, tokensUploaded, manualTokenCheck, symbol, mmAssetBalanceFormatted })}
       </div>
     </LinkBlock>
   }
@@ -111,27 +110,12 @@ class MetamaskInjectedScreen extends React.Component {
     return assets.map(({ contract: { name, symbol, address } }) => ({ value: address, label: symbol }))
   }
 
-  renderButton ({ symbol, alert, tokensUploaded, assetAmount, ethAmount, account, networkId, currentAsset, assetAddress, wallet, searchStarted, mmAssetDecimals, manualTokenCheck, mmAssetBalanceFormatted }) {
+  renderButton ({ symbol, tokensUploaded, assetAmount, ethAmount, account, networkId, currentAsset, assetAddress, wallet, searchStarted, mmAssetDecimals, manualTokenCheck, mmAssetBalanceFormatted }) {
     // now sending stuff to wallet
-    if (manualTokenCheck) {
-      return <LoadingBar
-        className={styles.secondaryLoading}
-        loadingTitle={this.t('titles.waitingFor', { tokenSymbol: symbol })}
-      />
-    }
     if (searchStarted) {
       return <LoadingBar
         className={styles.loading}
-        alert={alert}
         success={tokensUploaded}
-        onClick={_ => {
-          this.setState({
-            manualTokenCheck: true
-          }, _ => {
-            this.intervalCheck && window.clearInterval(this.intervalCheck)
-            this.manualCheck = window.setInterval(_ => { this.actions().tokens.checkERC20Balance({ account: wallet, tokenAddress: assetAddress, networkId, assetDecimals: mmAssetDecimals }) }, configs.balanceCheckInterval)
-          })
-        }}
       />
     }
     let disabled = false
