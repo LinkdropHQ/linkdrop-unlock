@@ -13,6 +13,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropSigner Address of linkdrop signer
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
@@ -24,6 +25,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        uint _version,
         address _linkId,
         address _linkdropSigner,
         bytes memory _linkdropSignerSignature
@@ -31,7 +33,21 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
     public pure
     returns (bool)
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash
+        (
+            keccak256
+            (
+                abi.encodePacked
+                (
+                    _weiAmount,
+                    _tokenAddress,
+                    _tokenAmount,
+                    _expiration,
+                    _version,
+                    _linkId
+                )
+            )
+        );
         address signer = ECDSA.recover(prefixedHash, _linkdropSignerSignature);
         return signer == _linkdropSigner;
     }
@@ -63,6 +79,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropMaster Address corresponding to linkdrop master key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
@@ -76,6 +93,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        uint _version,
         address _linkId,
         address payable _linkdropMaster,
         bytes memory _linkdropSignerSignature,
@@ -95,6 +113,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
                 _tokenAddress,
                 _tokenAmount,
                 _expiration,
+                _version,
                 _linkId,
                 _linkdropSignerSignature,
                 _receiver,
@@ -123,6 +142,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
                     _tokenAddress,
                     _tokenAmount,
                     _expiration,
+                    _version,
                     _linkId,
                     _linkdropMaster,
                     _linkdropSignerSignature
@@ -132,6 +152,9 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
 
             // Make sure link is not expired
             require(_expiration >= now, "Expired link");
+
+            // Make sure link is signed for current contract version
+            require(_version == version, "Invalid contract version");
 
             // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
             require
@@ -151,6 +174,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropMaster Address corresponding to linkdrop master key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
@@ -164,6 +188,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        uint _version,
         address _linkId,
         address payable _linkdropMaster,
         bytes calldata _linkdropSignerSignature,
@@ -186,6 +211,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
             _tokenAddress,
             _tokenAmount,
             _expiration,
+            _version,
             _linkId,
             _linkdropSignerSignature,
             _receiver,

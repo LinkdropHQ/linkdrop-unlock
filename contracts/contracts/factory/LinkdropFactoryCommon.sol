@@ -62,7 +62,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
 
     /**
     * @dev Function to destroy proxy contract, called by proxy owner
-    * @return True is destroyed succesfully
+    * @return True if destroyed succesfully
     */
     function destroyProxy()
     public
@@ -78,7 +78,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     }
 
     /**
-    * @dev Function to get initcode used to deploy proxy contracts to the same addresses
+    * @dev Function to get bootstrap initcode for generating repeatable contract addresses
     * @return Static bootstrap initcode
     */
     function getInitcode()
@@ -100,9 +100,9 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     }
 
     /**
-    * @dev Function to update the runtime bytecode. Can only be called by factory owner
+    * @dev Function to update bytecode. Can only be called by factory owner
     * @param __bytecode Contract bytecode to install
-    * @return True if updated succesfully
+    * @return True if updated successfully
     */
     function updateBytecode(bytes memory __bytecode)
     public returns (bool)
