@@ -78,7 +78,7 @@ class MetamaskInjectedScreen extends React.Component {
     const { assets, alert, mmAssetDecimals, account, mmBalanceFormatted, mmLoading, symbol, mmAssetBalanceFormatted, wallet } = this.props
     const { currentAsset, assetAddress, assetAmount, ethAmount, searchStarted, tokensUploaded, manualTokenCheck } = this.state
     const options = this.getOptions({ networkId: n, assets })
-    return <LinkBlock>
+    return <LinkBlock title={this.t('titles.sendWithMetamask')}>
       <div className={styles.container}>
         <Select
           placeholder={this.t(`titles.chooseAsset`)}

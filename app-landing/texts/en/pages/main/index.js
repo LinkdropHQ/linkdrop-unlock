@@ -3,6 +3,7 @@ export default {
     sendTokens: 'Try to send any tokens or NFTs via link',
     main: 'Send digital assets<br>encoded in links',
     sendTokensToAddress: 'Scan or copy<br>to send digital assets',
+    sendWithMetamask: 'Send digital assets<br>with MetaMask extension',
     shareLink: 'Copy and share the link',
     linkDone: 'Your\'re done!',
     scanCode: 'Scan QR-code to get link',
