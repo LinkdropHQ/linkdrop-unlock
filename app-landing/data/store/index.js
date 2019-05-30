@@ -4,7 +4,7 @@ import thunk from 'redux-thunk'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
 import saga from './saga'
 import { createBrowserHistory } from 'history'
-import { user, tokens } from './reducers'
+import { user, tokens, metamask } from './reducers'
 const sagaMiddleware = createSagaMiddleware()
 export const history = createBrowserHistory()
 
@@ -13,6 +13,7 @@ export default () => {
     combineReducers({
       user,
       tokens,
+      metamask,
       router: connectRouter(history)
     }),
     {},

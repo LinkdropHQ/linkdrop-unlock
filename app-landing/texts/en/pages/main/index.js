@@ -33,9 +33,12 @@ export default {
     erc721: 'ERC-721',
     erc20: 'ERC-20',
     eth: 'ETH',
+    ethAmount: 'ETH to send',
+    tokenAmount: '{{symbol}} to send',
     tokenId: 'Token ID',
     beCareful: 'Be careful!',
     chooseAsset: 'Choose asset',
+    otherToken: 'Other Token',
     telegramConnect: 'If you have any troubles—shoot us in <a target="_blank" href="https://t.me/LinkdropOrg">Telegram</a>'
   },
   descriptions: {

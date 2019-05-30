@@ -26,11 +26,11 @@ const generator = function * ({ payload }) {
       } else {
         // checking balance of ERC-20 from blockchain by tokenAddress
         const tokenContract = yield new ethers.Contract(tokenAddress, TokenMock.abi, provider)
-        const decimals = yield select(generator.selectors.decimals)
+        const assetDecimals = yield select(generator.selectors.assetDecimals)
         const balance = yield tokenContract.balanceOf(wallet)
-        const balanceFormatted = utils.formatUnits(balance, decimals)
+        const balanceFormatted = utils.formatUnits(balance, assetDecimals)
         if (Number(balanceFormatted) > 0) {
-          yield put({ type: 'USER.SET_BALANCE', payload: { balanceFormatted, balance } })
+          yield put({ type: 'TOKENS.SET_ASSET_BALANCE', payload: { balanceFormatted, balance } })
         }
       }
     } else {
@@ -39,7 +39,7 @@ const generator = function * ({ payload }) {
       const balance = yield provider.getBalance(wallet)
       const balanceFormatted = utils.formatEther(balance)
       if (Number(balanceFormatted) > 0) {
-        yield put({ type: 'USER.SET_BALANCE', payload: { balanceFormatted, balance } })
+        yield put({ type: 'TOKENS.SET_BALANCE', payload: { balanceFormatted, balance } })
       }
     }
 
@@ -51,7 +51,7 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
-  decimals: ({ tokens: { decimals } }) => decimals,
+  assetDecimals: ({ tokens: { assetDecimals } }) => assetDecimals,
   tokenAddress: ({ tokens: { tokenAddress } }) => tokenAddress,
   wallet: ({ user: { wallet } }) => wallet
 }

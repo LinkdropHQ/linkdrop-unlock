@@ -14,27 +14,21 @@ const generator = function * ({ payload }) {
     yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: tokenType === 'erc721' ? 'erc721' : 'erc20' } })
     const networkName = defineNetworkName({ networkId })
     const provider = yield ethers.getDefaultProvider(networkName)
-    let symbol
-    let decimals
     if (tokenType === 'eth' || tokenAddress === ethWalletContract) {
-      symbol = 'ETH'
-      decimals = 18
+      yield put({ type: 'TOKENS.SET_SYMBOL', payload: { symbol: 'ETH' } })
+      yield put({ type: 'TOKENS.SET_DECIMALS', payload: { decimals: 18 } })
     } else {
       if (tokenType === 'erc721') {
         const tokenContract = yield new ethers.Contract(tokenAddress, NFTMock.abi, provider)
-        symbol = yield tokenContract.symbol()
+        const symbol = yield tokenContract.symbol()
+        yield put({ type: 'TOKENS.SET_SYMBOL', payload: { symbol } })
       } else {
         const tokenContract = yield new ethers.Contract(tokenAddress, TokenMock.abi, provider)
-        decimals = yield tokenContract.decimals()
-        symbol = yield tokenContract.symbol()
+        const decimals = yield tokenContract.decimals()
+        const symbol = yield tokenContract.symbol()
+        yield put({ type: 'TOKENS.SET_ASSET_DECIMALS', payload: { decimals } })
+        yield put({ type: 'TOKENS.SET_SYMBOL', payload: { symbol } })
       }
-    }
-
-    if (decimals != null) {
-      yield put({ type: 'TOKENS.SET_DECIMALS', payload: { decimals } })
-    }
-    if (symbol) {
-      yield put({ type: 'TOKENS.SET_SYMBOL', payload: { symbol } })
     }
 
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })

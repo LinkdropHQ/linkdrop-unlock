@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './styles.module'
 import Select from 'react-select'
+import classNames from 'classnames'
 
 class SelectComponent extends React.Component {
   constructor (props) {
@@ -13,7 +14,7 @@ class SelectComponent extends React.Component {
   onChange ({ value }) {
     const { onChange } = this.props
     this.setState({
-      value: this.defineCurrentValue({ value })
+      value
     }, _ => onChange && onChange({ value }))
   }
 
@@ -21,7 +22,7 @@ class SelectComponent extends React.Component {
     const { value: currentValue } = this.state
     if (value && currentValue !== value) {
       this.setState({
-        value: this.defineCurrentValue({ value })
+        value
       })
     }
   }
@@ -33,10 +34,11 @@ class SelectComponent extends React.Component {
 
   render () {
     const { value } = this.state
-    const { options = [], placeholder } = this.props
+    const { options = [], placeholder, className } = this.props
+    const currentValue = this.defineCurrentValue({ value })
     return <Select
-      className={styles.container}
-      value={value}
+      className={classNames(styles.container, className)}
+      value={currentValue}
       onChange={value => this.onChange(value)}
       options={options}
       placeholder={placeholder}

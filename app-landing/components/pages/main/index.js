@@ -13,7 +13,7 @@ import MetamaskInjectedScreen from './metamask-injected-screen'
 import { getHashVariables } from 'linkdrop-commons'
 import { Web3Consumer } from 'web3-react'
 
-@actions(({ user: { step, balance, wallet, link, errors } }) => ({ step, balance, wallet, link, errors }))
+@actions(({ user: { step, wallet, link, errors }, tokens: { balance, assetBalance } }) => ({ assetBalance, step, balance, wallet, link, errors }))
 @translate('pages.main')
 class Main extends React.Component {
   constructor (props) {
@@ -118,9 +118,18 @@ class Main extends React.Component {
 
   renderContent ({ step, errors, context }) {
     const { startCheckingBalanceImmediately } = this.state
-    return <MetamaskInjectedScreen account={context.account} />
+    const { n = '4' } = getHashVariables()
     switch (step) {
       case 1:
+        // if has metamask extension => show screen with funds
+        if (context.connectorName === 'MetaMask' && Number(n) === 4) {
+          return <MetamaskInjectedScreen
+            account={context.account}
+            onFinish={_ => {
+              this.actions().user.setStep({ step: 2 })
+            }}
+          />
+        }
         // screen with proxy adress where to send tokens
         return <TokensSend
           startCheckingBalanceImmediately={startCheckingBalanceImmediately}

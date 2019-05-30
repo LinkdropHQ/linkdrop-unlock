@@ -10,7 +10,7 @@ import classNames from 'classnames'
 import text from 'texts'
 import configs from 'config-landing'
 
-@actions(({ user: { wallet, balance, alert }, tokens: { decimals, symbol, tokenId } }) => ({ wallet, balance, alert, decimals, symbol, tokenId }))
+@actions(({ user: { wallet, alert }, tokens: { assetBalance, balance, symbol, tokenId } }) => ({ assetBalance, wallet, balance, alert, symbol, tokenId }))
 @translate('pages.main')
 class TokensSend extends React.Component {
   constructor (props) {
@@ -26,13 +26,14 @@ class TokensSend extends React.Component {
     }
   }
 
-  componentWillReceiveProps ({ balance, symbol, tokenId }) {
-    const { balance: prevBalance, onFinish, symbol: prevSymbol, tokenId: prevTokenId } = this.props
+  componentWillReceiveProps ({ balance, symbol, tokenId, assetBalance }) {
+    const { assetBalance: prevAssetBalance, balance: prevBalance, onFinish, symbol: prevSymbol, tokenId: prevTokenId } = this.props
     const { n = '4' } = getHashVariables()
     const { tokenType, tokenId: userTokenId } = this.state
     if (
       (balance && balance > 0 && balance !== prevBalance) ||
-      (tokenId != null && prevTokenId === null)
+      (tokenId != null && prevTokenId === null) ||
+      (assetBalance && prevAssetBalance > 0 && assetBalance !== prevAssetBalance)
     ) {
       this.intervalCheck && window.clearInterval(this.intervalCheck)
       this.manualTokensCheck && window.clearInterval(this.manualTokensCheck)

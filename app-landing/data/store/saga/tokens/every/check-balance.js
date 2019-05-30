@@ -46,7 +46,7 @@ const generator = function * ({ payload }) {
 
     // if ETH found on address -> set this balance to store
     if (Number(balanceFormatted) > 0) {
-      yield put({ type: 'USER.SET_BALANCE', payload: { balanceFormatted, balance } })
+      yield put({ type: 'TOKENS.SET_BALANCE', payload: { balanceFormatted, balance } })
     }
     // if ERC-721 found on address -> set this token id to store
     if (erc721Balance.length > 0) {
@@ -61,8 +61,7 @@ const generator = function * ({ payload }) {
       const decimals = yield tokenContract.decimals()
       const balanceFormatted = utils.formatUnits(balance, decimals)
       yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress: tokenContract } })
-      yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc20' } })
-      yield put({ type: 'TOKENS.SET_BALANCE', payload: { balanceFormatted, balance } })
+      yield put({ type: 'TOKENS.SET_ASSET_BALANCE', payload: { balanceFormatted, balance } })
     }
 
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })

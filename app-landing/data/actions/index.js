@@ -1,6 +1,7 @@
 import User from './user'
 import Routing from './routing'
 import Tokens from './tokens'
+import Metamask from './metamask'
 
 class Actions {
   constructor (env) {
@@ -10,6 +11,7 @@ class Actions {
     this.routing = new Routing(this)
     this.user = new User(this)
     this.tokens = new Tokens(this)
+    this.metamask = new Metamask(this)
   }
 }
 
