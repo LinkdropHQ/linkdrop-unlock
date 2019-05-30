@@ -46,9 +46,6 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     {
 
         bytes32 salt = keccak256(abi.encodePacked(_linkdropMaster));
-
-        // Bootstrap compiled from https://github.com/ricmoo/will-o-the-wisp/blob/master/scripts/deploy-springboard.js
-        // let bootstrap := 0x6394198df16000526103ff60206004601c335afa6040516060f3
         bytes memory initcode = getInitcode();
 
         assembly {

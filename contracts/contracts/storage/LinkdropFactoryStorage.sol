@@ -13,7 +13,6 @@ contract LinkdropFactoryStorage {
 
     // Bootstrap initcode to fetch the actual contract bytecode. Used to generate repeatable contract addresses
     bytes internal _initcode;
-    // bootstrap = "0x6394198df16000526103ff60206004601c335afa6040516060f3"
 
     // Maps sender address to its corresponding proxy address
     mapping (address => address) public deployed;
