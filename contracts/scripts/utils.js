@@ -19,16 +19,16 @@ export const computeBytecode = masterCopyAddress => {
   return bytecode
 }
 
-// const bootstrap = '0x6394198df16000526103ff60206004601c335afa6040516060f3'
+// const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 
 export const computeProxyAddress = (
   factoryAddress,
   linkdropMasterAddress,
-  bootstrap
+  initcode
 ) => {
   const salt = utils.solidityKeccak256(['address'], [linkdropMasterAddress])
   // const bytecode = computePendingRuntimeCode(masterCopyAddress)
-  const proxyAddress = buildCreate2Address(factoryAddress, salt, bootstrap)
+  const proxyAddress = buildCreate2Address(factoryAddress, salt, initcode)
   return proxyAddress
 }
 
