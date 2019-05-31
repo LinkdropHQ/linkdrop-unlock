@@ -16,7 +16,8 @@ import NFTMock from '../build/NFTMock'
 import {
   computeProxyAddress,
   createLink,
-  signReceiverAddress
+  signReceiverAddress,
+  computeBytecode
 } from '../scripts/utils'
 
 const ethers = require('ethers')
@@ -44,6 +45,10 @@ let weiAmount
 let nftAddress
 let tokenId
 let expirationTime
+let version
+let bytecode
+
+const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 
 describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
   before(async () => {
@@ -58,27 +63,33 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
   })
 
   it('should deploy factory', async () => {
+    bytecode = computeBytecode(masterCopy.address)
     factory = await deployContract(
       linkdropMaster,
       LinkdropFactory,
-      [masterCopy.address],
+      [initcode, bytecode],
       {
         gasLimit: 6000000
       }
     )
-
     expect(factory.address).to.not.eq(ethers.constants.AddressZero)
+    let version = await factory.version()
+    expect(version).to.eq(1)
   })
 
   it('should deploy proxy and delegate to implementation', async () => {
     // Compute next address with js function
-    proxyAddress = await computeProxyAddress(
+    proxyAddress = computeProxyAddress(
       factory.address,
       linkdropMaster.address,
-      masterCopy.address
+      initcode
     )
 
-    await factory.deployProxy(linkdropMaster.address)
+    await expect(
+      factory.deployProxy(linkdropMaster.address, {
+        gasLimit: 6000000
+      })
+    ).to.emit(factory, 'Deployed')
 
     proxy = new ethers.Contract(
       proxyAddress,
@@ -86,8 +97,14 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       linkdropMaster
     )
 
-    let senderAddress = await proxy.linkdropMaster()
-    expect(senderAddress).to.eq(linkdropMaster.address)
+    let linkdropMasterAddress = await proxy.linkdropMaster()
+    expect(linkdropMasterAddress).to.eq(linkdropMaster.address)
+
+    let version = await proxy.version()
+    expect(version).to.eq(1)
+
+    let owner = await proxy.owner()
+    expect(owner).to.eq(factory.address)
   })
 
   it('linkdropMaster should be able to add new signing keys', async () => {
@@ -132,13 +149,15 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
     nftAddress = nftInstance.address
     tokenId = 1
     expirationTime = 11234234223
+    version = 1
 
     link = await createLink(
       linkdropSigner,
       weiAmount,
       nftAddress,
       tokenId,
-      expirationTime
+      expirationTime,
+      version
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -149,6 +168,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
         nftAddress,
         tokenId,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -170,7 +190,8 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       weiAmount,
       nftAddress,
       tokenId,
-      expirationTime
+      expirationTime,
+      version
     )
 
     expect(
@@ -179,6 +200,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
         nftAddress,
         tokenId,
         expirationTime,
+        version,
         link.linkId,
         link.linkdropSignerSignature
       )
@@ -191,7 +213,8 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       weiAmount,
       nftAddress,
       tokenId,
-      expirationTime
+      expirationTime,
+      version
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -238,7 +261,8 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       weiAmount,
       nftAddress,
       tokenId,
-      expirationTime
+      expirationTime,
+      version
     )
     await expect(proxy.cancel(link.linkId, { gasLimit: 200000 })).to.emit(
       proxy,
@@ -254,7 +278,8 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       weiAmount,
       nftAddress,
       tokenId,
-      expirationTime
+      expirationTime,
+      version
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -269,6 +294,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
         nftAddress,
         tokenId,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -288,7 +314,8 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       weiAmount,
       nftAddress,
       tokenId,
-      expirationTime
+      expirationTime,
+      version
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -299,6 +326,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
         nftAddress,
         tokenId,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -315,7 +343,8 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       weiAmount,
       nftAddress,
       tokenId,
-      expirationTime
+      expirationTime,
+      version
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -326,6 +355,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
         nftAddress,
         tokenId,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -340,7 +370,14 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
     // Approving all tokens from linkdropMaster to Linkdrop Contract
     await nftInstance.setApprovalForAll(proxy.address, true)
 
-    link = await createLink(linkdropSigner, weiAmount, nftAddress, tokenId, 0)
+    link = await createLink(
+      linkdropSigner,
+      weiAmount,
+      nftAddress,
+      tokenId,
+      0,
+      version
+    )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
@@ -350,6 +387,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
         nftAddress,
         tokenId,
         0,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -366,7 +404,8 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       weiAmount,
       nftAddress,
       tokenId,
-      expirationTime
+      expirationTime,
+      version
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -377,6 +416,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       nftAddress,
       tokenId,
       expirationTime,
+      version,
       link.linkId,
       linkdropMaster.address,
       link.linkdropSignerSignature,
@@ -404,6 +444,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
         nftAddress,
         tokenId,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -430,6 +471,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
         nftAddress,
         tokenId,
         expirationTime,
+        version,
         linkId,
         linkdropMaster.address,
         fakeSignature,
@@ -446,7 +488,8 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       weiAmount,
       nftAddress,
       tokenId,
-      expirationTime
+      expirationTime,
+      version
     )
 
     let fakeLink = await createLink(
@@ -454,7 +497,8 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       weiAmount,
       nftAddress,
       tokenId,
-      expirationTime
+      expirationTime,
+      version
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(
@@ -467,6 +511,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
         nftAddress,
         tokenId,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -483,7 +528,8 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       weiAmount,
       nftAddress,
       tokenId,
-      expirationTime
+      expirationTime,
+      version
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -496,6 +542,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
         nftAddress,
         tokenId,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -533,11 +580,12 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
 
     nftAddress = nftInstance.address
     expirationTime = 11234234223
+    version = 1
 
     proxyAddress = await computeProxyAddress(
       factory.address,
       linkdropMaster.address,
-      masterCopy.address
+      initcode
     )
 
     // Contract not deployed yet
@@ -552,7 +600,8 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       weiAmount,
       nftAddress,
       tokenId,
-      expirationTime
+      expirationTime,
+      version
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -564,6 +613,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
         nftAddress,
         tokenId,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -600,7 +650,8 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       weiAmount,
       nftAddress,
       tokenId,
-      expirationTime
+      expirationTime,
+      version
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -611,6 +662,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
       nftAddress,
       tokenId,
       expirationTime,
+      version,
       link.linkId,
       linkdropMaster.address,
       link.linkdropSignerSignature,
