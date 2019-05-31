@@ -357,6 +357,37 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     ).to.be.revertedWith('Expired link')
   })
 
+  it('should fail to claim with invalid contract version', async () => {
+    let invalidVersion = 0
+
+    link = await createLink(
+      linkdropSigner,
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime,
+      invalidVersion
+    )
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      factory.claim(
+        weiAmount,
+        tokenAddress,
+        tokenAmount,
+        expirationTime,
+        invalidVersion,
+        link.linkId,
+        linkdropMaster.address,
+        link.linkdropSignerSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    ).to.be.revertedWith('Invalid contract version')
+  })
+
   it('should succesfully claim tokens with valid claim params', async () => {
     // Approving tokens from linkdropMaster to Linkdrop Contract
     await tokenInstance.approve(proxy.address, tokenAmount)

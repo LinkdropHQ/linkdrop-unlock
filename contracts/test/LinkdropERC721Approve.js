@@ -398,6 +398,36 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
     ).to.be.revertedWith('Expired link')
   })
 
+  it('should fail to claim nft with invalid contract version link', async () => {
+    let invalidVersion = 0
+    link = await createLink(
+      linkdropSigner,
+      weiAmount,
+      nftAddress,
+      tokenId,
+      expirationTime,
+      invalidVersion
+    )
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      factory.claimERC721Approve(
+        weiAmount,
+        nftAddress,
+        tokenId,
+        expirationTime,
+        invalidVersion,
+        link.linkId,
+        linkdropMaster.address,
+        link.linkdropSignerSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    ).to.be.revertedWith('Invalid contract version')
+  })
+
   it('should succesfully claim nft with valid claim params', async () => {
     link = await createLink(
       linkdropSigner,
