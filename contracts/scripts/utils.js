@@ -39,11 +39,12 @@ export const signLink = async function (
   tokenAddress,
   tokenAmount,
   expirationTime,
+  version,
   linkId
 ) {
   let messageHash = ethers.utils.solidityKeccak256(
-    ['uint', 'address', 'uint', 'uint', 'address'],
-    [ethAmount, tokenAddress, tokenAmount, expirationTime, linkId]
+    ['uint', 'address', 'uint', 'uint', 'uint', 'address'],
+    [ethAmount, tokenAddress, tokenAmount, expirationTime, version, linkId]
   )
   let messageHashToSign = ethers.utils.arrayify(messageHash)
   let signature = await linkdropSigner.signMessage(messageHashToSign)
@@ -56,7 +57,8 @@ export const createLink = async function (
   ethAmount,
   tokenAddress,
   tokenAmount,
-  expirationTime
+  expirationTime,
+  version
 ) {
   let linkWallet = ethers.Wallet.createRandom()
   let linkKey = linkWallet.privateKey
@@ -67,6 +69,7 @@ export const createLink = async function (
     tokenAddress,
     tokenAmount,
     expirationTime,
+    version,
     linkId
   )
   return {
