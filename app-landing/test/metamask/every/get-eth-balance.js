@@ -2,10 +2,8 @@
 import { expect } from 'chai'
 import getEthBalanceGenerator from 'data/store/saga/metamask/every/get-eth-balance.js'
 import { createMockProvider } from 'ethereum-waffle'
-import { put, select, call } from 'redux-saga/effects'
+import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
-import { getTokensOpensea, getTokensTrustWallet } from 'data/api/tokens'
-import TokenMock from 'contracts/TokenMock.json'
 
 const provider = createMockProvider()
 
