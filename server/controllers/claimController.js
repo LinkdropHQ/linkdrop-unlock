@@ -17,6 +17,7 @@ export const claim = async (req, res) => {
     tokenAddress,
     tokenAmount,
     expirationTime,
+    version,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
@@ -30,6 +31,7 @@ export const claim = async (req, res) => {
     tokenAddress,
     tokenAmount,
     expirationTime,
+    version,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
@@ -51,6 +53,10 @@ export const claim = async (req, res) => {
 
   if (!expirationTime) {
     throw new Error('Please provide expiration time')
+  }
+
+  if (!version) {
+    throw new Error('Please provide contract version')
   }
 
   if (!linkId) {
@@ -86,12 +92,12 @@ export const claim = async (req, res) => {
   )
 
   try {
-    const masterCopyAddress = await proxyFactory.masterCopy()
+    const initcode = await proxyFactory.getInitcode()
 
     const proxyAddress = await LinkdropSDK.computeProxyAddress(
       factory,
       linkdropMasterAddress,
-      masterCopyAddress
+      initcode
     )
 
     // Check whether a claim tx exists in database
@@ -99,6 +105,7 @@ export const claim = async (req, res) => {
       weiAmount,
       tokenAddress,
       tokenAmount,
+      version,
       linkId,
       linkdropMasterAddress
     })
@@ -121,6 +128,7 @@ export const claim = async (req, res) => {
           tokenAddress,
           tokenAmount,
           expirationTime,
+          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -137,6 +145,7 @@ export const claim = async (req, res) => {
           tokenAddress,
           tokenAmount,
           expirationTime,
+          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -152,6 +161,7 @@ export const claim = async (req, res) => {
           tokenAddress,
           tokenAmount,
           expirationTime,
+          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -168,6 +178,7 @@ export const claim = async (req, res) => {
           tokenAddress,
           tokenAmount,
           expirationTime,
+          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -186,6 +197,7 @@ export const claim = async (req, res) => {
         tokenAddress,
         tokenAmount,
         expirationTime,
+        version,
         linkId,
         linkdropMasterAddress,
         receiverAddress,
@@ -222,6 +234,7 @@ export const claimERC721 = async (req, res) => {
     nftAddress,
     tokenId,
     expirationTime,
+    version,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
@@ -235,6 +248,7 @@ export const claimERC721 = async (req, res) => {
     nftAddress,
     tokenId,
     expirationTime,
+    version,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
@@ -256,6 +270,10 @@ export const claimERC721 = async (req, res) => {
 
   if (!expirationTime) {
     throw new Error('Please provide expiration time')
+  }
+
+  if (!version) {
+    throw new Error('Please provide contract version')
   }
 
   if (!linkId) {
@@ -291,12 +309,12 @@ export const claimERC721 = async (req, res) => {
   )
 
   try {
-    const masterCopyAddress = await proxyFactory.masterCopy()
+    const initcode = await proxyFactory.getInitcode()
 
     const proxyAddress = await LinkdropSDK.computeProxyAddress(
       factory,
       linkdropMasterAddress,
-      masterCopyAddress
+      initcode
     )
 
     // Check whether a claim tx exists in database
@@ -305,6 +323,7 @@ export const claimERC721 = async (req, res) => {
       weiAmount,
       nftAddress,
       tokenId,
+      version,
       linkId,
       linkdropMasterAddress
     })
@@ -326,6 +345,7 @@ export const claimERC721 = async (req, res) => {
           nftAddress,
           tokenId,
           expirationTime,
+          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -342,6 +362,7 @@ export const claimERC721 = async (req, res) => {
           nftAddress,
           tokenId,
           expirationTime,
+          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -357,6 +378,7 @@ export const claimERC721 = async (req, res) => {
           nftAddress,
           tokenId,
           expirationTime,
+          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -373,6 +395,7 @@ export const claimERC721 = async (req, res) => {
           nftAddress,
           tokenId,
           expirationTime,
+          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -390,6 +413,7 @@ export const claimERC721 = async (req, res) => {
         nftAddress,
         tokenId,
         expirationTime,
+        version,
         linkId,
         linkdropMasterAddress,
         receiverAddress,

@@ -5,6 +5,7 @@ const claimTxERC721Schema = new mongoose.Schema({
   nftAddress: { type: String, required: true },
   tokenId: { type: Number, required: true },
   expirationTime: { type: Number, required: true },
+  version: { type: Number, required: true },
   linkId: { type: String, required: true, unique: true },
   linkdropMasterAddress: { type: String, required: true },
   receiverAddress: { type: String, required: true },
