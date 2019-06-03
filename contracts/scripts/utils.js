@@ -1,7 +1,7 @@
 import { utils } from 'ethers'
 const ethers = require('ethers')
 
-export function buildCreate2Address (creatorAddress, saltHex, byteCode) {
+function buildCreate2Address (creatorAddress, saltHex, byteCode) {
   const byteCodeHash = utils.keccak256(byteCode)
   return `0x${utils
     .keccak256(
@@ -40,11 +40,20 @@ export const signLink = async function (
   tokenAmount,
   expirationTime,
   version,
+  chainId,
   linkId
 ) {
   let messageHash = ethers.utils.solidityKeccak256(
-    ['uint', 'address', 'uint', 'uint', 'uint', 'address'],
-    [ethAmount, tokenAddress, tokenAmount, expirationTime, version, linkId]
+    ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address'],
+    [
+      ethAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime,
+      version,
+      chainId,
+      linkId
+    ]
   )
   let messageHashToSign = ethers.utils.arrayify(messageHash)
   let signature = await linkdropSigner.signMessage(messageHashToSign)
@@ -58,7 +67,8 @@ export const createLink = async function (
   tokenAddress,
   tokenAmount,
   expirationTime,
-  version
+  version,
+  chainId
 ) {
   let linkWallet = ethers.Wallet.createRandom()
   let linkKey = linkWallet.privateKey
@@ -70,6 +80,7 @@ export const createLink = async function (
     tokenAmount,
     expirationTime,
     version,
+    chainId,
     linkId
   )
   return {
