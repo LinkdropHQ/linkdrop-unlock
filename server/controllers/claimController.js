@@ -4,6 +4,8 @@ import ClaimTx from '../models/claimTx'
 import ClaimTxERC721 from '../models/claimTxERC721'
 
 const ethers = require('ethers')
+ethers.errors.setLogLevel('error')
+
 const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/server.config.json')
 const config = require(configPath)
