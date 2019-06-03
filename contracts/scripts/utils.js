@@ -1,7 +1,7 @@
 import { utils } from 'ethers'
 const ethers = require('ethers')
 
-function buildCreate2Address (creatorAddress, saltHex, byteCode) {
+export function buildCreate2Address (creatorAddress, saltHex, byteCode) {
   const byteCodeHash = utils.keccak256(byteCode)
   return `0x${utils
     .keccak256(
@@ -12,20 +12,23 @@ function buildCreate2Address (creatorAddress, saltHex, byteCode) {
     .slice(-40)}`.toLowerCase()
 }
 
-export const computeProxyAddress = (
-  factoryAddress,
-  linkdropSignerAddress,
-  masterCopyAddress
-) => {
-  const salt = utils.solidityKeccak256(['address'], [linkdropSignerAddress])
-
-  // /let bytecode = `0x${Linkdrop.bytecode}`
-  const bytecode = `0x3d602d80600a3d3981f3363d3d373d3d3d363d73${masterCopyAddress.slice(
+export const computeBytecode = masterCopyAddress => {
+  const bytecode = `0x363d3d373d3d3d363d73${masterCopyAddress.slice(
     2
   )}5af43d82803e903d91602b57fd5bf3`
+  return bytecode
+}
 
-  const proxyAddress = buildCreate2Address(factoryAddress, salt, bytecode)
+// const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 
+export const computeProxyAddress = (
+  factoryAddress,
+  linkdropMasterAddress,
+  initcode
+) => {
+  const salt = utils.solidityKeccak256(['address'], [linkdropMasterAddress])
+  // const bytecode = computePendingRuntimeCode(masterCopyAddress)
+  const proxyAddress = buildCreate2Address(factoryAddress, salt, initcode)
   return proxyAddress
 }
 
@@ -36,11 +39,12 @@ export const signLink = async function (
   tokenAddress,
   tokenAmount,
   expirationTime,
+  version,
   linkId
 ) {
   let messageHash = ethers.utils.solidityKeccak256(
-    ['uint', 'address', 'uint', 'uint', 'address'],
-    [ethAmount, tokenAddress, tokenAmount, expirationTime, linkId]
+    ['uint', 'address', 'uint', 'uint', 'uint', 'address'],
+    [ethAmount, tokenAddress, tokenAmount, expirationTime, version, linkId]
   )
   let messageHashToSign = ethers.utils.arrayify(messageHash)
   let signature = await linkdropSigner.signMessage(messageHashToSign)
@@ -53,7 +57,8 @@ export const createLink = async function (
   ethAmount,
   tokenAddress,
   tokenAmount,
-  expirationTime
+  expirationTime,
+  version
 ) {
   let linkWallet = ethers.Wallet.createRandom()
   let linkKey = linkWallet.privateKey
@@ -64,6 +69,7 @@ export const createLink = async function (
     tokenAddress,
     tokenAmount,
     expirationTime,
+    version,
     linkId
   )
   return {

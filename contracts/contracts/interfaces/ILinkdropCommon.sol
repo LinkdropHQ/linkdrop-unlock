@@ -2,7 +2,7 @@ pragma solidity ^0.5.6;
 
 interface ILinkdropCommon {
 
-    function initializer(address payable _linkdropSigner) external returns (bool);
+    function initializer(address payable _linkdropSigner, uint _version) external returns (bool);
     function isClaimedLink(address _linkId) external view returns (bool);
     function isCanceledLink(address _linkId) external view returns (bool);
     function paused() external view returns (bool);
@@ -12,6 +12,7 @@ interface ILinkdropCommon {
     function unpause() external returns (bool);
     function addSigner(address _linkdropSigner) external returns (bool);
     function removeSigner(address _linkdropSigner) external returns (bool);
+    function destroy() external;
     function () external payable;
 
 }

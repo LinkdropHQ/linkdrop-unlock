@@ -12,6 +12,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _signature ECDSA signature of linkdrop signer
     * @return True if signed with linkdrop signer's private key
@@ -22,13 +23,28 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        uint _version,
         address _linkId,
         bytes memory _signature
     )
     public view
     returns (bool)
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash
+        (
+            keccak256
+            (
+                abi.encodePacked
+                (
+                    _weiAmount,
+                    _tokenAddress,
+                    _tokenAmount,
+                    _expiration,
+                    _version,
+                    _linkId
+                )
+            )
+        );
         address signer = ECDSA.recover(prefixedHash, _signature);
         return isLinkdropSigner[signer];
     }
@@ -60,6 +76,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
@@ -72,6 +89,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        uint _version,
         address _linkId,
         bytes memory _linkdropSignerSignature,
         address _receiver,
@@ -94,6 +112,9 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         // Make sure link is not expired
         require(_expiration >= now, "Expired link");
 
+        // Make sure linkd is signer for current contract version
+        require(_version == version, "Invalid contract version");
+
         // Make sure eth amount is available for this contract
         require(address(this).balance >= _weiAmount, "Insufficient amount of eth");
 
@@ -105,7 +126,16 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         // Verify that link key is legit and signed by linkdrop signer
         require
         (
-            verifyLinkdropSignerSignature(_weiAmount, _tokenAddress, _tokenAmount, _expiration, _linkId, _linkdropSignerSignature),
+            verifyLinkdropSignerSignature
+            (
+                _weiAmount,
+                _tokenAddress,
+                _tokenAmount,
+                _expiration,
+                _version,
+                _linkId,
+                _linkdropSignerSignature
+            ),
             "Invalid linkdrop signer signature"
         );
 
@@ -125,6 +155,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
@@ -137,6 +168,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        uint _version,
         address _linkId,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
@@ -155,7 +187,8 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                 _tokenAddress,
                 _tokenAmount,
                 _expiration,
-                 _linkId,
+                _version,
+                _linkId,
                 _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature

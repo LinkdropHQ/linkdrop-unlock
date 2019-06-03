@@ -16,7 +16,8 @@ import TokenMock from '../build/TokenMock'
 import {
   computeProxyAddress,
   createLink,
-  signReceiverAddress
+  signReceiverAddress,
+  computeBytecode
 } from '../scripts/utils'
 
 const ethers = require('ethers')
@@ -44,6 +45,10 @@ let weiAmount
 let tokenAddress
 let tokenAmount
 let expirationTime
+let version
+let bytecode
+
+const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 
 describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
   before(async () => {
@@ -58,27 +63,33 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
   })
 
   it('should deploy factory', async () => {
+    bytecode = computeBytecode(masterCopy.address)
     factory = await deployContract(
       linkdropMaster,
       LinkdropFactory,
-      [masterCopy.address],
+      [initcode, bytecode],
       {
         gasLimit: 6000000
       }
     )
-
     expect(factory.address).to.not.eq(ethers.constants.AddressZero)
+    let version = await factory.version()
+    expect(version).to.eq(1)
   })
 
   it('should deploy proxy and delegate to implementation', async () => {
     // Compute next address with js function
-    proxyAddress = await computeProxyAddress(
+    proxyAddress = computeProxyAddress(
       factory.address,
       linkdropMaster.address,
-      masterCopy.address
+      initcode
     )
 
-    await factory.deployProxy(linkdropMaster.address)
+    await expect(
+      factory.deployProxy(linkdropMaster.address, {
+        gasLimit: 6000000
+      })
+    ).to.emit(factory, 'Deployed')
 
     proxy = new ethers.Contract(
       proxyAddress,
@@ -86,8 +97,14 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       linkdropMaster
     )
 
-    let master = await proxy.linkdropMaster()
-    expect(linkdropMaster.address).to.eq(master)
+    let linkdropMasterAddress = await proxy.linkdropMaster()
+    expect(linkdropMasterAddress).to.eq(linkdropMaster.address)
+
+    let version = await proxy.version()
+    expect(version).to.eq(1)
+
+    let owner = await proxy.owner()
+    expect(owner).to.eq(factory.address)
   })
 
   it('linkdropMaster should be able to add new signing keys', async () => {
@@ -132,12 +149,14 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     tokenAddress = tokenInstance.address
     tokenAmount = 100
     expirationTime = 11234234223
+    version = 1
     link = await createLink(
       linkdropSigner,
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
+      expirationTime,
+      version
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -148,8 +167,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
         tokenAddress,
         tokenAmount,
         expirationTime,
+        version,
         link.linkId,
-
         linkdropMaster.address,
         link.linkdropSignerSignature,
         receiverAddress,
@@ -169,6 +188,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
         tokenAddress,
         tokenAmount,
         expirationTime,
+        version,
         link.linkId,
         link.linkdropSignerSignature
       )
@@ -181,7 +201,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
+      expirationTime,
+      version
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -228,7 +249,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
+      expirationTime,
+      version
     )
     await expect(proxy.cancel(link.linkId, { gasLimit: 200000 })).to.emit(
       proxy,
@@ -244,7 +266,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
+      expirationTime,
+      version
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -259,6 +282,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
         tokenAddress,
         tokenAmount,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -278,7 +302,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
+      expirationTime,
+      version
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -289,6 +314,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
         tokenAddress,
         tokenAmount,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -308,7 +334,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       weiAmount,
       tokenAddress,
       tokenAmount,
-      0
+      0,
+      version
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -319,6 +346,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
         tokenAddress,
         tokenAmount,
         0,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -329,6 +357,37 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     ).to.be.revertedWith('Expired link')
   })
 
+  it('should fail to claim with invalid contract version', async () => {
+    let invalidVersion = 0
+
+    link = await createLink(
+      linkdropSigner,
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime,
+      invalidVersion
+    )
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      factory.claim(
+        weiAmount,
+        tokenAddress,
+        tokenAmount,
+        expirationTime,
+        invalidVersion,
+        link.linkId,
+        linkdropMaster.address,
+        link.linkdropSignerSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    ).to.be.revertedWith('Invalid contract version')
+  })
+
   it('should succesfully claim tokens with valid claim params', async () => {
     // Approving tokens from linkdropMaster to Linkdrop Contract
     await tokenInstance.approve(proxy.address, tokenAmount)
@@ -337,7 +396,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
+      expirationTime,
+      version
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -352,6 +412,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       tokenAddress,
       tokenAmount,
       expirationTime,
+      version,
       link.linkId,
       linkdropMaster.address,
       link.linkdropSignerSignature,
@@ -384,6 +445,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
         tokenAddress,
         tokenAmount,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -411,6 +473,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
         tokenAddress,
         tokenAmount,
         expirationTime,
+        version,
         linkId,
         linkdropMaster.address,
         fakeSignature,
@@ -427,7 +490,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
+      expirationTime,
+      version
     )
 
     let fakeLink = await createLink(
@@ -435,7 +499,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
+      expirationTime,
+      version
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(
@@ -448,6 +513,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
         tokenAddress,
         tokenAmount,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -464,7 +530,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
+      expirationTime,
+      version
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -477,6 +544,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
         tokenAddress,
         tokenAmount,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -510,7 +578,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
+      expirationTime,
+      version
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -521,6 +590,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
         tokenAddress,
         tokenAmount,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -544,11 +614,12 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
     tokenAddress = tokenInstance.address
     tokenAmount = 123
     expirationTime = 11234234223
+    version = 1
 
     let proxyAddress = await computeProxyAddress(
       factory.address,
       linkdropMaster.address,
-      masterCopy.address
+      initcode
     )
 
     // Contract not deployed yet
@@ -563,7 +634,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
+      expirationTime,
+      version
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -577,6 +649,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
         tokenAddress,
         tokenAmount,
         expirationTime,
+        version,
         link.linkId,
         linkdropMaster.address, // New
         link.linkdropSignerSignature,
@@ -615,7 +688,8 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       weiAmount,
       tokenAddress,
       tokenAmount,
-      expirationTime
+      expirationTime,
+      version
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -631,6 +705,7 @@ describe('ETH/ERC20 linkdrop tests (approve pattern)', () => {
       tokenAddress,
       tokenAmount,
       expirationTime,
+      version,
       link.linkId,
       linkdropMaster.address,
       link.linkdropSignerSignature,

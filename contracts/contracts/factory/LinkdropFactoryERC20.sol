@@ -13,6 +13,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropSigner Address of linkdrop signer
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
@@ -24,6 +25,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        uint _version,
         address _linkId,
         address _linkdropSigner,
         bytes memory _linkdropSignerSignature
@@ -31,7 +33,21 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
     public pure
     returns (bool)
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash
+        (
+            keccak256
+            (
+                abi.encodePacked
+                (
+                    _weiAmount,
+                    _tokenAddress,
+                    _tokenAmount,
+                    _expiration,
+                    _version,
+                    _linkId
+                )
+            )
+        );
         address signer = ECDSA.recover(prefixedHash, _linkdropSignerSignature);
         return signer == _linkdropSigner;
     }
@@ -63,6 +79,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropMaster Address corresponding to linkdrop master key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop master
@@ -76,6 +93,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        uint _version,
         address _linkId,
         address payable _linkdropMaster,
         bytes memory _linkdropSignerSignature,
@@ -89,12 +107,13 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         // If proxy is deployed
         if (isDeployed(_linkdropMaster)) {
 
-            return ILinkdropERC20(_deployed[_linkdropMaster]).checkClaimParams
+            return ILinkdropERC20(deployed[_linkdropMaster]).checkClaimParams
             (
                 _weiAmount,
                 _tokenAddress,
                 _tokenAmount,
                 _expiration,
+                _version,
                 _linkId,
                 _linkdropSignerSignature,
                 _receiver,
@@ -123,6 +142,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
                     _tokenAddress,
                     _tokenAmount,
                     _expiration,
+                    _version,
                     _linkId,
                     _linkdropMaster,
                     _linkdropSignerSignature
@@ -132,6 +152,9 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
 
             // Make sure link is not expired
             require(_expiration >= now, "Expired link");
+
+            // Make sure link is signed for current contract version
+            require(_version == version, "Invalid contract version");
 
             // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
             require
@@ -151,6 +174,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropMaster Address corresponding to linkdrop master key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop master
@@ -164,6 +188,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        uint _version,
         address _linkId,
         address payable _linkdropMaster,
         bytes calldata _linkdropSignerSignature,
@@ -180,12 +205,13 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         }
 
         // Call claim function in the context of proxy contract
-        ILinkdropERC20(_deployed[_linkdropMaster]).claim
+        ILinkdropERC20(deployed[_linkdropMaster]).claim
         (
             _weiAmount,
             _tokenAddress,
             _tokenAmount,
             _expiration,
+            _version,
             _linkId,
             _linkdropSignerSignature,
             _receiver,

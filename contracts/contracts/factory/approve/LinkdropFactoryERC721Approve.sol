@@ -13,6 +13,7 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropSigner Address of linkdrop signer
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
@@ -24,6 +25,7 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
+        uint _version,
         address _linkId,
         address _linkdropSigner,
         bytes memory _linkdropSignerSignature
@@ -31,7 +33,21 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
     public pure
     returns (bool)
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash
+        (
+            keccak256
+            (
+                abi.encodePacked
+                (
+                    _weiAmount,
+                    _nftAddress,
+                    _tokenId,
+                    _expiration,
+                    _version,
+                    _linkId
+                )
+            )
+        );
         address signer = ECDSA.recover(prefixedHash, _linkdropSignerSignature);
         return signer == _linkdropSigner;
     }
@@ -63,6 +79,7 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropMaster Address corresponding to linkdrop master key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
@@ -76,6 +93,7 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
+        uint _version,
         address _linkId,
         address payable _linkdropMaster,
         bytes memory _linkdropSignerSignature,
@@ -89,12 +107,13 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
         // If proxy is deployed
         if (isDeployed(_linkdropMaster)) {
 
-            return ILinkdropERC721Approve(_deployed[_linkdropMaster]).checkClaimParamsERC721Approve
+            return ILinkdropERC721Approve(deployed[_linkdropMaster]).checkClaimParamsERC721Approve
             (
                 _weiAmount,
                 _nftAddress,
                 _tokenId,
                 _expiration,
+                _version,
                 _linkId,
                 _linkdropSignerSignature,
                 _receiver,
@@ -110,18 +129,31 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
             // Make sure claim amount is available for proxy contract
             require(_proxy.balance >= _weiAmount, "Insufficient funds");
 
-            // Make sure the token is available for proxy contract
+            // Make sure token is available for proxy contract
             require(IERC721(_nftAddress).isApprovedForAll(_linkdropMaster, _proxy), "Unavailable token");
 
             // Verify that link key is legit and signed by linkdrop signer's private key
             require
             (
-                verifyLinkdropSignerSignatureERC721(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId, _linkdropMaster, _linkdropSignerSignature),
+                verifyLinkdropSignerSignatureERC721
+                (
+                    _weiAmount,
+                    _nftAddress,
+                    _tokenId,
+                    _expiration,
+                    _version,
+                    _linkId,
+                    _linkdropMaster,
+                    _linkdropSignerSignature
+                ),
                 "Invalid linkdrop signer signature"
             );
 
-            // Make sure the link is not expired
+            // Make sure link is not expired
             require(_expiration >= now, "Expired link");
+
+            // Make sure link is signed for current version of contract
+            require(_version == version, "Invalid contract version");
 
             // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
             require
@@ -141,6 +173,7 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropMaster Address corresponding to linkdrop master key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
@@ -154,6 +187,7 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
+        uint _version,
         address _linkId,
         address payable _linkdropMaster,
         bytes calldata _linkdropSignerSignature,
@@ -169,12 +203,13 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
         }
 
         // Call claim function in the context of proxy contract
-        ILinkdropERC721Approve(_deployed[_linkdropMaster]).claimERC721Approve
+        ILinkdropERC721Approve(deployed[_linkdropMaster]).claimERC721Approve
         (
             _weiAmount,
             _nftAddress,
             _tokenId,
             _expiration,
+            _version,
             _linkId,
             _linkdropSignerSignature,
             _receiver,

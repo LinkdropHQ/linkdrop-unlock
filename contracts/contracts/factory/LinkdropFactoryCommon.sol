@@ -1,11 +1,12 @@
 pragma solidity ^0.5.6;
 
-import "./CloneFactory.sol";
 import "../storage/LinkdropFactoryStorage.sol";
 import "../interfaces/ILinkdropCommon.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
+import "openzeppelin-solidity/contracts/math/Safemath.sol";
 
-contract LinkdropFactoryCommon is LinkdropFactoryStorage, CloneFactory {
+contract LinkdropFactoryCommon is LinkdropFactoryStorage {
+    using SafeMath for uint;
 
     /**
     * @dev Indicates whether a proxy contract for linkdrop master is deployed or not
@@ -13,7 +14,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage, CloneFactory {
     * @return True if deployed
     */
     function isDeployed(address _linkdropMaster) public view returns (bool) {
-        return (_deployed[_linkdropMaster] != address(0));
+        return (deployed[_linkdropMaster] != address(0));
     }
 
     /**
@@ -28,7 +29,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage, CloneFactory {
             return false;
         }
         else {
-            address payable proxy = address(uint160(_deployed[_linkdropMaster]));
+            address payable proxy = address(uint160(deployed[_linkdropMaster]));
             return ILinkdropCommon(proxy).isClaimedLink(_linkId);
         }
 
@@ -41,20 +42,76 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage, CloneFactory {
     */
     function deployProxy(address payable _linkdropMaster)
     public
-    returns (address payable)
+    returns (address payable proxy)
     {
 
-        // Create clone of the mastercopy
-        address payable proxy = createClone(masterCopy, keccak256(abi.encodePacked(_linkdropMaster)));
+        bytes32 salt = keccak256(abi.encodePacked(_linkdropMaster));
+        bytes memory initcode = getInitcode();
 
-        _deployed[_linkdropMaster] = proxy;
+        assembly {
+            proxy := create2(0, add(initcode, 0x20), mload(initcode), salt)
+        }
 
-        // Initialize linkdrop master in newly deployed proxy contract
-        require(ILinkdropCommon(proxy).initializer(_linkdropMaster), "Failed to initialize");
-        emit Deployed(proxy, keccak256(abi.encodePacked(_linkdropMaster)), now);
+        deployed[_linkdropMaster] = proxy;
 
+        // Initialize linkdrop master and contract version in newly deployed proxy contract
+        require(ILinkdropCommon(proxy).initializer(_linkdropMaster, version), "Failed to initialize");
+        emit Deployed(_linkdropMaster, proxy, salt, now);
         return proxy;
     }
 
+    /**
+    * @dev Function to destroy proxy contract, called by proxy owner
+    * @return True if destroyed succesfully
+    */
+    function destroyProxy()
+    public
+    returns (bool)
+    {
+        address payable proxyOwner = msg.sender;
+        require(isDeployed(proxyOwner), "Not deployed");
+        address payable proxy = address(uint160(deployed[proxyOwner]));
+        ILinkdropCommon(proxy).destroy();
+        delete deployed[proxyOwner];
+        emit Destroyed(proxyOwner, proxy, now);
+        return true;
+    }
+
+    /**
+    * @dev Function to get bootstrap initcode for generating repeatable contract addresses
+    * @return Static bootstrap initcode
+    */
+    function getInitcode()
+    public view
+    returns (bytes memory)
+    {
+        return _initcode;
+    }
+
+    /**
+    * @dev Function to fetch the actual contract bytecode to install. Called by proxy when executing initcode
+    * @return Contract bytecode to install
+    */
+    function getBytecode()
+    public view
+    returns (bytes memory)
+    {
+        return _bytecode;
+    }
+
+    /**
+    * @dev Function to update bytecode. Can only be called by factory owner
+    * @param __bytecode Contract bytecode to install
+    * @return True if updated successfully
+    */
+    function updateBytecode(bytes memory __bytecode)
+    public returns (bool)
+    {
+        require(msg.sender == owner, "Only factory owner");
+        _bytecode = __bytecode;
+        version = version.add(1);
+        emit UpdatedBytecode(_bytecode, version, now);
+        return true;
+    }
 
 }
