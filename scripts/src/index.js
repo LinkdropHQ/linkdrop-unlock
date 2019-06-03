@@ -22,7 +22,8 @@ let {
   host,
   nftAddress,
   nftIds,
-  isApprove
+  isApprove,
+  version
 } = config
 
 if (jsonRpcUrl == null || jsonRpcUrl === '') {
@@ -68,14 +69,14 @@ export const deployMasterCopy = async () => {
   return mastercopy.address
 }
 
-export const deployFactory = async masterCopy => {
+export const deployFactory = async (initcode, bytecode) => {
   let factory = new ethers.ContractFactory(
     LinkdropFactory.abi,
     LinkdropFactory.bytecode,
     linkdropMaster
   )
 
-  proxyFactory = await factory.deploy(masterCopy, {
+  proxyFactory = await factory.deploy(initcode, bytecode, {
     gasLimit: 6000000
   })
 
@@ -176,6 +177,7 @@ export const generateLinksETH = async () => {
       tokenAddress,
       tokenAmount,
       expirationTime,
+      version,
       isApprove
     })
 
@@ -226,6 +228,7 @@ export const generateLinksERC20 = async () => {
       tokenAddress,
       tokenAmount,
       expirationTime,
+      version,
       isApprove
     })
 
@@ -277,6 +280,7 @@ export const generateLinksERC721 = async () => {
       nftAddress,
       tokenId: tokenIds[i],
       expirationTime,
+      version,
       isApprove
     })
     let link = { i, linkId, linkKey, linkdropSignerSignature, url }

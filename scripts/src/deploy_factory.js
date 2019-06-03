@@ -1,7 +1,8 @@
 import { deployFactory } from './index'
-import { getMasterCopyAddress } from './utils'
+import { getBytecode, getInitcode } from './utils'
   ;(async () => {
   console.log('Deploying factory...')
-  let masterCopyAddress = getMasterCopyAddress()
-  await deployFactory(masterCopyAddress)
+  const initcode = getInitcode()
+  const bytecode = getBytecode()
+  await deployFactory(initcode, bytecode)
 })()

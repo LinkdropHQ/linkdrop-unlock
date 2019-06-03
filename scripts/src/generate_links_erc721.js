@@ -1,6 +1,6 @@
 import { generateLinksERC721 } from './index'
 import NFTMock from '../../contracts/build/NFTMock'
-import { getFactoryAddress, getMasterCopyAddress } from './utils'
+import { getFactoryAddress, getInitcode } from './utils'
 import LinkdropSDK from '../../sdk/src/index'
 const ethers = require('ethers')
 const path = require('path')
@@ -30,12 +30,12 @@ if (
   const linkdropMaster = new ethers.Wallet(linkdropMasterPrivateKey, provider)
 
   const factoryAddress = getFactoryAddress()
-  const masterCopyAddress = getMasterCopyAddress()
+  const initcode = getInitcode()
 
   let proxyAddress = LinkdropSDK.computeProxyAddress(
     factoryAddress,
     linkdropMaster.address,
-    masterCopyAddress
+    initcode
   )
 
   const nftContract = await new ethers.Contract(
