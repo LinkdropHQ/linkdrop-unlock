@@ -49,6 +49,7 @@ let version
 let bytecode
 
 const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
+const chainId = 4 // Rinkeby
 
 describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
   before(async () => {
@@ -67,7 +68,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
     factory = await deployContract(
       linkdropMaster,
       LinkdropFactory,
-      [initcode, bytecode],
+      [initcode, bytecode, chainId],
       {
         gasLimit: 6000000
       }
