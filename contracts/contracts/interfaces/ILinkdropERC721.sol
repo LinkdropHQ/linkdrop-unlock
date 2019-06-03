@@ -9,6 +9,7 @@ interface ILinkdropERC721 {
         uint _tokenId,
         uint _expiration,
         uint _version,
+        uint _chainId,
         address _linkId,
         bytes calldata _signature
     )
@@ -28,7 +29,6 @@ interface ILinkdropERC721 {
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        uint _version,
         address _linkId,
         bytes calldata _linkdropSignerSignature,
         address _receiver,
@@ -42,7 +42,6 @@ interface ILinkdropERC721 {
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        uint _version,
         address _linkId,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,

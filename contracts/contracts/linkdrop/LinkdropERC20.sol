@@ -13,6 +13,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
     * @param _version Linkdrop contract version
+    * @param _chainId Network id
     * @param _linkId Address corresponding to link key
     * @param _signature ECDSA signature of linkdrop signer
     * @return True if signed with linkdrop signer's private key
@@ -24,6 +25,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         uint _tokenAmount,
         uint _expiration,
         uint _version,
+        uint _chainId,
         address _linkId,
         bytes memory _signature
     )
@@ -41,6 +43,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                     _tokenAmount,
                     _expiration,
                     _version,
+                    _chainId,
                     _linkId
                 )
             )
@@ -76,7 +79,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
-    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
@@ -89,7 +91,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
-        uint _version,
         address _linkId,
         bytes memory _linkdropSignerSignature,
         address _receiver,
@@ -112,9 +113,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         // Make sure link is not expired
         require(_expiration >= now, "Expired link");
 
-        // Make sure linkd is signer for current contract version
-        require(_version == version, "Invalid contract version");
-
         // Make sure eth amount is available for this contract
         require(address(this).balance >= _weiAmount, "Insufficient amount of eth");
 
@@ -132,7 +130,8 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                 _tokenAddress,
                 _tokenAmount,
                 _expiration,
-                _version,
+                version,
+                chainId,
                 _linkId,
                 _linkdropSignerSignature
             ),
@@ -155,7 +154,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
-    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
@@ -168,7 +166,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
-        uint _version,
         address _linkId,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
@@ -187,7 +184,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                 _tokenAddress,
                 _tokenAmount,
                 _expiration,
-                _version,
                 _linkId,
                 _linkdropSignerSignature,
                 _receiver,
