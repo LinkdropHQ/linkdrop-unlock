@@ -9,6 +9,7 @@ export const claim = async ({
   tokenAddress,
   tokenAmount,
   expirationTime,
+  version,
   linkKey,
   linkdropMasterAddress,
   linkdropSignerSignature,
@@ -37,6 +38,10 @@ export const claim = async ({
 
   if (expirationTime === null || expirationTime === '') {
     throw new Error('Please provide expiration time')
+  }
+
+  if (version === null || version === '') {
+    throw new Error('Please provide contract version')
   }
 
   if (linkKey === null || linkKey === '') {
@@ -75,6 +80,7 @@ export const claim = async ({
     tokenAddress,
     tokenAmount,
     expirationTime,
+    version,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
@@ -117,6 +123,7 @@ export const claimERC721 = async ({
   nftAddress,
   tokenId,
   expirationTime,
+  version,
   linkKey,
   linkdropMasterAddress,
   linkdropSignerSignature,
@@ -149,6 +156,10 @@ export const claimERC721 = async ({
 
   if (expirationTime === null || expirationTime === '') {
     throw new Error('Please provide expiration time')
+  }
+
+  if (version === null || version === '') {
+    throw new Error('Please provide contract version')
   }
 
   if (linkKey === null || linkKey === '') {
@@ -187,6 +198,7 @@ export const claimERC721 = async ({
     nftAddress,
     tokenId,
     expirationTime,
+    version,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
