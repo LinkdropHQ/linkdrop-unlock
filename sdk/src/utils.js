@@ -21,14 +21,26 @@ export const computeBytecode = masterCopyAddress => {
 // const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 export const computeProxyAddress = (
   factoryAddress,
-  linkdropMasterAddress,
+  linkdropSignerAddress,
   initcode
 ) => {
+  if (factoryAddress == null || factoryAddress === '') {
+    throw new Error('Please provide factory address')
+  }
+
+  if (linkdropSignerAddress == null || linkdropSignerAddress === '') {
+    throw new Error('Please provide linkdropSigner address')
+  }
+
+  if (initcode == null || initcode === '') {
+    throw new Error('Please provide initcode')
+  }
+
   const salt = ethers.utils.solidityKeccak256(
     ['address'],
-    [linkdropMasterAddress]
+    [linkdropSignerAddress]
   )
-  // const bytecode = computePendingRuntimeCode(masterCopyAddress)
+
   const proxyAddress = buildCreate2Address(factoryAddress, salt, initcode)
   return proxyAddress
 }
