@@ -62,7 +62,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
 
     /**
     * @dev Function to destroy proxy contract, called by proxy owner
-    * @return True if destroyed succesfully
+    * @return True if destroyed successfully
     */
     function destroyProxy()
     public
