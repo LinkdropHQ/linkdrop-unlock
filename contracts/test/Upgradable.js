@@ -31,6 +31,7 @@ let proxy
 let bytecode
 
 const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
+const chainId = 4 // Rinkeby
 
 describe('Proxy upgradability tests', () => {
   it('should deploy initial master copy of linkdrop implementation', async () => {
@@ -45,7 +46,7 @@ describe('Proxy upgradability tests', () => {
     factory = await deployContract(
       deployer,
       LinkdropFactory,
-      [initcode, bytecode],
+      [initcode, bytecode, chainId],
       {
         gasLimit: 6000000
       }
