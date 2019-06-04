@@ -36,20 +36,38 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     }
 
     /**
-    * @dev Function to deploy a proxy contract for linkdrop master
+    * @dev Function to deploy a proxy contract for msg.sender
+    * @return Proxy contract address
+    */
+    function deployProxy()
+    public
+    returns (address payable)
+    {
+        address payable proxy = _deployProxy(msg.sender);
+        return proxy;
+    }
+
+    /**
+    * @dev Internal function to deploy a proxy contract for linkdrop master
     * @param _linkdropMaster Address of linkdrop master
     * @return Proxy contract address
     */
-    function deployProxy(address payable _linkdropMaster)
-    public
-    returns (address payable proxy)
+    function _deployProxy(address payable _linkdropMaster)
+    internal
+    returns (address payable)
     {
+
+        require(!isDeployed(_linkdropMaster), "Deployed");
+        require(_linkdropMaster != address(0), "Invalid linkdrop master address");
 
         bytes32 salt = keccak256(abi.encodePacked(_linkdropMaster));
         bytes memory initcode = getInitcode();
 
+        address payable proxy;
+
         assembly {
             proxy := create2(0, add(initcode, 0x20), mload(initcode), salt)
+            if iszero(extcodesize(proxy)) { revert(0, 0) }
         }
 
         deployed[_linkdropMaster] = proxy;
@@ -100,17 +118,26 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     }
 
     /**
-    * @dev Function to update bytecode. Can only be called by factory owner
-    * @param __bytecode Contract bytecode to install
+    * @dev Function to set (update) contract bytecode to install. Can only be called by factory owner
+    * @param _masterCopy Address of linkdrop mastercopy contract to calculate bytecode from
     * @return True if updated successfully
     */
-    function updateBytecode(bytes memory __bytecode)
+    function setBytecode(address _masterCopy)
     public returns (bool)
     {
         require(msg.sender == owner, "Only factory owner");
-        _bytecode = __bytecode;
+        require(_masterCopy != address(0), "Invalid master copy address");
+
+        bytes memory bytecode = abi.encodePacked
+        (
+            hex"363d3d373d3d3d363d73",
+            _masterCopy,
+            hex"5af43d82803e903d91602b57fd5bf3"
+        );
+
+        _bytecode = bytecode;
         version = version.add(1);
-        emit UpdatedBytecode(_bytecode, version, now);
+        emit SetBytecode(_masterCopy, version, now);
         return true;
     }
 

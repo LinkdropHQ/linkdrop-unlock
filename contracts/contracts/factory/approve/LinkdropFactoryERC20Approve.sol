@@ -200,7 +200,7 @@ contract LinkdropFactoryERC20Approve is ILinkdropFactoryERC20Approve, LinkdropFa
 
         // Check whether the proxy is deployed for linkdrop master and deploy if not
         if (!isDeployed(_linkdropMaster)) {
-            deployProxy(_linkdropMaster);
+            _deployProxy(_linkdropMaster);
         }
 
         // Call claim function in the context of proxy contract

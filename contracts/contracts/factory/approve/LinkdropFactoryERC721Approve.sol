@@ -195,7 +195,7 @@ contract LinkdropFactoryERC721Approve is ILinkdropFactoryERC721Approve, Linkdrop
     {
         // Check whether the proxy is deployed for linkdrop signer and deploy if not
         if (!isDeployed(_linkdropMaster)) {
-            deployProxy(_linkdropMaster);
+            _deployProxy(_linkdropMaster);
         }
 
         // Call claim function in the context of proxy contract
