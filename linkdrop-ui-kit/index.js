@@ -14,7 +14,8 @@ import {
   TextControlBlock,
   TextCopyBlock,
   Checkbox,
-  ModalWindow
+  ModalWindow,
+  Select
 } from './dist/bundle.js'
 
 export {
@@ -33,5 +34,6 @@ export {
   RetinaImage,
   TextControlBlock,
   TextCopyBlock,
-  Checkbox
+  Checkbox,
+  Select
 }

@@ -45,19 +45,19 @@ describe('data/store/saga/tokens/every/get-tokens-data.js ETH', () => {
     )
   })
 
-  it('set decimals', () => {
-    expect(
-      gen.next(provider).value
-    ).to.deep.equal(
-      put({ type: 'TOKENS.SET_DECIMALS', payload: { decimals: 18 } })
-    )
-  })
-
   it('set symbol', () => {
     expect(
       gen.next(provider).value
     ).to.deep.equal(
       put({ type: 'TOKENS.SET_SYMBOL', payload: { symbol: 'ETH' } })
+    )
+  })
+
+  it('set decimals', () => {
+    expect(
+      gen.next().value
+    ).to.deep.equal(
+      put({ type: 'TOKENS.SET_DECIMALS', payload: { decimals: 18 } })
     )
   })
 

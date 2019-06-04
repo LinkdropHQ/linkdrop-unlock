@@ -14,6 +14,7 @@ import TextControlBlock from './text-control-block'
 import TextCopyBlock from './text-copy-block'
 import Checkbox from './checkbox'
 import ModalWindow from './modal-window'
+import Select from './select'
 
 export {
   Footer,
@@ -31,5 +32,6 @@ export {
   TextControlBlock,
   TextCopyBlock,
   Checkbox,
-  ModalWindow
+  ModalWindow,
+  Select
 }

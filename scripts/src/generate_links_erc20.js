@@ -24,7 +24,7 @@ if (
   throw new Error('Please provide valid isApprove argument')
 }
 
-;(async () => {
+(async () => {
   console.log('Generating links...\n')
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)

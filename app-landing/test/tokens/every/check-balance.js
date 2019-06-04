@@ -14,8 +14,8 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
   const gen = checkBalanceGenerator({ payload })
   const balance = 0
   const step = 0
+  const data = {}
   const erc721Balance = { assets: [] }
-  let erc20Balance = { total: 0 }
 
   it('enable loading', () => {
     expect(
@@ -67,7 +67,7 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
 
   it('go to step 1', () => {
     expect(
-      gen.next(erc20Balance).value
+      gen.next(data).value
     ).to.deep.equal(
       put({ type: 'USER.SET_STEP', payload: { step: 1 } })
     )
@@ -93,7 +93,8 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
   const balanceFormatted = '0.1'
   const step = 0
   const erc721Balance = { assets: [] }
-  let erc20Balance = { total: 0 }
+  let erc20Balance = null
+  const data = {}
 
   it('enable loading', () => {
     expect(
@@ -145,7 +146,7 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
 
   it('set standard', () => {
     expect(
-      gen.next().value
+      gen.next(data).value
     ).to.deep.equal(
       put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc20' } })
     )
@@ -163,7 +164,7 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
     expect(
       gen.next().value
     ).to.deep.equal(
-      put({ type: 'USER.SET_BALANCE', payload: { balanceFormatted, balance } })
+      put({ type: 'TOKENS.SET_BALANCE', payload: { balanceFormatted, balance } })
     )
   })
 

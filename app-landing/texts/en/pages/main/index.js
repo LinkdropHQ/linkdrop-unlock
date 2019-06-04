@@ -3,6 +3,7 @@ export default {
     sendTokens: 'Try to send any tokens or NFTs via link',
     main: 'Send digital assets<br>encoded in links',
     sendTokensToAddress: 'Scan or copy<br>to send digital assets',
+    sendWithMetamask: 'Send digital assets<br>with MetaMask extension',
     shareLink: 'Copy and share the link',
     linkDone: 'Your\'re done!',
     scanCode: 'Scan QR-code to get link',
@@ -33,8 +34,12 @@ export default {
     erc721: 'ERC-721',
     erc20: 'ERC-20',
     eth: 'ETH',
+    ethAmount: 'ETH to send',
+    tokenAmount: '{{symbol}} to send',
     tokenId: 'Token ID',
     beCareful: 'Be careful!',
+    chooseAsset: 'Choose asset',
+    otherToken: 'Other Token',
     telegramConnect: 'If you have any troubles—shoot us in <a target="_blank" href="https://t.me/LinkdropOrg">Telegram</a>'
   },
   descriptions: {
