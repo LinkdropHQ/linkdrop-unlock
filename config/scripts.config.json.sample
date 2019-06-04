@@ -1,9 +1,10 @@
 {
     "jsonRpcUrl": "",
     "host": "",
-    "networkId": "",
+    "chainId": "",
     "linkdropSignerPrivateKey": "",
     "masterCopy": "",
+    "version": "",
     "factory": "",
     "isApprove": "",
     "receiverAddress": "",
