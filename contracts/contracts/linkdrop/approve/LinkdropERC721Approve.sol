@@ -13,6 +13,7 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _version Linkdrop contract version
+    * @param _chainId Network id
     * @param _linkId Address corresponding to link key
     * @param _signature ECDSA signature of linkdrop signer
     * @return True if signed with linkdrop signer's private key
@@ -24,6 +25,7 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
         uint _tokenId,
         uint _expiration,
         uint _version,
+        uint _chainId,
         address _linkId,
         bytes memory _signature
     )
@@ -41,6 +43,7 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
                     _tokenId,
                     _expiration,
                     _version,
+                    _chainId,
                     _linkId
                 )
             )
@@ -76,7 +79,6 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
-    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
@@ -89,7 +91,6 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        uint _version,
         address _linkId,
         bytes memory _linkdropSignerSignature,
         address _receiver,
@@ -110,9 +111,6 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
         // Make sure link is not expired
         require(_expiration >= now, "Expired link");
 
-        // Make sure link is signed for current contract version
-        require(_version == version, "Invalid contract version");
-
         // Make sure eth amount is available for this contract
         require(address(this).balance >= _weiAmount, "Insufficient funds");
 
@@ -128,7 +126,8 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
                 _nftAddress,
                 _tokenId,
                 _expiration,
-                _version,
+                version,
+                chainId,
                 _linkId,
                 _linkdropSignerSignature
             ),
@@ -151,7 +150,6 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
-    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
@@ -164,7 +162,6 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        uint _version,
         address _linkId,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
@@ -184,7 +181,6 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
                 _nftAddress,
                 _tokenId,
                 _expiration,
-                _version,
                 _linkId,
                 _linkdropSignerSignature,
                 _receiver,

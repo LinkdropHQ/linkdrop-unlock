@@ -49,6 +49,7 @@ let version
 let bytecode
 
 const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
+const chainId = 4 // Rinkeby
 
 describe('ETH/ERC721 linkdrop tests', () => {
   before(async () => {
@@ -67,7 +68,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
     factory = await deployContract(
       linkdropMaster,
       LinkdropFactory,
-      [initcode, bytecode],
+      [initcode, bytecode, chainId],
       {
         gasLimit: 6000000
       }
@@ -157,7 +158,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version
+      version,
+      chainId
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -168,7 +170,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
         nftAddress,
         tokenId,
         expirationTime,
-        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -191,7 +192,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version
+      version,
+      chainId
     )
 
     expect(
@@ -201,6 +203,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         tokenId,
         expirationTime,
         version,
+        chainId,
         link.linkId,
         link.linkdropSignerSignature
       )
@@ -214,7 +217,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version
+      version,
+      chainId
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -262,7 +266,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version
+      version,
+      chainId
     )
     await expect(proxy.cancel(link.linkId, { gasLimit: 200000 })).to.emit(
       proxy,
@@ -279,7 +284,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version
+      version,
+      chainId
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -294,7 +300,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
         nftAddress,
         tokenId,
         expirationTime,
-        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -315,7 +320,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version
+      version,
+      chainId
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -326,7 +332,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
         nftAddress,
         tokenId,
         expirationTime,
-        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -344,7 +349,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version
+      version,
+      chainId
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -355,7 +361,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
         nftAddress,
         tokenId,
         expirationTime,
-        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -380,7 +385,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       0,
-      version
+      version,
+      chainId
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -391,7 +397,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
         nftAddress,
         tokenId,
         0,
-        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -410,7 +415,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      invalidVersion
+      invalidVersion,
+      chainId
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -421,7 +427,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
         nftAddress,
         tokenId,
         expirationTime,
-        invalidVersion,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -429,7 +434,37 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.revertedWith('Invalid contract version')
+    ).to.be.revertedWith('Invalid linkdrop signer signature')
+  })
+
+  it('should fail to claim nft with invalid chain id', async () => {
+    let invalidChainId = 0
+    link = await createLink(
+      linkdropSigner,
+      weiAmount,
+      nftAddress,
+      tokenId,
+      expirationTime,
+      version,
+      invalidChainId
+    )
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      factory.claimERC721(
+        weiAmount,
+        nftAddress,
+        tokenId,
+        expirationTime,
+        link.linkId,
+        linkdropMaster.address,
+        link.linkdropSignerSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    ).to.be.revertedWith('Invalid linkdrop signer signature')
   })
 
   it('should succesfully claim nft with valid claim params', async () => {
@@ -439,7 +474,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version
+      version,
+      chainId
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -450,7 +486,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version,
       link.linkId,
       linkdropMaster.address,
       link.linkdropSignerSignature,
@@ -478,7 +513,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
         nftAddress,
         tokenId,
         expirationTime,
-        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -511,7 +545,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
         nftAddress,
         tokenId,
         expirationTime,
-        version,
         linkId,
         linkdropMaster.address,
         fakeSignature,
@@ -529,7 +562,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version
+      version,
+      chainId
     )
 
     let fakeLink = await createLink(
@@ -538,7 +572,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version
+      version,
+      chainId
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(
@@ -551,7 +586,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
         nftAddress,
         tokenId,
         expirationTime,
-        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -569,7 +603,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version
+      version,
+      chainId
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -582,7 +617,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
         nftAddress,
         tokenId,
         expirationTime,
-        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -647,7 +681,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version
+      version,
+      chainId
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -659,7 +694,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
         nftAddress,
         tokenId,
         expirationTime,
-        version,
         link.linkId,
         linkdropMaster.address,
         link.linkdropSignerSignature,
@@ -703,7 +737,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version
+      version,
+      chainId
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -714,7 +749,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
       nftAddress,
       tokenId,
       expirationTime,
-      version,
       link.linkId,
       linkdropMaster.address,
       link.linkdropSignerSignature,

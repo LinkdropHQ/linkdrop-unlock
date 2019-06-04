@@ -15,6 +15,9 @@ contract LinkdropFactoryStorage {
     // 0x6352c7420d6000526103ff60206004601c335afa6040516060f3
     bytes internal _initcode;
 
+    // Network id
+    uint public chainId;
+
     // Maps sender address to its corresponding proxy address
     mapping (address => address) public deployed;
 

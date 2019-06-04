@@ -14,6 +14,7 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
     * @param _version Linkdrop contract version
+    * @param _chainId Network id
     * @param _linkId Address corresponding to link key
     * @param _linkdropSigner Address of linkdrop signer
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
@@ -26,6 +27,7 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
         uint _tokenId,
         uint _expiration,
         uint _version,
+        uint _chainId,
         address _linkId,
         address _linkdropSigner,
         bytes memory _linkdropSignerSignature
@@ -44,6 +46,7 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
                     _tokenId,
                     _expiration,
                     _version,
+                    _chainId,
                     _linkId
                 )
             )
@@ -79,7 +82,6 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
-    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropMaster Address corresponding to linkdrop master key
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
@@ -93,7 +95,6 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        uint _version,
         address _linkId,
         address payable _linkdropMaster,
         bytes memory _linkdropSignerSignature,
@@ -113,7 +114,6 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
                 _nftAddress,
                 _tokenId,
                 _expiration,
-                _version,
                 _linkId,
                 _linkdropSignerSignature,
                 _receiver,
@@ -141,7 +141,8 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
                     _nftAddress,
                     _tokenId,
                     _expiration,
-                    _version,
+                    version,
+                    chainId,
                     _linkId,
                     _linkdropMaster,
                     _linkdropSignerSignature
@@ -151,9 +152,6 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
 
             // Make sure  link is not expired
             require(_expiration >= now, "Expired link");
-
-            // Make sure link is signed for current contract version
-            require(_version == version, "Invalid contract version");
 
             // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
             require
@@ -173,7 +171,6 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
-    * @param _version Linkdrop contract version
     * @param _linkId Address corresponding to link key
     * @param _linkdropMaster Address of linkdrop master
     * @param _linkdropSignerSignature ECDSA signature of linkdrop master
@@ -187,7 +184,6 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        uint _version,
         address _linkId,
         address payable _linkdropMaster,
         bytes calldata _linkdropSignerSignature,
@@ -209,7 +205,6 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
             _nftAddress,
             _tokenId,
             _expiration,
-            _version,
             _linkId,
             _linkdropSignerSignature,
             _receiver,

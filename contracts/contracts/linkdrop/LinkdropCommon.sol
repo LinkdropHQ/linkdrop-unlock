@@ -9,11 +9,14 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     /**
     * @dev Function called only once to set owner, linkdrop master and contract version
     * @param _linkdropMaster Address corresponding to master key
+    * @param _version Contract version
+    * @param _chainId Network id
     */
     function initializer
     (
         address payable _linkdropMaster,
-        uint _version
+        uint _version,
+        uint _chainId
     )
     public
     returns (bool)
@@ -23,6 +26,7 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
         linkdropMaster = _linkdropMaster;
         isLinkdropSigner[linkdropMaster] = true;
         version = _version;
+        chainId = _chainId;
         _initialized = true;
         return true;
     }

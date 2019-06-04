@@ -12,10 +12,11 @@ contract LinkdropFactory is LinkdropFactoryERC20, LinkdropFactoryERC721, Linkdro
     * @param __initcode Static bootstrap initcode to fetch the runtime bytecode. Used to generate repeatable contract addresses
     * @param __bytecode Initial contract bytecode to install
     */
-    constructor(bytes memory __initcode, bytes memory __bytecode) public {
+    constructor(bytes memory __initcode, bytes memory __bytecode, uint _chainId) public {
         owner = msg.sender;
         _initcode = __initcode;
         updateBytecode(__bytecode);
+        chainId = _chainId;
     }
 
 }

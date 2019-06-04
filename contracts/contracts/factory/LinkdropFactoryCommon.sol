@@ -55,7 +55,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
         deployed[_linkdropMaster] = proxy;
 
         // Initialize linkdrop master and contract version in newly deployed proxy contract
-        require(ILinkdropCommon(proxy).initializer(_linkdropMaster, version), "Failed to initialize");
+        require(ILinkdropCommon(proxy).initializer(_linkdropMaster, version, chainId), "Failed to initialize");
         emit Deployed(_linkdropMaster, proxy, salt, now);
         return proxy;
     }

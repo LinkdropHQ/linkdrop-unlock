@@ -9,6 +9,7 @@ interface ILinkdropFactoryERC20Approve {
         uint _tokenAmount,
         uint _expiration,
         uint _version,
+        uint _chainId,
         address _linkId,
         address _linkdropSigner,
         bytes calldata _linkdropSignerSignature
@@ -31,7 +32,6 @@ interface ILinkdropFactoryERC20Approve {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
-        uint _version,
         address _linkId,
         address payable _linkdropMaster,
         bytes calldata _linkdropSignerSignature,
@@ -48,7 +48,6 @@ interface ILinkdropFactoryERC20Approve {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
-        uint _version,
         address _linkId,
         address payable _linkdropMaster,
         bytes calldata _linkdropSignerSignature,
