@@ -20,7 +20,7 @@ const generator = function * ({ payload }) {
         // checking balance of ERC-721 from manual check
         const nftContract = yield new ethers.Contract(tokenAddress, NFTMock.abi, provider)
         const nftContractOwner = yield nftContract.ownerOf(tokenId)
-        if (nftContractOwner === wallet) {
+        if (nftContractOwner.toLowerCase() === wallet.toLowerCase()) {
           yield put({ type: 'TOKENS.SET_TOKEN_ID', payload: { tokenId: tokenId } })
         }
       } else {

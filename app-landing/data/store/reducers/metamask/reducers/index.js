@@ -4,6 +4,7 @@ import setAssetBalance from './set-asset-balance'
 import setBalance from './set-balance'
 import setLoading from './set-loading'
 import setStatus from './set-status'
+import setAssetIds from './set-asset-ids'
 
 export default {
   setAssetSymbol,
@@ -11,5 +12,6 @@ export default {
   setBalance,
   setAssetDecimals,
   setLoading,
-  setStatus
+  setStatus,
+  setAssetIds
 }

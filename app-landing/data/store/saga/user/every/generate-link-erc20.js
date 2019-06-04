@@ -24,6 +24,8 @@ const generator = function * ({ payload }) {
       expirationTime: configs.expirationTime,
       isApprove: false
     })
+    // linkdropMasterPrivateKey or web3 provider for metamask
+    // will add later
 
     yield put({ type: 'USER.SET_LINK', payload: { link: link.url } })
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })

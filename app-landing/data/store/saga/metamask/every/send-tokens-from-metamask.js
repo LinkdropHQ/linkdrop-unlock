@@ -4,6 +4,8 @@ import { put, select } from 'redux-saga/effects'
 import { ethers, utils } from 'ethers'
 import TokenMock from 'contracts/TokenMock.json'
 import Web3Mock from 'mocks/web3mock.js'
+import NFTMock from 'contracts/NFTMock.json'
+
 let web3Obj
 try {
   web3Obj = web3
@@ -12,7 +14,7 @@ try {
 }
 const generator = function * ({ payload }) {
   try {
-    const { currentAsset, ethAmount, account: fromWallet, tokenAddress, assetAmount } = payload
+    const { currentAsset, ethAmount, account: fromWallet, tokenAddress, assetAmount, assetId } = payload
     const toWallet = yield select(generator.selectors.wallet)
     if (currentAsset === ethers.constants.AddressZero) {
       const ethValueWei = utils.parseEther(ethAmount)
@@ -24,16 +26,23 @@ const generator = function * ({ payload }) {
         yield put({ type: 'MM.SET_STATUS', payload: { status: 'finished' } })
       }
     } else {
-      yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress } })
-      const tokenContract = yield web3Obj.eth.contract(TokenMock.abi).at(tokenAddress)
-      const assetDecimals = yield select(generator.selectors.assetDecimals)
-      const balanceFormatted = utils.formatUnits(assetAmount, assetDecimals)
-      const transferData = yield tokenContract.transfer.getData(toWallet, balanceFormatted, { from: fromWallet })
+      let transferData
+      if (currentAsset === 'erc721') {
+        const tokenContract = yield web3Obj.eth.contract(NFTMock.abi).at(tokenAddress)
+        transferData = yield tokenContract.transferFrom.getData(fromWallet, toWallet, assetId)
+      } else {
+        yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress } })
+        const tokenContract = yield web3Obj.eth.contract(TokenMock.abi).at(tokenAddress)
+        const assetDecimals = yield select(generator.selectors.assetDecimals)
+        const balanceFormatted = utils.formatUnits(assetAmount, assetDecimals)
+        transferData = yield tokenContract.transfer.getData(toWallet, balanceFormatted, { from: fromWallet })
+      }
       const promise = new Promise((resolve, reject) => {
         web3Obj.eth.sendTransaction({ to: tokenAddress, from: fromWallet, value: 0, data: transferData }, result => resolve({ result }))
       })
       const { result } = yield promise
       if (String(result) === 'null') {
+        console.log('finished!!!')
         yield put({ type: 'MM.SET_STATUS', payload: { status: 'finished' } })
       }
     }

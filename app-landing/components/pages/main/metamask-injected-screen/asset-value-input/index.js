@@ -7,10 +7,10 @@ import { Input } from 'linkdrop-ui-kit'
 @translate('pages.main')
 class AssetValueInput extends React.Component {
   render () {
-    const { title, onChange, value } = this.props
+    const { title, onChange, value, disabled } = this.props
     return <div className={styles.container}>
       {title && <div className={styles.title}>{title}</div>}
-      <Input value={value} className={styles.input} onChange={({ value }) => onChange && onChange({ value })} />
+      <Input value={value} disabled={disabled} className={styles.input} onChange={({ value }) => onChange && onChange({ value })} />
     </div>
   }
 }

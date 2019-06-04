@@ -19,6 +19,10 @@ class Tokens {
   getAssets ({ account }) {
     this.actions.dispatch({ type: '*TOKENS.GET_ASSETS', payload: { account } })
   }
+
+  checkErc721Balance ({ account, networkId, tokenAddress, tokenId }) {
+    this.actions.dispatch({ type: '*TOKENS.CHECK_ERC721_BALANCE', payload: { account, networkId, tokenAddress, tokenId } })
+  }
 }
 
 export default Tokens

@@ -8,7 +8,8 @@ const initialState = {
   mmAssetDecimals: null,
   mmAssetSymbol: null,
   mmLoading: false,
-  mmStatus: 'initial'
+  mmStatus: 'initial',
+  mmAssetIds: null
 }
 
 export default (state = initialState, action = {}) => {
@@ -32,5 +33,7 @@ const ACTIONS = {
   // set loading for metamask
   'MM.SET_LOADING': reducers.setLoading,
   // set status
-  'MM.SET_STATUS': reducers.setStatus
+  'MM.SET_STATUS': reducers.setStatus,
+  // set asset id
+  'MM.SET_ASSET_IDS': reducers.setAssetIds
 }
