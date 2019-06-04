@@ -19,6 +19,7 @@ const generator = function * ({ payload }) {
     yield put({ type: 'MM.SET_LOADING', payload: { loading: false } })
   } catch (e) {
     console.error(e)
+    yield put({ type: 'MM.SET_LOADING', payload: { loading: false } })
   }
 }
 

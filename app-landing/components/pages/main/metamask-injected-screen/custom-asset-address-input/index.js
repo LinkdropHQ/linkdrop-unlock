@@ -7,9 +7,8 @@ import { Input } from 'linkdrop-ui-kit'
 @translate('pages.main')
 class CustomAssetAddressInput extends React.Component {
   render () {
-    const { onChange, value, disabled } = this.props
+    const { onChange, disabled } = this.props
     return <Input
-      value={value}
       disabled={disabled}
       className={styles.input}
       placeholder={this.t('titles.tokenAddress')}

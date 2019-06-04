@@ -97,9 +97,9 @@ class MetamaskInjectedScreen extends React.Component {
         />
         {this.renderAddressInput({ networkId: n, account, loading: mmLoading, currentAsset })}
         {this.renderBalances({ mmBalanceFormatted, assetAddress, symbol, mmAssetBalanceFormatted, loading: mmLoading, currentAsset })}
-        {this.renderEthValueInput({ networkId: n, loading: mmLoading, account, value: ethAmount, currentAsset })}
-        {this.renderTokenValueInput({ networkId: n, loading: mmLoading, account, currentAsset, symbol, value: assetAmount })}
-        {this.renderTokenIdInput({ loading: mmLoading, networkId: n, account, currentAsset, symbol, value: assetId })}
+        {this.renderEthValueInput({ loading: mmLoading, value: ethAmount, currentAsset })}
+        {this.renderTokenValueInput({ loading: mmLoading, currentAsset, symbol, value: assetAmount })}
+        {this.renderTokenIdInput({ loading: mmLoading, currentAsset, symbol, value: assetId })}
         {this.renderButton({ tokensUploaded, assetAmount, ethAmount, account, networkId: n, currentAsset, assetAddress, searchStarted, mmAssetBalanceFormatted, assetId })}
       </div>
     </LinkBlock>
@@ -160,7 +160,7 @@ class MetamaskInjectedScreen extends React.Component {
       const ethWalletContract = ethers.constants.AddressZero
       if (currentAsset != null && currentAsset !== ethWalletContract) {
         return <div className={styles.inputContainer}>
-          <CustomAssetAddressInput disabled={loading} currentAsset={currentAsset} networkId={networkId} account={account} onChange={({ value }) => {
+          <CustomAssetAddressInput disabled={loading} onChange={({ value }) => {
             this.setState({ assetAddress: value }, _ => {
               if (currentAsset === 'erc20') {
                 this.actions().metamask.getAssetBalance({ networkId, tokenAddress: value, account })
@@ -174,19 +174,19 @@ class MetamaskInjectedScreen extends React.Component {
     }
   }
 
-  renderTokenValueInput ({ networkId, account, currentAsset, symbol, value, loading }) {
+  renderTokenValueInput ({ currentAsset, symbol, value, loading }) {
     if (!currentAsset || currentAsset !== 'erc20' || !symbol) { return }
-    return <AssetValueInput disabled={loading} onChange={({ value }) => this.setState({ assetAmount: value })} value={value} title={symbol} networkId={networkId} account={account} />
+    return <AssetValueInput disabled={loading} onChange={({ value }) => this.setState({ assetAmount: value })} value={value} title={symbol} />
   }
 
-  renderTokenIdInput ({ networkId, account, currentAsset, symbol, value, loading }) {
+  renderTokenIdInput ({ currentAsset, symbol, value, loading }) {
     if (!currentAsset || currentAsset !== 'erc721' || !symbol) { return }
-    return <AssetValueInput disabled={loading} onChange={({ value }) => this.setState({ assetId: value })} value={value} title='ID: ' networkId={networkId} account={account} />
+    return <AssetValueInput disabled={loading} onChange={({ value }) => this.setState({ assetId: value })} value={value} title='ID: ' />
   }
 
-  renderEthValueInput ({ networkId, account, currentAsset, value, loading }) {
+  renderEthValueInput ({ currentAsset, value, loading }) {
     if (!currentAsset || currentAsset !== ethers.constants.AddressZero) { return }
-    return <AssetValueInput disabled={loading} onChange={({ value }) => this.setState({ ethAmount: value })} value={value} title={this.t('titles.eth')} networkId={networkId} account={account} />
+    return <AssetValueInput disabled={loading} onChange={({ value }) => this.setState({ ethAmount: value })} value={value} title={this.t('titles.eth')} />
   }
 }
 

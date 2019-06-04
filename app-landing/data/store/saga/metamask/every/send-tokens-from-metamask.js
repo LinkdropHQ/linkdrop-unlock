@@ -42,7 +42,6 @@ const generator = function * ({ payload }) {
       })
       const { result } = yield promise
       if (String(result) === 'null') {
-        console.log('finished!!!')
         yield put({ type: 'MM.SET_STATUS', payload: { status: 'finished' } })
       }
     }
