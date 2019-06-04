@@ -19,7 +19,6 @@ export const claim = async (req, res) => {
     tokenAddress,
     tokenAmount,
     expirationTime,
-    version,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
@@ -33,7 +32,6 @@ export const claim = async (req, res) => {
     tokenAddress,
     tokenAmount,
     expirationTime,
-    version,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
@@ -55,10 +53,6 @@ export const claim = async (req, res) => {
 
   if (!expirationTime) {
     throw new Error('Please provide expiration time')
-  }
-
-  if (!version) {
-    throw new Error('Please provide contract version')
   }
 
   if (!linkId) {

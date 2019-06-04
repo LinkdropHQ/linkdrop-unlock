@@ -11,6 +11,7 @@ export const generateLink = async ({
   tokenAmount,
   expirationTime,
   version,
+  chainId,
   isApprove
 }) => {
   if (jsonRpcUrl === null || jsonRpcUrl === '') {
@@ -49,6 +50,10 @@ export const generateLink = async ({
     throw new Error('Please provide contract version')
   }
 
+  if (chainId === null || chainId === '') {
+    throw new Error('Please provide chain id')
+  }
+
   if (isApprove) {
     if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
       throw new Error('Please provide valid isApprove argument')
@@ -57,14 +62,15 @@ export const generateLink = async ({
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
   const linkdropMaster = new ethers.Wallet(linkdropMasterPrivateKey, provider)
-  const { linkKey, linkId, linkdropSignerSignature } = await createLink(
+  const { linkKey, linkId, linkdropSignerSignature } = await createLink({
     linkdropMaster,
     weiAmount,
     tokenAddress,
     tokenAmount,
     expirationTime,
-    version
-  )
+    version,
+    chainId
+  })
 
   // Construct link
   let url = `${host}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&version=${version}&linkKey=${linkKey}&linkdropMasterAddress=${
@@ -72,8 +78,8 @@ export const generateLink = async ({
   }&linkdropSignerSignature=${linkdropSignerSignature}`
 
   // Add network param to url if not mainnet
-  if (String(networkId) !== '1') {
-    url = `${url}&n=${networkId}`
+  if (String(chainId) !== '1') {
+    url = `${url}&chainId=${chainId}`
   }
 
   // Add isApprove param to url
@@ -94,6 +100,7 @@ export const generateLinkERC721 = async ({
   tokenId,
   expirationTime,
   version,
+  chainId,
   isApprove
 }) => {
   if (jsonRpcUrl === null || jsonRpcUrl === '') {
@@ -136,6 +143,10 @@ export const generateLinkERC721 = async ({
     throw new Error('Please provide contract version')
   }
 
+  if (chainId === null || chainId === '') {
+    throw new Error('Please provide chain id')
+  }
+
   if (isApprove) {
     if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
       throw new Error('Please provide valid isApprove argument')
@@ -144,14 +155,15 @@ export const generateLinkERC721 = async ({
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
   const linkdropMaster = new ethers.Wallet(linkdropMasterPrivateKey, provider)
-  const { linkKey, linkId, linkdropSignerSignature } = await createLink(
+  const { linkKey, linkId, linkdropSignerSignature } = await createLink({
     linkdropMaster,
     weiAmount,
     nftAddress,
     tokenId,
     expirationTime,
-    version
-  )
+    version,
+    chainId
+  })
 
   // Construct link
   let url = `${host}/#/receive?weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&version=${version}&linkKey=${linkKey}&linkdropMasterAddress=${
@@ -159,8 +171,8 @@ export const generateLinkERC721 = async ({
   }&linkdropSignerSignature=${linkdropSignerSignature}`
 
   // Add network param to url if not mainnet
-  if (String(networkId) !== '1') {
-    url = `${url}&n=${networkId}`
+  if (String(chainId) !== '1') {
+    url = `${url}&chainId=${chainId}`
   }
 
   // Add isApprove param to url
