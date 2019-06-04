@@ -6,6 +6,7 @@ const claimTxERC721Schema = new mongoose.Schema({
   tokenId: { type: Number, required: true },
   expirationTime: { type: Number, required: true },
   version: { type: Number, required: true },
+  chainId: { type: Number, required: true },
   linkId: { type: String, required: true, unique: true },
   linkdropMasterAddress: { type: String, required: true },
   receiverAddress: { type: String, required: true },
