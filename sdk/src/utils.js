@@ -11,13 +11,48 @@ export const buildCreate2Address = (creatorAddress, saltHex, byteCode) => {
     .slice(-40)}`.toLowerCase()
 }
 
+export const computeBytecode = masterCopyAddress => {
+  const bytecode = `0x363d3d373d3d3d363d73${masterCopyAddress.slice(
+    2
+  )}5af43d82803e903d91602b57fd5bf3`
+  return bytecode
+}
+
+// const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
+export const computeProxyAddress = (
+  factoryAddress,
+  linkdropSignerAddress,
+  initcode
+) => {
+  if (factoryAddress == null || factoryAddress === '') {
+    throw new Error('Please provide factory address')
+  }
+
+  if (linkdropSignerAddress == null || linkdropSignerAddress === '') {
+    throw new Error('Please provide linkdropSigner address')
+  }
+
+  if (initcode == null || initcode === '') {
+    throw new Error('Please provide initcode')
+  }
+
+  const salt = ethers.utils.solidityKeccak256(
+    ['address'],
+    [linkdropSignerAddress]
+  )
+
+  const proxyAddress = buildCreate2Address(factoryAddress, salt, initcode)
+  return proxyAddress
+}
+
 // Generates new link
 export const createLink = async (
   linkdropSigner, // Wallet
   weiAmount,
   tokenAddress,
   tokenAmount,
-  expirationTime
+  expirationTime,
+  version
 ) => {
   let linkWallet = ethers.Wallet.createRandom()
   let linkKey = linkWallet.privateKey
@@ -28,6 +63,7 @@ export const createLink = async (
     tokenAddress,
     tokenAmount,
     expirationTime,
+    version,
     linkId
   )
   return {
@@ -44,11 +80,12 @@ export const signLink = async (
   tokenAddress,
   tokenAmount,
   expirationTime,
+  version,
   linkId
 ) => {
   let messageHash = ethers.utils.solidityKeccak256(
-    ['uint', 'address', 'uint', 'uint', 'address'],
-    [weiAmount, tokenAddress, tokenAmount, expirationTime, linkId]
+    ['uint', 'address', 'uint', 'uint', 'uint', 'address'],
+    [weiAmount, tokenAddress, tokenAmount, expirationTime, version, linkId]
   )
   let messageHashToSign = ethers.utils.arrayify(messageHash)
   let signature = await linkdropSigner.signMessage(messageHashToSign)

@@ -10,6 +10,7 @@ export const generateLink = async ({
   tokenAddress,
   tokenAmount,
   expirationTime,
+  version,
   isApprove
 }) => {
   if (jsonRpcUrl === null || jsonRpcUrl === '') {
@@ -44,6 +45,10 @@ export const generateLink = async ({
     throw new Error('Please provide expiration time')
   }
 
+  if (version === null || version === '') {
+    throw new Error('Please provide contract version')
+  }
+
   if (isApprove) {
     if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
       throw new Error('Please provide valid isApprove argument')
@@ -57,11 +62,12 @@ export const generateLink = async ({
     weiAmount,
     tokenAddress,
     tokenAmount,
-    expirationTime
+    expirationTime,
+    version
   )
 
   // Construct link
-  let url = `${host}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&linkKey=${linkKey}&linkdropMasterAddress=${
+  let url = `${host}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&version=${version}&linkKey=${linkKey}&linkdropMasterAddress=${
     linkdropMaster.address
   }&linkdropSignerSignature=${linkdropSignerSignature}`
 
@@ -87,6 +93,7 @@ export const generateLinkERC721 = async ({
   nftAddress,
   tokenId,
   expirationTime,
+  version,
   isApprove
 }) => {
   if (jsonRpcUrl === null || jsonRpcUrl === '') {
@@ -125,6 +132,10 @@ export const generateLinkERC721 = async ({
     throw new Error('Please provide expiration time')
   }
 
+  if (version === null || version === '') {
+    throw new Error('Please provide contract version')
+  }
+
   if (isApprove) {
     if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
       throw new Error('Please provide valid isApprove argument')
@@ -138,11 +149,12 @@ export const generateLinkERC721 = async ({
     weiAmount,
     nftAddress,
     tokenId,
-    expirationTime
+    expirationTime,
+    version
   )
 
   // Construct link
-  let url = `${host}/#/receive?weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&linkKey=${linkKey}&linkdropMasterAddress=${
+  let url = `${host}/#/receive?weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&version=${version}&linkKey=${linkKey}&linkdropMasterAddress=${
     linkdropMaster.address
   }&linkdropSignerSignature=${linkdropSignerSignature}`
 

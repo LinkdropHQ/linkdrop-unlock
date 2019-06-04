@@ -1,6 +1,6 @@
 import { generateLinksERC20 } from './index'
 import TokenMock from '../../contracts/build/TokenMock'
-import { getFactoryAddress, getMasterCopyAddress } from './utils'
+import { getFactoryAddress, getInitcode } from './utils'
 import LinkdropSDK from '../../sdk/src/index'
 const ethers = require('ethers')
 const path = require('path')
@@ -31,12 +31,12 @@ if (
   const linkdropMaster = new ethers.Wallet(linkdropMasterPrivateKey, provider)
 
   const factoryAddress = getFactoryAddress()
-  const masterCopyAddress = getMasterCopyAddress()
+  const initcode = getInitcode()
 
   const proxyAddress = LinkdropSDK.computeProxyAddress(
     factoryAddress,
     linkdropMaster.address,
-    masterCopyAddress
+    initcode
   )
 
   // Send tokens to proxy
