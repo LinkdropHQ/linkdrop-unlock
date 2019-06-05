@@ -8,8 +8,8 @@ const generator = function * ({ payload }) {
   let image = +(new Date())
   try {
     yield put({ type: 'CONTRACT.SET_LOADING', payload: { loading: true } })
-    const { nftAddress, networkId, tokenId } = payload
-    const networkName = defineNetworkName({ networkId })
+    const { nftAddress, chainId, tokenId } = payload
+    const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const nftContract = yield new ethers.Contract(nftAddress, NFTMock.abi, provider)
     const metadataURL = yield nftContract.tokenURI(tokenId)
@@ -29,8 +29,8 @@ const generator = function * ({ payload }) {
     yield put({ type: 'USER.SET_STEP', payload: { step: 1 } })
   } catch (e) {
     console.error(e)
-    const { nftAddress, networkId } = payload
-    const networkName = defineNetworkName({ networkId })
+    const { nftAddress, chainId } = payload
+    const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const nftContract = yield new ethers.Contract(nftAddress, NFTMock.abi, provider)
     const name = yield nftContract.symbol()

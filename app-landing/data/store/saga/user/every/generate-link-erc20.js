@@ -7,7 +7,7 @@ import configs from 'config-landing'
 const generator = function * ({ payload }) {
   try {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    const { networkId } = payload
+    const { chainId } = payload
     const balance = yield select(generator.selectors.balance)
     const assetBalance = yield select(generator.selectors.assetBalance)
     const privateKey = yield select(generator.selectors.privateKey)
@@ -15,14 +15,15 @@ const generator = function * ({ payload }) {
     const tokenAddress = yield select(generator.selectors.tokenAddress)
     const link = yield LinkdropSDK.generateLink({
       jsonRpcUrl,
-      chainId: networkId,
+      chainId,
       host: claimHost,
       linkdropMasterPrivateKey: privateKey,
       weiAmount: balance || 0,
       tokenAddress: tokenAddress || ethersContractZeroAddress,
       tokenAmount: assetBalance || 0,
       expirationTime: configs.expirationTime,
-      isApprove: false
+      isApprove: false,
+      version: 1
     })
     // linkdropMasterPrivateKey or web3 provider for metamask
     // will add later
