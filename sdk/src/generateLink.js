@@ -1,9 +1,9 @@
-import { createLink } from './utils'
+import { createLink, createLinkERC721 } from './utils'
 const ethers = require('ethers')
 
 export const generateLink = async ({
   jsonRpcUrl,
-  networkId,
+  chainId,
   host,
   linkdropMasterPrivateKey,
   weiAmount,
@@ -17,8 +17,8 @@ export const generateLink = async ({
     throw new Error('Please provide json rpc url')
   }
 
-  if (networkId === null || networkId === '') {
-    throw new Error('Please provide networkId')
+  if (chainId === null || chainId === '') {
+    throw new Error('Please provide chainId')
   }
 
   if (host === null || host === '') {
@@ -57,24 +57,20 @@ export const generateLink = async ({
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
   const linkdropMaster = new ethers.Wallet(linkdropMasterPrivateKey, provider)
-  const { linkKey, linkId, linkdropSignerSignature } = await createLink(
-    linkdropMaster,
+  const { linkKey, linkId, linkdropSignerSignature } = await createLink({
+    linkdropSigner: linkdropMaster,
     weiAmount,
     tokenAddress,
     tokenAmount,
     expirationTime,
-    version
-  )
+    version,
+    chainId
+  })
 
   // Construct link
-  let url = `${host}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&version=${version}&linkKey=${linkKey}&linkdropMasterAddress=${
+  let url = `${host}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&&linkKey=${linkKey}&linkdropMasterAddress=${
     linkdropMaster.address
   }&linkdropSignerSignature=${linkdropSignerSignature}`
-
-  // Add network param to url if not mainnet
-  if (String(networkId) !== '1') {
-    url = `${url}&n=${networkId}`
-  }
 
   // Add isApprove param to url
   if (String(isApprove) === 'true') {
@@ -86,7 +82,7 @@ export const generateLink = async ({
 
 export const generateLinkERC721 = async ({
   jsonRpcUrl,
-  networkId,
+  chainId,
   host,
   linkdropMasterPrivateKey,
   weiAmount,
@@ -100,8 +96,8 @@ export const generateLinkERC721 = async ({
     throw new Error('Please provide json rpc url')
   }
 
-  if (networkId === null || networkId === '') {
-    throw new Error('Please provide networkId')
+  if (chainId === null || chainId === '') {
+    throw new Error('Please provide chain id')
   }
 
   if (host === null || host === '') {
@@ -144,24 +140,21 @@ export const generateLinkERC721 = async ({
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
   const linkdropMaster = new ethers.Wallet(linkdropMasterPrivateKey, provider)
-  const { linkKey, linkId, linkdropSignerSignature } = await createLink(
-    linkdropMaster,
+
+  const { linkKey, linkId, linkdropSignerSignature } = await createLinkERC721({
+    linkdropSigner: linkdropMaster,
     weiAmount,
     nftAddress,
     tokenId,
     expirationTime,
-    version
-  )
+    version,
+    chainId
+  })
 
   // Construct link
-  let url = `${host}/#/receive?weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&version=${version}&linkKey=${linkKey}&linkdropMasterAddress=${
+  let url = `${host}/#/receive?weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&linkKey=${linkKey}&linkdropMasterAddress=${
     linkdropMaster.address
   }&linkdropSignerSignature=${linkdropSignerSignature}`
-
-  // Add network param to url if not mainnet
-  if (String(networkId) !== '1') {
-    url = `${url}&n=${networkId}`
-  }
 
   // Add isApprove param to url
   if (String(isApprove) === 'true') {
