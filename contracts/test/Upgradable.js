@@ -42,11 +42,10 @@ describe('Proxy upgradability tests', () => {
   })
 
   it('should deploy factory', async () => {
-    bytecode = computeBytecode(masterCopy.address)
     factory = await deployContract(
       deployer,
       LinkdropFactory,
-      [initcode, bytecode, chainId],
+      [masterCopy.address, chainId],
       {
         gasLimit: 6000000
       }
@@ -64,8 +63,10 @@ describe('Proxy upgradability tests', () => {
       initcode
     )
 
+    factory = factory.connect(linkdropMaster)
+
     await expect(
-      factory.deployProxy(linkdropMaster.address, {
+      factory.deployProxy({
         gasLimit: 6000000
       })
     ).to.emit(factory, 'Deployed')
@@ -98,8 +99,8 @@ describe('Proxy upgradability tests', () => {
 
   it('should update bytecode in factory', async () => {
     bytecode = computeBytecode(masterCopy.address)
-
-    await factory.updateBytecode(bytecode)
+    factory = factory.connect(deployer)
+    await factory.setBytecode(masterCopy.address)
     let deployedBytecode = await factory.getBytecode()
     expect(deployedBytecode.toString().toLowerCase()).to.eq(
       bytecode.toString().toLowerCase()
@@ -140,7 +141,7 @@ describe('Proxy upgradability tests', () => {
 
   it('should deploy upgraded proxy to the same address as before', async () => {
     await expect(
-      factory.deployProxy(linkdropMaster.address, {
+      factory.deployProxy({
         gasLimit: 6400000
       })
     ).to.emit(factory, 'Deployed')
