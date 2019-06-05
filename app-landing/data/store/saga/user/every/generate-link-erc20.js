@@ -15,7 +15,7 @@ const generator = function * ({ payload }) {
     const tokenAddress = yield select(generator.selectors.tokenAddress)
     const link = yield LinkdropSDK.generateLink({
       jsonRpcUrl,
-      networkId,
+      chainId: networkId,
       host: claimHost,
       linkdropMasterPrivateKey: privateKey,
       weiAmount: balance || 0,
