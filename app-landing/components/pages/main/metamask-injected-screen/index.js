@@ -9,9 +9,10 @@ import { getHashVariables } from 'linkdrop-commons'
 import { ethers } from 'ethers'
 import { LoadingBar } from 'components/common'
 import configs from 'config-landing'
+import debounce from 'debounce'
 
 @actions(({
-  user: { loading, wallet },
+  user: { loading, wallet, errors },
   metamask: { mmStatus, mmBalanceFormatted, mmAssetBalanceFormatted, mmAssetSymbol, mmLoading, mmAssetDecimals },
   tokens: { assets, balanceFormatted, assetBalanceFormatted, tokenId }
 }) => ({
@@ -26,12 +27,14 @@ import configs from 'config-landing'
   mmLoading,
   mmStatus,
   mmAssetDecimals,
-  tokenId
+  tokenId,
+  errors
 }))
 @translate('pages.main')
 class MetamaskInjectedScreen extends React.Component {
   constructor (props) {
     super(props)
+    const { n = '4' } = getHashVariables()
     this.state = {
       currentAsset: ethers.constants.AddressZero,
       assetAddress: '',
@@ -39,7 +42,10 @@ class MetamaskInjectedScreen extends React.Component {
       ethAmount: 0,
       assetId: ''
     }
+    this.checkErc20Balance = debounce(this.checkErc20Balance.bind(this, n, props.account), 500)
+    this.checkErc721Presence = debounce(this.checkErc721Presence.bind(this, n, props.account), 500)
   }
+
   componentDidMount () {
     const { n = '4' } = getHashVariables()
     const { account } = this.props
@@ -51,10 +57,10 @@ class MetamaskInjectedScreen extends React.Component {
     this.actions().metamask.getEthBalance({ account, networkId: n })
   }
 
-  componentWillReceiveProps ({ balanceFormatted, symbol, mmStatus, wallet, assetBalanceFormatted, tokenId }) {
+  componentWillReceiveProps ({ errors, balanceFormatted, symbol, mmStatus, wallet, assetBalanceFormatted, tokenId }) {
     const { n = '4' } = getHashVariables()
     const { assetAddress, currentAsset, assetId } = this.state
-    const { balanceFormatted: prevBalanceFormatted, onFinish, mmStatus: prevMmStatus, assetBalanceFormatted: prevAssetBalanceFormatted, tokenId: prevTokenId } = this.props
+    const { balanceFormatted: prevBalanceFormatted, onFinish, mmStatus: prevMmStatus, assetBalanceFormatted: prevAssetBalanceFormatted, tokenId: prevTokenId, errors: prevErrors } = this.props
     if (mmStatus && mmStatus === 'finished' && mmStatus !== prevMmStatus) {
       this.setState({
         searchStarted: true
@@ -66,6 +72,14 @@ class MetamaskInjectedScreen extends React.Component {
         }
       })
       return
+    }
+    if (assetAddress !== '' && errors && errors[0] && prevErrors.length === 0 && errors[0] !== prevErrors[0]) {
+      window.alert(this.t(`errors.${errors[0]}`))
+      this.setState({
+        searchStarted: false
+      }, _ => {
+        this.intervalCheck && window.clearInterval(this.intervalCheck)
+      })
     }
     if (
       (balanceFormatted && Number(balanceFormatted) > 0 && balanceFormatted !== prevBalanceFormatted) ||
@@ -81,7 +95,7 @@ class MetamaskInjectedScreen extends React.Component {
 
   render () {
     const { n = '4' } = getHashVariables()
-    const { assets, account, mmBalanceFormatted, mmLoading, symbol, mmAssetBalanceFormatted } = this.props
+    const { errors, assets, account, mmBalanceFormatted, mmLoading, symbol, mmAssetBalanceFormatted } = this.props
     const { currentAsset, assetAddress, assetAmount, ethAmount, searchStarted, tokensUploaded, assetId } = this.state
     const options = this.getOptions({ networkId: n, assets })
     return <LinkBlock title={this.t('titles.sendWithMetamask')}>
@@ -100,7 +114,7 @@ class MetamaskInjectedScreen extends React.Component {
         {this.renderEthValueInput({ loading: mmLoading, value: ethAmount, currentAsset })}
         {this.renderTokenValueInput({ loading: mmLoading, currentAsset, symbol, value: assetAmount })}
         {this.renderTokenIdInput({ loading: mmLoading, currentAsset, symbol, value: assetId })}
-        {this.renderButton({ tokensUploaded, assetAmount, ethAmount, account, networkId: n, currentAsset, assetAddress, searchStarted, mmAssetBalanceFormatted, assetId })}
+        {this.renderButton({ errors, loading: mmLoading, tokensUploaded, assetAmount, ethAmount, account, networkId: n, currentAsset, assetAddress, searchStarted, mmAssetBalanceFormatted, assetId })}
       </div>
     </LinkBlock>
   }
@@ -119,7 +133,7 @@ class MetamaskInjectedScreen extends React.Component {
     return assets.map(({ contract: { name, symbol, address } }) => ({ value: address, label: symbol }))
   }
 
-  renderButton ({ tokensUploaded, assetAmount, ethAmount, account, networkId, currentAsset, assetAddress, searchStarted, mmAssetBalanceFormatted, assetId }) {
+  renderButton ({ loading, errors, tokensUploaded, assetAmount, ethAmount, account, networkId, currentAsset, assetAddress, searchStarted, mmAssetBalanceFormatted, assetId }) {
     // now sending stuff to wallet
     if (searchStarted) {
       return <LoadingBar
@@ -129,6 +143,8 @@ class MetamaskInjectedScreen extends React.Component {
     }
     let disabled = false
     if (
+      loading ||
+      (currentAsset === 'erc721' && assetId.length === 0) ||
       (currentAsset === 'erc20' && (!assetAmount || Number(assetAmount) <= 0 || !mmAssetBalanceFormatted)) ||
       (currentAsset === ethers.constants.AddressZero && Number(ethAmount) <= 0)
     ) {
@@ -147,11 +163,19 @@ class MetamaskInjectedScreen extends React.Component {
 
   renderBalances ({ mmBalanceFormatted, loading, symbol, mmAssetBalanceFormatted, assetAddress, currentAsset }) {
     const currentAssetData = assetAddress.length > 0 && mmAssetBalanceFormatted
-    return <div className={styles.balances}>
-      {loading && <Loading size='small' className={styles.loading} />}
-      <div>{this.t('titles.eth')}: {mmBalanceFormatted != null && Number(mmBalanceFormatted).toFixed(4)}</div>
-      {!loading && currentAsset === 'erc20' && symbol && currentAssetData && <div>{`${symbol}: ${mmAssetBalanceFormatted}`}</div>}
-    </div>
+    if (currentAsset === 'erc721') { return null }
+    if (currentAsset === 'erc20' && symbol && currentAssetData) {
+      return <div className={styles.balances}>
+        {loading && <Loading size='small' className={styles.loading} />}
+        {!loading && <div>{`${symbol}: ${mmAssetBalanceFormatted}`}</div>}
+      </div>
+    }
+    if (currentAsset === ethers.constants.AddressZero) {
+      return <div className={styles.balances}>
+        {loading && <Loading size='small' className={styles.loading} />}
+        {<div>{this.t('titles.eth')}: {mmBalanceFormatted != null && Number(mmBalanceFormatted).toFixed(4)}</div>}
+      </div>
+    }
   }
 
   renderAddressInput ({ loading, networkId, account, currentAsset }) {
@@ -163,15 +187,25 @@ class MetamaskInjectedScreen extends React.Component {
           <CustomAssetAddressInput disabled={loading} onChange={({ value }) => {
             this.setState({ assetAddress: value }, _ => {
               if (currentAsset === 'erc20') {
-                this.actions().metamask.getAssetBalance({ networkId, tokenAddress: value, account })
+                this.checkErc20Balance(value)
               } else if (currentAsset === 'erc721') {
-                this.actions().metamask.checkAssetPresence({ networkId, tokenAddress: value, account })
+                this.checkErc721Presence(value)
               }
             })
           }} />
         </div>
       }
     }
+  }
+
+  checkErc20Balance (networkId, account, value) {
+    if (value.length < 42) { return }
+    this.actions().metamask.getAssetBalance({ networkId, tokenAddress: value, account })
+  }
+
+  checkErc721Presence (networkId, account, value) {
+    if (value.length < 42) { return }
+    this.actions().metamask.checkAssetPresence({ networkId, tokenAddress: value, account })
   }
 
   renderTokenValueInput ({ currentAsset, symbol, value, loading }) {

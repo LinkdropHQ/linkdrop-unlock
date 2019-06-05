@@ -5,6 +5,7 @@ import { defineNetworkName } from 'linkdrop-commons'
 
 const generator = function * ({ payload }) {
   try {
+    yield put({ type: 'USER.SET_ERRORS', payload: { errors: [] } })
     const { networkId, tokenAddress } = payload
     yield put({ type: 'MM.SET_LOADING', payload: { loading: true } })
     const networkName = defineNetworkName({ networkId })
@@ -17,6 +18,7 @@ const generator = function * ({ payload }) {
     console.error(e)
     yield put({ type: 'MM.SET_ASSET_ID', payload: { assetId: null } })
     yield put({ type: 'MM.SET_LOADING', payload: { loading: false } })
+    yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['NO_TOKEN_ADDRESS_FOUND'] } })
   }
 }
 

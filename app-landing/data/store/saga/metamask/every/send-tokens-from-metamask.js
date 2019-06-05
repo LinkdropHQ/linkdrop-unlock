@@ -14,6 +14,7 @@ try {
 }
 const generator = function * ({ payload }) {
   try {
+    yield put({ type: 'MM.SET_STATUS', payload: { status: 'initial' } })
     const { currentAsset, ethAmount, account: fromWallet, tokenAddress, assetAmount, assetId } = payload
     const toWallet = yield select(generator.selectors.wallet)
     if (currentAsset === ethers.constants.AddressZero) {

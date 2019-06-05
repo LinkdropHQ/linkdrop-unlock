@@ -64,6 +64,8 @@ export default {
   },
   errors: {
     addManually: 'Try to add token manually',
-    PROBLEM_WITH_EXRTERNAL_LIBRARY: 'Problem with connection to external library API.<br>Please try later'
+    NO_TOKEN_ADDRESS_FOUND: 'No token address found. Please check it, and try again.',
+    ERROR_OCCURED_WITH_ERC721: 'Unable to find NFT-token',
+    PROBLEM_WITH_EXRTERNAL_LIBRARY: 'Problem with connection to external library API. Please try later'
   }
 }
