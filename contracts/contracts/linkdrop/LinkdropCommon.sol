@@ -141,6 +141,14 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     }
 
     /**
+    * @dev Function for other contracts to be able to fetch the mastercopy version
+    * @return Master copy version
+    */
+    function getMasterCopyVersion() external view returns (uint) {
+        return version;
+    }
+
+    /**
     * @dev Fallback function to accept ETH
     */
     function () external payable {}

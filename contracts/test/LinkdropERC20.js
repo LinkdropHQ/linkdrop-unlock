@@ -68,7 +68,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     factory = await deployContract(
       linkdropMaster,
       LinkdropFactory,
-      [initcode, bytecode, chainId],
+      [masterCopy.address, chainId],
       {
         gasLimit: 6000000
       }
@@ -87,7 +87,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     )
 
     await expect(
-      factory.deployProxy(linkdropMaster.address, {
+      factory.deployProxy({
         gasLimit: 6000000
       })
     ).to.emit(factory, 'Deployed')
