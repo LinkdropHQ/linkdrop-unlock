@@ -141,4 +141,19 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
         return true;
     }
 
+    /**
+    * @dev Function to fetch the master copy version installed (or to be installed) to proxy
+    * @return Master copy version
+    */
+    function getProxyMasterCopyVersion(address _linkdropMaster) external view returns (uint) {
+
+        if (!isDeployed(_linkdropMaster)) {
+            return version;
+        }
+        else {
+            address payable proxy = address(uint160(deployed[_linkdropMaster]));
+            return ILinkdropCommon(proxy).getMasterCopyVersion();
+        }
+    }
+
 }
