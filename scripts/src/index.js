@@ -69,14 +69,14 @@ export const deployMasterCopy = async () => {
   return mastercopy.address
 }
 
-export const deployFactory = async (initcode, bytecode) => {
+export const deployFactory = async (masterCopyAddress, chainId) => {
   let factory = new ethers.ContractFactory(
     LinkdropFactory.abi,
     LinkdropFactory.bytecode,
     linkdropMaster
   )
 
-  proxyFactory = await factory.deploy(initcode, bytecode, {
+  proxyFactory = await factory.deploy(masterCopyAddress, chainId, {
     gasLimit: 6000000
   })
 
