@@ -38,12 +38,10 @@ const generator = function * ({ payload }) {
         const balanceFormatted = utils.formatUnits(assetAmount, assetDecimals)
         transferData = yield tokenContract.transfer.getData(toWallet, balanceFormatted, { from: fromWallet })
       }
-      console.log({ transferData })
       const promise = new Promise((resolve, reject) => {
         web3Obj.eth.sendTransaction({ to: tokenAddress, from: fromWallet, value: 0, data: transferData }, result => resolve({ result }))
       })
       const { result } = yield promise
-      console.log({ result })
       if (String(result) === 'null') {
         yield put({ type: 'MM.SET_STATUS', payload: { status: 'finished' } })
       }
