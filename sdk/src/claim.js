@@ -10,6 +10,7 @@ export const claim = async ({
   tokenAmount,
   expirationTime,
   version,
+  chainId,
   linkKey,
   linkdropMasterAddress,
   linkdropSignerSignature,
@@ -41,7 +42,11 @@ export const claim = async ({
   }
 
   if (version === null || version === '') {
-    throw new Error('Please provide contract version')
+    throw new Error('Please provide mastercopy version ')
+  }
+
+  if (chainId === null || chainId === '') {
+    throw new Error('Please provide chain id')
   }
 
   if (linkKey === null || linkKey === '') {
@@ -81,6 +86,7 @@ export const claim = async ({
     tokenAmount,
     expirationTime,
     version,
+    chainId,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
@@ -124,6 +130,7 @@ export const claimERC721 = async ({
   tokenId,
   expirationTime,
   version,
+  chainId,
   linkKey,
   linkdropMasterAddress,
   linkdropSignerSignature,
@@ -159,7 +166,11 @@ export const claimERC721 = async ({
   }
 
   if (version === null || version === '') {
-    throw new Error('Please provide contract version')
+    throw new Error('Please provide mastercopy version ')
+  }
+
+  if (chainId === null || chainId === '') {
+    throw new Error('Please provide chain id')
   }
 
   if (linkKey === null || linkKey === '') {
@@ -199,6 +210,7 @@ export const claimERC721 = async ({
     tokenId,
     expirationTime,
     version,
+    chainId,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,

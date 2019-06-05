@@ -1,4 +1,5 @@
 import { deployFactory } from './index'
+
 import { getMasterCopyAddress, getChainId } from './utils'
   ;(async () => {
   console.log('Deploying factory...')
