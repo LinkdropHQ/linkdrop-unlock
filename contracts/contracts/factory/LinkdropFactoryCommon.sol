@@ -50,6 +50,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
 
         assembly {
             proxy := create2(0, add(initcode, 0x20), mload(initcode), salt)
+            if iszero(extcodesize(proxy)) { revert(0, 0) }
         }
 
         deployed[_linkdropMaster] = proxy;
