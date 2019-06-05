@@ -5,6 +5,7 @@ import NFTMock from 'contracts/NFTMock.json'
 
 const generator = function * ({ payload }) {
   try {
+    yield put({ type: 'USER.SET_ERRORS', payload: { errors: [] } })
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     let { account, networkId, tokenAddress, tokenId } = payload
     const networkName = defineNetworkName({ networkId })
@@ -19,8 +20,9 @@ const generator = function * ({ payload }) {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
   } catch (e) {
     console.error(e)
-    yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['PROBLEM_WITH_EXRTERNAL_LIBRARY'] } })
     yield put({ type: 'USER.SET_STEP', payload: { step: 1 } })
+    yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
+    yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['ERROR_OCCURED_WITH_ERC721'] } })
   }
 }
 
