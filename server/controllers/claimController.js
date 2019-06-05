@@ -20,6 +20,7 @@ export const claim = async (req, res) => {
     tokenAmount,
     expirationTime,
     version,
+    chainId,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
@@ -33,7 +34,6 @@ export const claim = async (req, res) => {
     tokenAddress,
     tokenAmount,
     expirationTime,
-    version,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
@@ -58,7 +58,11 @@ export const claim = async (req, res) => {
   }
 
   if (!version) {
-    throw new Error('Please provide contract version')
+    throw new Error('Please provide mastercopy version ')
+  }
+
+  if (!chainId) {
+    throw new Error('Please provide chain id')
   }
 
   if (!linkId) {
@@ -108,6 +112,7 @@ export const claim = async (req, res) => {
       tokenAddress,
       tokenAmount,
       version,
+      chainId,
       linkId,
       linkdropMasterAddress
     })
@@ -130,7 +135,6 @@ export const claim = async (req, res) => {
           tokenAddress,
           tokenAmount,
           expirationTime,
-          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -147,7 +151,6 @@ export const claim = async (req, res) => {
           tokenAddress,
           tokenAmount,
           expirationTime,
-          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -163,7 +166,6 @@ export const claim = async (req, res) => {
           tokenAddress,
           tokenAmount,
           expirationTime,
-          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -180,7 +182,6 @@ export const claim = async (req, res) => {
           tokenAddress,
           tokenAmount,
           expirationTime,
-          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -200,6 +201,7 @@ export const claim = async (req, res) => {
         tokenAmount,
         expirationTime,
         version,
+        chainId,
         linkId,
         linkdropMasterAddress,
         receiverAddress,
@@ -237,6 +239,7 @@ export const claimERC721 = async (req, res) => {
     tokenId,
     expirationTime,
     version,
+    chainId,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
@@ -250,7 +253,6 @@ export const claimERC721 = async (req, res) => {
     nftAddress,
     tokenId,
     expirationTime,
-    version,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
@@ -275,7 +277,11 @@ export const claimERC721 = async (req, res) => {
   }
 
   if (!version) {
-    throw new Error('Please provide contract version')
+    throw new Error('Please provide mastercopy version ')
+  }
+
+  if (!chainId) {
+    throw new Error('Please provide chain id')
   }
 
   if (!linkId) {
@@ -326,6 +332,7 @@ export const claimERC721 = async (req, res) => {
       nftAddress,
       tokenId,
       version,
+      chainId,
       linkId,
       linkdropMasterAddress
     })
@@ -347,7 +354,6 @@ export const claimERC721 = async (req, res) => {
           nftAddress,
           tokenId,
           expirationTime,
-          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -364,7 +370,6 @@ export const claimERC721 = async (req, res) => {
           nftAddress,
           tokenId,
           expirationTime,
-          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -380,7 +385,6 @@ export const claimERC721 = async (req, res) => {
           nftAddress,
           tokenId,
           expirationTime,
-          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -397,7 +401,6 @@ export const claimERC721 = async (req, res) => {
           nftAddress,
           tokenId,
           expirationTime,
-          version,
           linkId,
           linkdropMasterAddress,
           linkdropSignerSignature,
@@ -416,6 +419,7 @@ export const claimERC721 = async (req, res) => {
         tokenId,
         expirationTime,
         version,
+        chainId,
         linkId,
         linkdropMasterAddress,
         receiverAddress,

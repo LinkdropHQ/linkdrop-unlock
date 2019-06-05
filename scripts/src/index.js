@@ -12,7 +12,7 @@ const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
 const config = require(configPath)
 
 let {
-  networkId,
+  chainId,
   linkdropMasterPrivateKey,
   weiAmount,
   tokenAddress,
@@ -69,14 +69,14 @@ export const deployMasterCopy = async () => {
   return mastercopy.address
 }
 
-export const deployFactory = async (initcode, bytecode) => {
+export const deployFactory = async (initcode, bytecode, chainId) => {
   let factory = new ethers.ContractFactory(
     LinkdropFactory.abi,
     LinkdropFactory.bytecode,
     linkdropMaster
   )
 
-  proxyFactory = await factory.deploy(initcode, bytecode, {
+  proxyFactory = await factory.deploy(initcode, bytecode, chainId, {
     gasLimit: 6000000
   })
 
@@ -146,6 +146,10 @@ export const deployERC721 = async () => {
 }
 
 export const generateLinksETH = async () => {
+  if (chainId === null || chainId === '') {
+    throw new Error('Please provide chain id')
+  }
+
   if (linksNumber === null || linksNumber === '') {
     throw new Error('Please provide links number')
   }
@@ -170,7 +174,7 @@ export const generateLinksETH = async () => {
       linkdropSignerSignature
     } = await LinkdropSDK.generateLink({
       jsonRpcUrl,
-      networkId,
+      chainId,
       host,
       linkdropMasterPrivateKey,
       weiAmount,
@@ -200,6 +204,10 @@ export const generateLinksETH = async () => {
 }
 
 export const generateLinksERC20 = async () => {
+  if (chainId === null || chainId === '') {
+    throw new Error('Please provide chain id')
+  }
+
   if (linksNumber === null || linksNumber === '') {
     throw new Error('Please provide links number')
   }
@@ -221,7 +229,7 @@ export const generateLinksERC20 = async () => {
       linkdropSignerSignature
     } = await LinkdropSDK.generateLink({
       jsonRpcUrl,
-      networkId,
+      chainId,
       host,
       linkdropMasterPrivateKey,
       weiAmount,
@@ -251,6 +259,10 @@ export const generateLinksERC20 = async () => {
 }
 
 export const generateLinksERC721 = async () => {
+  if (chainId === null || chainId === '') {
+    throw new Error('Please provide chain id')
+  }
+
   if (nftIds == null || nftIds === '' || nftIds === '[]') {
     throw new Error('Please provide NFT ids')
   }
@@ -273,7 +285,7 @@ export const generateLinksERC721 = async () => {
       linkdropSignerSignature
     } = await LinkdropSDK.generateLinkERC721({
       jsonRpcUrl,
-      networkId,
+      chainId,
       host,
       linkdropMasterPrivateKey,
       weiAmount,
@@ -283,6 +295,7 @@ export const generateLinksERC721 = async () => {
       version,
       isApprove
     })
+
     let link = { i, linkId, linkKey, linkdropSignerSignature, url }
     links.push(link)
   }

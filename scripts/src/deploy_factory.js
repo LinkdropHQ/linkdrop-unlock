@@ -1,8 +1,9 @@
 import { deployFactory } from './index'
-import { getBytecode, getInitcode } from './utils'
+import { getBytecode, getInitcode, getChainId } from './utils'
   ;(async () => {
   console.log('Deploying factory...')
   const initcode = getInitcode()
   const bytecode = getBytecode()
-  await deployFactory(initcode, bytecode)
+  const chainId = getChainId()
+  await deployFactory(initcode, bytecode, chainId)
 })()
