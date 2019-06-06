@@ -11,7 +11,7 @@ import classNames from 'classnames'
 @translate('pages.main')
 class ClaimingFinishedPage extends React.Component {
   render () {
-    const { n } = getHashVariables()
+    const { chainId } = getHashVariables()
     const { transactionId, amount, symbol } = this.props
     return <div className={commonStyles.container}>
       <Alert icon={<Icons.Check />} className={styles.alert} />
@@ -22,7 +22,7 @@ class ClaimingFinishedPage extends React.Component {
         })}
         dangerouslySetInnerHTML={{
           __html: this.t('titles.seeDetails', {
-            transactionLink: `${Number(n) === 4 ? config.etherscanRinkeby : config.etherscanMainnet}${transactionId}`
+            transactionLink: `${Number(chainId) === 4 ? config.etherscanRinkeby : config.etherscanMainnet}${transactionId}`
           })
         }}
       />

@@ -7,11 +7,11 @@ import { defineNetworkName } from 'linkdrop-commons'
 const generator = function * ({ payload }) {
   try {
     const ethWalletContract = ethers.constants.AddressZero
-    const { isERC721, networkId, tokenId } = payload
+    const { isERC721, chainId, tokenId } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const tokenAddress = yield select(generator.selectors.tokenAddress)
     const wallet = yield select(generator.selectors.wallet)
-    const networkName = defineNetworkName({ networkId })
+    const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
 
     // if not ethereum

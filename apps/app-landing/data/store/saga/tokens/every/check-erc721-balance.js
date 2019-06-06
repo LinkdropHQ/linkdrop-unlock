@@ -7,8 +7,8 @@ const generator = function * ({ payload }) {
   try {
     yield put({ type: 'USER.SET_ERRORS', payload: { errors: [] } })
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    let { account, networkId, tokenAddress, tokenId } = payload
-    const networkName = defineNetworkName({ networkId })
+    let { account, chainId, tokenAddress, tokenId } = payload
+    const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const nftContract = yield new ethers.Contract(tokenAddress, NFTMock.abi, provider)
     const nftContractOwner = yield nftContract.ownerOf(tokenId)

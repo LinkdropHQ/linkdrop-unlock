@@ -3,20 +3,20 @@ class Tokens {
     this.actions = actions
   }
 
-  claimTokensERC20 ({ wallet, tokenAddress, weiAmount, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature }) {
-    this.actions.dispatch({ type: '*TOKENS.CLAIM_TOKENS_ERC20', payload: { wallet, weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } })
+  claimTokensERC20 ({ wallet, chainId, tokenAddress, weiAmount, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature }) {
+    this.actions.dispatch({ type: '*TOKENS.CLAIM_TOKENS_ERC20', payload: { wallet, weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, chainId, linkdropMasterAddress, linkdropSignerSignature } })
   }
 
-  claimTokensERC721 ({ wallet, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature }) {
-    this.actions.dispatch({ type: '*TOKENS.CLAIM_TOKENS_ERC721', payload: { wallet, weiAmount, nftAddress, tokenId, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } })
+  claimTokensERC721 ({ wallet, chainId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature }) {
+    this.actions.dispatch({ type: '*TOKENS.CLAIM_TOKENS_ERC721', payload: { wallet, weiAmount, nftAddress, tokenId, expirationTime, linkKey, chainId, linkdropMasterAddress, linkdropSignerSignature } })
   }
 
-  checkTransactionStatus ({ transactionId, networkId }) {
-    this.actions.dispatch({ type: '*TOKENS.CHECK_TRANSACTION_STATUS', payload: { transactionId, networkId } })
+  checkTransactionStatus ({ transactionId, chainId }) {
+    this.actions.dispatch({ type: '*TOKENS.CHECK_TRANSACTION_STATUS', payload: { transactionId, chainId } })
   }
 
-  checkIfClaimed ({ linkKey, networkId, linkdropMasterAddress }) {
-    this.actions.dispatch({ type: '*TOKENS.CHECK_IF_CLAIMED', payload: { linkKey, networkId, linkdropMasterAddress } })
+  checkIfClaimed ({ linkKey, chainId, linkdropMasterAddress }) {
+    this.actions.dispatch({ type: '*TOKENS.CHECK_IF_CLAIMED', payload: { linkKey, chainId, linkdropMasterAddress } })
   }
 }
 

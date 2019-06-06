@@ -25,6 +25,14 @@ describe('data/store/saga/metamask/every/send-tokens-from-metamask.js send eth w
   })
   const result = { result: null }
 
+  it('set status to initial', () => {
+    expect(
+      gen.next().value
+    ).to.deep.equal(
+      put({ type: 'MM.SET_STATUS', payload: { status: 'initial' } })
+    )
+  })
+
   it('get wallet', () => {
     expect(
       gen.next().value
@@ -66,6 +74,14 @@ describe('data/store/saga/metamask/every/send-tokens-from-metamask.js send asset
     web3Obj.eth.sendTransaction({ to: tokenAddress, from: account, value: 0, data: transferData }, result => resolve({ result }))
   })
   const result = { result: null }
+
+  it('set status to initial', () => {
+    expect(
+      gen.next().value
+    ).to.deep.equal(
+      put({ type: 'MM.SET_STATUS', payload: { status: 'initial' } })
+    )
+  })
 
   it('get wallet', () => {
     expect(

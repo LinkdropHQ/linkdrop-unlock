@@ -8,8 +8,8 @@ const generator = function * ({ payload }) {
   try {
     const ethWalletContract = ethers.constants.AddressZero
     yield put({ type: 'CONTRACT.SET_LOADING', payload: { loading: true } })
-    const { tokenAmount, weiAmount, tokenAddress, networkId } = payload
-    const networkName = defineNetworkName({ networkId })
+    const { tokenAmount, weiAmount, tokenAddress, chainId } = payload
+    const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     let decimals
     let symbol

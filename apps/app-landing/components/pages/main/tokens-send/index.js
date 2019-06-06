@@ -28,7 +28,7 @@ class TokensSend extends React.Component {
 
   componentWillReceiveProps ({ balance, symbol, tokenId, assetBalance }) {
     const { assetBalance: prevAssetBalance, balance: prevBalance, onFinish, symbol: prevSymbol, tokenId: prevTokenId } = this.props
-    const { n = '4' } = getHashVariables()
+    const { chainId = '4' } = getHashVariables()
     const { tokenType, tokenId: userTokenId } = this.state
     if (
       (balance && balance > 0 && balance !== prevBalance) ||
@@ -43,7 +43,7 @@ class TokensSend extends React.Component {
       })
     }
     if (prevSymbol === null && symbol != null && symbol !== prevSymbol) {
-      this.manualTokensCheck = window.setInterval(_ => this.actions().tokens.checkTokensManually({ isERC721: tokenType === 'erc721', networkId: n, tokenId: userTokenId }), configs.balanceCheckIntervalManual)
+      this.manualTokensCheck = window.setInterval(_ => this.actions().tokens.checkTokensManually({ isERC721: tokenType === 'erc721', chainId, tokenId: userTokenId }), configs.balanceCheckIntervalManual)
     }
   }
 
@@ -54,15 +54,15 @@ class TokensSend extends React.Component {
   }
 
   renderOriginalScreen ({ wallet, tokensUploaded, alert, started }) {
-    const { n = '4' } = getHashVariables()
+    const { chainId = '4' } = getHashVariables()
     return <LinkBlock title={this.t('titles.sendTokensToAddress')} style={{ height: 528 }}>
       <div className={classNames(styles.container, {
-        [styles.rinkeby]: n === '4'
+        [styles.rinkeby]: chainId === '4'
       })}>
         <div className={styles.qr}>
           <QRCode size={170} value={wallet} />
         </div>
-        {n === '4' && <div className={styles.network}>Rinkeby testnet</div>}
+        {chainId === '4' && <div className={styles.network}>Rinkeby testnet</div>}
         <TextCopyBlock
           value={wallet}
           className={styles.copyBlock}
@@ -95,18 +95,18 @@ class TokensSend extends React.Component {
   }
 
   startSearchingForTokens () {
-    const { n = '4' } = getHashVariables()
+    const { chainId = '4' } = getHashVariables()
     this.setState({
       started: true
     }, _ => {
       const { wallet } = this.props
-      this.intervalCheck = window.setInterval(_ => this.actions().tokens.checkBalance({ account: wallet, networkId: n }), configs.balanceCheckInterval)
+      this.intervalCheck = window.setInterval(_ => this.actions().tokens.checkBalance({ account: wallet, chainId }), configs.balanceCheckInterval)
       this.alertTimeout = window.setTimeout(_ => this.actions().user.setAlert({ alert: this.t('errors.addManually') }), configs.showManualTimeout)
     })
   }
 
   renderManualTokenCheckScreen ({ tokenAddress, manualStarted, symbol, tokenType, tokenId }) {
-    const { n = '4' } = getHashVariables()
+    const { chainId = '4' } = getHashVariables()
     return <LinkBlock title={this.t('titles.addManually')} style={{ height: 528 }}>
       <div className={classNames(styles.container, styles.containerCentered)}>
         <Tabs
@@ -141,7 +141,7 @@ class TokensSend extends React.Component {
         /> : <Button
           disabled={this.defineIfButtonIsDisabled({ tokenType, tokenId, tokenAddress })}
           className={styles.button}
-          onClick={_ => this.checkTokenAdressManually({ tokenAddress, tokenId, tokenType, networkId: n })}
+          onClick={_ => this.checkTokenAdressManually({ tokenAddress, tokenId, tokenType, chainId })}
         >
           {text('common.buttons.addToken')}
         </Button>}
@@ -156,7 +156,7 @@ class TokensSend extends React.Component {
     return false
   }
 
-  checkTokenAdressManually ({ tokenAddress, tokenType, networkId, tokenId }) {
+  checkTokenAdressManually ({ tokenAddress, tokenType, chainId, tokenId }) {
     this.setState({
       manualStarted: true
     }, _ => {
@@ -164,7 +164,7 @@ class TokensSend extends React.Component {
       this.actions().tokens.getTokensData({
         tokenAddress,
         tokenType,
-        networkId
+        chainId
       })
     })
   }

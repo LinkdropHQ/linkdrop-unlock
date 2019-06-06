@@ -13,7 +13,7 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
-    * @param _version Linkdrop contract version
+    * @param _masterCopyVersion Linkdrop master copy contract version
     * @param _chainId Network id
     * @param _linkId Address corresponding to link key
     * @param _linkdropSigner Address of linkdrop signer
@@ -26,7 +26,7 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        uint _version,
+        uint _masterCopyVersion,
         uint _chainId,
         address _linkId,
         address _linkdropSigner,
@@ -45,7 +45,7 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
                     _nftAddress,
                     _tokenId,
                     _expiration,
-                    _version,
+                    _masterCopyVersion,
                     _chainId,
                     _linkId
                 )
@@ -141,7 +141,7 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
                     _nftAddress,
                     _tokenId,
                     _expiration,
-                    version,
+                    masterCopyVersion,
                     chainId,
                     _linkId,
                     _linkdropMaster,
@@ -195,7 +195,7 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
     {
         // Check whether the proxy is deployed for linkdrop master and deploy if not
         if (!isDeployed(_linkdropMaster)) {
-            deployProxy(_linkdropMaster);
+            _deployProxy(_linkdropMaster);
         }
 
         // Call claim function in the context of proxy contract

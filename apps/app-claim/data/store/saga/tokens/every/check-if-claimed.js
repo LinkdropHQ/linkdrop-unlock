@@ -7,8 +7,8 @@ import LinkdropFactory from 'contracts/LinkdropFactory.json'
 const generator = function * ({ payload }) {
   try {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    const { linkdropMasterAddress, linkKey, networkId } = payload
-    const networkName = defineNetworkName({ networkId })
+    const { linkdropMasterAddress, linkKey, chainId } = payload
+    const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const linkWallet = yield new ethers.Wallet(linkKey, provider)
     const linkId = yield linkWallet.address

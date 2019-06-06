@@ -9,10 +9,10 @@ const generator = function * ({ payload }) {
   try {
     const ethWalletContract = ethers.constants.AddressZero
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    const { tokenAddress, tokenType, networkId } = payload
+    const { tokenAddress, tokenType, chainId } = payload
     yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress: tokenType === 'eth' ? ethWalletContract : tokenAddress } })
     yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: tokenType === 'erc721' ? 'erc721' : 'erc20' } })
-    const networkName = defineNetworkName({ networkId })
+    const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     if (tokenType === 'eth' || tokenAddress === ethWalletContract) {
       yield put({ type: 'TOKENS.SET_SYMBOL', payload: { symbol: 'ETH' } })

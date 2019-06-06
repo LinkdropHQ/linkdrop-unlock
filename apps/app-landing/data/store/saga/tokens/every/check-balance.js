@@ -7,19 +7,19 @@ import TokenMock from 'contracts/TokenMock.json'
 const generator = function * ({ payload }) {
   try {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    let { account, networkId, tokenAddress } = payload
+    let { account, chainId, tokenAddress } = payload
     const step = yield select(generator.selectors.step)
-    const networkName = defineNetworkName({ networkId })
+    const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const balance = yield provider.getBalance(account)
 
     // check of ethereum balance
     const balanceFormatted = utils.formatEther(balance)
     // check of erc-721 balance
-    let { assets: erc721Balance = [] } = yield call(getTokensOpensea, { wallet: account, networkId })
+    let { assets: erc721Balance = [] } = yield call(getTokensOpensea, { wallet: account, chainId })
     let erc20Balance = null
     // check of erc-20 (only on mainnet) balance
-    if (Number(networkId) === 1 && !tokenAddress) {
+    if (Number(chainId) === 1 && !tokenAddress) {
       const data = yield call(getTokensTrustWallet, { wallet: account })
       tokenAddress = (((data.docs || [])[0] || {}).contract || {}).address
     }

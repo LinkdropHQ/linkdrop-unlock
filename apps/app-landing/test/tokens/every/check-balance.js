@@ -9,8 +9,8 @@ import { getTokensOpensea, getTokensTrustWallet } from 'data/api/tokens'
 const provider = createMockProvider()
 describe('data/store/saga/tokens/every/check-balance.js initial check balance with no balance detected', () => {
   const account = '0xB8c77482e45F1F44dE1745F52C74426C631bDD52'
-  const networkId = '1'
-  const payload = { account, networkId }
+  const chainId = '1'
+  const payload = { account, chainId }
   const gen = checkBalanceGenerator({ payload })
   const balance = 0
   const step = 0
@@ -53,7 +53,7 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
     expect(
       gen.next(balance).value
     ).to.deep.equal(
-      call(getTokensOpensea, { wallet: account, networkId })
+      call(getTokensOpensea, { wallet: account, chainId })
     )
   })
 
@@ -86,8 +86,8 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
 
 describe('data/store/saga/tokens/every/check-balance.js initial check balance with balance detected', () => {
   const account = '0xB8c77482e45F1F44dE1745F52C74426C631bDD52'
-  const networkId = '1'
-  const payload = { account, networkId }
+  const chainId = '1'
+  const payload = { account, chainId }
   const gen = checkBalanceGenerator({ payload })
   const balance = { '_hex': '0x16345785d8a0000' }
   const balanceFormatted = '0.1'
@@ -132,7 +132,7 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
     expect(
       gen.next(balance).value
     ).to.deep.equal(
-      call(getTokensOpensea, { wallet: account, networkId })
+      call(getTokensOpensea, { wallet: account, chainId })
     )
   })
 

@@ -36,17 +36,34 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     }
 
     /**
-    * @dev Function to deploy a proxy contract for linkdrop master
+    * @dev Function to deploy a proxy contract for msg.sender
+    * @return Proxy contract address
+    */
+    function deployProxy()
+    public
+    returns (address payable)
+    {
+        address payable proxy = _deployProxy(msg.sender);
+        return proxy;
+    }
+
+    /**
+    * @dev Internal function to deploy a proxy contract for linkdrop master
     * @param _linkdropMaster Address of linkdrop master
     * @return Proxy contract address
     */
-    function deployProxy(address payable _linkdropMaster)
-    public
-    returns (address payable proxy)
+    function _deployProxy(address payable _linkdropMaster)
+    internal
+    returns (address payable)
     {
+
+        require(!isDeployed(_linkdropMaster), "Deployed");
+        require(_linkdropMaster != address(0), "Invalid linkdrop master address");
 
         bytes32 salt = keccak256(abi.encodePacked(_linkdropMaster));
         bytes memory initcode = getInitcode();
+
+        address payable proxy;
 
         assembly {
             proxy := create2(0, add(initcode, 0x20), mload(initcode), salt)
@@ -55,8 +72,19 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
 
         deployed[_linkdropMaster] = proxy;
 
-        // Initialize linkdrop master and contract version in newly deployed proxy contract
-        require(ILinkdropCommon(proxy).initializer(_linkdropMaster, version, chainId), "Failed to initialize");
+        // Initialize owner address, linkdrop master address and master copy version in proxy contract
+        require
+        (
+            ILinkdropCommon(proxy).initialize
+            (
+                address(this), // Owner address
+                _linkdropMaster, // Linkdrop master address
+                masterCopyVersion,
+                chainId
+            ),
+            "Failed to initialize"
+        );
+
         emit Deployed(_linkdropMaster, proxy, salt, now);
         return proxy;
     }
@@ -101,18 +129,55 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     }
 
     /**
-    * @dev Function to update bytecode. Can only be called by factory owner
-    * @param __bytecode Contract bytecode to install
+    * @dev Function to set new master copy and update contract bytecode to install. Can only be called by factory owner
+    * @param _masterCopy Address of linkdrop mastercopy contract to calculate bytecode from
     * @return True if updated successfully
     */
-    function updateBytecode(bytes memory __bytecode)
+    function setMasterCopy(address payable _masterCopy)
     public returns (bool)
     {
         require(msg.sender == owner, "Only factory owner");
-        _bytecode = __bytecode;
-        version = version.add(1);
-        emit UpdatedBytecode(_bytecode, version, now);
+        require(_masterCopy != address(0), "Invalid master copy address");
+        masterCopyVersion = masterCopyVersion.add(1);
+
+        require
+        (
+            ILinkdropCommon(_masterCopy).initialize
+            (
+                address(0), // Owner address
+                address(0), // Linkdrop master address
+                masterCopyVersion,
+                chainId
+            ),
+            "Failed to initialize"
+        );
+
+        bytes memory bytecode = abi.encodePacked
+        (
+            hex"363d3d373d3d3d363d73",
+            _masterCopy,
+            hex"5af43d82803e903d91602b57fd5bf3"
+        );
+
+        _bytecode = bytecode;
+
+        emit SetMasterCopy(_masterCopy, masterCopyVersion, now);
         return true;
+    }
+
+    /**
+    * @dev Function to fetch the master copy version installed (or to be installed) to proxy
+    * @return Master copy version
+    */
+    function getProxyMasterCopyVersion(address _linkdropMaster) external view returns (uint) {
+
+        if (!isDeployed(_linkdropMaster)) {
+            return masterCopyVersion;
+        }
+        else {
+            address payable proxy = address(uint160(deployed[_linkdropMaster]));
+            return ILinkdropCommon(proxy).getMasterCopyVersion();
+        }
     }
 
 }
