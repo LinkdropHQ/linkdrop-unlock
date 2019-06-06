@@ -3,7 +3,7 @@ pragma solidity ^0.5.6;
 import "../storage/LinkdropFactoryStorage.sol";
 import "../interfaces/ILinkdropCommon.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
-import "openzeppelin-solidity/contracts/math/Safemath.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     using SafeMath for uint;
