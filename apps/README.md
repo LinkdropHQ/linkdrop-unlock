@@ -1,5 +1,7 @@
-# Linkdrop Monorepo
-Monorepo for Linkdrop Web Application
+# Linkdrop Web Apps
+Web apps to interact with linkdrop service for end-users: 
+- demo app deployed at https://demo.linkdrop.io, to generate demo linkdrops
+- claiming app deployed at https://claim.linkdrop.io, to claim linkdrops. 
 
 ## Getting Started
 
@@ -17,25 +19,27 @@ cd linkdrop-monorepo/apps/linkdrop-ui-kit
 yarn dev
 ```
 
+**Running Claiming App**
 After that you can easily go to 'app-claim' folder and run dev server (port: 9002):
 ```
 cd linkdrop-monorepo/apps/app-claim
 yarn dev:server
 ```
 
+**Running Demo App**
 Or go to 'app-landing' and run dev server (port: 9001):
 ```
 cd linkdrop-monorepo/apps/app-landing
 yarn dev:server
 ```
 
+### Bundles
 To create bundles for production you can run command 'yarn build' in 'app-claim' and 'app-landing' folders:
 ```
 cd linkdrop-monorepo/apps/app-landing
 yarn build
 ```
 
-### Bundles
 Bundles for 'app-claim' and 'app-folder' can be found in 'assets/scripts' folders in each sub-project. For 'linkdrop-ui-kit' it can be found in 'dist' folder as bundle.
 
 
