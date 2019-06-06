@@ -20,7 +20,8 @@ const generator = function * ({ payload }) {
       nftAddress: tokenAddress,
       tokenId,
       expirationTime: configs.expirationTime,
-      isApprove: false
+      isApprove: false,
+      version: 1
     })
 
     yield put({ type: 'USER.SET_LINK', payload: { link: link.url } })
