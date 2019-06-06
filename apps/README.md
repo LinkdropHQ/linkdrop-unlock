@@ -19,14 +19,14 @@ cd linkdrop-monorepo/apps/linkdrop-ui-kit
 yarn dev
 ```
 
-**Running Claiming App**
+**Running Claiming App**  
 After that you can easily go to 'app-claim' folder and run dev server (port: 9002):
 ```
 cd linkdrop-monorepo/apps/app-claim
 yarn dev:server
 ```
 
-**Running Demo App**
+**Running Demo App**  
 Or go to 'app-landing' and run dev server (port: 9001):
 ```
 cd linkdrop-monorepo/apps/app-landing
