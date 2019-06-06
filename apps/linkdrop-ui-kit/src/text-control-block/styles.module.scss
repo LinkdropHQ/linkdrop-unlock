@@ -6,9 +6,9 @@
   line-height: 50px;
   text-align: center;
   outline: none;
-  border: 1px solid blackColor;
+  border: 1px solid $blackColor;
   font-size: 22px;
-  color: blackColor;
+  color: $blackColor;
   outline: none;
   display: flex;
   align-items: center;
@@ -36,7 +36,7 @@
 }
 
 .blink {
-  border: 1px solid greenColor;
+  border: 1px solid $greenColor;
   background: rgba(43, 198, 79, .3);
 }
 
@@ -61,8 +61,8 @@
   }
 
   40% {
-    color: whiteColor;
-    background: greenColor;
+    color: $whiteColor;
+    background: $greenColor;
   }
 
   100% {

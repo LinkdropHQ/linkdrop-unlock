@@ -5,9 +5,9 @@
   height: 50px;
   line-height: 50px;
   outline: none;
-  border: 1px solid blackColor;
+  border: 1px solid $blackColor;
   font-size: 22px;
-  color: blackColor;
+  color: $blackColor;
   outline: none;
   padding: 0 10px;
 }
@@ -22,6 +22,6 @@
 }
 
 .container::placeholder {
-  color: blackColor;
+  color: $blackColor;
   opacity: 1;
 }

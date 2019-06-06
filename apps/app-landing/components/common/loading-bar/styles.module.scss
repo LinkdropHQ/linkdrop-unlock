@@ -3,14 +3,14 @@
 .container {
   display: flex;
   justify-content: center;
-  background: whiteColor;
+  background: $whiteColor;
   padding: 4px 10px;
   border-radius: 5px;
   height: 50px;
   align-items: center;
   max-width: 340px;
   width: 100%;
-  border: 1px solid blackColor;
+  border: 1px solid $blackColor;
 }
 
 .alert {
@@ -18,16 +18,16 @@
 }
 
 .title {
-  color: orangeColor;
+  color: $orangeColor;
   font-size: 22px;
 }
 
 .titleAlert {
-  color: orangeColor;
+  color: $orangeColor;
 }
 
 .titleSuccess {
-  color: greenColor;
+  color: $greenColor;
 }
 
 .loading {
@@ -48,10 +48,10 @@
   position: absolute;
   width: 23px;
   height: 23px;
-  border: 2px solid orangeColor;
+  border: 2px solid $orangeColor;
   border-radius: 50%;
   animation: ldsRing 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: orangeColor transparent transparent transparent;
+  border-color: $orangeColor transparent transparent transparent;
 }
 
 .loading div:nth-child(1) {

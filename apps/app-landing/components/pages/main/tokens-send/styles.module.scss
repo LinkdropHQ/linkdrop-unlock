@@ -35,7 +35,7 @@
   text-align: center;
 
   a {
-    color: blackColor;
+    color: $blackColor;
   }
 }
 
@@ -52,11 +52,11 @@
 
     .copyBlock {
       margin-bottom: 20px;
-      border-color: orangeColor;
+      border-color: $orangeColor;
 
       & > div {
         &:first-child {
-          color: orangeColor;
+          color: $orangeColor;
         }
       }
     }
@@ -80,10 +80,10 @@
 .terms, .alert {
   margin-top: 20px;
   font-size: 14px;
-  color: blackColor;
+  color: $blackColor;
 
   a {
-    color: blackColor;
+    color: $blackColor;
   }
 
   span {
@@ -99,9 +99,9 @@
 }
 
 .network {
-  background: orangeColor;
+  background: $orangeColor;
   border-radius: 3px;
-  color: whiteColor;
+  color: $whiteColor;
   font-size: 14px;
   height: 20px;
   padding: 0px 5px;

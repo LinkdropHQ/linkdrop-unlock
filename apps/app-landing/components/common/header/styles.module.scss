@@ -14,10 +14,10 @@
 }
 
 .notification {
-  background: orangeColor;
+  background: $orangeColor;
   border-radius: 5px;
   font-size: 18px;
-  color: whiteColor;
+  color: $whiteColor;
   display: flex;
   align-items: center;
   max-width: 742px;
@@ -37,7 +37,7 @@
     margin-left: 50px;
     font-size: 18px;
     text-decoration: none;
-    color: blackColor;
+    color: $blackColor;
   }
 }
 

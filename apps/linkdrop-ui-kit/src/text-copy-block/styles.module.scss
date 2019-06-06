@@ -6,9 +6,9 @@
   line-height: 50px;
   text-align: center;
   outline: none;
-  border: 1px solid blackColor;
+  border: 1px solid $blackColor;
   font-size: 22px;
-  color: blackColor;
+  color: $blackColor;
   outline: none;
   position: relative;
   display: flex;
@@ -33,9 +33,9 @@
   align-items: center;
   justify-content: center;
   height: 34px;
-  background: blackColor;
+  background: $blackColor;
   padding: 0px 10px;
-  color: whiteColor;
+  color: $whiteColor;
   border-radius: 5px;
   font-size: 16px;
   z-index: 2;
@@ -62,8 +62,8 @@
   }
 
   40% {
-    color: whiteColor;
-    background: greenColor;
+    color: $whiteColor;
+    background: $greenColor;
   }
 
   100% {

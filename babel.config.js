@@ -8,12 +8,12 @@ module.exports = ({
   'env': {
     'test-landing': {
       'plugins': [
-        [ 'babel-plugin-webpack-alias', { 'config': './app-landing/webpack.common.js' } ]
+        [ 'babel-plugin-webpack-alias', { 'config': './apps/app-landing/webpack.common.js' } ]
       ]
     },
     'test-claim': {
       'plugins': [
-        [ 'babel-plugin-webpack-alias', { 'config': './app-claim/webpack.common.js' } ]
+        [ 'babel-plugin-webpack-alias', { 'config': './apps/app-claim/webpack.common.js' } ]
       ]
     }
   }

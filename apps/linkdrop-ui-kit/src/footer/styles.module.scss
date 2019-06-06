@@ -11,29 +11,29 @@
   height: 60px;
   font-size: 18px;
   font-family: 'Inter-Medium';
-  color: greyColor;
+  color: $greyColor;
   transition: all .3s;
 
   span {
-    color: blackColor;
+    color: $blackColor;
     transition: all .3s;
   }
 
   &.withLink {
     a {
       text-decoration: none;
-      color: greyColor;
+      color: $greyColor;
     }
     span {
-      color: blackColor;
+      color: $blackColor;
     }
     &:hover {
       a {
         text-decoration: none;
-        color: textGreyColor;
+        color: $textGreyColor;
       }
       span {
-        color: textGreyColor;
+        color: $textGreyColor;
       }
     }
   }

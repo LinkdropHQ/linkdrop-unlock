@@ -7,13 +7,13 @@
   box-shadow: none;
 
   > div:first-child, > div:nth-child(2) {
-    border-color: blackColor;
+    border-color: $blackColor;
     outline: none;
     box-shadow: none;
     height: 50px;
   }
 
   > * {
-    color: blackColor!important;
+    color: $blackColor!important;
   }
 }

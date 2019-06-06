@@ -1,16 +1,30 @@
 /* common values */
-@value blackColor: #000;
-@value whiteColor: #FFF;
-@value greyColor: #999;
-@value bgColor: #FCF5F1;
-@value greenColor: #2BC64F;
-@value orangeColor: #FFA300;
+$blackColor: #000;
+$whiteColor: #FFF;
+$greyColor: #999;
+$bgColor: #FCF5F1;
+$greenColor: #2BC64F;
+$orangeColor: #FFA300;
 
 /* values for claim page */
-@value borderHoverGreyColor: #8C8C8C;
-@value bgHoverGreyColor: rgba(140, 140, 140, 0.2);
+$borderHoverGreyColor: #8C8C8C;
+$bgHoverGreyColor: rgba(140, 140, 140, 0.2);
 
 /* values for linkdrop ui kit */
-@value textGreyColor: #979797;
-@value blackActiveColor: #8C8C8C;
-@value invertedActiveColor: rgba(248, 248, 248, 0.82);
+$textGreyColor: #979797;
+$blackActiveColor: #8C8C8C;
+$invertedActiveColor: rgba(248, 248, 248, 0.82);
+
+:export {
+  blackColor: $blackColor;
+  whiteColor: $whiteColor;
+  greyColor: $greyColor;
+  bgColor: $bgColor;
+  greenColor: $greenColor;
+  orangeColor: $orangeColor;
+  borderHoverGreyColor: $borderHoverGreyColor;
+  bgHoverGreyColor: $bgHoverGreyColor;
+  textGreyColor: $textGreyColor;
+  blackActiveColor: $blackActiveColor;
+  invertedActiveColor: $invertedActiveColor;
+}

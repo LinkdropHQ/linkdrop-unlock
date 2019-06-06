@@ -75,7 +75,7 @@
   align-items: center;
   justify-content: center;
   outline: none!important;
-  background: whiteColor;
+  background: $whiteColor;
 
   img {
     max-width: 100%;
@@ -88,8 +88,8 @@
   overflow: hidden;
 
   &:hover {
-    background: bgHoverGreyColor;
-    border-color: borderHoverGreyColor;
+    background: $bgHoverGreyColor;
+    border-color: $borderHoverGreyColor;
   }
 }
 
