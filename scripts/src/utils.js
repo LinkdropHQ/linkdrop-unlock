@@ -1,4 +1,3 @@
-import LinkdropSDK from '../../sdk/src/index'
 const path = require('path')
 const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
 const config = require(configPath)
@@ -18,19 +17,13 @@ export const getFactoryAddress = () => {
   return factory
 }
 
-export const getInitcode = () => {
-  return '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
-}
-
-export const getBytecode = () => {
-  const masterCopyAddress = getMasterCopyAddress()
-  const bytecode = LinkdropSDK.computeBytecode(masterCopyAddress)
-  return bytecode
-}
-
 export const getChainId = () => {
   if (chainId == null || chainId === '') {
     throw 'Please provide chain id'
   }
   return chainId
+}
+
+export const getInitcode = () => {
+  return '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 }

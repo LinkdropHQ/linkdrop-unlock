@@ -68,13 +68,13 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
     factory = await deployContract(
       linkdropMaster,
       LinkdropFactory,
-      [initcode, bytecode, chainId],
+      [masterCopy.address, chainId],
       {
         gasLimit: 6000000
       }
     )
     expect(factory.address).to.not.eq(ethers.constants.AddressZero)
-    let version = await factory.version()
+    let version = await factory.masterCopyVersion()
     expect(version).to.eq(1)
   })
 
@@ -87,7 +87,7 @@ describe('ETH/ERC721 linkdrop tests (approve pattern)', () => {
     )
 
     await expect(
-      factory.deployProxy(linkdropMaster.address, {
+      factory.deployProxy({
         gasLimit: 6000000
       })
     ).to.emit(factory, 'Deployed')
