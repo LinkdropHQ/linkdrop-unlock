@@ -1,5 +1,5 @@
 # Linkdrop Monorepo
-Monorepo for Linkdrop.io, a service enabling send and receive Ether, ERC20 and/or ERC721 tokens via shareable links and QR codes.
+Monorepo for linkdrop.io, a service enabling send and receive Ether, ERC20 and/or ERC721 tokens via shareable links and QR codes.
 This repository is a monorepo including the sdk, server, smart contracts and web apps (demo and claming app).
 
 ## Disclaimer
