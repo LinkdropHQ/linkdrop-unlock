@@ -23,6 +23,6 @@ contract LinkdropFactoryStorage {
     // Events
     event Deployed(address payable owner, address payable proxy, bytes32 salt, uint timestamp);
     event Destroyed(address payable owner, address payable proxy, uint timestamp);
-    event SetBytecode(address masterCopy, uint version, uint timestamp);
+    event SetMasterCopy(address masterCopy, uint version, uint timestamp);
 
 }
