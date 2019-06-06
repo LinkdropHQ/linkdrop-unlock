@@ -1,0 +1,41 @@
+.sb-show-main {
+  position: relative;
+  padding: 20px;
+  max-width: 600px;
+}
+
+@font-face {
+  font-family: 'Inter-Regular';
+  src: url('~assets/fonts/Inter-Regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('~assets/fonts/Inter-Regular.woff') format('woff'), /* Pretty Modern Browsers */
+       url('~assets/fonts/Inter-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('~assets/fonts/Inter-Regular.otf') format('opentype'); /* Legacy iOS */
+}
+
+@font-face {
+  font-family: 'Inter-Bold';
+  src: url('~assets/fonts/Inter-Bold.woff2') format('woff2'), /* Super Modern Browsers */
+       url('~assets/fonts/Inter-Bold.woff') format('woff'), /* Pretty Modern Browsers */
+       url('~assets/fonts/Inter-Bold.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('~assets/fonts/Inter-Bold.otf') format('opentype'); /* Legacy iOS */
+}
+
+@font-face {
+  font-family: 'Inter-Medium';
+  src: url('~assets/fonts/Inter-Medium.woff2') format('woff2'), /* Super Modern Browsers */
+       url('~assets/fonts/Inter-Medium.woff') format('woff'), /* Pretty Modern Browsers */
+       url('~assets/fonts/Inter-Medium.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('~assets/fonts/Inter-Medium.otf') format('opentype'); /* Legacy iOS */
+}
+
+html, body {
+  font-family: 'Inter-Regular', Helvetica, Arial, sans-serif;
+  margin: 0px;
+  padding: 0px;
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
+

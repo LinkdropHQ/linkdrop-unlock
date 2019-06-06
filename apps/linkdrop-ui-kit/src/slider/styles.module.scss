@@ -1,0 +1,34 @@
+.arrowNext {
+  transform: rotate(180deg);
+  transform-origin: 50% 50%;
+}
+
+.arrowBack {
+
+}
+
+.arrow {
+  &:before {
+    display: none;
+  }
+}
+
+:global {
+  .slick-arrow {
+    &:before {
+      display: none;
+    }
+  }
+
+  .slick-slide {
+    outline: none!important;
+    display: flex!important;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+
+    &:focus, a {
+      outline: none!important;
+    }
+  }
+}

@@ -1,0 +1,64 @@
+@import "variables";
+
+.container {
+  display: flex;
+  align-items: center;
+  max-width: 620px;
+  margin: 0 auto;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 200px;
+}
+
+.title {
+  font-size: 56px;
+  line-height: 67px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.description {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.button {
+  max-width: 200px;
+  margin-bottom: 50px;
+}
+
+.menu {
+  max-width: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+  .title {
+    font-size: 36px;
+    margin: 0 0 30px;
+    text-align: center;
+    line-height: inherit;
+  }
+
+  .description {
+    font-size: 18px;
+    margin-bottom: 26px;
+  }
+
+  .menu {
+    flex-direction: column;
+  }
+
+  .button {
+    margin-bottom: 20px;
+  }
+
+  .container {
+    margin-bottom: 60px;
+  }
+}
+    
