@@ -19,7 +19,9 @@ This is a work in progress. Expect breaking changes. The code has not been audit
 To build and run locally, first follow the instructions in `scripts` - https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/dev/scripts  
 After server is running, you can follow instructions in `apps` to serve front-end apps (demo and claiming apps) - https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/dev/apps
 
-## 
+## Demo
+You can play with demo at https://demo.linkdrop.io. The App supports only Rinkeby Test network right now.
+
 
 ## License
 The current codebase is released under the [MIT License](https://opensource.org/licenses/MIT)
