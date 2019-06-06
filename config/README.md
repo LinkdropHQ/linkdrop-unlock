@@ -10,4 +10,4 @@ To run [server](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/dev/s
 
 
 ### Web apps
-After deploying the mastercopy and factory you will get an actual config file in linkdrop-monorepo/config/scripts.config.json. Just copy masterCopy and factory from that config, and create new file - app.config.json (according to app.config.json.sample scheme) with needed values. Also you can check landing.json and claim.json for your needs.
+After deploying the mastercopy and factory you will get an actual config file in `scripts.config.json`. Just copy masterCopy and factory from that config, and create new file - `app.config.json` (according to `app.config.json.sample` scheme) with needed values. Also you can check `landing.json` and `claim.json` for your needs.
