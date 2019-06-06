@@ -6,9 +6,9 @@ import { defineNetworkName } from 'linkdrop-commons'
 const generator = function * ({ payload }) {
   try {
     yield put({ type: 'USER.SET_ERRORS', payload: { errors: [] } })
-    const { networkId, tokenAddress } = payload
+    const { chainId, tokenAddress } = payload
     yield put({ type: 'MM.SET_LOADING', payload: { loading: true } })
-    const networkName = defineNetworkName({ networkId })
+    const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const tokenContract = yield new ethers.Contract(tokenAddress, NFTMock.abi, provider)
     const symbol = yield tokenContract.symbol()

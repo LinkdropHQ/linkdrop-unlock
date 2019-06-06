@@ -1,4 +1,4 @@
-export default ({ networkId }) => NETWORK_IDS[`_${networkId}`]
+export default ({ chainId }) => NETWORK_IDS[`_${chainId}`]
 
 const NETWORK_IDS = {
   _1: 'mainnet',

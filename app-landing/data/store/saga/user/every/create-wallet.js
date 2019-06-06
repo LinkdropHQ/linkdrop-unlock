@@ -1,7 +1,8 @@
 import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import LinkdropSDK from 'sdk/src/index'
-import { masterCopy, factory } from 'config'
+import { factory } from 'config'
+import configs from 'config-landing'
 const localStorage = (typeof window === 'undefined' ? {} : window).localStorage
 
 const generator = function * () {
@@ -11,7 +12,7 @@ const generator = function * () {
     const { address: wallet, privateKey } = newWallet
 
     if (wallet) {
-      const proxyAddr = LinkdropSDK.computeProxyAddress(factory, wallet, masterCopy)
+      const proxyAddr = LinkdropSDK.computeProxyAddress(factory, wallet, configs.initcode)
       yield put({ type: 'USER.SET_WALLET', payload: { wallet: proxyAddr } })
       localStorage && localStorage.setItem('wallet', proxyAddr)
     }

@@ -4,12 +4,13 @@ import createWalletGenerator from 'data/store/saga/user/every/create-wallet.js'
 import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import LinkdropSDK from 'sdk/src/index'
-import { masterCopy, factory } from 'config'
+import { factory } from 'config'
+import configs from 'config-landing'
 
 describe('data/store/saga/user/every/create-wallet.js', () => {
   const newWallet = ethers.Wallet.createRandom()
   const { address: wallet, privateKey } = newWallet
-  const proxyAddr = LinkdropSDK.computeProxyAddress(factory, wallet, masterCopy)
+  const proxyAddr = LinkdropSDK.computeProxyAddress(factory, wallet, configs.initcode)
   const gen = createWalletGenerator()
 
   it('enable loading', () => {

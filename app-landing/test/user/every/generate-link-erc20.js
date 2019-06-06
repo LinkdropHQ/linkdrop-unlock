@@ -7,8 +7,8 @@ import { jsonRpcUrl, claimHost } from 'config'
 import configs from 'config-landing'
 
 describe('data/store/saga/user/every/generate-link-erc20.js ERC-20', () => {
-  const networkId = '1'
-  const payload = { networkId }
+  const chainId = '1'
+  const payload = { chainId }
   const gen = generateLinkERC20Generator({ payload })
   const balance = null
   const assetBalance = { '_hex': '0x16345785d8a0000' }
@@ -65,14 +65,15 @@ describe('data/store/saga/user/every/generate-link-erc20.js ERC-20', () => {
     ).to.deep.equal(
       LinkdropSDK.generateLink({
         jsonRpcUrl,
-        networkId,
+        chainId,
         host: claimHost,
         linkdropMasterPrivateKey: privateKey,
         weiAmount: 0,
         tokenAddress: tokenAddress,
         tokenAmount: assetBalance,
         expirationTime: configs.expirationTime,
-        isApprove: false
+        isApprove: false,
+        version: 1
       })
     )
   })
@@ -95,8 +96,8 @@ describe('data/store/saga/user/every/generate-link-erc20.js ERC-20', () => {
 })
 
 describe('data/store/saga/user/every/generate-link-erc20.js ETH', () => {
-  const networkId = '1'
-  const payload = { networkId }
+  const chainId = '1'
+  const payload = { chainId }
   const gen = generateLinkERC20Generator({ payload })
   const balance = { '_hex': '0x16345785d8a0000' }
   const assetBalance = null
@@ -152,14 +153,15 @@ describe('data/store/saga/user/every/generate-link-erc20.js ETH', () => {
     ).to.deep.equal(
       LinkdropSDK.generateLink({
         jsonRpcUrl,
-        networkId,
+        chainId,
         host: claimHost,
         linkdropMasterPrivateKey: privateKey,
         weiAmount: balance,
         tokenAddress: '0x0000000000000000000000000000000000000000',
         tokenAmount: 0,
         expirationTime: configs.expirationTime,
-        isApprove: false
+        isApprove: false,
+        version: 1
       })
     )
   })

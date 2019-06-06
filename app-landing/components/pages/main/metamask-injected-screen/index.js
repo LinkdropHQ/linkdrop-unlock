@@ -34,7 +34,7 @@ import debounce from 'debounce'
 class MetamaskInjectedScreen extends React.Component {
   constructor (props) {
     super(props)
-    const { n = '4' } = getHashVariables()
+    const { chainId = '4' } = getHashVariables()
     this.state = {
       currentAsset: ethers.constants.AddressZero,
       assetAddress: '',
@@ -42,23 +42,23 @@ class MetamaskInjectedScreen extends React.Component {
       ethAmount: 0,
       assetId: ''
     }
-    this.checkErc20Balance = debounce(this.checkErc20Balance.bind(this, n, props.account), 500)
-    this.checkErc721Presence = debounce(this.checkErc721Presence.bind(this, n, props.account), 500)
+    this.checkErc20Balance = debounce(this.checkErc20Balance.bind(this, chainId, props.account), 500)
+    this.checkErc721Presence = debounce(this.checkErc721Presence.bind(this, chainId, props.account), 500)
   }
 
   componentDidMount () {
-    const { n = '4' } = getHashVariables()
+    const { chainId = '4' } = getHashVariables()
     const { account } = this.props
-    if (Number(n) !== 4) {
+    if (Number(chainId) !== 4) {
       // get all assets if network is Rinkeby
       return this.actions().tokens.getAssets({ account })
     }
     // otherwise call eth balance from current wallet
-    this.actions().metamask.getEthBalance({ account, networkId: n })
+    this.actions().metamask.getEthBalance({ account, chainId })
   }
 
   componentWillReceiveProps ({ errors, balanceFormatted, symbol, mmStatus, wallet, assetBalanceFormatted, tokenId }) {
-    const { n = '4' } = getHashVariables()
+    const { chainId = '4' } = getHashVariables()
     const { assetAddress, currentAsset, assetId } = this.state
     const { balanceFormatted: prevBalanceFormatted, onFinish, mmStatus: prevMmStatus, assetBalanceFormatted: prevAssetBalanceFormatted, tokenId: prevTokenId, errors: prevErrors } = this.props
     if (mmStatus && mmStatus === 'finished' && mmStatus !== prevMmStatus) {
@@ -66,9 +66,9 @@ class MetamaskInjectedScreen extends React.Component {
         searchStarted: true
       }, _ => {
         if (currentAsset === 'erc20' || currentAsset === ethers.constants.AddressZero) {
-          this.intervalCheck = window.setInterval(_ => this.actions().tokens.checkBalance({ account: wallet, networkId: n, tokenAddress: assetAddress }), configs.balanceCheckInterval)
+          this.intervalCheck = window.setInterval(_ => this.actions().tokens.checkBalance({ account: wallet, chainId, tokenAddress: assetAddress }), configs.balanceCheckInterval)
         } else {
-          this.intervalCheck = window.setInterval(_ => this.actions().tokens.checkErc721Balance({ account: wallet, networkId: n, tokenAddress: assetAddress, tokenId: assetId }), configs.balanceCheckInterval)
+          this.intervalCheck = window.setInterval(_ => this.actions().tokens.checkErc721Balance({ account: wallet, chainId, tokenAddress: assetAddress, tokenId: assetId }), configs.balanceCheckInterval)
         }
       })
       return
@@ -94,10 +94,10 @@ class MetamaskInjectedScreen extends React.Component {
   }
 
   render () {
-    const { n = '4' } = getHashVariables()
+    const { chainId = '4' } = getHashVariables()
     const { errors, assets, account, mmBalanceFormatted, mmLoading, symbol, mmAssetBalanceFormatted } = this.props
     const { currentAsset, assetAddress, assetAmount, ethAmount, searchStarted, tokensUploaded, assetId } = this.state
-    const options = this.getOptions({ networkId: n, assets })
+    const options = this.getOptions({ chainId, assets })
     return <LinkBlock title={this.t('titles.sendWithMetamask')}>
       <div className={styles.container}>
         <Select
@@ -109,19 +109,19 @@ class MetamaskInjectedScreen extends React.Component {
             this.setState({ currentAsset: value, assetAddress: '', assetAmount: 0 })
           }}
         />
-        {this.renderAddressInput({ networkId: n, account, loading: mmLoading, currentAsset })}
+        {this.renderAddressInput({ chainId, account, loading: mmLoading, currentAsset })}
         {this.renderBalances({ mmBalanceFormatted, assetAddress, symbol, mmAssetBalanceFormatted, loading: mmLoading, currentAsset })}
         {this.renderEthValueInput({ loading: mmLoading, value: ethAmount, currentAsset })}
         {this.renderTokenValueInput({ loading: mmLoading, currentAsset, symbol, value: assetAmount })}
         {this.renderTokenIdInput({ loading: mmLoading, currentAsset, symbol, value: assetId })}
-        {this.renderButton({ errors, loading: mmLoading, tokensUploaded, assetAmount, ethAmount, account, networkId: n, currentAsset, assetAddress, searchStarted, mmAssetBalanceFormatted, assetId })}
+        {this.renderButton({ errors, loading: mmLoading, tokensUploaded, assetAmount, ethAmount, account, chainId, currentAsset, assetAddress, searchStarted, mmAssetBalanceFormatted, assetId })}
       </div>
     </LinkBlock>
   }
 
-  getOptions ({ networkId: n, assets }) {
+  getOptions ({ chainId, assets }) {
     // if network is 4, then show only two options
-    if (Number(n) === 4) {
+    if (Number(chainId) === 4) {
       const ethWalletContract = ethers.constants.AddressZero
       return [
         { value: ethWalletContract, label: this.t('titles.eth') },
@@ -133,7 +133,7 @@ class MetamaskInjectedScreen extends React.Component {
     return assets.map(({ contract: { name, symbol, address } }) => ({ value: address, label: symbol }))
   }
 
-  renderButton ({ loading, errors, tokensUploaded, assetAmount, ethAmount, account, networkId, currentAsset, assetAddress, searchStarted, mmAssetBalanceFormatted, assetId }) {
+  renderButton ({ loading, errors, tokensUploaded, assetAmount, ethAmount, account, chainId, currentAsset, assetAddress, searchStarted, mmAssetBalanceFormatted, assetId }) {
     // now sending stuff to wallet
     if (searchStarted) {
       return <LoadingBar
@@ -154,7 +154,7 @@ class MetamaskInjectedScreen extends React.Component {
       className={styles.button}
       disabled={disabled}
       onClick={_ => {
-        this.actions().metamask.sendTokensFromMetamask({ currentAsset, networkId, assetAmount, ethAmount, account, tokenAddress: assetAddress, assetId })
+        this.actions().metamask.sendTokensFromMetamask({ currentAsset, chainId, assetAmount, ethAmount, account, tokenAddress: assetAddress, assetId })
       }}
     >
       {this.t('buttons.continue')}
@@ -178,8 +178,8 @@ class MetamaskInjectedScreen extends React.Component {
     }
   }
 
-  renderAddressInput ({ loading, networkId, account, currentAsset }) {
-    if (Number(networkId) === 4) {
+  renderAddressInput ({ loading, chainId, account, currentAsset }) {
+    if (Number(chainId) === 4) {
       // if network id is 4, then show input to add custom asset address
       const ethWalletContract = ethers.constants.AddressZero
       if (currentAsset != null && currentAsset !== ethWalletContract) {
@@ -198,14 +198,14 @@ class MetamaskInjectedScreen extends React.Component {
     }
   }
 
-  checkErc20Balance (networkId, account, value) {
+  checkErc20Balance (chainId, account, value) {
     if (value.length < 42) { return }
-    this.actions().metamask.getAssetBalance({ networkId, tokenAddress: value, account })
+    this.actions().metamask.getAssetBalance({ chainId, tokenAddress: value, account })
   }
 
-  checkErc721Presence (networkId, account, value) {
+  checkErc721Presence (chainId, account, value) {
     if (value.length < 42) { return }
-    this.actions().metamask.checkAssetPresence({ networkId, tokenAddress: value, account })
+    this.actions().metamask.checkAssetPresence({ chainId, tokenAddress: value, account })
   }
 
   renderTokenValueInput ({ currentAsset, symbol, value, loading }) {

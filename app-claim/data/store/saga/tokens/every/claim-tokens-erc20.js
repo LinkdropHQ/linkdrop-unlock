@@ -5,9 +5,10 @@ import { ethers } from 'ethers'
 
 const generator = function * ({ payload }) {
   try {
-    const { wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
+    const { wallet, tokenAddress, chainId, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const ethersContractZeroAddress = ethers.constants.AddressZero
+
     const { success, txHash, error: { reason = [] } = {} } = yield LinkdropSDK.claim({
       jsonRpcUrl,
       host: apiHost,
@@ -19,7 +20,9 @@ const generator = function * ({ payload }) {
       linkdropMasterAddress,
       linkdropSignerSignature,
       receiverAddress: wallet,
-      isApprove: false
+      isApprove: false,
+      chainId,
+      version: 1
     })
 
     if (success) {

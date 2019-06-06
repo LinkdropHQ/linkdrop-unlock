@@ -20,13 +20,13 @@ class LinkShare extends React.Component {
   componentDidMount () {
     const { standard, link } = this.props
     const {
-      n = '4'
+      chainId = '4'
     } = getHashVariables()
     if (link) { return }
     if (standard === 'erc20') {
-      this.actions().user.generateERC20Link({ networkId: n })
+      this.actions().user.generateERC20Link({ chainId })
     } else {
-      this.actions().user.generateERC721Link({ networkId: n })
+      this.actions().user.generateERC721Link({ chainId })
     }
   }
 

@@ -28,10 +28,10 @@ class Claim extends React.Component {
   componentDidMount () {
     const {
       linkKey,
-      n,
+      chainId,
       linkdropMasterAddress
     } = getHashVariables()
-    this.actions().tokens.checkIfClaimed({ linkKey, networkId: n, linkdropMasterAddress })
+    this.actions().tokens.checkIfClaimed({ linkKey, chainId, linkdropMasterAddress })
   }
 
   componentWillReceiveProps ({ readyToClaim, alreadyClaimed }) {
@@ -47,7 +47,7 @@ class Claim extends React.Component {
       weiAmount,
       tokenAmount,
       expirationTime,
-      n,
+      chainId,
       nftAddress,
       tokenId
     } = getHashVariables()
@@ -58,7 +58,7 @@ class Claim extends React.Component {
     // sender,
     // linkdropSignerSignature,
     // linkKey - private key for link,
-    // n - network id
+    // chainId - network id
 
     // params needed for claim
     // sender: sender key address, e.g. 0x1234...ff
@@ -75,9 +75,9 @@ class Claim extends React.Component {
     }
 
     if (nftAddress && tokenId) {
-      return this.actions().contract.getTokenERC721Data({ nftAddress, tokenId, networkId: n })
+      return this.actions().contract.getTokenERC721Data({ nftAddress, tokenId, chainId })
     }
-    this.actions().contract.getTokenERC20Data({ tokenAddress, weiAmount, tokenAmount, networkId: n })
+    this.actions().contract.getTokenERC20Data({ tokenAddress, weiAmount, tokenAmount, chainId })
   }
 
   render () {
@@ -101,7 +101,7 @@ class Claim extends React.Component {
       networkId
     } = context
     const {
-      n
+      chainId
     } = getHashVariables()
     const commonData = { decimals, amount, symbol, icon, wallet: account, loading: userLoading }
     if (this.platform === 'desktop' && !account) {
@@ -112,10 +112,10 @@ class Claim extends React.Component {
       </div>
     }
     if (
-      (this.platform === 'desktop' && networkId && Number(n) !== Number(networkId)) ||
-      (this.platform !== 'desktop' && account && networkId && Number(n) !== Number(networkId))) {
+      (this.platform === 'desktop' && networkId && Number(chainId) !== Number(networkId)) ||
+      (this.platform !== 'desktop' && account && networkId && Number(chainId) !== Number(networkId))) {
       // if network id in the link and in the web3 are different
-      return <ErrorPage error='NETWORK_NOT_SUPPORTED' network={capitalize({ string: defineNetworkName({ networkId: n }) })} />
+      return <ErrorPage error='NETWORK_NOT_SUPPORTED' network={capitalize({ string: defineNetworkName({ chainId }) })} />
     }
     if (errors && errors.length > 0) {
       // if some errors occured and can be found in redux store, then show error page

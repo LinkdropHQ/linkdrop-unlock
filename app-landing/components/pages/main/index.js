@@ -25,7 +25,7 @@ class Main extends React.Component {
   }
 
   componentDidMount () {
-    const { n = '4' } = getHashVariables()
+    const { chainId = '4' } = getHashVariables()
     const { wallet } = this.props
     // if has no wallet, then generate new one
     if (!wallet) {
@@ -34,14 +34,14 @@ class Main extends React.Component {
     // otherwise do the initial check
     this.setState({
       startCheckingBalanceImmediately: true
-    }, _ => this.actions().tokens.checkBalance({ account: wallet, networkId: n }))
+    }, _ => this.actions().tokens.checkBalance({ account: wallet, chainId }))
   }
 
   componentWillReceiveProps ({ wallet, step }) {
-    const { n = '4' } = getHashVariables()
+    const { chainId = '4' } = getHashVariables()
     const { wallet: prevWallet } = this.props
     if (step != null && step === 0 && wallet && wallet !== prevWallet) {
-      return this.actions().tokens.checkBalance({ account: wallet, networkId: n })
+      return this.actions().tokens.checkBalance({ account: wallet, chainId })
     }
   }
 
@@ -118,11 +118,11 @@ class Main extends React.Component {
 
   renderContent ({ step, errors, context }) {
     const { startCheckingBalanceImmediately } = this.state
-    const { n = '4' } = getHashVariables()
+    const { chainId = '4' } = getHashVariables()
     switch (step) {
       case 1:
         // if has metamask extension => show screen with funds
-        if (context.connectorName === 'MetaMask' && Number(n) === 4) {
+        if (context.connectorName === 'MetaMask' && Number(chainId) === 4) {
           return <MetamaskInjectedScreen
             account={context.account}
             onFinish={_ => {

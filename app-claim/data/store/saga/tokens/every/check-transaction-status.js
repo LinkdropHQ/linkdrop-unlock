@@ -4,8 +4,8 @@ import { defineNetworkName } from 'linkdrop-commons'
 
 const generator = function * ({ payload }) {
   try {
-    const { transactionId, networkId } = payload
-    const networkName = defineNetworkName({ networkId })
+    const { transactionId, chainId } = payload
+    const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const receipt = yield provider.getTransactionReceipt(transactionId)
     if (receipt && receipt.confirmations != null && receipt.confirmations > 0) {
