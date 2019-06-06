@@ -23,6 +23,7 @@ const generator = function * ({ payload }) {
         const symbol = yield tokenContract.symbol()
         yield put({ type: 'TOKENS.SET_SYMBOL', payload: { symbol } })
       } else {
+        console.log({ networkName, tokenAddress, tokenType, chainId })
         const tokenContract = yield new ethers.Contract(tokenAddress, TokenMock.abi, provider)
         const decimals = yield tokenContract.decimals()
         const symbol = yield tokenContract.symbol()

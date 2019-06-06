@@ -9,8 +9,8 @@ const provider = createMockProvider()
 
 describe('data/store/saga/metamask/every/get-eth-balance.js check balance of current account on metamask', () => {
   const account = '0xB8c77482e45F1F44dE1745F52C74426C631bDD52'
-  const networkId = '1'
-  const payload = { account, networkId }
+  const chainId = '1'
+  const payload = { account, chainId }
   const gen = getEthBalanceGenerator({ payload })
   const balance = { '_hex': '0x16345785d8a0000' }
   const balanceFormatted = '0.1'

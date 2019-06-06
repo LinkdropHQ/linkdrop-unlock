@@ -8,9 +8,9 @@ import { ethers } from 'ethers'
 const provider = createMockProvider()
 describe('data/store/saga/tokens/every/get-tokens-data.js ETH', () => {
   const tokenAddress = '0x0000000000000000000000000000000000000000'
-  const networkId = '1'
+  const chainId = '1'
   const isERC721 = false
-  const payload = { tokenAddress, isERC721, networkId }
+  const payload = { tokenAddress, isERC721, chainId }
   const gen = getTokensDataGenerator({ payload })
 
   it('enable loading', () => {

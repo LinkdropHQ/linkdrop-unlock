@@ -7,8 +7,8 @@ import { jsonRpcUrl, claimHost } from 'config'
 import configs from 'config-landing'
 
 describe('data/store/saga/user/every/generate-link-erc721.js ERC-721', () => {
-  const networkId = '1'
-  const payload = { networkId }
+  const chainId = '1'
+  const payload = { chainId }
   const gen = generateLinkERC721Generator({ payload })
   const balance = { '_hex': '0x16345785d8a0000' }
   const privateKey = '0x0fc0c96d5aba156b1263311812a7b3d0812f4120b8f3f4288c0b7806fc2aaa2a'
@@ -64,14 +64,15 @@ describe('data/store/saga/user/every/generate-link-erc721.js ERC-721', () => {
     ).to.deep.equal(
       LinkdropSDK.generateLinkERC721({
         jsonRpcUrl,
-        networkId,
+        chainId,
         host: claimHost,
         linkdropMasterPrivateKey: privateKey,
         weiAmount: 0,
         nftAddress: tokenAddress,
         tokenId,
         expirationTime: configs.expirationTime,
-        isApprove: false
+        isApprove: false,
+        version: 1
       })
     )
   })

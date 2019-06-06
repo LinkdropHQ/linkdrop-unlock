@@ -156,7 +156,7 @@ class TokensSend extends React.Component {
     return false
   }
 
-  checkTokenAdressManually ({ tokenAddress, tokenType, networkId, tokenId }) {
+  checkTokenAdressManually ({ tokenAddress, tokenType, chainId, tokenId }) {
     this.setState({
       manualStarted: true
     }, _ => {
@@ -164,7 +164,7 @@ class TokensSend extends React.Component {
       this.actions().tokens.getTokensData({
         tokenAddress,
         tokenType,
-        networkId
+        chainId
       })
     })
   }

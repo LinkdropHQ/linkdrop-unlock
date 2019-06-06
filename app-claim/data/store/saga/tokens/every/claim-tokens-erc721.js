@@ -24,7 +24,7 @@ const generator = function * ({ payload }) {
     if (success) {
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })
     } else {
-      console.log({ error })
+      console.error({ error })
     }
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
   } catch (e) {
