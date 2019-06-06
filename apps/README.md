@@ -5,6 +5,10 @@ Web apps to interact with linkdrop service for end-users:
 
 ## Getting Started
 
+### Update configs
+After deploying the mastercopy and factory you will get an actual config file in linkdrop-monorepo/config/scripts.config.json.
+Just copy masterCopy and factory from that config, and create new file - app.config.json (according to app.config.json.sample scheme) with needed values. Also you can check landing.json and claim.json for your needs.
+
 ### Installing packages
 Go to root folder of monorepo and run the yarn command:
 ```
