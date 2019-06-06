@@ -1,0 +1,97 @@
+@import "variables";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 66px;
+  position: absolute;
+}
+
+.main, .secondary {
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  padding: 164px 20px 0px;
+  position: absolute;
+}
+
+.secondary {
+  left: -400px;
+  padding-top: 0;
+  background: $whiteColor;
+}
+
+.title {
+  color: $greenColor;
+  margin-bottom: 64px;
+}
+
+.cross {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.alert {
+  margin-bottom: 20px;
+}
+
+.copyBlock {
+  margin-bottom: 20px;
+}
+
+.button {
+  font-family: 'Inter-Regular'!important;
+}
+
+.showQr {
+  .secondary {
+    animation: secondaryIn .5s forwards;
+  }
+
+  .main {
+    animation: mainOut .5s forwards;
+  }
+}
+
+@keyframes mainOut {
+  0% {
+    left: 0;
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+    display: none;
+    right: 400px;
+  }
+}
+
+@keyframes secondaryIn {
+  0% {
+    left: -400px;
+    opacity: 0;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    left: 0;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .button {
+    width: 100%;
+  }
+}

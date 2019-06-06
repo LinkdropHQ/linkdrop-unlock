@@ -1,0 +1,132 @@
+@import "variables";
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.headerContent {
+  width: 100%;
+  margin: 0 auto;
+  justify-content: space-between;
+  display: flex;
+  margin-bottom: 160px;
+}
+
+.rightBlock {
+  flex: 0 1 620px;
+  padding-top: 60px;
+}
+
+.listItem {
+  font-size: 24px;
+  margin-bottom: 20px;
+
+  svg {
+    margin-right: 10px;
+  }
+
+  &:last-child {
+    margin-bottom: 0px;
+  }
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modalTitle {
+  margin: 0 0 40px;
+  font-size: 24px;
+}
+
+.modalDescription {
+  font-size: 18px;
+  margin-bottom: 52px;
+  text-align: center;
+}
+
+.buttonOrange {
+  background: $orangeColor;
+  max-width: 260px;
+}
+
+.mainTitle {
+  font-size: 56px;
+  margin: 0 0 40px 0;
+}
+
+.mainDescription {
+  font-size: 24px;
+  margin-bottom: 50px;
+}
+
+.description {
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.formContent {
+  display: flex;
+  max-width: 530px;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.leftBlock {
+  flex: 1;
+}
+
+.formNote {
+  font-size: 18px;
+}
+
+.input {
+  width: 300px;
+}
+
+.button {
+  width: 210px;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .headerContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 60px;
+  }
+
+  .mainTitle {
+    font-size: 36px;
+    margin: 0 0 30px 0;
+    text-align: center;
+  }
+
+  .listItem {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .formContent {
+    flex-direction: column;
+  }
+
+  .input {
+    margin-bottom: 20px;
+    width: 100%;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .leftBlock {
+    width: 100%;
+  }
+}

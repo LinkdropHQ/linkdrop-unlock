@@ -1,0 +1,101 @@
+@import "variables";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 66px 20px 0px;
+  position: absolute;
+}
+
+.main, .secondary {
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  position: absolute;
+}
+
+.secondary {
+  left: -400px;
+  padding-top: 164px;
+  padding-top: 0;
+  background: $whiteColor;
+}
+
+.description {
+  font-size: 14px;
+  margin-bottom: 60px;
+}
+
+.button {
+  margin-bottom: 20px;
+}
+
+.copyBlock {
+  margin-bottom: 20px;
+}
+
+.listItem {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.main {
+  padding-top: 128px;
+}
+
+.title {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 10px;
+  font-family: 'Inter-Medium';
+}
+
+.showQr {
+  .secondary {
+    animation: secondaryIn .5s forwards;
+  }
+
+  .main {
+    animation: mainOut .5s forwards;
+  }
+}
+
+.testClaim {
+  opacity: 0;
+}
+
+@keyframes mainOut {
+  0% {
+    left: 0;
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+    display: none;
+    right: 400px;
+  }
+}
+
+@keyframes secondaryIn {
+  0% {
+    left: -400px;
+    opacity: 0;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    left: 0;
+  }
+}

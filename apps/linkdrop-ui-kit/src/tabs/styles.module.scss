@@ -1,0 +1,33 @@
+@import "variables";
+
+.container {
+  display: flex;
+  border-radius: 5px;
+  align-items: center;
+  overflow: hidden;
+  width: auto;
+  border: 1px solid $blackColor;
+  height: 50px;
+}
+
+.option {
+  display: flex;
+  height: 100%;
+  color: $blackColor;
+  background: $whiteColor;
+  border-right: 1px solid $blackColor;
+  cursor: pointer;
+  transition: all .3s;
+  flex: 1 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.option:last-child {
+  border-right: 1px solid transparent;
+}
+
+.active {
+  background: $blackColor;
+  color: $whiteColor;
+}

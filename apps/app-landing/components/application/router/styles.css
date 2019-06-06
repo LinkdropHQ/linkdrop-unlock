@@ -1,0 +1,38 @@
+@font-face {
+  font-family: 'Inter-Regular';
+  src: url('~assets/fonts/Inter-Regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('~assets/fonts/Inter-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Inter-Bold';
+  src: url('~assets/fonts/Inter-Bold.woff2') format('woff2'), /* Super Modern Browsers */
+       url('~assets/fonts/Inter-Bold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Inter-Medium';
+  src: url('~assets/fonts/Inter-Medium.woff2') format('woff2'), /* Super Modern Browsers */
+       url('~assets/fonts/Inter-Medium.woff') format('woff');
+}
+
+html, body {
+  font-family: 'Inter-Regular', Helvetica, Arial, sans-serif;
+  margin: 0px;
+  padding: 0px;
+  min-height: 100vh;
+}
+
+body {
+  padding-top: 50px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+input[type='text'],
+input[type='number'],
+textarea {
+  font-size: 16px;
+}

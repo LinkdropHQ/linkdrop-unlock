@@ -1,0 +1,10 @@
+{
+  "name": "linkdrop-commons",
+  "version": "1.0.0",
+  "description": "Linkdrop common helpers",
+  "main": "index.js",
+  "license": "MIT",
+  "babel": {
+    "extends": "../../babel.config.js"
+  }
+}
