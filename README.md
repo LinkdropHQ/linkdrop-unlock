@@ -14,8 +14,12 @@ This is a work in progress. Expect breaking changes. The code has not been audit
 - [config](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/dev/config) - configs used in other components (SDK, server, web apps)
 
 
-## Building, running & testing
-...
+## Building, running & testing locally 
+
+To build and run locally, first follow the instructions in `scripts` - https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/dev/scripts  
+After server is running, you can follow instructions in `apps` to serve front-end apps (demo and claiming apps) - https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/dev/apps
+
+## 
 
 ## License
 The current codebase is released under the [MIT License](https://opensource.org/licenses/MIT)
