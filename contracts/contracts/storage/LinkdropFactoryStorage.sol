@@ -6,7 +6,7 @@ contract LinkdropFactoryStorage {
     address payable public owner;
 
     // Current version of mastercopy contract
-    uint public version;
+    uint public masterCopyVersion;
 
     // Contract bytecode to be installed when deploying proxy
     bytes internal _bytecode;

@@ -64,7 +64,7 @@ describe('Proxy upgradability tests', () => {
       }
     )
     expect(factory.address).to.not.eq(ethers.constants.AddressZero)
-    let factoryVersion = await factory.version()
+    let factoryVersion = await factory.masterCopyVersion()
     expect(factoryVersion).to.eq(1)
 
     let factoryChainId = await factory.chainId()
@@ -191,7 +191,7 @@ describe('Proxy upgradability tests', () => {
       computedAddress.toString().toLowerCase()
     )
 
-    let factoryVersion = await factory.version()
+    let factoryVersion = await factory.masterCopyVersion()
     expect(factoryVersion).to.eq(2)
 
     proxy = new ethers.Contract(

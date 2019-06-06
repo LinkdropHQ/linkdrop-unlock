@@ -74,7 +74,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
       }
     )
     expect(factory.address).to.not.eq(ethers.constants.AddressZero)
-    let version = await factory.version()
+    let version = await factory.masterCopyVersion()
     expect(version).to.eq(1)
   })
 

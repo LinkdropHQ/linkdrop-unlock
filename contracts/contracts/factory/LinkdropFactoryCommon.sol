@@ -72,14 +72,14 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
 
         deployed[_linkdropMaster] = proxy;
 
-        // Initialize owner addressm linkdrop master address and contract version in proxy contract
+        // Initialize owner address, linkdrop master address and master copy version in proxy contract
         require
         (
             ILinkdropCommon(proxy).initialize
             (
                 address(this), // Owner address
                 _linkdropMaster, // Linkdrop master address
-                version,
+                masterCopyVersion,
                 chainId
             ),
             "Failed to initialize"
@@ -138,7 +138,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     {
         require(msg.sender == owner, "Only factory owner");
         require(_masterCopy != address(0), "Invalid master copy address");
-        version = version.add(1);
+        masterCopyVersion = masterCopyVersion.add(1);
 
         require
         (
@@ -146,7 +146,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
             (
                 address(0), // Owner address
                 address(0), // Linkdrop master address
-                version,
+                masterCopyVersion,
                 chainId
             ),
             "Failed to initialize"
@@ -161,7 +161,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
 
         _bytecode = bytecode;
 
-        emit SetMasterCopy(_masterCopy, version, now);
+        emit SetMasterCopy(_masterCopy, masterCopyVersion, now);
         return true;
     }
 
@@ -172,7 +172,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     function getProxyMasterCopyVersion(address _linkdropMaster) external view returns (uint) {
 
         if (!isDeployed(_linkdropMaster)) {
-            return version;
+            return masterCopyVersion;
         }
         else {
             address payable proxy = address(uint160(deployed[_linkdropMaster]));
