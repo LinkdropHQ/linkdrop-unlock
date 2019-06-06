@@ -72,8 +72,19 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
 
         deployed[_linkdropMaster] = proxy;
 
-        // Initialize linkdrop master and contract version in newly deployed proxy contract
-        require(ILinkdropCommon(proxy).initializer(_linkdropMaster, version, chainId), "Failed to initialize");
+        // Initialize owner address, linkdrop master address and master copy version in proxy contract
+        require
+        (
+            ILinkdropCommon(proxy).initialize
+            (
+                address(this), // Owner address
+                _linkdropMaster, // Linkdrop master address
+                masterCopyVersion,
+                chainId
+            ),
+            "Failed to initialize"
+        );
+
         emit Deployed(_linkdropMaster, proxy, salt, now);
         return proxy;
     }
@@ -118,15 +129,28 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     }
 
     /**
-    * @dev Function to set (update) contract bytecode to install. Can only be called by factory owner
+    * @dev Function to set new master copy and update contract bytecode to install. Can only be called by factory owner
     * @param _masterCopy Address of linkdrop mastercopy contract to calculate bytecode from
     * @return True if updated successfully
     */
-    function setBytecode(address _masterCopy)
+    function setMasterCopy(address payable _masterCopy)
     public returns (bool)
     {
         require(msg.sender == owner, "Only factory owner");
         require(_masterCopy != address(0), "Invalid master copy address");
+        masterCopyVersion = masterCopyVersion.add(1);
+
+        require
+        (
+            ILinkdropCommon(_masterCopy).initialize
+            (
+                address(0), // Owner address
+                address(0), // Linkdrop master address
+                masterCopyVersion,
+                chainId
+            ),
+            "Failed to initialize"
+        );
 
         bytes memory bytecode = abi.encodePacked
         (
@@ -136,8 +160,8 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
         );
 
         _bytecode = bytecode;
-        version = version.add(1);
-        emit SetBytecode(_masterCopy, version, now);
+
+        emit SetMasterCopy(_masterCopy, masterCopyVersion, now);
         return true;
     }
 
@@ -148,7 +172,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     function getProxyMasterCopyVersion(address _linkdropMaster) external view returns (uint) {
 
         if (!isDeployed(_linkdropMaster)) {
-            return version;
+            return masterCopyVersion;
         }
         else {
             address payable proxy = address(uint160(deployed[_linkdropMaster]));

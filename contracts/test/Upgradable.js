@@ -34,11 +34,24 @@ const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 const chainId = 4 // Rinkeby
 
 describe('Proxy upgradability tests', () => {
+  //
   it('should deploy initial master copy of linkdrop implementation', async () => {
     masterCopy = await deployContract(deployer, LinkdropMastercopy, [], {
       gasLimit: 6000000
     })
     expect(masterCopy.address).to.not.eq(ethers.constants.AddressZero)
+
+    let masterCopyOwner = await masterCopy.owner()
+    expect(masterCopyOwner).to.eq(ethers.constants.AddressZero)
+
+    let masterCopyLinkdropMaster = await masterCopy.linkdropMaster()
+    expect(masterCopyLinkdropMaster).to.eq(ethers.constants.AddressZero)
+
+    let masterCopyVersion = await masterCopy.version()
+    expect(masterCopyVersion).to.eq(0)
+
+    let masterCopyChainId = await masterCopy.chainId()
+    expect(masterCopyChainId).to.eq(0)
   })
 
   it('should deploy factory', async () => {
@@ -51,8 +64,23 @@ describe('Proxy upgradability tests', () => {
       }
     )
     expect(factory.address).to.not.eq(ethers.constants.AddressZero)
-    let version = await factory.version()
-    expect(version).to.eq(1)
+    let factoryVersion = await factory.masterCopyVersion()
+    expect(factoryVersion).to.eq(1)
+
+    let factoryChainId = await factory.chainId()
+    expect(factoryChainId).to.eq(chainId)
+
+    let masterCopyOwner = await masterCopy.owner()
+    expect(masterCopyOwner).to.eq(ethers.constants.AddressZero)
+
+    let masterCopyLinkdropMaster = await masterCopy.linkdropMaster()
+    expect(masterCopyLinkdropMaster).to.eq(ethers.constants.AddressZero)
+
+    let masterCopyVersion = await masterCopy.version()
+    expect(masterCopyVersion).to.eq(factoryVersion)
+
+    let masterCopyChainId = await masterCopy.chainId()
+    expect(masterCopyChainId).to.eq(factoryChainId)
   })
 
   it('should deploy proxy and delegate to implementation', async () => {
@@ -97,10 +125,10 @@ describe('Proxy upgradability tests', () => {
     expect(masterCopy.address).to.not.eq(oldMasterCopyAddress)
   })
 
-  it('should update bytecode in factory', async () => {
+  it('should set mastercopy and update bytecode in factory', async () => {
     bytecode = computeBytecode(masterCopy.address)
     factory = factory.connect(deployer)
-    await factory.setBytecode(masterCopy.address)
+    await factory.setMasterCopy(masterCopy.address)
     let deployedBytecode = await factory.getBytecode()
     expect(deployedBytecode.toString().toLowerCase()).to.eq(
       bytecode.toString().toLowerCase()
@@ -163,7 +191,7 @@ describe('Proxy upgradability tests', () => {
       computedAddress.toString().toLowerCase()
     )
 
-    let factoryVersion = await factory.version()
+    let factoryVersion = await factory.masterCopyVersion()
     expect(factoryVersion).to.eq(2)
 
     proxy = new ethers.Contract(

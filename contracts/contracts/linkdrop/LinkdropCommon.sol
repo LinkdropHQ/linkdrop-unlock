@@ -7,13 +7,15 @@ import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
 
     /**
-    * @dev Function called only once to set owner, linkdrop master and contract version
+    * @dev Function called only once to set owner, linkdrop master, contract version and chain id
+    * @param _owner Owner address
     * @param _linkdropMaster Address corresponding to master key
     * @param _version Contract version
     * @param _chainId Network id
     */
-    function initializer
+    function initialize
     (
+        address _owner,
         address payable _linkdropMaster,
         uint _version,
         uint _chainId
@@ -21,8 +23,8 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     public
     returns (bool)
     {
-        require(!_initialized, "Initialized");
-        owner = msg.sender;
+        require(!_initialized, "Already initialized");
+        owner = _owner;
         linkdropMaster = _linkdropMaster;
         isLinkdropSigner[linkdropMaster] = true;
         version = _version;
