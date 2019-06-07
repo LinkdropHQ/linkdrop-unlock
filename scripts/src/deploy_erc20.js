@@ -1,5 +1,5 @@
 import { terminal as term } from 'terminal-kit'
-import { getLinkdropMasterWallet, newError } from './utils'
+import { LINKDROP_MASTER_WALLET, newError } from './utils'
 import { ethers } from 'ethers'
 
 import fs from 'fs'
@@ -10,18 +10,14 @@ import TokenMock from '../../contracts/build/TokenMock'
 
 const config = configs.get('scripts')
 const configPath = configs.getPath('scripts')
-const configBase = configs.getBase('scripts')
 
 export const deploy = async () => {
-  let linkdropMaster, spinner, factory, tokenMock, txHash
-
-  // Get wallet
-  linkdropMaster = getLinkdropMasterWallet()
+  let spinner, factory, tokenMock, txHash
 
   // Deploy contract
   try {
     spinner = ora({
-      text: term.green.str('Deploying mock ERC20 token contract'),
+      text: term.bold.green.str('Deploying mock ERC20 token contract'),
       color: 'green'
     })
 
@@ -30,7 +26,7 @@ export const deploy = async () => {
     factory = new ethers.ContractFactory(
       TokenMock.abi,
       TokenMock.bytecode,
-      linkdropMaster
+      LINKDROP_MASTER_WALLET
     )
 
     tokenMock = await factory.deploy({
@@ -42,16 +38,18 @@ export const deploy = async () => {
     throw newError(err)
   }
 
-  spinner.succeed(term.str(`Mock token deployed at ^g${tokenMock.address}`))
+  spinner.succeed(
+    term.bold.str(`Deployed mock token at ^g${tokenMock.address}`)
+  )
 
   txHash = tokenMock.deployTransaction.hash
-  term(`Tx Hash: ^g${txHash}\n`)
+  term.bold(`Tx Hash: ^g${txHash}\n`)
 
   // Save changes
   config.tokenAddress = tokenMock.address
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw newError(err)
-    term(`Updated token address in to ^_${configBase}\n`)
+    term.bold(`Updated ^_${configPath}\n`)
   })
 
   return tokenMock.address
