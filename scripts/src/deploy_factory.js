@@ -78,7 +78,7 @@ export const deploy = async () => {
   })
 
   term(
-    `Factory address successfully added to ^_${scriptsConfigBase}^ and ^_${serverConfigBase}\n`
+    `Updated factory address in ^_${scriptsConfigBase}^ and ^_${serverConfigBase}\n`
   )
 
   return proxyFactory.address

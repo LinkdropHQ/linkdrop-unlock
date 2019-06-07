@@ -51,7 +51,7 @@ export const deploy = async () => {
   config.nftAddress = nftMock.address
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw newError(err)
-    term(`Token address successfully added to ^_${configBase}\n`)
+    term(`Updated NFT address in ^_${configBase}\n`)
   })
 
   return nftMock.address

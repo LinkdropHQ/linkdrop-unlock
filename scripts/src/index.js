@@ -1,5 +1,7 @@
 import LinkdropSDK from '../../sdk/src/index'
 import { terminal as term } from 'terminal-kit'
+
+import { newError, getChainId, getLinksNumber, getIsApprove } from './utils'
 const ethers = require('ethers')
 const fs = require('fs')
 const fastcsv = require('fast-csv')
@@ -8,11 +10,6 @@ const configPath = path.resolve(__dirname, '../../configs/scripts.config.json')
 const config = require(configPath)
 
 ethers.errors.setLogLevel('error')
-
-const newError = message => {
-  const error = new Error(term.red.bold.str(message))
-  return error
-}
 
 let {
   chainId,
@@ -29,23 +26,13 @@ let {
   version
 } = config
 
-const expirationTime = 1900000000000000
+const expirationTime = 12345678910 // 03/21/2361 @ 7:15pm (UTC)
 
 export const generateLinksETH = async () => {
-  if (chainId === null || chainId === '') {
-    throw newError('Please provide chain id')
-  }
-
-  if (linksNumber === null || linksNumber === '') {
-    throw newError('Please provide links number')
-  }
-
-  if (
-    isApprove === null ||
-    (String(isApprove) !== 'true' && String(isApprove) !== 'false')
-  ) {
-    throw newError('Please provide valid isApprove argument')
-  }
+  const chainId = getChainId()
+  const linksNumber = getLinksNumber()
+  const isApprove = getIsApprove()
+  const expirationTime = 12345678910 // 03/21/2361 @ 7:15pm (UTC)
 
   tokenAddress = ethers.constants.AddressZero
   tokenAmount = 0
@@ -76,14 +63,18 @@ export const generateLinksETH = async () => {
   }
 
   // Save links to csv
-  const filename = path.join(__dirname, '../output/linkdrop_eth.csv')
+  const dir = path.join(__dirname, '../output')
+  const filename = path.join(dir, 'linkdrop_eth.csv')
 
   try {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir)
+    }
     const ws = fs.createWriteStream(filename)
     fastcsv.write(links, { headers: true }).pipe(ws)
-    term(`File ^m${filename} has been succesfully updated`)
+    term(`Updated ^_${filename}`)
   } catch (err) {
-    console.error(err)
+    throw newError(err)
   }
 
   return links

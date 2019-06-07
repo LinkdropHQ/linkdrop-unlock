@@ -12,8 +12,27 @@ let {
   linkdropMasterPrivateKey,
   masterCopy,
   factory,
-  chainId
+  chainId,
+  linksNumber,
+  isApprove
 } = config
+
+export const getIsApprove = () => {
+  if (
+    isApprove === null ||
+    (String(isApprove) !== 'true' && String(isApprove) !== 'false')
+  ) {
+    throw newError('Please provide valid isApprove argument')
+  }
+  return isApprove
+}
+
+export const getLinksNumber = () => {
+  if (linksNumber === null || linksNumber === '') {
+    throw newError('Please provide links number')
+  }
+  return linksNumber
+}
 
 export const getLinkdropMasterWallet = () => {
   if (jsonRpcUrl == null || jsonRpcUrl === '') {
@@ -28,6 +47,14 @@ export const getLinkdropMasterWallet = () => {
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
   const linkdropMaster = new ethers.Wallet(linkdropMasterPrivateKey, provider)
   return linkdropMaster
+}
+
+export const getProvider = () => {
+  if (jsonRpcUrl == null || jsonRpcUrl === '') {
+    throw newError('Please provide JSON RPC url')
+  }
+  const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
+  return provider
 }
 
 export const getMasterCopyAddress = () => {

@@ -51,7 +51,7 @@ export const deploy = async () => {
   config.tokenAddress = tokenMock.address
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw newError(err)
-    term(`Token address successfully added to ^_${configBase}\n`)
+    term(`Updated token address in to ^_${configBase}\n`)
   })
 
   return tokenMock.address

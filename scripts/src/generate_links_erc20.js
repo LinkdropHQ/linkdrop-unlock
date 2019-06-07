@@ -1,6 +1,6 @@
 import { generateLinksERC20 } from './index'
 import TokenMock from '../../contracts/build/TokenMock'
-import { getFactoryAddress, getInitcode } from './utils'
+import { getFactoryAddress, getInitcode, newError } from './utils'
 import LinkdropSDK from '../../sdk/src/index'
 const ethers = require('ethers')
 const path = require('path')
@@ -21,10 +21,10 @@ if (
   isApprove === null ||
   (String(isApprove) !== 'true' && String(isApprove) !== 'false')
 ) {
-  throw new Error('Please provide valid isApprove argument')
+  throw newError('Please provide valid isApprove argument')
 }
 
-(async () => {
+;(async () => {
   console.log('Generating links...\n')
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
