@@ -6,7 +6,7 @@ This repository is a monorepo including the sdk, server, smart contracts and web
 This is a work in progress. Expect breaking changes. The code has not been audited and therefore can not be considered secure.
 
 ## Structure
-- [Contracts](https://github.com/LinkdropProtocol/tree/master/linkdrop-monorepo/contracts) - linkdrop contracts
+- [Contracts](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/contracts) - linkdrop contracts
 - [Server](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/server) - node.js server application that relays claiming transactions so that end-users don't need to have ether to claim linkdrops
 - [SDK](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/sdk) - a JS library to generate and claim links (used in web apps)
 - [Web apps](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/apps) - web apps to interact with linkdrop service for end-users.  
