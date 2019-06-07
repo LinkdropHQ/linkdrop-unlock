@@ -3,10 +3,10 @@ This directory has config files used in the apps in the monorepo.
 
 ## Updating configs
 ### Scripts
-To run [scripts](https://github.com/LinkdropProtocol/linkdrop-monorepo/scripts) copy the `scripts.config.json.sample` into `scripts.config.json` and fill in the `linkdropSignerPrivateKey`. You can also adjust other configs to your needs. 
+To run [scripts](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/scripts) copy the `scripts.config.json.sample` into `scripts.config.json` and fill in the `linkdropSignerPrivateKey`. You can also adjust other configs to your needs. 
 
 ### Server
-To run [server](https://github.com/LinkdropProtocol/linkdrop-monorepo/server) copy the `server.config.json.sample` into `server.config.json` and fill in the missing params. You can also adjust other configs to your needs. 
+To run [server](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/server) copy the `server.config.json.sample` into `server.config.json` and fill in the missing params. You can also adjust other configs to your needs. 
 
 
 ### Web apps
