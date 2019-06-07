@@ -1,0 +1,13 @@
+.container {
+  width: 100%;
+  display: flex;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.title {
+  flex: 1 0 auto;
+  text-align: left;
+  font-size: 20px;
+  margin-right: 10px;
+}

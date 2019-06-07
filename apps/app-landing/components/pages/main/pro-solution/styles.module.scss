@@ -1,0 +1,35 @@
+.container {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.list {
+  max-width: 226px;
+  margin-bottom: 52px;
+}
+
+.description {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.listItem {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.close {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 600px) {
+  .button {
+    width: 100%;
+    max-width: 100%;
+  }
+}

@@ -1,20 +1,19 @@
 {
   "name": "linkdrop-monorepo",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "main": "index.js",
-  "repository": "https://github.com/LinkdropProtocol/one-to-one-linkdrop.git",
+  "repository": "https://github.com/LinkdropProtocol/linkdrop-monorepo.git",
   "license": "MIT",
   "workspaces": [
-    "app-send",
-    "app-landing",
-    "app-claim",
+    "apps/app-landing",
+    "apps/app-claim",
     "contracts",
-    "linkdrop-ui-kit",
+    "apps/linkdrop-ui-kit",
     "scripts",
     "server",
     "sdk",
-    "linkdrop-commons"
+    "apps/linkdrop-commons"
   ],
   "scripts": {
     "test": "mocha --require @babel/polyfill --require @babel/register",
@@ -31,7 +30,9 @@
     "claim-erc721": "npx babel-node scripts/src/claim_erc721.js",
     "server": "npx babel-node server/server.js",
     "setup-linkdrop": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links",
-    "setup-linkdrop-erc721": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links-erc721"
+    "setup-linkdrop-erc721": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links-erc721",
+    "test:landing": "NODE_ENV=test-landing NODE_PATH=./apps/app-landing mocha apps/app-landing/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",
+    "test:claim": "NODE_ENV=test-claim NODE_PATH=./apps/app-claim mocha apps/app-claim/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive"
   },
   "standard": {
     "parser": "babel-eslint"

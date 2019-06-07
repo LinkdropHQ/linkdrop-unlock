@@ -1,6 +1,4 @@
-const _withoutProtocol = (url) => {
-  return url.replace(/(^\w+:|^)\/\//, '')
-}
+const _withoutProtocol = (url) => url.replace(/(^\w+:|^)\/\//, '')
 
 export default {
   trust: {
@@ -11,11 +9,11 @@ export default {
     mobile: {
       android: {
         support: true,
-        deepLink: (url) => `https://links.trustwalletapp.com/a/key_live_lfvIpVeI9TFWxPCqwU8rZnogFqhnzs4D?&event=openURL&url=${encodeURIComponent(url)}`
+        deepLink: (url) => `https://link.trustwallet.com/open_url?coin_id=60&url=${encodeURIComponent(url)}`
       },
       ios: {
         support: true,
-        deepLink: (url) => `https://links.trustwalletapp.com/a/key_live_lfvIpVeI9TFWxPCqwU8rZnogFqhnzs4D?&event=openURL&url=${encodeURIComponent(url)}`
+        deepLink: (url) => `https://link.trustwallet.com/open_url?coin_id=60&url=${encodeURIComponent(url)}`
       }
     }
   },
@@ -70,7 +68,7 @@ export default {
   tokenpocket: {
     id: 'token_pocket',
     name: 'Token Pocket',
-    walletURL: 'https://tokenpocket.jp/index_en.html',
+    walletURL: 'https://tokenpocket.jp/en/',
     dappStoreUrl: null,
     mobile: {
       android: {
@@ -90,35 +88,37 @@ export default {
     dappStoreUrl: null,
     mobile: {
       android: {
-        support: true,
+        support: false,
         deepLink: (url) => null
       },
       ios: {
-        support: true,
+        support: false,
         deepLink: (url) => null
       }
     }
   },
-  'imtoken': {
+  imtoken: {
     id: 'imtoken',
-    name: 'imToken Wallet',
-    walletURL: '',
-    dappStoreUrl: null,
+    name: 'imToken',
+    walletURL: 'https://token.im/',
+    dappStoreUrl: 'https://dapps.trustwalletapp.com/',
     mobile: {
       android: {
         support: true,
-        deepLink: (url) => null
+        deepLink: url =>
+          `imtokenv2://navigate/DappView?url=${encodeURIComponent(url)}`
       },
       ios: {
         support: true,
-        deepLink: (url) => null
+        deepLink: url =>
+          `imtokenv2://navigate/DappView?url=${encodeURIComponent(url)}`
       }
     }
   },
   'gowallet': {
     id: 'gowallet',
     name: 'GoWallet',
-    walletURL: '',
+    walletURL: null,
     dappStoreUrl: null,
     mobile: {
       android: {
@@ -134,7 +134,7 @@ export default {
   'buntoy': {
     id: 'buntoy',
     name: 'Buntoy',
-    walletURL: '',
+    walletURL: 'https://www.buntoy.com/buntoy.html',
     dappStoreUrl: null,
     mobile: {
       android: {

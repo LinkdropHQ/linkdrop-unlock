@@ -1,0 +1,27 @@
+@import "variables";
+
+.container {
+  border-radius: 5px;
+  height: 50px;
+  line-height: 50px;
+  outline: none;
+  border: 1px solid $blackColor;
+  font-size: 22px;
+  color: $blackColor;
+  outline: none;
+  padding: 0 10px;
+}
+
+.centered {
+  text-align: center;
+}
+
+.disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.container::placeholder {
+  color: $blackColor;
+  opacity: 1;
+}

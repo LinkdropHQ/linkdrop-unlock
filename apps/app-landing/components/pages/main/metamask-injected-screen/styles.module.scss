@@ -1,0 +1,36 @@
+@import "variables";
+
+.container {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+
+.select {
+  margin-bottom: 20px;
+}
+
+.input {
+  width: 100%;
+}
+
+.inputContainer {
+  width: 100%;
+}
+
+.balances {
+  padding: 14px 20px;
+  border-radius: 5px;
+  border: 1px solid $greyColor;
+  width: 100%;
+  position: relative;
+  margin-bottom: 20px;
+  min-height: 50px;
+  background-color: rgba(178, 178, 178, 0.1);
+}
+
+.button {
+  max-width: 100%;
+}

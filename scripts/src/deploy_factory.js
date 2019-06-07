@@ -1,7 +1,9 @@
 import { deployFactory } from './index'
-import { getMasterCopyAddress } from './utils'
+
+import { getMasterCopyAddress, getChainId } from './utils'
   ;(async () => {
   console.log('Deploying factory...')
-  let masterCopyAddress = getMasterCopyAddress()
-  await deployFactory(masterCopyAddress)
+  const masterCopyAddress = getMasterCopyAddress()
+  const chainId = getChainId()
+  await deployFactory(masterCopyAddress, chainId)
 })()

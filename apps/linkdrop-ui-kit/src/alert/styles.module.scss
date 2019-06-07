@@ -1,0 +1,22 @@
+@import "variables";
+
+.container {
+  width: 80px;
+  height: 80px;
+  border-radius: 80px;
+  border: 1px solid $blackColor;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  justify-content: center;
+
+  & > * {
+    max-height: 100%;
+  }
+}
+
+
+.noBorder {
+  border: none;
+  padding: 0;
+}

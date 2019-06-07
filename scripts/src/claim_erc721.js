@@ -20,25 +20,33 @@ const getUrlParams = async i => {
 
 const claimERC721 = async () => {
   const {
-    nft,
+    weiAmount,
+    nftAddress,
     tokenId,
     expirationTime,
+    version,
+    chainId,
     linkKey,
-    senderAddress,
-    senderSignature
+    linkdropMasterAddress,
+    linkdropSignerSignature,
+    isApprove
   } = await getUrlParams(0)
 
-  await LinkdropSDK.claimERC721(
+  await LinkdropSDK.claimERC721({
     jsonRpcUrl,
     host,
-    nft,
+    weiAmount,
+    nftAddress,
     tokenId,
     expirationTime,
+    version,
+    chainId,
     linkKey,
-    senderAddress,
-    senderSignature,
-    receiverAddress
-  )
+    linkdropMasterAddress,
+    linkdropSignerSignature,
+    receiverAddress,
+    isApprove
+  })
 }
 
 claimERC721()

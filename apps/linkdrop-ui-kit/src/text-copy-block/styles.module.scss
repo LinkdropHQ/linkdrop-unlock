@@ -1,0 +1,73 @@
+@import "variables";
+
+.container {
+  border-radius: 5px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  outline: none;
+  border: 1px solid $blackColor;
+  font-size: 22px;
+  color: $blackColor;
+  outline: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 8px 10px;
+}
+
+.content {
+  flex: 1 0;
+  padding-right: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.copyContent {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  background: $blackColor;
+  padding: 0px 10px;
+  color: $whiteColor;
+  border-radius: 5px;
+  font-size: 16px;
+  z-index: 2;
+}
+
+.copyOverlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  animation: appear 1.5s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+@keyframes appear {
+  0% {
+    background: transparent;
+    color: transparent;
+  }
+
+  40% {
+    color: $whiteColor;
+    background: $greenColor;
+  }
+
+  100% {
+    color: transparent;
+    background: transparent;
+  }
+}

@@ -19,25 +19,33 @@ const getUrlParams = async i => {
 
 const claimERC20 = async () => {
   const {
-    token,
-    amount,
+    weiAmount,
+    tokenAddress,
+    tokenAmount,
     expirationTime,
+    version,
+    chainId,
     linkKey,
-    senderAddress,
-    senderSignature
+    linkdropMasterAddress,
+    linkdropSignerSignature,
+    isApprove
   } = await getUrlParams(0)
 
-  await LinkdropSDK.claim(
+  await LinkdropSDK.claim({
     jsonRpcUrl,
     host,
-    token,
-    amount,
+    weiAmount,
+    tokenAddress,
+    tokenAmount,
     expirationTime,
+    version,
+    chainId,
     linkKey,
-    senderAddress,
-    senderSignature,
-    receiverAddress
-  )
+    linkdropMasterAddress,
+    linkdropSignerSignature,
+    receiverAddress,
+    isApprove
+  })
 }
 
 claimERC20()
