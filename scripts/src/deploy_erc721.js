@@ -1,5 +1,5 @@
 import { terminal as term } from 'terminal-kit'
-import { getLinkdropMasterWallet, newError } from './utils'
+import { LINKDROP_MASTER_WALLET, newError } from './utils'
 import { ethers } from 'ethers'
 import fs from 'fs'
 import ora from 'ora'
@@ -10,27 +10,23 @@ ethers.errors.setLogLevel('error')
 
 const config = configs.get('scripts')
 const configPath = configs.getPath('scripts')
-const configBase = configs.getBase('scripts')
 
 export const deploy = async () => {
-  let linkdropMaster, spinner, factory, nftMock, txHash
+  let spinner, factory, nftMock, txHash
 
-  // Get wallet
-  linkdropMaster = getLinkdropMasterWallet()
-
-  // Deploy contract
   try {
     spinner = ora({
-      text: term.green.str('Deploying mock ERC721 token contract'),
+      text: term.bold.green.str('Deploying mock ERC721 token contract'),
       color: 'green'
     })
 
     spinner.start()
 
+    // Deploy contract
     factory = new ethers.ContractFactory(
       NFTMock.abi,
       NFTMock.bytecode,
-      linkdropMaster
+      LINKDROP_MASTER_WALLET()
     )
 
     nftMock = await factory.deploy({
@@ -39,19 +35,20 @@ export const deploy = async () => {
 
     await nftMock.deployed()
   } catch (err) {
+    spinner.fail(term.bold.red.str('Failed to deploy contract'))
     throw newError(err)
   }
 
-  spinner.succeed(term.str(`Mock NFT deployed at ^g${nftMock.address}`))
+  spinner.succeed(term.bold.str(`Deployed mock NFT at ^g${nftMock.address}`))
 
   txHash = nftMock.deployTransaction.hash
-  term(`Tx Hash: ^g${txHash}\n`)
+  term.bold(`Tx Hash: ^g${txHash}\n`)
 
   // Save changes
   config.nftAddress = nftMock.address
   fs.writeFile(configPath, JSON.stringify(config), err => {
     if (err) throw newError(err)
-    term(`Updated NFT address in ^_${configBase}\n`)
+    term.bold(`Updated ^_${configPath}\n`)
   })
 
   return nftMock.address

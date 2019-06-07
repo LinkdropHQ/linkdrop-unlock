@@ -1,8 +1,8 @@
 import { terminal as term } from 'terminal-kit'
 import {
-  getMasterCopyAddress,
-  getLinkdropMasterWallet,
-  getChainId,
+  LINKDROP_MASTER_COPY_ADDRESS,
+  LINKDROP_MASTER_WALLET,
+  CHAIN_ID,
   newError
 } from './utils'
 import { ethers } from 'ethers'
@@ -16,55 +16,48 @@ ethers.errors.setLogLevel('error')
 
 const scriptsConfig = configs.get('scripts')
 const scriptsConfigPath = configs.getPath('scripts')
-const scriptsConfigBase = configs.getBase('scripts')
 
 const serverConfig = configs.get('server')
 const serverConfigPath = configs.getPath('server')
-const serverConfigBase = configs.getBase('server')
 
 export const deploy = async () => {
-  let linkdropMaster,
-    spinner,
-    factory,
-    chainId,
-    proxyFactory,
-    masterCopyAddress,
-    txHash
-
-  linkdropMaster = getLinkdropMasterWallet()
-  masterCopyAddress = getMasterCopyAddress()
-  chainId = getChainId()
-
-  // Deploy contract
+  let spinner, factory, proxyFactory, txHash
 
   spinner = ora({
-    text: term.green.str('Deploying linkdrop proxy factory contract'),
+    text: term.bold.green.str('Deploying linkdrop proxy factory contract'),
     color: 'green'
   })
 
   spinner.start()
+
+  // Deploy contract
   try {
     factory = new ethers.ContractFactory(
       LinkdropFactory.abi,
       LinkdropFactory.bytecode,
-      linkdropMaster
+      LINKDROP_MASTER_WALLET()
     )
 
-    proxyFactory = await factory.deploy(masterCopyAddress, chainId, {
-      gasLimit: 6000000
-    })
+    proxyFactory = await factory.deploy(
+      LINKDROP_MASTER_COPY_ADDRESS(),
+      CHAIN_ID(),
+      {
+        gasLimit: 6000000
+      }
+    )
 
     await proxyFactory.deployed()
   } catch (err) {
-    throw newError('Failed to deploy contract')
+    spinner.fail(term.bold.red.str('Failed to deploy contract'))
+    throw newError(err)
   }
 
   spinner.succeed(
-    term.str(`Proxy factory deployed at ^g${proxyFactory.address}`)
+    term.bold.str(`Deployed proxy factory at ^g${proxyFactory.address}`)
   )
 
   txHash = proxyFactory.deployTransaction.hash
-  term(`Tx Hash: ^g${txHash}\n`)
+  term.bold(`Tx Hash: ^g${txHash}\n`)
 
   // Save changes
   scriptsConfig.factory = proxyFactory.address
@@ -73,13 +66,12 @@ export const deploy = async () => {
   fs.writeFile(scriptsConfigPath, JSON.stringify(scriptsConfig), err => {
     if (err) throw newError(err)
   })
+  term.bold(`Updated ^_${scriptsConfigPath}\n`)
+
   fs.writeFile(serverConfigPath, JSON.stringify(serverConfig), err => {
     if (err) throw newError(err)
   })
-
-  term(
-    `Updated factory address in ^_${scriptsConfigBase}^ and ^_${serverConfigBase}\n`
-  )
+  term.bold(`Updated ^_${serverConfigPath}\n`)
 
   return proxyFactory.address
 }

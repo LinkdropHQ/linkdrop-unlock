@@ -14,7 +14,6 @@ const configPath = configs.getPath('scripts')
 export const deploy = async () => {
   let spinner, factory, tokenMock, txHash
 
-  // Deploy contract
   try {
     spinner = ora({
       text: term.bold.green.str('Deploying mock ERC20 token contract'),
@@ -23,10 +22,11 @@ export const deploy = async () => {
 
     spinner.start()
 
+    // Deploy contract
     factory = new ethers.ContractFactory(
       TokenMock.abi,
       TokenMock.bytecode,
-      LINKDROP_MASTER_WALLET
+      LINKDROP_MASTER_WALLET()
     )
 
     tokenMock = await factory.deploy({
@@ -35,6 +35,7 @@ export const deploy = async () => {
 
     await tokenMock.deployed()
   } catch (err) {
+    spinner.fail(term.bold.red.str('Failed to deploy contract'))
     throw newError(err)
   }
 

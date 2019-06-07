@@ -31,111 +31,96 @@ import fastcsv from 'fast-csv'
 import fs from 'fs'
 
 export const generate = async () => {
-  let spinner
+  let spinner, tx
   try {
     spinner = ora({
-      text: term.green.str('Generating links'),
+      text: term.bold.green.str('Generating links'),
       color: 'green'
-    }).start()
-    const { tx, spinner: topUpSpinner } = await topUp()
-    if (tx && topUpSpinner) {
-      topUpSpinner.succeed('Yeah')
-      spinner.succeed(`${tx.hash}`)
+    })
+    spinner.start()
+
+    const proxyAddress = LinkdropSDK.computeProxyAddress(
+      LINKDROP_FACTORY_ADDRESS(),
+      LINKDROP_MASTER_WALLET().address,
+      INIT_CODE()
+    )
+
+    // Send eth to proxy
+    let cost = WEI_AMOUNT() * LINKS_NUMBER()
+    let amountToSend
+
+    const tokenSymbol = 'ETH'
+    const tokenDecimals = 18
+    const proxyBalance = await PROVIDER().getBalance(proxyAddress)
+
+    // Transfer funds
+    if (proxyBalance < cost) {
+      amountToSend = cost - proxyBalance
+
+      spinner.info(
+        term.bold.str(
+          `Sending ${amountToSend /
+            Math.pow(10, tokenDecimals)} ${tokenSymbol} to ${proxyAddress}`
+        )
+      )
+
+      tx = await LINKDROP_MASTER_WALLET().sendTransaction({
+        to: proxyAddress,
+        value: amountToSend
+      })
+
+      term.bold(`Tx Hash: ^g${tx.hash}\n`)
     }
-    let { links, message } = await generateLinksETH()
-    if (links) {
-      spinner.succeed(message)
+    // Generate links
+    const tokenAddress = ethers.constants.AddressZero
+    const tokenAmount = 0
+
+    let links = []
+
+    for (let i = 0; i < LINKS_NUMBER(); i++) {
+      let {
+        url,
+        linkId,
+        linkKey,
+        linkdropSignerSignature
+      } = await LinkdropSDK.generateLink({
+        jsonRpcUrl: JSON_RPC_URL(),
+        chainId: CHAIN_ID(),
+        host: HOST(),
+        linkdropMasterPrivateKey: LINKDROP_MASTER_PRIVATE_KEY(),
+        weiAmount: WEI_AMOUNT(),
+        tokenAddress,
+        tokenAmount,
+        expirationTime: EXPIRATION_TIME(),
+        version: LINKDROP_MASTER_COPY_VERSION(),
+        isApprove: IS_APPROVE()
+      })
+
+      let link = { i, linkId, linkKey, linkdropSignerSignature, url }
+      links.push(link)
     }
+
+    // Save links to csv
+    const dir = path.join(__dirname, '../output')
+    const filename = path.join(dir, 'linkdrop_eth.csv')
+
+    try {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir)
+      }
+      const ws = fs.createWriteStream(filename)
+      fastcsv.write(links, { headers: true }).pipe(ws)
+    } catch (err) {
+      throw newError(err)
+    }
+
+    spinner.succeed(term.bold.str(`Saved  links to ^_${filename}`))
+
     return links
   } catch (err) {
-    spinner.fail(term.red.str('Failed to generate links'))
+    spinner.fail(term.bold.red.str('Failed to generate links'))
     throw newError(err)
   }
-}
-
-export const generateLinksETH = async () => {
-  let message
-
-  const tokenAddress = ethers.constants.AddressZero
-  const tokenAmount = 0
-
-  let links = []
-
-  for (let i = 0; i < LINKS_NUMBER; i++) {
-    let {
-      url,
-      linkId,
-      linkKey,
-      linkdropSignerSignature
-    } = await LinkdropSDK.generateLink({
-      jsonRpcUrl: JSON_RPC_URL,
-      chainId: CHAIN_ID,
-      host: HOST,
-      linkdropMasterPrivateKey: LINKDROP_MASTER_PRIVATE_KEY,
-      weiAmount: WEI_AMOUNT,
-      tokenAddress,
-      tokenAmount,
-      expirationTime: EXPIRATION_TIME,
-      version: LINKDROP_MASTER_COPY_VERSION,
-      isApprove: IS_APPROVE
-    })
-
-    let link = { i, linkId, linkKey, linkdropSignerSignature, url }
-    links.push(link)
-  }
-
-  // Save links to csv
-  const dir = path.join(__dirname, '../output')
-  const filename = path.join(dir, 'linkdrop_eth.csv')
-
-  try {
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir)
-    }
-    const ws = fs.createWriteStream(filename)
-    fastcsv.write(links, { headers: true }).pipe(ws)
-
-    message = term.bold.str(`Updated ^_${filename}`)
-  } catch (err) {
-    throw newError(err)
-  }
-  return { links, message }
-}
-
-export const topUp = async () => {
-  let tx, spinner
-
-  const proxyAddress = LinkdropSDK.computeProxyAddress(
-    LINKDROP_FACTORY_ADDRESS,
-    LINKDROP_MASTER_WALLET.address,
-    INIT_CODE
-  )
-
-  // Send eth to proxy
-  let cost = WEI_AMOUNT * LINKS_NUMBER
-  let amountToSend
-
-  const tokenSymbol = 'ETH'
-  const tokenDecimals = 18
-  const proxyBalance = await PROVIDER.getBalance(proxyAddress)
-
-  if (proxyBalance < cost) {
-    amountToSend = cost - proxyBalance
-
-    spinner = ora({
-      text: term.green.str(
-        `Sending ${amountToSend /
-          Math.pow(10, tokenDecimals)} ${tokenSymbol} to ${proxyAddress} `
-      ),
-      color: 'green'
-    }).start()
-
-    tx = await LINKDROP_MASTER_WALLET.sendTransaction({
-      to: proxyAddress,
-      value: amountToSend
-    })
-  }
-  return { tx, spinner }
 }
 
 generate()

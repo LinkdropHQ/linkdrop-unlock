@@ -7,11 +7,7 @@ export const get = name => {
 }
 
 export const getPath = name => {
-  return path.resolve(__dirname, getBase(name))
+  return path.resolve(__dirname, `${name}.config.json`)
 }
 
-export const getBase = name => {
-  return `${name}.config.json`
-}
-
-export default { get, getPath, getBase }
+export default { get, getPath }
