@@ -1,15 +1,17 @@
+import NFTMock from '../../contracts/build/NFTMock'
 import { terminal as term } from 'terminal-kit'
-import { LINKDROP_MASTER_WALLET, newError } from './utils'
+import { newError, getLinkdropMasterWallet } from './utils'
 import { ethers } from 'ethers'
 import fs from 'fs'
 import ora from 'ora'
 import configs from '../../configs'
-import NFTMock from '../../contracts/build/NFTMock'
 
 ethers.errors.setLogLevel('error')
 
 const config = configs.get('scripts')
 const configPath = configs.getPath('scripts')
+
+const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 
 export const deploy = async () => {
   let spinner, factory, nftMock, txHash
@@ -26,7 +28,7 @@ export const deploy = async () => {
     factory = new ethers.ContractFactory(
       NFTMock.abi,
       NFTMock.bytecode,
-      LINKDROP_MASTER_WALLET()
+      LINKDROP_MASTER_WALLET
     )
 
     nftMock = await factory.deploy({

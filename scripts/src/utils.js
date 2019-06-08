@@ -25,7 +25,7 @@ let {
   isApprove
 } = config
 
-export const IS_APPROVE = () => {
+export const getIsApprove = () => {
   if (
     isApprove === null ||
     (String(isApprove) !== 'true' && String(isApprove) !== 'false')
@@ -35,14 +35,14 @@ export const IS_APPROVE = () => {
   return isApprove
 }
 
-export const LINKS_NUMBER = () => {
+export const getLinksNumber = () => {
   if (linksNumber === null || linksNumber === '') {
     throw newError('Please provide links number')
   }
   return linksNumber
 }
 
-export const LINKDROP_MASTER_WALLET = () => {
+export const getLinkdropMasterWallet = () => {
   if (jsonRpcUrl == null || jsonRpcUrl === '') {
     throw newError('Please provide JSON RPC url')
   }
@@ -53,11 +53,14 @@ export const LINKDROP_MASTER_WALLET = () => {
   }
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-  const linkdropMaster = new ethers.Wallet(linkdropMasterPrivateKey, provider)
-  return linkdropMaster
+  const linkdropMasterWallet = new ethers.Wallet(
+    linkdropMasterPrivateKey,
+    provider
+  )
+  return linkdropMasterWallet
 }
 
-export const PROVIDER = () => {
+export const getProvider = () => {
   if (jsonRpcUrl == null || jsonRpcUrl === '') {
     throw newError('Please provide JSON RPC url')
   }
@@ -65,96 +68,93 @@ export const PROVIDER = () => {
   return provider
 }
 
-export const LINKDROP_MASTER_COPY_ADDRESS = () => {
+export const getMasterCopyAddress = () => {
   if (masterCopy == null || masterCopy === '') {
     throw newError('Please provide linkdrop master copy address')
   }
   return masterCopy
 }
 
-export const LINKDROP_FACTORY_ADDRESS = () => {
+export const getFactoryAddress = () => {
   if (factory == null || factory === '') {
     throw newError('Please provide factory contract address')
   }
   return factory
 }
 
-export const CHAIN_ID = () => {
+export const getChainId = () => {
   if (chainId == null || chainId === '') {
     throw newError('Please provide chain id')
   }
   return chainId
 }
 
-export const INIT_CODE = () => {
+export const getInitCode = () => {
   return '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 }
 
-export const JSON_RPC_URL = () => {
+export const getJsonRpcUrl = () => {
   return jsonRpcUrl
 }
 
-export const LINKDROP_MASTER_COPY_VERSION = () => {
+export const getMasterCopyVersion = () => {
   return version
 }
 
-export const RECEIVER_ADDRESS = () => {
+export const getReceiverAddress = () => {
   return receiverAddress
 }
 
-export const WEI_AMOUNT = () => {
+export const getWeiAmount = () => {
   return weiAmount
 }
 
-export const TOKEN_ADDRESS = () => {
+export const getTokenAddress = () => {
   return tokenAddress
 }
 
-export const NFT_ADDRESS = () => {
+export const getNftAddress = () => {
   return nftAddress
 }
 
-export const HOST = () => {
+export const getHost = () => {
   return host
 }
 
-export const LINKDROP_MASTER_PRIVATE_KEY = () => {
+export const getLinkdropMasterPrivateKey = () => {
   return linkdropMasterPrivateKey
 }
 
-export const NFT_IDS = () => {
+export const getNftIds = () => {
   return nftIds
 }
 
-export const TOKEN_AMOUNT = () => {
+export const getTokenAmount = () => {
   return tokenAmount
 }
 
-export const EXPIRATION_TIME = () => {
+export const getExpirationTime = () => {
   return 12345678910
 }
 
-/*
-{
-  JSON_RPC_URL,
-  HOST,
-  LINKDROP_MASTER_PRIVATE_KEY,
-  LINKDROP_MASTER_WALLET,
-  LINKDROP_FACTORY_ADDRESS,
-  NFT_ADDRESS,
-  TOKEN_ADDRESS,
-  WEI_AMOUNT,
-  TOKEN_AMOUNT,
-  NFT_IDS,
-  LINKS_NUMBER,
-  RECEIVER_ADDRESS,
-  LINKDROP_MASTER_COPY_VERSION,
-  LINKDROP_MASTER_COPY_ADDRESS,
-  INIT_CODE,
-  CHAIN_ID,
-  EXPIRATION_TIME,
-  IS_APPROVE,
-  PROVIDER,
-
-}
-*/
+// {
+//   JSON_RPC_URL: getJsonRpcUrl(),
+//   HOST: getHost(),
+//   LINKDROP_MASTER_PRIVATE_KEY: getLinkdropMasterPrivateKey(),
+//   LINKDROP_MASTER_WALLET: getLinkdropMasterWallet(),
+//   LINKDROP_FACTORY_ADDRESS: getFactoryAddress(),
+//   NFT_ADDRESS: getNftAddress(),
+//   TOKEN_ADDRESS: getTokenAddress(),
+//   WEI_AMOUNT: getWeiAmount(),
+//   TOKEN_AMOUNT: getTokenAmount(),
+//   NFT_IDS: getNftIds(),
+//   LINKS_NUMBER: getLinksNumber(),
+//   RECEIVER_ADDRESS: getReceiverAddress(),
+//   LINKDROP_MASTER_COPY_VERSION: getMasterCopyVersion(),
+//   LINKDROP_MASTER_COPY_ADDRESS: getMasterCopyAddress(),
+//   INIT_CODE: getInitCode(),
+//   CHAIN_ID: getChainId(),
+//   EXPIRATION_TIME: getExpirationTime(),
+//   IS_APPROVE: getIsApprove(),
+//   PROVIDER: getProvider()
+// }

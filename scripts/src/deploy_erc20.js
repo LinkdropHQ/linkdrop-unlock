@@ -1,15 +1,15 @@
+import TokenMock from '../../contracts/build/TokenMock'
 import { terminal as term } from 'terminal-kit'
-import { LINKDROP_MASTER_WALLET, newError } from './utils'
+import { getLinkdropMasterWallet, newError } from './utils'
 import { ethers } from 'ethers'
-
 import fs from 'fs'
 import ora from 'ora'
 import configs from '../../configs'
 
-import TokenMock from '../../contracts/build/TokenMock'
-
 const config = configs.get('scripts')
 const configPath = configs.getPath('scripts')
+
+const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 
 export const deploy = async () => {
   let spinner, factory, tokenMock, txHash
@@ -26,7 +26,7 @@ export const deploy = async () => {
     factory = new ethers.ContractFactory(
       TokenMock.abi,
       TokenMock.bytecode,
-      LINKDROP_MASTER_WALLET()
+      LINKDROP_MASTER_WALLET
     )
 
     tokenMock = await factory.deploy({

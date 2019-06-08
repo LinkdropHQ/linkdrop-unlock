@@ -1,16 +1,15 @@
+import LinkdropFactory from '../../contracts/build/LinkdropFactory'
 import { terminal as term } from 'terminal-kit'
 import {
-  LINKDROP_MASTER_COPY_ADDRESS,
-  LINKDROP_MASTER_WALLET,
-  CHAIN_ID,
-  newError
+  getMasterCopyAddress,
+  getLinkdropMasterWallet,
+  newError,
+  getChainId
 } from './utils'
 import { ethers } from 'ethers'
-
 import fs from 'fs'
 import ora from 'ora'
 import configs from '../../configs'
-import LinkdropFactory from '../../contracts/build/LinkdropFactory'
 
 ethers.errors.setLogLevel('error')
 
@@ -19,6 +18,10 @@ const scriptsConfigPath = configs.getPath('scripts')
 
 const serverConfig = configs.get('server')
 const serverConfigPath = configs.getPath('server')
+
+const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
+const LINKDROP_MASTER_COPY_ADDRESS = getMasterCopyAddress()
+const CHAIN_ID = getChainId()
 
 export const deploy = async () => {
   let spinner, factory, proxyFactory, txHash
@@ -35,12 +38,12 @@ export const deploy = async () => {
     factory = new ethers.ContractFactory(
       LinkdropFactory.abi,
       LinkdropFactory.bytecode,
-      LINKDROP_MASTER_WALLET()
+      LINKDROP_MASTER_WALLET
     )
 
     proxyFactory = await factory.deploy(
-      LINKDROP_MASTER_COPY_ADDRESS(),
-      CHAIN_ID(),
+      LINKDROP_MASTER_COPY_ADDRESS,
+      CHAIN_ID,
       {
         gasLimit: 6000000
       }
