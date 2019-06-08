@@ -80,7 +80,7 @@ export const generate = async () => {
             term.bold.str(
               `Transfering ${nftSymbol} with tokenId=${
                 tokenIds[i]
-              } to ${proxyAddress} `
+              } to ^g${proxyAddress} `
             )
           )
 
@@ -100,7 +100,7 @@ export const generate = async () => {
         proxyAddress
       )
       if (!isApprovedForAll) {
-        spinner.info(term.bold.str(`Approving all tokens to ${proxyAddress}`))
+        spinner.info(term.bold.str(`Approving all tokens to ^g${proxyAddress}`))
 
         tx = await nftContract.setApprovalForAll(proxyAddress, true, {
           gasLimit: 500000
@@ -124,7 +124,7 @@ export const generate = async () => {
         spinner.info(
           term.bold.str(
             `Sending ${amountToSend /
-              Math.pow(10, tokenDecimals)} ${tokenSymbol} to ${proxyAddress}`
+              Math.pow(10, tokenDecimals)} ${tokenSymbol} to ^g${proxyAddress}`
           )
         )
 

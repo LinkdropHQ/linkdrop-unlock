@@ -7,7 +7,7 @@ const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
 
 const path = require('path')
-const configPath = path.resolve(__dirname, '../../config/server.config.json')
+const configPath = path.resolve(__dirname, '../../configs/server.config.json')
 const config = require(configPath)
 const { jsonRpcUrl, factory, relayerPrivateKey } = config
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)

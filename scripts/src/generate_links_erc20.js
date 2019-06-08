@@ -78,7 +78,10 @@ export const generate = async () => {
           spinner.info(
             term.bold.str(
               `Transfering ${amount /
-                Math.pow(10, tokenDecimals)} ${tokenSymbol} to ${proxyAddress}`
+                Math.pow(
+                  10,
+                  tokenDecimals
+                )} ${tokenSymbol} to ^g${proxyAddress}`
             )
           )
 
@@ -97,7 +100,10 @@ export const generate = async () => {
           spinner.info(
             term.bold.str(
               `Approving ${cost /
-                Math.pow(10, tokenDecimals)} ${tokenSymbol} to ${proxyAddress}`
+                Math.pow(
+                  10,
+                  tokenDecimals
+                )} ${tokenSymbol} to ^g${proxyAddress}`
             )
           )
 
@@ -124,7 +130,7 @@ export const generate = async () => {
         spinner.info(
           term.bold.str(
             `Sending ${amountToSend /
-              Math.pow(10, tokenDecimals)} ${tokenSymbol} to ${proxyAddress}`
+              Math.pow(10, tokenDecimals)} ${tokenSymbol} to ^g${proxyAddress}`
           )
         )
 
