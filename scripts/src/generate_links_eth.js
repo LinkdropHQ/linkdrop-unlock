@@ -1,34 +1,41 @@
 import {
-  JSON_RPC_URL,
-  HOST,
-  LINKDROP_MASTER_PRIVATE_KEY,
-  LINKDROP_MASTER_WALLET,
-  LINKDROP_FACTORY_ADDRESS,
-  NFT_ADDRESS,
-  TOKEN_ADDRESS,
-  WEI_AMOUNT,
-  TOKEN_AMOUNT,
-  NFT_IDS,
-  LINKS_NUMBER,
-  RECEIVER_ADDRESS,
-  LINKDROP_MASTER_COPY_VERSION,
-  LINKDROP_MASTER_COPY_ADDRESS,
-  INIT_CODE,
-  CHAIN_ID,
-  IS_APPROVE,
-  EXPIRATION_TIME,
-  PROVIDER,
-  newError
+  newError,
+  getJsonRpcUrl,
+  getHost,
+  getLinkdropMasterPrivateKey,
+  getLinkdropMasterWallet,
+  getFactoryAddress,
+  getWeiAmount,
+  getLinksNumber,
+  getMasterCopyVersion,
+  getInitCode,
+  getChainId,
+  getExpirationTime,
+  getIsApprove,
+  getProvider
 } from './utils'
 
 import LinkdropSDK from '../../sdk/src/index'
-
 import ora from 'ora'
 import { terminal as term } from 'terminal-kit'
 import { ethers } from 'ethers'
 import path from 'path'
 import fastcsv from 'fast-csv'
 import fs from 'fs'
+
+const JSON_RPC_URL = getJsonRpcUrl()
+const HOST = getHost()
+const LINKDROP_MASTER_PRIVATE_KEY = getLinkdropMasterPrivateKey()
+const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
+const LINKDROP_FACTORY_ADDRESS = getFactoryAddress()
+const WEI_AMOUNT = getWeiAmount()
+const LINKS_NUMBER = getLinksNumber()
+const LINKDROP_MASTER_COPY_VERSION = getMasterCopyVersion()
+const INIT_CODE = getInitCode()
+const CHAIN_ID = getChainId()
+const EXPIRATION_TIME = getExpirationTime()
+const IS_APPROVE = getIsApprove()
+const PROVIDER = getProvider()
 
 export const generate = async () => {
   let spinner, tx
@@ -40,18 +47,18 @@ export const generate = async () => {
     spinner.start()
 
     const proxyAddress = LinkdropSDK.computeProxyAddress(
-      LINKDROP_FACTORY_ADDRESS(),
-      LINKDROP_MASTER_WALLET().address,
-      INIT_CODE()
+      LINKDROP_FACTORY_ADDRESS,
+      LINKDROP_MASTER_WALLET.address,
+      INIT_CODE
     )
 
     // Send eth to proxy
-    let cost = WEI_AMOUNT() * LINKS_NUMBER()
+    let cost = WEI_AMOUNT * LINKS_NUMBER
     let amountToSend
 
     const tokenSymbol = 'ETH'
     const tokenDecimals = 18
-    const proxyBalance = await PROVIDER().getBalance(proxyAddress)
+    const proxyBalance = await PROVIDER.getBalance(proxyAddress)
 
     // Transfer funds
     if (proxyBalance < cost) {
@@ -64,7 +71,7 @@ export const generate = async () => {
         )
       )
 
-      tx = await LINKDROP_MASTER_WALLET().sendTransaction({
+      tx = await LINKDROP_MASTER_WALLET.sendTransaction({
         to: proxyAddress,
         value: amountToSend
       })
@@ -77,23 +84,23 @@ export const generate = async () => {
 
     let links = []
 
-    for (let i = 0; i < LINKS_NUMBER(); i++) {
+    for (let i = 0; i < LINKS_NUMBER; i++) {
       let {
         url,
         linkId,
         linkKey,
         linkdropSignerSignature
       } = await LinkdropSDK.generateLink({
-        jsonRpcUrl: JSON_RPC_URL(),
-        chainId: CHAIN_ID(),
-        host: HOST(),
-        linkdropMasterPrivateKey: LINKDROP_MASTER_PRIVATE_KEY(),
-        weiAmount: WEI_AMOUNT(),
+        jsonRpcUrl: JSON_RPC_URL,
+        chainId: CHAIN_ID,
+        host: HOST,
+        linkdropMasterPrivateKey: LINKDROP_MASTER_PRIVATE_KEY,
+        weiAmount: WEI_AMOUNT,
         tokenAddress,
         tokenAmount,
-        expirationTime: EXPIRATION_TIME(),
-        version: LINKDROP_MASTER_COPY_VERSION(),
-        isApprove: IS_APPROVE()
+        expirationTime: EXPIRATION_TIME,
+        version: LINKDROP_MASTER_COPY_VERSION,
+        isApprove: IS_APPROVE
       })
 
       let link = { i, linkId, linkKey, linkdropSignerSignature, url }

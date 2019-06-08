@@ -137,24 +137,22 @@ export const getExpirationTime = () => {
   return 12345678910
 }
 
-// {
-//   JSON_RPC_URL: getJsonRpcUrl(),
-//   HOST: getHost(),
-//   LINKDROP_MASTER_PRIVATE_KEY: getLinkdropMasterPrivateKey(),
-//   LINKDROP_MASTER_WALLET: getLinkdropMasterWallet(),
-//   LINKDROP_FACTORY_ADDRESS: getFactoryAddress(),
-//   NFT_ADDRESS: getNftAddress(),
-//   TOKEN_ADDRESS: getTokenAddress(),
-//   WEI_AMOUNT: getWeiAmount(),
-//   TOKEN_AMOUNT: getTokenAmount(),
-//   NFT_IDS: getNftIds(),
-//   LINKS_NUMBER: getLinksNumber(),
-//   RECEIVER_ADDRESS: getReceiverAddress(),
-//   LINKDROP_MASTER_COPY_VERSION: getMasterCopyVersion(),
-//   LINKDROP_MASTER_COPY_ADDRESS: getMasterCopyAddress(),
-//   INIT_CODE: getInitCode(),
-//   CHAIN_ID: getChainId(),
-//   EXPIRATION_TIME: getExpirationTime(),
-//   IS_APPROVE: getIsApprove(),
-//   PROVIDER: getProvider()
-// }
+const JSON_RPC_URL = getJsonRpcUrl()
+const HOST = getHost()
+const LINKDROP_MASTER_PRIVATE_KEY = getLinkdropMasterPrivateKey()
+const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
+const LINKDROP_FACTORY_ADDRESS = getFactoryAddress()
+const NFT_ADDRESS = getNftAddress()
+const TOKEN_ADDRESS = getTokenAddress()
+const WEI_AMOUNT = getWeiAmount()
+const TOKEN_AMOUNT = getTokenAmount()
+const NFT_IDS = getNftIds()
+const LINKS_NUMBER = getLinksNumber()
+const RECEIVER_ADDRESS = getReceiverAddress()
+const LINKDROP_MASTER_COPY_VERSION = getMasterCopyVersion()
+const LINKDROP_MASTER_COPY_ADDRESS = getMasterCopyAddress()
+const INIT_CODE = getInitCode()
+const CHAIN_ID = getChainId()
+const EXPIRATION_TIME = getExpirationTime()
+const IS_APPROVE = getIsApprove()
+const PROVIDER = getProvider()
