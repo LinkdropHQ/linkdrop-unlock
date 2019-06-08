@@ -52,7 +52,6 @@ export const generate = async () => {
       INIT_CODE
     )
 
-    // Send eth to proxy
     let cost = WEI_AMOUNT * LINKS_NUMBER
     let amountToSend
 
@@ -60,8 +59,8 @@ export const generate = async () => {
     const tokenDecimals = 18
     const proxyBalance = await PROVIDER.getBalance(proxyAddress)
 
-    // Transfer funds
     if (proxyBalance < cost) {
+      // Transfer ethers
       amountToSend = cost - proxyBalance
 
       spinner.info(
@@ -78,10 +77,8 @@ export const generate = async () => {
 
       term.bold(`Tx Hash: ^g${tx.hash}\n`)
     }
-    // Generate links
-    const tokenAddress = ethers.constants.AddressZero
-    const tokenAmount = 0
 
+    // Generate links
     let links = []
 
     for (let i = 0; i < LINKS_NUMBER; i++) {
@@ -96,8 +93,8 @@ export const generate = async () => {
         host: HOST,
         linkdropMasterPrivateKey: LINKDROP_MASTER_PRIVATE_KEY,
         weiAmount: WEI_AMOUNT,
-        tokenAddress,
-        tokenAmount,
+        tokenAddress: ethers.constants.AddressZero,
+        tokenAmount: 0,
         expirationTime: EXPIRATION_TIME,
         version: LINKDROP_MASTER_COPY_VERSION,
         isApprove: IS_APPROVE
@@ -107,7 +104,7 @@ export const generate = async () => {
       links.push(link)
     }
 
-    // Save links to csv
+    // Save links
     const dir = path.join(__dirname, '../output')
     const filename = path.join(dir, 'linkdrop_eth.csv')
 
@@ -121,7 +118,7 @@ export const generate = async () => {
       throw newError(err)
     }
 
-    spinner.succeed(term.bold.str(`Saved links to ^_${filename}`))
+    spinner.succeed(term.bold.str(`Generated and saved links to ^_${filename}`))
 
     return links
   } catch (err) {

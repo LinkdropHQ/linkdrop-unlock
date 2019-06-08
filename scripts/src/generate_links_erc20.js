@@ -70,6 +70,7 @@ export const generate = async () => {
       const tokenDecimals = await tokenContract.decimals()
 
       if (String(IS_APPROVE) === 'false') {
+        // Transfer tokens
         const proxyBalance = await tokenContract.balanceOf(proxyAddress)
         if (proxyBalance < cost) {
           amount = cost - proxyBalance
@@ -80,13 +81,14 @@ export const generate = async () => {
                 Math.pow(10, tokenDecimals)} ${tokenSymbol} to ${proxyAddress}`
             )
           )
-          // Transfer
+
           tx = await tokenContract.transfer(proxyAddress, amount, {
             gasLimit: 600000
           })
           term.bold(`Tx Hash: ^g${tx.hash}\n`)
         }
       } else if (String(IS_APPROVE) === 'true') {
+        // Approve tokens
         const proxyAllowance = await tokenContract.allowance(
           LINKDROP_MASTER_WALLET.address,
           proxyAddress
@@ -98,7 +100,7 @@ export const generate = async () => {
                 Math.pow(10, tokenDecimals)} ${tokenSymbol} to ${proxyAddress}`
             )
           )
-          // Approve
+
           tx = await tokenContract.approve(proxyAddress, cost, {
             gasLimit: 600000
           })
@@ -106,8 +108,9 @@ export const generate = async () => {
         }
       }
     }
-    // Send eth to proxy
+
     if (WEI_AMOUNT > 0) {
+      // Transfer ethers
       let cost = WEI_AMOUNT * LINKS_NUMBER
       let amountToSend
 
@@ -115,7 +118,6 @@ export const generate = async () => {
       const tokenDecimals = 18
       const proxyBalance = await PROVIDER.getBalance(proxyAddress)
 
-      // Transfer funds
       if (proxyBalance < cost) {
         amountToSend = cost - proxyBalance
 
@@ -134,10 +136,8 @@ export const generate = async () => {
         term.bold(`Tx Hash: ^g${tx.hash}\n`)
       }
     }
-    // Generate links
-    const tokenAddress = ethers.constants.AddressZero
-    const tokenAmount = 0
 
+    // Generate links
     let links = []
 
     for (let i = 0; i < LINKS_NUMBER; i++) {
@@ -152,8 +152,8 @@ export const generate = async () => {
         host: HOST,
         linkdropMasterPrivateKey: LINKDROP_MASTER_PRIVATE_KEY,
         weiAmount: WEI_AMOUNT,
-        tokenAddress,
-        tokenAmount,
+        tokenAddress: TOKEN_ADDRESS,
+        tokenAmount: TOKEN_AMOUNT,
         expirationTime: EXPIRATION_TIME,
         version: LINKDROP_MASTER_COPY_VERSION,
         isApprove: IS_APPROVE
@@ -163,9 +163,9 @@ export const generate = async () => {
       links.push(link)
     }
 
-    // Save links to csv
+    // Save links
     const dir = path.join(__dirname, '../output')
-    const filename = path.join(dir, 'linkdrop_eth.csv')
+    const filename = path.join(dir, 'linkdrop_erc20.csv')
 
     try {
       if (!fs.existsSync(dir)) {
@@ -177,7 +177,7 @@ export const generate = async () => {
       throw newError(err)
     }
 
-    spinner.succeed(term.bold.str(`Saved links to ^_${filename}`))
+    spinner.succeed(term.bold.str(`Generated and saved links to ^_${filename}`))
 
     return links
   } catch (err) {
