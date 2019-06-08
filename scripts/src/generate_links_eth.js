@@ -121,7 +121,7 @@ export const generate = async () => {
       throw newError(err)
     }
 
-    spinner.succeed(term.bold.str(`Saved  links to ^_${filename}`))
+    spinner.succeed(term.bold.str(`Saved links to ^_${filename}`))
 
     return links
   } catch (err) {
