@@ -3,15 +3,15 @@ import ora from 'ora'
 import path from 'path'
 import { ethers } from 'ethers'
 import { terminal as term } from 'terminal-kit'
-import { getJsonRpcUrl, getHost, getReceiverAddress, newError } from './utils'
+import { newError, getString } from './utils'
 const csvToJson = require('csvtojson')
 const queryString = require('query-string')
 
 ethers.errors.setLogLevel('error')
 
-const JSON_RPC_URL = getJsonRpcUrl()
-const HOST = getHost()
-const RECEIVER_ADDRESS = getReceiverAddress()
+const JSON_RPC_URL = getString('jsonRpcUrl')
+const HOST = getString('host')
+const RECEIVER_ADDRESS = getString('receiverAddress')
 
 // Get linkdrop parameters
 const getUrlParams = async i => {
@@ -39,13 +39,13 @@ const claim = async () => {
   } = await getUrlParams(0)
   try {
     spinner = ora({
-      text: term.bold.green.str('Claiming ethers...'),
+      text: term.bold.green.str('Claiming\n'),
       color: 'green'
     })
 
     spinner.start()
 
-    await LinkdropSDK.claim({
+    const { error, success, txHash } = await LinkdropSDK.claim({
       jsonRpcUrl: JSON_RPC_URL,
       host: HOST,
       weiAmount,
@@ -61,9 +61,14 @@ const claim = async () => {
       isApprove
     })
 
-    spinner.succeed('Claimed ethers')
+    if (success === true && txHash) {
+      spinner.succeed(term.bold.str('Submitted claim transaction'))
+      term.bold(`Tx hash: ^g${txHash}\n`)
+    } else {
+      throw newError(`${error.reason ? error.reason : error}`)
+    }
   } catch (err) {
-    spinner.fail('Failed to claim ethers')
+    spinner.fail(term.bold.red.str('Failed to claim ethers'))
     throw newError(err)
   }
 }

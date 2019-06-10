@@ -2,7 +2,9 @@ import LinkdropFactory from '../../contracts/build/LinkdropFactory'
 import LinkdropSDK from '../../sdk/src/index'
 import ClaimTx from '../models/claimTx'
 import ClaimTxERC721 from '../models/claimTxERC721'
+import { newError } from '../../scripts/src/utils'
 
+import { terminal as term } from 'terminal-kit'
 const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
 
@@ -42,52 +44,52 @@ export const claim = async (req, res) => {
   }
 
   if (!weiAmount) {
-    throw new Error('Please provide amount of eth to claim')
+    throw newError('Please provide amount of eth to claim')
   }
 
   if (!tokenAddress) {
-    throw new Error('Please provide token address')
+    throw newError('Please provide token address')
   }
 
   if (!tokenAmount) {
-    throw new Error('Please provide amount of tokens to claim')
+    throw newError('Please provide amount of tokens to claim')
   }
 
   if (!expirationTime) {
-    throw new Error('Please provide expiration time')
+    throw newError('Please provide expiration time')
   }
 
   if (!version) {
-    throw new Error('Please provide mastercopy version ')
+    throw newError('Please provide mastercopy version ')
   }
 
   if (!chainId) {
-    throw new Error('Please provide chain id')
+    throw newError('Please provide chain id')
   }
 
   if (!linkId) {
-    throw new Error('Please provide the link id')
+    throw newError('Please provide the link id')
   }
 
   if (!linkdropMasterAddress) {
-    throw new Error(`Please provide linkdrop master's address`)
+    throw newError(`Please provide linkdrop master's address`)
   }
 
   if (!linkdropSignerSignature) {
-    throw new Error(`Please provide linkdrop signer's signature`)
+    throw newError(`Please provide linkdrop signer's signature`)
   }
 
   if (!receiverAddress) {
-    throw new Error(`Please provide receiver's address`)
+    throw newError(`Please provide receiver's address`)
   }
 
   if (!receiverSignature) {
-    throw new Error('Please provide receiver signature')
+    throw newError('Please provide receiver signature')
   }
 
   if (isApprove) {
     if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
-      throw new Error('Please provide valid isApprove argument')
+      throw newError('Please provide valid isApprove argument')
     }
   }
 
@@ -111,10 +113,12 @@ export const claim = async (req, res) => {
       weiAmount,
       tokenAddress,
       tokenAmount,
+      expirationTime,
       version,
       chainId,
       linkId,
-      linkdropMasterAddress
+      linkdropMasterAddress,
+      receiverAddress
     })
 
     if (oldClaimTx && oldClaimTx.txHash) {
@@ -248,6 +252,34 @@ export const claimERC721 = async (req, res) => {
     isApprove
   } = req.body
 
+  let body = {
+    weiAmount,
+    nftAddress,
+    tokenId,
+    expirationTime,
+    version,
+    chainId,
+    linkId,
+    linkdropMasterAddress,
+    linkdropSignerSignature,
+    receiverAddress,
+    receiverSignature,
+    isApprove
+  }
+
+  // Make sure all arguments are passed
+  for (let key in body) {
+    if (!req.body[key]) {
+      const error = `Please provide ${key} argument\n`
+      term.red.bold(error)
+
+      return res.json({
+        success: false,
+        error
+      })
+    }
+  }
+
   const claimParams = {
     weiAmount,
     nftAddress,
@@ -260,53 +292,9 @@ export const claimERC721 = async (req, res) => {
     receiverSignature
   }
 
-  if (!weiAmount) {
-    throw new Error('Please provide amount of eth to claim')
-  }
-
-  if (!nftAddress) {
-    throw new Error('Please provide nft address')
-  }
-
-  if (!tokenId) {
-    throw new Error('Please provide token id to claim')
-  }
-
-  if (!expirationTime) {
-    throw new Error('Please provide expiration time')
-  }
-
-  if (!version) {
-    throw new Error('Please provide mastercopy version ')
-  }
-
-  if (!chainId) {
-    throw new Error('Please provide chain id')
-  }
-
-  if (!linkId) {
-    throw new Error('Please provide the link id')
-  }
-
-  if (!linkdropMasterAddress) {
-    throw new Error(`Please provide linkdrop master's address`)
-  }
-
-  if (!linkdropSignerSignature) {
-    throw new Error(`Please provide linkdrop signer's signature`)
-  }
-
-  if (!receiverAddress) {
-    throw new Error(`Please provide receiver's address`)
-  }
-
-  if (!receiverSignature) {
-    throw new Error('Please provide receiver signature')
-  }
-
   if (isApprove) {
     if (String(isApprove) !== 'true' && String(isApprove) !== false) {
-      throw new Error('Please provide isApprove argument')
+      throw newError('Please provide valid isApprove argument')
     }
   }
 
@@ -331,10 +319,12 @@ export const claimERC721 = async (req, res) => {
       weiAmount,
       nftAddress,
       tokenId,
+      expirationTime,
       version,
       chainId,
       linkId,
-      linkdropMasterAddress
+      linkdropMasterAddress,
+      receiverAddress
     })
 
     if (oldClaimTx && oldClaimTx.txHash) {
@@ -446,6 +436,9 @@ export const claimERC721 = async (req, res) => {
       })
     }
   } catch (err) {
-    console.error(err)
+    return res.json({
+      success: false,
+      error: err
+    })
   }
 }

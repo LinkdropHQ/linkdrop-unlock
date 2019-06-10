@@ -7,188 +7,75 @@ export const newError = message => {
   return error
 }
 
-let {
-  jsonRpcUrl,
-  host,
-  chainId,
-  version,
-  linkdropMasterPrivateKey,
-  masterCopy,
-  factory,
-  receiverAddress,
-  weiAmount,
-  tokenAddress,
-  tokenAmount,
-  nftAddress,
-  nftIds,
-  linksNumber,
-  isApprove
-} = config
-
-export const getIsApprove = () => {
-  if (
-    isApprove === null ||
-    (String(isApprove) !== 'true' && String(isApprove) !== 'false')
-  ) {
-    throw newError('Please provide valid isApprove argument')
+export const getString = key => {
+  if (key == null || key === '') {
+    throw newError(`Please provide ${key}`)
   }
-  return isApprove
+
+  return config[key]
 }
 
-export const getLinksNumber = () => {
-  if (linksNumber === null || linksNumber === '') {
-    throw newError('Please provide links number')
+export const getBool = key => {
+  if (key == null || key === '') {
+    throw newError(`Please provide ${key}`)
   }
-  return linksNumber
+
+  if (String(config[key]) !== 'true' && String(config[key]) !== 'false') {
+    throw newError(`Please provide valid ${key} argument`)
+  }
+
+  return config[key]
 }
 
-export const getLinkdropMasterWallet = () => {
-  if (jsonRpcUrl == null || jsonRpcUrl === '') {
-    throw newError('Please provide JSON RPC url')
+export const getInt = key => {
+  if (key == null || key === '') {
+    throw newError(`Please provide ${key}`)
   }
-
-  // Make sure we have these set in config.json
-  if (linkdropMasterPrivateKey == null || linkdropMasterPrivateKey === '') {
-    throw newError(`Please provide linkdrop master's private key`)
-  }
-
-  const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-  const linkdropMasterWallet = new ethers.Wallet(
-    linkdropMasterPrivateKey,
-    provider
-  )
-  return linkdropMasterWallet
+  const intNumber = parseInt(config[key])
+  if (!intNumber) throw newError(`Please provide valid ${key}`)
+  return intNumber
 }
 
 export const getProvider = () => {
-  if (jsonRpcUrl == null || jsonRpcUrl === '') {
-    throw newError('Please provide JSON RPC url')
-  }
-  const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
+  const JSON_RPC_URL = getString('jsonRpcUrl')
+  const provider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL)
   return provider
 }
 
-export const getMasterCopyAddress = () => {
-  if (masterCopy == null || masterCopy === '') {
-    throw newError('Please provide linkdrop master copy address')
-  }
-  return masterCopy
-}
+export const getLinkdropMasterWallet = () => {
+  const LINKDROP_MASTER_PRIVATE_KEY = getString('linkdropMasterPrivateKey')
+  const provider = getProvider()
 
-export const getFactoryAddress = () => {
-  if (factory == null || factory === '') {
-    throw newError('Please provide factory contract address')
-  }
-  return factory
-}
-
-export const getChainId = () => {
-  if (chainId == null || chainId === '') {
-    throw newError('Please provide chain id')
-  }
-  return chainId
+  const linkdropMasterWallet = new ethers.Wallet(
+    LINKDROP_MASTER_PRIVATE_KEY,
+    provider
+  )
+  return linkdropMasterWallet
 }
 
 export const getInitCode = () => {
   return '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 }
 
-export const getJsonRpcUrl = () => {
-  if (jsonRpcUrl == null || jsonRpcUrl === '') {
-    throw newError('Please provide JSON RPC url')
-  }
-  return jsonRpcUrl
-}
-
-export const getMasterCopyVersion = () => {
-  if (version == null || version === '') {
-    throw newError('Please provide master copy version')
-  }
-  return version
-}
-
-export const getReceiverAddress = () => {
-  if (receiverAddress == null || receiverAddress === '') {
-    throw newError('Please provide receiver address')
-  }
-  return receiverAddress
-}
-
-export const getWeiAmount = () => {
-  if (weiAmount == null || weiAmount === '') {
-    throw newError('Please provide wei amount')
-  }
-  return weiAmount
-}
-
-export const getTokenAddress = () => {
-  if (tokenAddress == null || tokenAddress === '') {
-    throw newError('Please provide token address')
-  }
-  return tokenAddress
-}
-
-export const getNftAddress = () => {
-  if (nftAddress == null || nftAddress === '') {
-    throw newError('Please provide nft address')
-  }
-  return nftAddress
-}
-
-export const getHost = () => {
-  if (host == null || host === '') {
-    throw newError('Please provide host')
-  }
-  return host
-}
-
-export const getLinkdropMasterPrivateKey = () => {
-  if (linkdropMasterPrivateKey == null || linkdropMasterPrivateKey === '') {
-    throw newError(`Please provide linkdrop master's private key`)
-  }
-  return linkdropMasterPrivateKey
-}
-
-export const get = key => {
-  if (key == null || key === '') {
-    throw newError('Please provide ${key')
-  }
-}
-
-export const getNftIds = () => {
-  if (nftIds == null || nftIds === '') {
-    throw newError('Please provide nft ids')
-  }
-  return nftIds
-}
-
-export const getTokenAmount = () => {
-  if (tokenAmount == null || tokenAmount === '') {
-    throw newError('Please provide token amount')
-  }
-  return tokenAmount
-}
-
 export const getExpirationTime = () => {
   return 12345678910
 }
 
-// const JSON_RPC_URL = getJsonRpcUrl()
-// const HOST = getHost()
-// const LINKDROP_MASTER_PRIVATE_KEY = getLinkdropMasterPrivateKey()
-// const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
-// const LINKDROP_FACTORY_ADDRESS = getFactoryAddress()
-// const NFT_ADDRESS = getNftAddress()
-// const TOKEN_ADDRESS = getTokenAddress()
-// const WEI_AMOUNT = getWeiAmount()
-// const TOKEN_AMOUNT = getTokenAmount()
-// const NFT_IDS = getNftIds()
-// const LINKS_NUMBER = getLinksNumber()
-// const RECEIVER_ADDRESS = getReceiverAddress()
-// const LINKDROP_MASTER_COPY_VERSION = getMasterCopyVersion()
-// const LINKDROP_MASTER_COPY_ADDRESS = getMasterCopyAddress()
-// const INIT_CODE = getInitCode()
-// const CHAIN_ID = getChainId()
+// const JSON_RPC_URL = getString('jsonRpcUrl')
+// const HOST = getString('host')
+// const LINKDROP_MASTER_PRIVATE_KEY = getString('linkdropMasterPrivateKey')
+// const LINKDROP_FACTORY_ADDRESS = getString('factory')
+// const WEI_AMOUNT = getInt('weiAmount')
+// const LINKS_NUMBER = getInt('linksNumber')
+// const LINKDROP_MASTER_COPY_VERSION = getInt('version')
+// const LINKDROP_MASTER_COPY_ADDRESS = getString('masterCopy')
+// const CHAIN_ID = getInt('chainId')
 // const EXPIRATION_TIME = getExpirationTime()
-// const IS_APPROVE = getIsApprove()
+// const IS_APPROVE = getBool('isApprove')
+// const TOKEN_ADDRESS = getString('tokenAddress')
+// const TOKEN_AMOUNT = getInt('tokenAmount')
+// const NFT_ADDRESS = getString('nftAddress')
+// const NFT_IDS = getString('nftIds')
 // const PROVIDER = getProvider()
+// const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
+// const INIT_CODE = getInitCode()

@@ -1,11 +1,6 @@
 import LinkdropFactory from '../../contracts/build/LinkdropFactory'
 import { terminal as term } from 'terminal-kit'
-import {
-  getMasterCopyAddress,
-  getLinkdropMasterWallet,
-  newError,
-  getChainId
-} from './utils'
+import { getLinkdropMasterWallet, newError, getInt, getString } from './utils'
 import { ethers } from 'ethers'
 import fs from 'fs'
 import ora from 'ora'
@@ -20,8 +15,8 @@ const serverConfig = configs.get('server')
 const serverConfigPath = configs.getPath('server')
 
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
-const LINKDROP_MASTER_COPY_ADDRESS = getMasterCopyAddress()
-const CHAIN_ID = getChainId()
+const LINKDROP_MASTER_COPY_ADDRESS = getString('masterCopy')
+const CHAIN_ID = getInt('chainId')
 
 export const deploy = async () => {
   let spinner, factory, proxyFactory, txHash

@@ -1,5 +1,6 @@
 import {
   newError,
+  get,
   getJsonRpcUrl,
   getHost,
   getLinkdropMasterPrivateKey,
@@ -12,7 +13,10 @@ import {
   getChainId,
   getExpirationTime,
   getIsApprove,
-  getProvider
+  getProvider,
+  getString,
+  getInt,
+  getBool
 } from './utils'
 
 import LinkdropSDK from '../../sdk/src/index'
@@ -23,19 +27,19 @@ import path from 'path'
 import fastcsv from 'fast-csv'
 import fs from 'fs'
 
-const JSON_RPC_URL = getJsonRpcUrl()
-const HOST = getHost()
-const LINKDROP_MASTER_PRIVATE_KEY = getLinkdropMasterPrivateKey()
-const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
-const LINKDROP_FACTORY_ADDRESS = getFactoryAddress()
-const WEI_AMOUNT = getWeiAmount()
-const LINKS_NUMBER = getLinksNumber()
-const LINKDROP_MASTER_COPY_VERSION = getMasterCopyVersion()
-const INIT_CODE = getInitCode()
-const CHAIN_ID = getChainId()
+const JSON_RPC_URL = getString('jsonRpcUrl')
+const HOST = getString('host')
+const LINKDROP_MASTER_PRIVATE_KEY = getString('linkdropMasterPrivateKey')
+const LINKDROP_FACTORY_ADDRESS = getString('factory')
+const WEI_AMOUNT = getInt('weiAmount')
+const LINKS_NUMBER = getInt('linksNumber')
+const LINKDROP_MASTER_COPY_VERSION = getInt('version')
+const CHAIN_ID = getInt('chainId')
 const EXPIRATION_TIME = getExpirationTime()
-const IS_APPROVE = getIsApprove()
+const IS_APPROVE = getBool('isApprove')
 const PROVIDER = getProvider()
+const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
+const INIT_CODE = getInitCode()
 
 export const generate = async () => {
   let spinner, tx
