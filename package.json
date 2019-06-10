@@ -1,9 +1,9 @@
 {
   "name": "linkdrop-monorepo",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "main": "index.js",
-  "repository": "https://github.com/LinkdropProtocol/one-to-one-linkdrop.git",
+  "repository": "https://github.com/LinkdropProtocol/linkdrop-monorepo.git",
   "license": "MIT",
   "workspaces": [
     "apps/app-demo",
