@@ -8,7 +8,7 @@ const ethers = require('ethers')
 const fs = require('fs')
 const fastcsv = require('fast-csv')
 const path = require('path')
-const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
+const configPath = path.resolve(__dirname, '../../configs/scripts.config.json')
 const config = require(configPath)
 
 let {

@@ -3,7 +3,7 @@ import { getFactoryAddress, getInitcode } from './utils'
 import LinkdropSDK from '../../sdk/src/index'
 const ethers = require('ethers')
 const path = require('path')
-const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
+const configPath = path.resolve(__dirname, '../../configs/scripts.config.json')
 const config = require(configPath)
 
 let { jsonRpcUrl, linkdropMasterPrivateKey, weiAmount, linksNumber } = config

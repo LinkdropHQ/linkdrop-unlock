@@ -1,14 +1,19 @@
 import { put } from 'redux-saga/effects'
-import { jsonRpcUrl, apiHost } from 'config'
+import { jsonRpcUrl, factory, apiHost } from 'config'
 import LinkdropSDK from 'sdk/src/index'
 import { ethers } from 'ethers'
+import { defineNetworkName } from 'linkdrop-commons'
+import LinkdropFactory from 'contracts/LinkdropFactory.json'
 
 const generator = function * ({ payload }) {
   try {
     const { wallet, tokenAddress, chainId, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const ethersContractZeroAddress = ethers.constants.AddressZero
-
+    const networkName = defineNetworkName({ chainId })
+    const provider = yield ethers.getDefaultProvider(networkName)
+    const factoryContract = yield new ethers.Contract(factory, LinkdropFactory.abi, provider)
+    const version = yield factoryContract.getProxyMasterCopyVersion(linkdropMasterAddress)
     const { success, txHash, error: { reason = [] } = {} } = yield LinkdropSDK.claim({
       jsonRpcUrl,
       host: apiHost,
@@ -22,7 +27,7 @@ const generator = function * ({ payload }) {
       receiverAddress: wallet,
       isApprove: false,
       chainId,
-      version: 1
+      version: version.toNumber()
     })
 
     if (success) {
