@@ -4,7 +4,7 @@ import { getFactoryAddress, getInitcode } from './utils'
 import LinkdropSDK from '../../sdk/src/index'
 const ethers = require('ethers')
 const path = require('path')
-const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
+const configPath = path.resolve(__dirname, '../../configs/scripts.config.json')
 const config = require(configPath)
 
 let {
@@ -23,7 +23,7 @@ if (
   throw new Error('Please provide valid isApprove argument')
 }
 
-;(async () => {
+(async () => {
   console.log('Generating links...\n')
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)

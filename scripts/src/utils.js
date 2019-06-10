@@ -1,5 +1,5 @@
 const path = require('path')
-const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
+const configPath = path.resolve(__dirname, '../../configs/scripts.config.json')
 const config = require(configPath)
 let { masterCopy, factory, chainId } = config
 
