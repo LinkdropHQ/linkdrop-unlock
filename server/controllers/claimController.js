@@ -6,9 +6,11 @@ import { newError } from '../../scripts/src/utils'
 import configs from '../../configs'
 import ora from 'ora'
 import { terminal as term } from 'terminal-kit'
+
+import Table from 'cli-table'
+import { ICONS } from 'jest-util/build/specialChars'
 const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
-
 const config = configs.get('server')
 
 const { jsonRpcUrl, factory, relayerPrivateKey } = config
@@ -60,18 +62,6 @@ export const claim = async (req, res) => {
     }
   }
 
-  const claimParams = {
-    weiAmount,
-    tokenAddress,
-    tokenAmount,
-    expirationTime,
-    linkId,
-    linkdropMasterAddress,
-    linkdropSignerSignature,
-    receiverAddress,
-    receiverSignature
-  }
-
   if (isApprove) {
     if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
       throw newError('Please provide valid isApprove argument')
@@ -85,13 +75,6 @@ export const claim = async (req, res) => {
   )
 
   try {
-    let spinner = ora({
-      text: term.bold.green.str('Claiming'),
-      color: 'green'
-    })
-
-    spinner.start()
-
     const initcode = await proxyFactory.getInitcode()
 
     const proxyAddress = await LinkdropSDK.computeProxyAddress(
@@ -112,18 +95,13 @@ export const claim = async (req, res) => {
       linkdropMasterAddress,
       receiverAddress
     })
+    const table = new Table()
 
     if (oldClaimTx && oldClaimTx.txHash) {
-      spinner.info(
-        term.bold.str(
-          `Submitted claim transaction: \n\n${JSON.stringify(
-            claimParams,
-            null,
-            1
-          )}\n`
-        )
-      )
-      spinner.succeed(term.bold.str(`Tx hash: ^g${oldClaimTx.txHash}\n`))
+      table.push(['txHash', oldClaimTx.toObject().txHash])
+
+      term.green.bold(`\nSubmitted claim transaction\n`)
+      term.bold(table.toString(), '\n')
 
       return res.json({
         success: true,
@@ -215,23 +193,21 @@ export const claim = async (req, res) => {
 
       const document = await claimTx.save()
 
-      spinner.info(
-        term.bold.str(
-          `Submitted claim transaction: \n\n${JSON.stringify(
-            claimParams,
-            null,
-            1
-          )}\n`
-        )
-      )
-      spinner.succeed(term.bold.str(`Tx hash: ^g${txHash}\n`))
+      for (let key in claimTx.toObject()) {
+        if (key !== '_id' && key !== '__v') {
+          table.push([key, claimTx.toObject()[key]])
+        }
+      }
+
+      term.green.bold(`\nSubmitted claim transaction\n`)
+      term.bold(table.toString(), '\n')
 
       res.json({
         success: true,
         txHash: txHash
       })
     } catch (error) {
-      spinner.fail(term.bold.red.str(`${error.reason ? error.reason : error}`))
+      term.red.bold(`\n${error.reason ? error.reason : error}\n`)
 
       return res.json({
         success: false,
@@ -239,7 +215,7 @@ export const claim = async (req, res) => {
       })
     }
   } catch (err) {
-    console.error(err)
+    term.red.bold(err)
   }
 }
 
@@ -287,18 +263,6 @@ export const claimERC721 = async (req, res) => {
     }
   }
 
-  const claimParams = {
-    weiAmount,
-    nftAddress,
-    tokenId,
-    expirationTime,
-    linkId,
-    linkdropMasterAddress,
-    linkdropSignerSignature,
-    receiverAddress,
-    receiverSignature
-  }
-
   if (isApprove) {
     if (String(isApprove) !== 'true' && String(isApprove) !== false) {
       throw newError('Please provide valid isApprove argument')
@@ -312,13 +276,6 @@ export const claimERC721 = async (req, res) => {
   )
 
   try {
-    let spinner = ora({
-      text: term.bold.green.str('Claiming'),
-      color: 'green'
-    })
-
-    spinner.start()
-
     const initcode = await proxyFactory.getInitcode()
 
     const proxyAddress = await LinkdropSDK.computeProxyAddress(
@@ -341,17 +298,13 @@ export const claimERC721 = async (req, res) => {
       receiverAddress
     })
 
+    const table = new Table()
+
     if (oldClaimTx && oldClaimTx.txHash) {
-      spinner.info(
-        term.bold.str(
-          `Submitted claim transaction: \n\n${JSON.stringify(
-            claimParams,
-            null,
-            1
-          )}\n`
-        )
-      )
-      spinner.succeed(term.bold.str(`Tx hash: ^g${oldClaimTx.txHash}\n`))
+      table.push(['txHash', oldClaimTx.toObject().txHash])
+
+      term.green.bold(`\nSubmitted claim transaction\n`)
+      term.bold(table.toString(), '\n')
 
       return res.json({
         success: true,
@@ -441,23 +394,21 @@ export const claimERC721 = async (req, res) => {
 
       const document = await claimTxERC721.save()
 
-      spinner.info(
-        term.bold.str(
-          `Submitted claim transaction: \n\n${JSON.stringify(
-            claimParams,
-            null,
-            1
-          )}\n`
-        )
-      )
-      spinner.succeed(term.bold.str(`Tx hash: ^g${oldClaimTx.txHash}\n`))
+      for (let key in claimTxERC721.toObject()) {
+        if (key !== '_id' && key !== '__v') {
+          table.push([key, claimTxERC721.toObject()[key]])
+        }
+      }
+
+      term.green.bold(`\nSubmitted claim transaction\n`)
+      term.bold(table.toString(), '\n')
 
       res.json({
         success: true,
         txHash: tx.hash
       })
     } catch (error) {
-      spinner.fail(term.bold.red.str(`${error.reason ? error.reason : error}`))
+      term.red.bold(`\n${error.reason ? error.reason : error}\n`)
 
       return res.json({
         success: false,
@@ -465,6 +416,6 @@ export const claimERC721 = async (req, res) => {
       })
     }
   } catch (err) {
-    console.error(err)
+    term.red.bold(err)
   }
 }
