@@ -14,6 +14,9 @@ const scriptsConfigPath = configs.getPath('scripts')
 const serverConfig = configs.get('server')
 const serverConfigPath = configs.getPath('server')
 
+const appConfig = configs.get('app')
+const appConfigPath = configs.getPath('app')
+
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 const LINKDROP_MASTER_COPY_ADDRESS = getString('masterCopy')
 const CHAIN_ID = getInt('chainId')
@@ -57,19 +60,27 @@ export const deploy = async () => {
   txHash = proxyFactory.deployTransaction.hash
   term.bold(`Tx Hash: ^g${txHash}\n`)
 
-  // Save changes
+  // Save to scripts config
   scriptsConfig.factory = proxyFactory.address
-  serverConfig.factory = proxyFactory.address
 
   fs.writeFile(scriptsConfigPath, JSON.stringify(scriptsConfig), err => {
     if (err) throw newError(err)
+    term.bold(`Updated ^_${scriptsConfigPath}\n`)
   })
-  term.bold(`Updated ^_${scriptsConfigPath}\n`)
 
+  // Save to server config
+  serverConfig.factory = proxyFactory.address
   fs.writeFile(serverConfigPath, JSON.stringify(serverConfig), err => {
     if (err) throw newError(err)
+    term.bold(`Updated ^_${serverConfigPath}\n`)
   })
-  term.bold(`Updated ^_${serverConfigPath}\n`)
+
+  // Save to app config
+  appConfig.factory = proxyFactory.address
+  fs.writeFile(appConfigPath, JSON.stringify(appConfig), err => {
+    if (err) throw newError(err)
+    term.bold(`Updated ^_${appConfigPath}\n`)
+  })
 
   return proxyFactory.address
 }

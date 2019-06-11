@@ -6,8 +6,11 @@ import fs from 'fs'
 import ora from 'ora'
 import configs from '../../configs'
 
-const config = configs.get('scripts')
-const configPath = configs.getPath('scripts')
+const scriptsConfig = configs.get('scripts')
+const scriptsConfigPath = configs.getPath('scripts')
+
+const appConfig = configs.get('app')
+const appConfigPath = configs.getPath('app')
 
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 
@@ -46,12 +49,19 @@ export const deploy = async () => {
   txHash = masterCopy.deployTransaction.hash
   term.bold(`Tx Hash: ^g${txHash}\n`)
 
-  // Save changes
-  config.masterCopy = masterCopy.address
+  // Save to scripts config
+  scriptsConfig.masterCopy = masterCopy.address
 
-  fs.writeFile(configPath, JSON.stringify(config), err => {
+  fs.writeFile(scriptsConfigPath, JSON.stringify(scriptsConfig), err => {
     if (err) throw newError(err)
-    term.bold(`Updated ^_${configPath}\n`)
+    term.bold(`Updated ^_${scriptsConfigPath}\n`)
+  })
+
+  // Save to app config
+  appConfig.masterCopy = masterCopy.address
+  fs.writeFile(appConfigPath, JSON.stringify(appConfig), err => {
+    if (err) throw newError(err)
+    term.bold(`Updated ^_${appConfigPath}\n`)
   })
 
   return masterCopy.address
