@@ -150,7 +150,6 @@ export const claim = async (req, res) => {
         )
 
         // Claim
-        // console.log('\n🔦️  Claiming...\n', claimParams)
 
         tx = await proxyFactory.claim(
           weiAmount,
@@ -181,7 +180,6 @@ export const claim = async (req, res) => {
         )
 
         // Claim
-        // console.log('\n🔦️  Claiming...\n', claimParams)
 
         tx = await proxyFactory.claimApprove(
           weiAmount,
@@ -313,6 +311,13 @@ export const claimERC721 = async (req, res) => {
   )
 
   try {
+    let spinner = ora({
+      text: term.bold.green.str('Claiming'),
+      color: 'green'
+    })
+
+    spinner.start()
+
     const initcode = await proxyFactory.getInitcode()
 
     const proxyAddress = await LinkdropSDK.computeProxyAddress(
@@ -336,6 +341,17 @@ export const claimERC721 = async (req, res) => {
     })
 
     if (oldClaimTx && oldClaimTx.txHash) {
+      spinner.info(
+        term.bold.str(
+          `Submitted claim transaction: \n\n${JSON.stringify(
+            claimParams,
+            null,
+            1
+          )}\n`
+        )
+      )
+      spinner.succeed(term.bold.str(`Tx hash: ^g${oldClaimTx.txHash}\n`))
+
       return res.json({
         success: true,
         txHash: oldClaimTx.txHash
@@ -361,7 +377,6 @@ export const claimERC721 = async (req, res) => {
         )
 
         // Claim
-        console.log('\n🔦️  Claiming...\n', claimParams)
 
         tx = await proxyFactory.claimERC721(
           weiAmount,
@@ -392,7 +407,6 @@ export const claimERC721 = async (req, res) => {
         )
 
         // Claim
-        console.log('\n🔦️  Claiming...\n', claimParams)
 
         tx = await proxyFactory.claimERC721Approve(
           weiAmount,
@@ -408,7 +422,6 @@ export const claimERC721 = async (req, res) => {
         )
       }
       txHash = tx.hash
-      console.log(`#️⃣  Tx Hash: ${txHash}`)
 
       // Save claim tx to database
       const claimTxERC721 = new ClaimTxERC721({
@@ -426,17 +439,24 @@ export const claimERC721 = async (req, res) => {
       })
 
       const document = await claimTxERC721.save()
-      console.log(
-        `🔋  Saved claim tx with document id = ${document.id} to database`
+
+      spinner.info(
+        term.bold.str(
+          `Submitted claim transaction: \n\n${JSON.stringify(
+            claimParams,
+            null,
+            1
+          )}\n`
+        )
       )
+      spinner.succeed(term.bold.str(`Tx hash: ^g${oldClaimTx.txHash}\n`))
 
       res.json({
         success: true,
         txHash: tx.hash
       })
     } catch (error) {
-      if (error.reason) console.error(`📛  Failed with '${error.reason}'`)
-      else console.error(error)
+      spinner.fail(term.bold.red.str(`${error.reason ? error.reason : error}`))
 
       return res.json({
         success: false,
@@ -444,9 +464,6 @@ export const claimERC721 = async (req, res) => {
       })
     }
   } catch (err) {
-    return res.json({
-      success: false,
-      error: err
-    })
+    console.error(err)
   }
 }
