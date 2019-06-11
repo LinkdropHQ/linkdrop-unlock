@@ -3,15 +3,15 @@ import LinkdropSDK from '../../sdk/src/index'
 import ClaimTx from '../models/claimTx'
 import ClaimTxERC721 from '../models/claimTxERC721'
 import { newError } from '../../scripts/src/utils'
-
+import configs from '../../configs'
+import ora from 'ora'
 import { terminal as term } from 'terminal-kit'
 const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
 
-const path = require('path')
-const configPath = path.resolve(__dirname, '../../configs/server.config.json')
-const config = require(configPath)
+const config = configs.get('server')
 const { jsonRpcUrl, factory, relayerPrivateKey } = config
+
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 const relayer = new ethers.Wallet(relayerPrivateKey, provider)
 
@@ -31,6 +31,34 @@ export const claim = async (req, res) => {
     isApprove
   } = req.body
 
+  let body = {
+    weiAmount,
+    tokenAddress,
+    tokenAmount,
+    expirationTime,
+    version,
+    chainId,
+    linkId,
+    linkdropMasterAddress,
+    linkdropSignerSignature,
+    receiverAddress,
+    receiverSignature,
+    isApprove
+  }
+
+  // Make sure all arguments are passed
+  for (let key in body) {
+    if (!req.body[key]) {
+      const error = `Please provide ${key} argument\n`
+      term.red.bold(error)
+
+      return res.json({
+        success: false,
+        error
+      })
+    }
+  }
+
   const claimParams = {
     weiAmount,
     tokenAddress,
@@ -41,50 +69,6 @@ export const claim = async (req, res) => {
     linkdropSignerSignature,
     receiverAddress,
     receiverSignature
-  }
-
-  if (!weiAmount) {
-    throw newError('Please provide amount of eth to claim')
-  }
-
-  if (!tokenAddress) {
-    throw newError('Please provide token address')
-  }
-
-  if (!tokenAmount) {
-    throw newError('Please provide amount of tokens to claim')
-  }
-
-  if (!expirationTime) {
-    throw newError('Please provide expiration time')
-  }
-
-  if (!version) {
-    throw newError('Please provide mastercopy version ')
-  }
-
-  if (!chainId) {
-    throw newError('Please provide chain id')
-  }
-
-  if (!linkId) {
-    throw newError('Please provide the link id')
-  }
-
-  if (!linkdropMasterAddress) {
-    throw newError(`Please provide linkdrop master's address`)
-  }
-
-  if (!linkdropSignerSignature) {
-    throw newError(`Please provide linkdrop signer's signature`)
-  }
-
-  if (!receiverAddress) {
-    throw newError(`Please provide receiver's address`)
-  }
-
-  if (!receiverSignature) {
-    throw newError('Please provide receiver signature')
   }
 
   if (isApprove) {
@@ -100,6 +84,13 @@ export const claim = async (req, res) => {
   )
 
   try {
+    let spinner = ora({
+      text: term.bold.green.str('Claiming'),
+      color: 'green'
+    })
+
+    spinner.start()
+
     const initcode = await proxyFactory.getInitcode()
 
     const proxyAddress = await LinkdropSDK.computeProxyAddress(
@@ -122,6 +113,17 @@ export const claim = async (req, res) => {
     })
 
     if (oldClaimTx && oldClaimTx.txHash) {
+      spinner.info(
+        term.bold.str(
+          `Submitted claim transaction: \n\n${JSON.stringify(
+            claimParams,
+            null,
+            1
+          )}\n`
+        )
+      )
+      spinner.succeed(term.bold.str(`Tx hash: ^g${oldClaimTx.txHash}\n`))
+
       return res.json({
         success: true,
         txHash: oldClaimTx.txHash
@@ -148,7 +150,7 @@ export const claim = async (req, res) => {
         )
 
         // Claim
-        console.log('\n🔦️  Claiming...\n', claimParams)
+        // console.log('\n🔦️  Claiming...\n', claimParams)
 
         tx = await proxyFactory.claim(
           weiAmount,
@@ -179,7 +181,7 @@ export const claim = async (req, res) => {
         )
 
         // Claim
-        console.log('\n🔦️  Claiming...\n', claimParams)
+        // console.log('\n🔦️  Claiming...\n', claimParams)
 
         tx = await proxyFactory.claimApprove(
           weiAmount,
@@ -196,7 +198,6 @@ export const claim = async (req, res) => {
       }
 
       txHash = tx.hash
-      console.log(`#️⃣  Tx Hash: ${txHash}`)
 
       // Save claim tx to database
       const claimTx = new ClaimTx({
@@ -214,17 +215,24 @@ export const claim = async (req, res) => {
       })
 
       const document = await claimTx.save()
-      console.log(
-        `🔋  Saved claim tx with document id = ${document.id} to database`
+
+      spinner.info(
+        term.bold.str(
+          `Submitted claim transaction: \n\n${JSON.stringify(
+            claimParams,
+            null,
+            1
+          )}\n`
+        )
       )
+      spinner.succeed(term.bold.str(`Tx hash: ^g${txHash}\n`))
 
       res.json({
         success: true,
         txHash: txHash
       })
     } catch (error) {
-      if (error.reason) console.error(`📛  Failed with '${error.reason}'`)
-      else console.error(error)
+      spinner.fail(term.bold.red.str(`${error.reason ? error.reason : error}`))
 
       return res.json({
         success: false,

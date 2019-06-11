@@ -71,7 +71,7 @@ const claimERC721 = async () => {
       throw newError(`${error.reason ? error.reason : error}`)
     }
   } catch (err) {
-    spinner.fail(term.bold.red.str('Failed to claim ethers'))
+    spinner.fail(term.bold.red.str('Failed to claim'))
     throw newError(err)
   }
 }
