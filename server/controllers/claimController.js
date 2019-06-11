@@ -96,8 +96,16 @@ export const claim = async (req, res) => {
       receiverAddress
     })
     const table = new Table()
+    let type
 
     if (oldClaimTx && oldClaimTx.txHash) {
+      if (tokenAddress === ethers.constants.AddressZero) type = 'ETH'
+      else {
+        if (weiAmount === 0) type = 'ERC20'
+        else type = 'ETH + ERC20'
+      }
+      table.push(['type', type])
+
       table.push(['txHash', oldClaimTx.toObject().txHash])
 
       term.green.bold(`\nSubmitted claim transaction\n`)
@@ -192,6 +200,13 @@ export const claim = async (req, res) => {
       })
 
       const document = await claimTx.save()
+
+      if (tokenAddress === ethers.constants.AddressZero) type = 'ETH'
+      else {
+        if (weiAmount === 0) type = 'ERC20'
+        else type = 'ETH + ERC20'
+      }
+      table.push(['type', type])
 
       for (let key in claimTx.toObject()) {
         if (key !== '_id' && key !== '__v') {
@@ -301,6 +316,7 @@ export const claimERC721 = async (req, res) => {
     const table = new Table()
 
     if (oldClaimTx && oldClaimTx.txHash) {
+      table.push(['type', `${weiAmount === 0 ? 'ERC721' : 'ETH + ERC721'}`])
       table.push(['txHash', oldClaimTx.toObject().txHash])
 
       term.green.bold(`\nSubmitted claim transaction\n`)
@@ -394,6 +410,7 @@ export const claimERC721 = async (req, res) => {
 
       const document = await claimTxERC721.save()
 
+      table.push(['type', `${weiAmount === 0 ? 'ERC721' : 'ETH + ERC721'}`])
       for (let key in claimTxERC721.toObject()) {
         if (key !== '_id' && key !== '__v') {
           table.push([key, claimTxERC721.toObject()[key]])
