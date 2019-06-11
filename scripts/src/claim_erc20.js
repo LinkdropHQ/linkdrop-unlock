@@ -1,9 +1,11 @@
 import LinkdropSDK from '../../sdk/src/index'
+
 import ora from 'ora'
 import path from 'path'
 import { ethers } from 'ethers'
 import { terminal as term } from 'terminal-kit'
 import { newError, getString } from './utils'
+
 const csvToJson = require('csvtojson')
 const queryString = require('query-string')
 

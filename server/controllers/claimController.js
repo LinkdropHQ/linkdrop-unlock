@@ -10,6 +10,7 @@ const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
 
 const config = configs.get('server')
+
 const { jsonRpcUrl, factory, relayerPrivateKey } = config
 
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)

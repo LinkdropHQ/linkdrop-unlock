@@ -4,6 +4,7 @@ import shortenString from './shorten-string'
 import defineNetworkName from './define-network-name'
 import capitalize from './capitalize'
 import variables from './variables/index.module.scss'
+import mocks from './mocks'
 
 export {
   copyToClipboard,
@@ -11,5 +12,6 @@ export {
   shortenString,
   defineNetworkName,
   capitalize,
-  variables
+  variables,
+  mocks
 }
