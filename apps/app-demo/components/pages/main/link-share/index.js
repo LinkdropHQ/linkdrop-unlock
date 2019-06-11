@@ -1,3 +1,4 @@
+/* global web3 */
 import React from 'react'
 import { translate, actions } from 'decorators'
 import styles from './styles.module'
@@ -6,6 +7,7 @@ import classNames from 'classnames'
 import { LinkBlock, QrShare } from 'components/pages/common'
 import { copyToClipboard, getHashVariables } from 'linkdrop-commons'
 import variables from 'variables'
+import { ethers } from 'ethers'
 
 @actions(({ user: { link, loading }, tokens: { standard } }) => ({ link, loading, standard }))
 @translate('pages.main')
@@ -18,13 +20,18 @@ class LinkShare extends React.Component {
   }
 
   componentDidMount () {
-    const { standard, link } = this.props
+    const { standard, link, account, connector } = this.props
     const {
       chainId = '4'
     } = getHashVariables()
     if (link) { return }
     if (standard === 'erc20') {
-      this.actions().user.generateERC20Link({ chainId })
+      if (connector === 'MetaMask' && account) {
+        const provider = new ethers.providers.Web3Provider(web3.currentProvider)
+        console.log(provider.getSigner())
+        return this.actions().user.generateERC20Web3Link({ chainId, provider })
+      }
+      return this.actions().user.generateERC20Link({ chainId })
     } else {
       this.actions().user.generateERC721Link({ chainId })
     }

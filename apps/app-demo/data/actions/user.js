@@ -33,27 +33,14 @@ class User {
     this.actions.dispatch({ type: '*USER.GENERATE_LINK_ERC20', payload: { chainId } })
   }
 
+  generateERC20Web3Link ({ chainId, provider }) {
+    // generate new link with sdk for erc-20
+    this.actions.dispatch({ type: '*USER.GENERATE_LINK_ERC20_WEB3', payload: { chainId, provider } })
+  }
+
   generateERC721Link ({ chainId }) {
     // generate new link with sdk for erc-721
     this.actions.dispatch({ type: '*USER.GENERATE_LINK_ERC721', payload: { chainId } })
-  }
-
-  emptyAllData () {
-    // empty all data to show initial screen
-    this.actions.dispatch({
-      type: 'USER.SET_ALL_DATA',
-      payload: {
-        step: 0,
-        claimed: false,
-        balanceFormatted: null,
-        balance: null,
-        link: null,
-        privateKey: null,
-        wallet: null,
-        errors: [],
-        loading: false
-      }
-    })
   }
 
   setAlert ({ alert }) {

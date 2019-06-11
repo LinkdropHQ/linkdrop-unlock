@@ -8,9 +8,10 @@ import ProSolution from './pro-solution'
 import FinalScreen from './final-screen'
 import LearnMore from './learn-more'
 import TrustedBy from './trusted-by'
+import ErrorScreen from './error-screen'
 import LoadingScreen from './loading-screen'
 import MetamaskInjectedScreen from './metamask-injected-screen'
-import { getHashVariables } from 'linkdrop-commons'
+import { getHashVariables, defineNetworkName, capitalize } from 'linkdrop-commons'
 import { Web3Consumer } from 'web3-react'
 
 @actions(({ user: { step, wallet, link, errors }, tokens: { balance, assetBalance } }) => ({ assetBalance, step, balance, wallet, link, errors }))
@@ -119,6 +120,12 @@ class Main extends React.Component {
   renderContent ({ step, errors, context }) {
     const { startCheckingBalanceImmediately } = this.state
     const { chainId = '4' } = getHashVariables()
+    const {
+      networkId
+    } = context
+    if (Number(networkId) !== Number(chainId)) {
+      return <ErrorScreen title={this.t('titles.networkNotSupported')} chainId={capitalize({ string: defineNetworkName({ chainId }) })} error='NETWORK_NOT_SUPPORTED' />
+    }
     switch (step) {
       case 1:
         // if has metamask extension => show screen with funds
@@ -140,6 +147,8 @@ class Main extends React.Component {
       case 2:
         // screen with link to share
         return <LinkShare
+          connector={context.connectorName}
+          account={context.account}
           onClick={_ => {
             this.actions().user.setStep({ step: 3 })
           }}
