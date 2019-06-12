@@ -32,6 +32,7 @@ const generator = function * ({ payload }) {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
   } catch (e) {
     console.error(e)
+    yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['ERROR_WITH_SIGNATURE_OCCURED'] } })
   }
 }
 

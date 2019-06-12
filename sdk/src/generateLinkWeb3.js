@@ -130,6 +130,7 @@ export const generateLinkERC721Web3 = async ({
   }
 
   const linkdropMaster = provider.getSigner()
+  const address = await linkdropMaster.getAddress()
 
   const { linkKey, linkId, linkdropSignerSignature } = await createLinkERC721({
     linkdropSigner: linkdropMaster,
@@ -143,7 +144,7 @@ export const generateLinkERC721Web3 = async ({
 
   // Construct link
   let url = `${host}/#/receive?weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&linkKey=${linkKey}&linkdropMasterAddress=${
-    linkdropMaster.address
+    address
   }&linkdropSignerSignature=${linkdropSignerSignature}`
 
   // Add isApprove param to url

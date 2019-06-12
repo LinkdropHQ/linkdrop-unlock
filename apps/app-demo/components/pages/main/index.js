@@ -27,10 +27,10 @@ class Main extends React.Component {
 
   componentDidMount () {
     const { chainId = '4' } = getHashVariables()
-    const { wallet } = this.props
+    const { wallet, account } = this.props
     // if has no wallet, then generate new one
     if (!wallet) {
-      return this.actions().user.createWallet()
+      return this.actions().user.createWallet({ account })
     }
     // otherwise do the initial check
     this.setState({
@@ -121,9 +121,11 @@ class Main extends React.Component {
     const { startCheckingBalanceImmediately } = this.state
     const { chainId = '4' } = getHashVariables()
     const {
-      networkId
+      networkId,
+      account
     } = context
-    if (Number(networkId) !== Number(chainId)) {
+    console.log({ networkId, chainId })
+    if (networkId && account && Number(networkId) !== Number(chainId)) {
       return <ErrorScreen title={this.t('titles.networkNotSupported')} chainId={capitalize({ string: defineNetworkName({ chainId }) })} error='NETWORK_NOT_SUPPORTED' />
     }
     switch (step) {

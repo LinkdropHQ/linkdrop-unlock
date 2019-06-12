@@ -8,8 +8,9 @@ import { LinkBlock, QrShare } from 'components/pages/common'
 import { copyToClipboard, getHashVariables } from 'linkdrop-commons'
 import variables from 'variables'
 import { ethers } from 'ethers'
+const location = window.location
 
-@actions(({ user: { link, loading }, tokens: { standard } }) => ({ link, loading, standard }))
+@actions(({ user: { link, loading, errors }, tokens: { standard } }) => ({ link, loading, standard, errors }))
 @translate('pages.main')
 class LinkShare extends React.Component {
   constructor (props) {
@@ -19,20 +20,37 @@ class LinkShare extends React.Component {
     }
   }
 
+  componentWillReceiveProps ({ errors, standard, link, account, connector }) {
+    const { errors: prevErrors, standard: prevStandard } = this.props
+    if (errors && errors[0] && prevErrors.length === 0 && errors[0] !== prevErrors[0]) {
+      window.alert(this.t(`errors.${errors[0]}`))
+      location && location.reload(true)
+    }
+    if (standard && !prevStandard && account && connector) {
+      this.generateLink({ standard, link, account, connector })
+    }
+  }
+
   componentDidMount () {
     const { standard, link, account, connector } = this.props
+    this.generateLink({ standard, link, account, connector })
+  }
+
+  generateLink ({ standard, link, account, connector }) {
     const {
       chainId = '4'
     } = getHashVariables()
     if (link) { return }
+    const provider = new ethers.providers.Web3Provider(web3.currentProvider)
     if (standard === 'erc20') {
       if (connector === 'MetaMask' && account) {
-        const provider = new ethers.providers.Web3Provider(web3.currentProvider)
-        console.log(provider.getSigner())
         return this.actions().user.generateERC20Web3Link({ chainId, provider })
       }
       return this.actions().user.generateERC20Link({ chainId })
-    } else {
+    } else if (standard === 'erc721') {
+      if (connector === 'MetaMask' && account) {
+        return this.actions().user.generateERC721Web3Link({ chainId, provider })
+      }
       this.actions().user.generateERC721Link({ chainId })
     }
   }

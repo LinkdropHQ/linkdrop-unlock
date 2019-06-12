@@ -5,21 +5,23 @@ import { factory } from 'config'
 import configs from 'config-demo'
 const localStorage = (typeof window === 'undefined' ? {} : window).localStorage
 
-const generator = function * () {
+const generator = function * ({ payload }) {
   try {
+    const { account } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const newWallet = ethers.Wallet.createRandom()
     const { address: wallet, privateKey } = newWallet
 
-    if (wallet) {
-      const proxyAddr = yield LinkdropSDK.computeProxyAddress(factory, wallet, configs.initcode)
+    if (wallet || account) {
+      const mainAddress = account || wallet
+      const proxyAddr = yield LinkdropSDK.computeProxyAddress(factory, mainAddress, configs.initcode)
       yield put({ type: 'USER.SET_WALLET', payload: { wallet: proxyAddr } })
-      yield put({ type: 'USER.SET_MASTER_ADDRESS', payload: { masterAddress: wallet } })
+      yield put({ type: 'USER.SET_MASTER_ADDRESS', payload: { masterAddress: mainAddress } })
       localStorage && localStorage.setItem('wallet', proxyAddr)
-      localStorage && localStorage.setItem('masterAddress', wallet)
+      localStorage && localStorage.setItem('masterAddress', mainAddress)
     }
 
-    if (privateKey) {
+    if (privateKey && !account) {
       yield put({ type: 'USER.SET_PRIVATE_KEY', payload: { privateKey } })
       localStorage && localStorage.setItem('privateKey', privateKey)
     }

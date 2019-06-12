@@ -144,17 +144,9 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
     )
   })
 
-  it('set standard', () => {
-    expect(
-      gen.next(data).value
-    ).to.deep.equal(
-      put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc20' } })
-    )
-  })
-
   it('go to step 2', () => {
     expect(
-      gen.next(erc20Balance).value
+      gen.next(data).value
     ).to.deep.equal(
       put({ type: 'USER.SET_STEP', payload: { step: 2 } })
     )
@@ -162,15 +154,23 @@ describe('data/store/saga/tokens/every/check-balance.js initial check balance wi
 
   it('set balance', () => {
     expect(
-      gen.next().value
+      gen.next(erc20Balance).value
     ).to.deep.equal(
       put({ type: 'TOKENS.SET_BALANCE', payload: { balanceFormatted, balance } })
     )
   })
 
+  it('set standard', () => {
+    expect(
+      gen.next().value
+    ).to.deep.equal(
+      put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc20' } })
+    )
+  })
+
   it('disable loading', () => {
     expect(
-      gen.next(erc20Balance).value
+      gen.next().value
     ).to.deep.equal(
       put({ type: 'USER.SET_LOADING', payload: { loading: false } })
     )

@@ -20,7 +20,7 @@ const generator = function * ({ payload }) {
     if (currentAsset === ethers.constants.AddressZero) {
       const ethValueWei = utils.parseEther(ethAmount)
       const promise = new Promise((resolve, reject) => {
-        web3Obj.eth.sendTransaction({ to: toWallet, from: fromWallet, value: ethValueWei }, result => resolve({ result }))
+        web3Obj.eth.sendTransaction({ to: toWallet, gas: 23000, from: fromWallet, value: ethValueWei }, result => resolve({ result }))
       })
       const { result } = yield promise
       if (String(result) === 'null') {
