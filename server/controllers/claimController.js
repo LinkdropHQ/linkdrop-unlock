@@ -277,7 +277,7 @@ export const claimERC721 = async (req, res) => {
   }
 
   if (isApprove) {
-    if (String(isApprove) !== 'true' && String(isApprove) !== false) {
+    if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
       throw newError('Please provide valid isApprove argument')
     }
   }
