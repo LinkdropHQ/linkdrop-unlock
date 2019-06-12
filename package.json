@@ -6,7 +6,7 @@
   "repository": "https://github.com/LinkdropProtocol/linkdrop-monorepo.git",
   "license": "MIT",
   "workspaces": [
-    "apps/app-landing",
+    "apps/app-demo",
     "apps/app-claim",
     "contracts",
     "apps/linkdrop-ui-kit",
@@ -31,7 +31,7 @@
     "server": "npx babel-node server/server.js",
     "setup-linkdrop": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links",
     "setup-linkdrop-erc721": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links-erc721",
-    "test:landing": "NODE_ENV=test-landing NODE_PATH=./apps/app-landing mocha apps/app-landing/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",
+    "test:demo": "NODE_ENV=test-demo NODE_PATH=./apps/app-demo mocha apps/app-demo/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",
     "test:claim": "NODE_ENV=test-claim NODE_PATH=./apps/app-claim mocha apps/app-claim/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive"
   },
   "standard": {

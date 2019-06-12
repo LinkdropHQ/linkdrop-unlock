@@ -3,8 +3,12 @@ import { expect } from 'chai'
 import generateLinkERC20Generator from 'data/store/saga/tokens/every/claim-tokens-erc20.js'
 import { put } from 'redux-saga/effects'
 import LinkdropSDK from 'sdk/src/index'
-import { jsonRpcUrl, apiHost } from 'config'
+import { jsonRpcUrl, apiHost, factory } from 'config'
 import { ethers } from 'ethers'
+import { defineNetworkName, mocks } from 'linkdrop-commons'
+import { createMockProvider } from 'ethereum-waffle'
+import LinkdropFactory from 'contracts/LinkdropFactory.json'
+const provider = createMockProvider()
 
 describe('data/store/saga/tokens/every/claim-tokens-erc20.js ERC-20', () => {
   const wallet = '0x0fc0c96d5aba156b1263311812a7b3d0812f4120b8f3f4288c0b7806fc2aaa2a'
@@ -14,6 +18,7 @@ describe('data/store/saga/tokens/every/claim-tokens-erc20.js ERC-20', () => {
   const linkdropSignerSignature = '0xd49fe15958f67d0349b4ff98d1367c9a9a709f3c0e571c2dc41741bef883cb5606f05cbd6e292ae22644a69a68fd3df69a03d0a'
   const ethAmount = '0'
   const tokenAmount = '100'
+  const chainId = '1'
   const expirationTime = '1900000000000000'
   const payload = {
     wallet,
@@ -25,8 +30,11 @@ describe('data/store/saga/tokens/every/claim-tokens-erc20.js ERC-20', () => {
     linkdropMasterAddress,
     linkdropSignerSignature
   }
+  const networkName = defineNetworkName({ chainId })
   const ethersContractZeroAddress = ethers.constants.AddressZero
   const gen = generateLinkERC20Generator({ payload })
+  const factoryContract = new ethers.Contract(factory, LinkdropFactory.abi, provider)
+  const version = mocks.version
   const result = {
     success: true,
     txHash: '0xbF0e4036BF968dD007F9B4A1BFdA4e54C042F612'
@@ -40,9 +48,35 @@ describe('data/store/saga/tokens/every/claim-tokens-erc20.js ERC-20', () => {
     )
   })
 
+  it('get provider', () => {
+    expect(
+      gen.next(networkName).value
+    ).to.deep.equal(
+      ethers.getDefaultProvider(networkName)
+    )
+  })
+
+  it('get contract obj', () => {
+    const currentProvider = gen.next(provider).value
+    const actualProvider = new ethers.Contract(factory, LinkdropFactory.abi, provider)
+    expect(
+      typeof currentProvider
+    ).to.deep.equal(
+      typeof actualProvider
+    )
+  })
+
+  it('get version', () => {
+    expect(
+      gen.next(factoryContract).value
+    ).to.deep.equal(
+      factoryContract.getProxyMasterCopyVersion(linkdropMasterAddress)
+    )
+  })
+
   it('claim tokens with link', () => {
     expect(
-      gen.next().value
+      gen.next(version).value
     ).to.deep.equal(
       LinkdropSDK.claim({
         jsonRpcUrl,
@@ -55,7 +89,8 @@ describe('data/store/saga/tokens/every/claim-tokens-erc20.js ERC-20', () => {
         linkdropMasterAddress,
         linkdropSignerSignature,
         receiverAddress: wallet,
-        isApprove: false
+        isApprove: false,
+        version
       })
     )
   })
