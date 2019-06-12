@@ -1,7 +1,0 @@
-{  
-  "jsonRpcUrl":"https://rinkeby.infura.io",
-  "claimHost": "http://localhost:5000",
-  "apiHost": "http://localhost:5000",
-  "masterCopy": "0xa6dCA4A4FF8Fb971eD925daddBd18454BaFa8c97",
-  "factory": "0x5A0D4396eD075EeA754DB35BB9e089CC23C63Aa5"
-}
