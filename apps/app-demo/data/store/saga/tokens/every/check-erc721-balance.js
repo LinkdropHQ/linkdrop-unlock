@@ -13,8 +13,10 @@ const generator = function * ({ payload }) {
     const nftContract = yield new ethers.Contract(tokenAddress, NFTMock.abi, provider)
     const nftContractOwner = yield nftContract.ownerOf(tokenId)
     if (nftContractOwner.toLowerCase() === account.toLowerCase()) {
+      yield put({ type: 'USER.SET_ERRORS', payload: { errors: [] } })
       yield put({ type: 'TOKENS.SET_TOKEN_ID', payload: { tokenId: tokenId } })
       yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress } })
+      yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc721' } })
     }
 
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })

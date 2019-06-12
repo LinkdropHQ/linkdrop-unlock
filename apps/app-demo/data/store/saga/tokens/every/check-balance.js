@@ -33,12 +33,6 @@ const generator = function * ({ payload }) {
         tokenAddress
       }
     }
-
-    if (erc721Balance.length > 0) {
-      yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc721' } })
-    } else if (Number(balanceFormatted) > 0 || validERC20TokenBalance({ erc20Balance })) {
-      yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc20' } })
-    }
     if (step === 0) {
       // if the step is 0, then it means that it was an initial check, and we have to move on first step
       if (Number(balanceFormatted) > 0 || validERC20TokenBalance({ erc20Balance }) || erc721Balance.length > 0) {
@@ -57,11 +51,13 @@ const generator = function * ({ payload }) {
     // if ETH found on address -> set this balance to store
     if (Number(balanceFormatted) > 0) {
       yield put({ type: 'TOKENS.SET_BALANCE', payload: { balanceFormatted, balance } })
+      yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc20' } })
     }
     // if ERC-721 found on address -> set this token id to store
     if (erc721Balance.length > 0) {
       yield put({ type: 'TOKENS.SET_TOKEN_ID', payload: { tokenId: erc721Balance[0].token_id } })
       yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress: erc721Balance[0].asset_contract.address } })
+      yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc721' } })
     }
     // if ERC-20 found on address -> set this balance to store
     if (validERC20TokenBalance({ erc20Balance })) {
@@ -72,6 +68,7 @@ const generator = function * ({ payload }) {
       } = erc20Balance
       yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress } })
       yield put({ type: 'TOKENS.SET_ASSET_BALANCE', payload: { balanceFormatted, balance } })
+      yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc20' } })
     }
 
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
