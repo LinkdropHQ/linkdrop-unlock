@@ -2,14 +2,19 @@ import LinkdropFactory from '../../contracts/build/LinkdropFactory'
 import LinkdropSDK from '../../sdk/src/index'
 import ClaimTx from '../models/claimTx'
 import ClaimTxERC721 from '../models/claimTxERC721'
+import { newError } from '../../scripts/src/utils'
+import configs from '../../configs'
+import ora from 'ora'
+import { terminal as term } from 'terminal-kit'
 
+import Table from 'cli-table'
+import { ICONS } from 'jest-util/build/specialChars'
 const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
+const config = configs.get('server')
 
-const path = require('path')
-const configPath = path.resolve(__dirname, '../../configs/server.config.json')
-const config = require(configPath)
 const { jsonRpcUrl, factory, relayerPrivateKey } = config
+
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 const relayer = new ethers.Wallet(relayerPrivateKey, provider)
 
@@ -29,65 +34,37 @@ export const claim = async (req, res) => {
     isApprove
   } = req.body
 
-  const claimParams = {
+  let body = {
     weiAmount,
     tokenAddress,
     tokenAmount,
     expirationTime,
+    version,
+    chainId,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature
+    receiverSignature,
+    isApprove
   }
 
-  if (!weiAmount) {
-    throw new Error('Please provide amount of eth to claim')
-  }
+  // Make sure all arguments are passed
+  for (let key in body) {
+    if (!req.body[key]) {
+      const error = `Please provide ${key} argument\n`
+      term.red.bold(error)
 
-  if (!tokenAddress) {
-    throw new Error('Please provide token address')
-  }
-
-  if (!tokenAmount) {
-    throw new Error('Please provide amount of tokens to claim')
-  }
-
-  if (!expirationTime) {
-    throw new Error('Please provide expiration time')
-  }
-
-  if (!version) {
-    throw new Error('Please provide mastercopy version ')
-  }
-
-  if (!chainId) {
-    throw new Error('Please provide chain id')
-  }
-
-  if (!linkId) {
-    throw new Error('Please provide the link id')
-  }
-
-  if (!linkdropMasterAddress) {
-    throw new Error(`Please provide linkdrop master's address`)
-  }
-
-  if (!linkdropSignerSignature) {
-    throw new Error(`Please provide linkdrop signer's signature`)
-  }
-
-  if (!receiverAddress) {
-    throw new Error(`Please provide receiver's address`)
-  }
-
-  if (!receiverSignature) {
-    throw new Error('Please provide receiver signature')
+      return res.json({
+        success: false,
+        error
+      })
+    }
   }
 
   if (isApprove) {
     if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
-      throw new Error('Please provide valid isApprove argument')
+      throw newError('Please provide valid isApprove argument')
     }
   }
 
@@ -111,13 +88,29 @@ export const claim = async (req, res) => {
       weiAmount,
       tokenAddress,
       tokenAmount,
+      expirationTime,
       version,
       chainId,
       linkId,
-      linkdropMasterAddress
+      linkdropMasterAddress,
+      receiverAddress
     })
+    const table = new Table()
+    let type
 
     if (oldClaimTx && oldClaimTx.txHash) {
+      if (tokenAddress === ethers.constants.AddressZero) type = 'ETH'
+      else {
+        if (weiAmount === 0) type = 'ERC20'
+        else type = 'ETH + ERC20'
+      }
+      table.push(['type', type])
+
+      table.push(['txHash', oldClaimTx.toObject().txHash])
+
+      term.green.bold(`\nSubmitted claim transaction\n`)
+      term.bold(table.toString(), '\n')
+
       return res.json({
         success: true,
         txHash: oldClaimTx.txHash
@@ -144,7 +137,6 @@ export const claim = async (req, res) => {
         )
 
         // Claim
-        console.log('\n🔦️  Claiming...\n', claimParams)
 
         tx = await proxyFactory.claim(
           weiAmount,
@@ -175,7 +167,6 @@ export const claim = async (req, res) => {
         )
 
         // Claim
-        console.log('\n🔦️  Claiming...\n', claimParams)
 
         tx = await proxyFactory.claimApprove(
           weiAmount,
@@ -192,7 +183,6 @@ export const claim = async (req, res) => {
       }
 
       txHash = tx.hash
-      console.log(`#️⃣  Tx Hash: ${txHash}`)
 
       // Save claim tx to database
       const claimTx = new ClaimTx({
@@ -210,17 +200,29 @@ export const claim = async (req, res) => {
       })
 
       const document = await claimTx.save()
-      console.log(
-        `🔋  Saved claim tx with document id = ${document.id} to database`
-      )
+
+      if (tokenAddress === ethers.constants.AddressZero) type = 'ETH'
+      else {
+        if (weiAmount === 0) type = 'ERC20'
+        else type = 'ETH + ERC20'
+      }
+      table.push(['type', type])
+
+      for (let key in claimTx.toObject()) {
+        if (key !== '_id' && key !== '__v') {
+          table.push([key, claimTx.toObject()[key]])
+        }
+      }
+
+      term.green.bold(`\nSubmitted claim transaction\n`)
+      term.bold(table.toString(), '\n')
 
       res.json({
         success: true,
         txHash: txHash
       })
     } catch (error) {
-      if (error.reason) console.error(`📛  Failed with '${error.reason}'`)
-      else console.error(error)
+      term.red.bold(`\n${error.reason ? error.reason : error}\n`)
 
       return res.json({
         success: false,
@@ -228,7 +230,7 @@ export const claim = async (req, res) => {
       })
     }
   } catch (err) {
-    console.error(err)
+    term.red.bold(err)
   }
 }
 
@@ -248,65 +250,37 @@ export const claimERC721 = async (req, res) => {
     isApprove
   } = req.body
 
-  const claimParams = {
+  let body = {
     weiAmount,
     nftAddress,
     tokenId,
     expirationTime,
+    version,
+    chainId,
     linkId,
     linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature
+    receiverSignature,
+    isApprove
   }
 
-  if (!weiAmount) {
-    throw new Error('Please provide amount of eth to claim')
-  }
+  // Make sure all arguments are passed
+  for (let key in body) {
+    if (!req.body[key]) {
+      const error = `Please provide ${key} argument\n`
+      term.red.bold(error)
 
-  if (!nftAddress) {
-    throw new Error('Please provide nft address')
-  }
-
-  if (!tokenId) {
-    throw new Error('Please provide token id to claim')
-  }
-
-  if (!expirationTime) {
-    throw new Error('Please provide expiration time')
-  }
-
-  if (!version) {
-    throw new Error('Please provide mastercopy version ')
-  }
-
-  if (!chainId) {
-    throw new Error('Please provide chain id')
-  }
-
-  if (!linkId) {
-    throw new Error('Please provide the link id')
-  }
-
-  if (!linkdropMasterAddress) {
-    throw new Error(`Please provide linkdrop master's address`)
-  }
-
-  if (!linkdropSignerSignature) {
-    throw new Error(`Please provide linkdrop signer's signature`)
-  }
-
-  if (!receiverAddress) {
-    throw new Error(`Please provide receiver's address`)
-  }
-
-  if (!receiverSignature) {
-    throw new Error('Please provide receiver signature')
+      return res.json({
+        success: false,
+        error
+      })
+    }
   }
 
   if (isApprove) {
     if (String(isApprove) !== 'true' && String(isApprove) !== false) {
-      throw new Error('Please provide isApprove argument')
+      throw newError('Please provide valid isApprove argument')
     }
   }
 
@@ -331,13 +305,23 @@ export const claimERC721 = async (req, res) => {
       weiAmount,
       nftAddress,
       tokenId,
+      expirationTime,
       version,
       chainId,
       linkId,
-      linkdropMasterAddress
+      linkdropMasterAddress,
+      receiverAddress
     })
 
+    const table = new Table()
+
     if (oldClaimTx && oldClaimTx.txHash) {
+      table.push(['type', `${weiAmount === 0 ? 'ERC721' : 'ETH + ERC721'}`])
+      table.push(['txHash', oldClaimTx.toObject().txHash])
+
+      term.green.bold(`\nSubmitted claim transaction\n`)
+      term.bold(table.toString(), '\n')
+
       return res.json({
         success: true,
         txHash: oldClaimTx.txHash
@@ -363,7 +347,6 @@ export const claimERC721 = async (req, res) => {
         )
 
         // Claim
-        console.log('\n🔦️  Claiming...\n', claimParams)
 
         tx = await proxyFactory.claimERC721(
           weiAmount,
@@ -394,7 +377,6 @@ export const claimERC721 = async (req, res) => {
         )
 
         // Claim
-        console.log('\n🔦️  Claiming...\n', claimParams)
 
         tx = await proxyFactory.claimERC721Approve(
           weiAmount,
@@ -410,7 +392,6 @@ export const claimERC721 = async (req, res) => {
         )
       }
       txHash = tx.hash
-      console.log(`#️⃣  Tx Hash: ${txHash}`)
 
       // Save claim tx to database
       const claimTxERC721 = new ClaimTxERC721({
@@ -428,17 +409,23 @@ export const claimERC721 = async (req, res) => {
       })
 
       const document = await claimTxERC721.save()
-      console.log(
-        `🔋  Saved claim tx with document id = ${document.id} to database`
-      )
+
+      table.push(['type', `${weiAmount === 0 ? 'ERC721' : 'ETH + ERC721'}`])
+      for (let key in claimTxERC721.toObject()) {
+        if (key !== '_id' && key !== '__v') {
+          table.push([key, claimTxERC721.toObject()[key]])
+        }
+      }
+
+      term.green.bold(`\nSubmitted claim transaction\n`)
+      term.bold(table.toString(), '\n')
 
       res.json({
         success: true,
         txHash: tx.hash
       })
     } catch (error) {
-      if (error.reason) console.error(`📛  Failed with '${error.reason}'`)
-      else console.error(error)
+      term.red.bold(`\n${error.reason ? error.reason : error}\n`)
 
       return res.json({
         success: false,
@@ -446,6 +433,6 @@ export const claimERC721 = async (req, res) => {
       })
     }
   } catch (err) {
-    console.error(err)
+    term.red.bold(err)
   }
 }
