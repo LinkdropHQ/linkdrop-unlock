@@ -25,7 +25,7 @@ const generator = function * ({ payload }) {
       linkdropMasterAddress,
       linkdropSignerSignature,
       receiverAddress: wallet,
-      isApprove: false,
+      isApprove: 'false',
       chainId,
       version: version.toNumber()
     })
