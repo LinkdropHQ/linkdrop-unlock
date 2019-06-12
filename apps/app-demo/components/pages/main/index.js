@@ -124,7 +124,6 @@ class Main extends React.Component {
       networkId,
       account
     } = context
-    console.log({ networkId, chainId })
     if (networkId && account && Number(networkId) !== Number(chainId)) {
       return <ErrorScreen title={this.t('titles.networkNotSupported')} chainId={capitalize({ string: defineNetworkName({ chainId }) })} error='NETWORK_NOT_SUPPORTED' />
     }
