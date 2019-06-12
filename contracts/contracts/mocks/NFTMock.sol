@@ -1,13 +1,18 @@
 pragma solidity ^0.5.1;
-import "openzeppelin-solidity/contracts/token/ERC721/ERC721.sol";
+import "openzeppelin-solidity/contracts/token/ERC721/ERC721Metadata.sol";
 
-contract NFTMock is ERC721 {
-    
-    // Mint 100 NFTs to deployer
-    constructor() public {
-        for (uint i = 0; i < 100; i++) {
+contract NFTMock is ERC721Metadata {
+
+    // =================================================================================================================
+    //                                         NFT Mock
+    // =================================================================================================================
+
+    // Mint 10 NFTs to deployer
+    constructor() public ERC721Metadata ("Mock NFT", "MOCK") {
+        for (uint i = 0; i < 10; i++) {
             super._mint(msg.sender, i);
+            super._setTokenURI(i, "https://api.myjson.com/bins/1dhwd6");
         }
     }
-    
+
 }

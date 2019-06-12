@@ -5,9 +5,23 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-.env
-app-config.json
 node_modules/
 .DS_Store
 other/
 build/
+scripts/output
+
+# Configs
+.env
+config.json
+app.config.json
+server.config.json
+scripts.config.json
+
+app-claim/node_modules/
+app-claim/assets/scripts/
+
+app-landing/node_modules/
+app-landing/assets/scripts/
+
+linkdrop-ui-kit/dist/

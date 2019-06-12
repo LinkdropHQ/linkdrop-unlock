@@ -14,13 +14,6 @@ const provider = new ethers.providers.JsonRpcProvider()
 let privateKey =
   '0x9471db4aca21ead4c05fe797dd92975097a61feefb07f39a1423fc7195f73c26'
 
-// const provider = ethers.getDefaultProvider(process.env.NETWORK)
-// let privateKey = process.env.SENDER_PRIVATE_KEY
-
-// const provider = ethers.getDefaultProvider('rinkeby')
-// let privateKey =
-//   'AB3DCF0D03472E041AC2B7C0148035DA3236B1BBF2AF21D032588803F16228F3'
-
 let wallet = new ethers.Wallet(privateKey, provider)
 
 let linkdrop, linkdropFactory
@@ -74,7 +67,7 @@ const deployProxy = async sender => {
 
   let proxy = new ethers.Contract(expectedAddress, Linkdrop.abi, wallet)
 
-  let senderAddress = await proxy.SENDER()
+  let senderAddress = await proxy.sender()
   console.log('senderAddress: ', senderAddress)
   expect(sender).to.eq(senderAddress)
 }

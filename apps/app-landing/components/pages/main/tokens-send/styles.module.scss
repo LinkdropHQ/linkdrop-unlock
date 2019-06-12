@@ -1,0 +1,128 @@
+@import "variables";
+
+.input {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.input, .button {
+  font-family: 'Inter-Regular'!important;
+}
+
+.button {
+  margin-bottom: 20px;
+}
+
+.tabs {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.loading {
+  width: 340px;
+}
+
+.secondaryLoading {
+  margin-bottom: 20px;
+}
+
+.telegramConnect {
+  position: absolute;
+  bottom: 25px;
+  width: 100%;
+  font-size: 14px;
+  left: 0;
+  text-align: center;
+
+  a {
+    color: $blackColor;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+
+  &.rinkeby {
+    .qr {
+      margin-bottom: 10px;
+    }
+
+    .copyBlock {
+      margin-bottom: 20px;
+      border-color: $orangeColor;
+
+      & > div {
+        &:first-child {
+          color: $orangeColor;
+        }
+      }
+    }
+  }
+}
+
+.containerCentered {
+  height: 360px;
+  width: 100%;
+  justify-content: center;
+}
+
+.qr {
+  margin-bottom: 40px;
+}
+
+.copyBlock {
+  margin-bottom: 20px;
+}
+
+.terms, .alert {
+  margin-top: 20px;
+  font-size: 14px;
+  color: $blackColor;
+
+  a {
+    color: $blackColor;
+  }
+
+  span {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
+.terms {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.network {
+  background: $orangeColor;
+  border-radius: 3px;
+  color: $whiteColor;
+  font-size: 14px;
+  height: 20px;
+  padding: 0px 5px;
+  display: flex;
+  line-height: 1;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+  .copyBlock {
+    max-width: 280px!important;
+  }
+
+  .loading {
+    width: 280px!important;
+  }
+
+  .nextButton {
+    width: 100%;
+    max-width: 100%;
+  }
+}

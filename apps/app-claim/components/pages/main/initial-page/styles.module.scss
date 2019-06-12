@@ -1,0 +1,37 @@
+@import "variables";
+
+.icon {
+  max-width: 100%;
+}
+
+.title {
+  font-size: 35px;
+  margin-bottom: 50px;
+  text-transform: uppercase;
+}
+
+.button {
+  margin-bottom: 15px;
+  max-width: 300px;
+}
+
+.terms {
+  margin-bottom: 25px;
+  font-size: 14px;
+
+  a {
+    color: $blackColor;
+  }
+}
+
+.tokenIcon {
+  margin-bottom: 30px;
+}
+
+.wallet {
+  font-size: 18px;
+}
+
+.wallet span {
+  font-family: 'Inter-Medium';
+}

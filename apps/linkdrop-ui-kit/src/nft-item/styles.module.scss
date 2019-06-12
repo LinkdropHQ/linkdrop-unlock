@@ -1,0 +1,49 @@
+@import "variables";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+.imageBlock {
+  width: 150px;
+  height: 150px;
+  max-height: 150px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex: 1 0 150px;
+  border: 1px solid $blackColor;
+}
+
+.selected {
+  flex-direction: row;
+  width: auto;
+}
+
+.selected .imageBlock {
+  margin-right: 30px;
+}
+
+.content {
+  text-align: left;
+}
+
+.selectable {
+  cursor: pointer;
+}
+
+.imageBlock img {
+  max-width: 100%;
+}
+
+.name, .description {
+  font-size: 16px;
+  line-height: 22px;
+}

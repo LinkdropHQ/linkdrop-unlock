@@ -1,16 +1,39 @@
 {
   "name": "linkdrop-monorepo",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "main": "index.js",
-  "repository": "https://github.com/LinkdropProtocol/one-to-one-linkdrop.git",
+  "repository": "https://github.com/LinkdropProtocol/linkdrop-monorepo.git",
   "license": "MIT",
   "workspaces": [
-    "app",
-    "app-claim",
+    "apps/app-landing",
+    "apps/app-claim",
     "contracts",
-    "linkdrop-ui-kit"
+    "apps/linkdrop-ui-kit",
+    "scripts",
+    "server",
+    "sdk",
+    "apps/linkdrop-commons"
   ],
+  "scripts": {
+    "test": "mocha --require @babel/polyfill --require @babel/register",
+    "compile-contracts": "cd contracts && npx waffle",
+    "deploy-mastercopy": "npx babel-node scripts/src/deploy_mastercopy.js",
+    "deploy-factory": "npx babel-node scripts/src/deploy_factory.js",
+    "deploy-erc20": "npx babel-node scripts/src/deploy_erc20.js",
+    "deploy-erc721": "npx babel-node scripts/src/deploy_erc721.js",
+    "generate-links-eth": "npx babel-node scripts/src/generate_links_eth.js",
+    "generate-links-erc20": "npx babel-node scripts/src/generate_links_erc20.js",
+    "generate-links-erc721": "npx babel-node scripts/src/generate_links_erc721.js",
+    "claim-eth": "npx babel-node scripts/src/claim_eth.js",
+    "claim-erc20": "npx babel-node scripts/src/claim_erc20.js",
+    "claim-erc721": "npx babel-node scripts/src/claim_erc721.js",
+    "server": "npx babel-node server/server.js",
+    "setup-linkdrop": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links",
+    "setup-linkdrop-erc721": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links-erc721",
+    "test:landing": "NODE_ENV=test-landing NODE_PATH=./apps/app-landing mocha apps/app-landing/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",
+    "test:claim": "NODE_ENV=test-claim NODE_PATH=./apps/app-claim mocha apps/app-claim/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive"
+  },
   "standard": {
     "parser": "babel-eslint"
   }

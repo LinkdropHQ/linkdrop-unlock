@@ -1,60 +1,52 @@
+pragma solidity ^0.5.6;
 
-pragma solidity >= 0.5.0;
+interface ILinkdropERC721 {
 
-contract ILinkdropERC721 {
-
-    event Canceled(address linkId, uint timestamp);
-    event Claimed(address indexed linkId, address indexed token, uint indexed tokenId, address receiver, uint timestamp);
-     
-    // Constructor
-    function initializer(address payable _sender) external returns (bool);
-
-    function verifySenderSignatureERC721
+    function verifyLinkdropSignerSignatureERC721
     (
-        address _token,
+        uint _weiAmount,
+        address _nftAddress,
         uint _tokenId,
         uint _expiration,
+        uint _version,
+        uint _chainId,
         address _linkId,
-        bytes memory _signature
+        bytes calldata _signature
     )
-    public view returns (bool);
+    external view returns (bool);
 
     function verifyReceiverSignatureERC721
     (
         address _linkId,
 	    address _receiver,
-		bytes memory _signature
+		bytes calldata _signature
     )
-    public view returns (bool);
+    external view returns (bool);
 
     function checkClaimParamsERC721
     (
-        address _token,
+        uint _weiAmount,
+        address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        address _linkId, 
-        bytes calldata _senderSignature,
-        address _receiver, 
+        address _linkId,
+        bytes calldata _linkdropSignerSignature,
+        address _receiver,
         bytes calldata _receiverSignature
     )
     external view returns (bool);
 
     function claimERC721
     (
-        address _token, 
+        uint _weiAmount,
+        address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        address _linkId, 
-        bytes calldata _senderSignature, 
-        address payable _receiver, 
+        address _linkId,
+        bytes calldata _linkdropSignerSignature,
+        address payable _receiver,
         bytes calldata _receiverSignature
-    ) 
+    )
     external returns (bool);
 
-    function isClaimedLink(address _linkId) external view returns (bool);
-    function isCanceledLink(address _linkId) external view returns (bool);
-    function cancel(address _linkId) external returns (bool);
-    
 }
-
-// ${host}/#/claim?t=${tokenAddress}&id=${tokenId}&exp=${expirationTime}&pk=${linkKey}&sig=${senderSignature}&c=${contractAddress}

@@ -1,0 +1,13 @@
+{
+  "name": "sdk",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "babel": {
+    "extends": "../babel.config.js"
+  },
+  "dependencies": {
+    "axios": "^0.18.1",
+    "ethers": "^4.0.27"
+  }
+}
