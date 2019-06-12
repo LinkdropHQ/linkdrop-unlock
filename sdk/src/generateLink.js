@@ -1,5 +1,4 @@
 import { createLink, createLinkERC721 } from './utils'
-import { newError } from '../../scripts/src/utils'
 const ethers = require('ethers')
 
 export const generateLink = async ({
@@ -15,44 +14,44 @@ export const generateLink = async ({
   isApprove
 }) => {
   if (jsonRpcUrl === null || jsonRpcUrl === '') {
-    throw newError('Please provide json rpc url')
+    throw new Error('Please provide json rpc url')
   }
 
   if (chainId === null || chainId === '') {
-    throw newError('Please provide chainId')
+    throw new Error('Please provide chainId')
   }
 
   if (host === null || host === '') {
-    throw newError('Please provide host')
+    throw new Error('Please provide host')
   }
 
   if (linkdropMasterPrivateKey === null || linkdropMasterPrivateKey === '') {
-    throw newError(`Please provide linkdropMaster's private key`)
+    throw new Error(`Please provide linkdropMaster's private key`)
   }
 
   if (weiAmount === null || weiAmount === '') {
-    throw newError('Please provide amount of eth to claim')
+    throw new Error('Please provide amount of eth to claim')
   }
 
   if (tokenAddress === null || tokenAddress === '') {
-    throw newError('Please provide ERC20 token address')
+    throw new Error('Please provide ERC20 token address')
   }
 
   if (tokenAmount === null || tokenAmount === '') {
-    throw newError('Please provide amount of tokens to claim')
+    throw new Error('Please provide amount of tokens to claim')
   }
 
   if (expirationTime === null || expirationTime === '') {
-    throw newError('Please provide expiration time')
+    throw new Error('Please provide expiration time')
   }
 
   if (version === null || version === '') {
-    throw newError('Please provide contract version')
+    throw new Error('Please provide contract version')
   }
 
   if (isApprove) {
     if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
-      throw newError('Please provide valid isApprove argument')
+      throw new Error('Please provide valid isApprove argument')
     }
   }
 
@@ -94,23 +93,23 @@ export const generateLinkERC721 = async ({
   isApprove
 }) => {
   if (jsonRpcUrl === null || jsonRpcUrl === '') {
-    throw newError('Please provide json rpc url')
+    throw new Error('Please provide json rpc url')
   }
 
   if (chainId === null || chainId === '') {
-    throw newError('Please provide chain id')
+    throw new Error('Please provide chain id')
   }
 
   if (host === null || host === '') {
-    throw newError('Please provide host')
+    throw new Error('Please provide host')
   }
 
   if (linkdropMasterPrivateKey === null || linkdropMasterPrivateKey === '') {
-    throw newError(`Please provide linkdropMaster's private key`)
+    throw new Error(`Please provide linkdropMaster's private key`)
   }
 
   if (weiAmount === null || weiAmount === '') {
-    throw newError('Please provide amount of eth to claim')
+    throw new Error('Please provide amount of eth to claim')
   }
 
   if (
@@ -118,24 +117,24 @@ export const generateLinkERC721 = async ({
     nftAddress === '' ||
     nftAddress === ethers.constants.AddressZero
   ) {
-    throw newError('Please provide ERC721 token address')
+    throw new Error('Please provide ERC721 token address')
   }
 
   if (tokenId === null || tokenId === '') {
-    throw newError('Please provide token id to claim')
+    throw new Error('Please provide token id to claim')
   }
 
   if (expirationTime === null || expirationTime === '') {
-    throw newError('Please provide expiration time')
+    throw new Error('Please provide expiration time')
   }
 
   if (version === null || version === '') {
-    throw newError('Please provide contract version')
+    throw new Error('Please provide contract version')
   }
 
   if (isApprove) {
     if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
-      throw newError('Please provide valid isApprove argument')
+      throw new Error('Please provide valid isApprove argument')
     }
   }
 

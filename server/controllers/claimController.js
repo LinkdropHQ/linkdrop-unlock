@@ -4,11 +4,9 @@ import ClaimTx from '../models/claimTx'
 import ClaimTxERC721 from '../models/claimTxERC721'
 import { newError } from '../../scripts/src/utils'
 import configs from '../../configs'
-import ora from 'ora'
 import { terminal as term } from 'terminal-kit'
 
 import Table from 'cli-table'
-import { ICONS } from 'jest-util/build/specialChars'
 const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
 const config = configs.get('server')
