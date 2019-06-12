@@ -6,8 +6,8 @@ Web apps to interact with linkdrop service for end-users:
 ## Getting Started
 
 ### Update configs
-After deploying the mastercopy and factory you will get an actual config file in linkdrop-monorepo/config/scripts.config.json.
-Just copy masterCopy and factory from that config, and create new file - app.config.json (according to app.config.json.sample scheme) with needed values. Also you can check landing.json and claim.json for your needs.
+After deploying the mastercopy and factory you will get an actual config file in linkdrop-monorepo/configs/scripts.config.json.
+Just copy masterCopy and factory from that config, and create new file - app.config.json (according to app.config.json.sample scheme) with needed values. Also you can check demo.config.json and claim.config.json for your needs.
 
 ### Installing packages
 Go to root folder of monorepo and run the yarn command:
@@ -31,16 +31,16 @@ yarn dev:server
 ```
 
 **Running Demo App**  
-Or go to 'app-landing' and run dev server (port: 9001):
+Or go to 'app-demo' and run dev server (port: 9001):
 ```
-cd linkdrop-monorepo/apps/app-landing
+cd linkdrop-monorepo/apps/app-demo
 yarn dev:server
 ```
 
 ### Bundles
-To create bundles for production you can run command 'yarn build' in 'app-claim' and 'app-landing' folders:
+To create bundles for production you can run command 'yarn build' in 'app-claim' and 'app-demo' folders:
 ```
-cd linkdrop-monorepo/apps/app-landing
+cd linkdrop-monorepo/apps/app-demo
 yarn build
 ```
 
@@ -57,11 +57,11 @@ cd linkdrop-monorepo/apps/linkdrop-ui-kit
 yarn test
 ```
 
-### Saga actions testing in 'app-claim', 'app-landing' and 'app-send' folders
+### Saga actions testing in 'app-claim', 'app-demo' and 'app-send' folders
 Run the command from root folder:
 ```
 cd linkdrop-monorepo
-yarn test:landing
+yarn test:demo
 ```
 or
 ```

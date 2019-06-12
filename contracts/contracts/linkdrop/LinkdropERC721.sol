@@ -103,7 +103,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         require(_nftAddress != address(0), "Invalid nft address");
 
         // Make sure link is not claimed
-        require(isClaimedLink(_linkId) == false, "Claimed link");
+        require(isClaimedLink(_linkId) == false, "Claimed link id");
 
         // Make sure link is not canceled
         require(isCanceledLink(_linkId) == false, "Canceled link");

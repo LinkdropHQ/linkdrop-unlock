@@ -22,6 +22,7 @@
     "extends": "../babel.config.js"
   },
   "dependencies": {
+    "cli-table": "^0.3.1",
     "cors": "^2.8.5",
     "mongoose": "^5.5.6"
   }

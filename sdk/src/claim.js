@@ -1,7 +1,7 @@
 import { signReceiverAddress } from './utils'
+
 const ethers = require('ethers')
 const axios = require('axios')
-
 export const claim = async ({
   jsonRpcUrl,
   host,
@@ -99,26 +99,15 @@ export const claim = async ({
       `${host}/api/v1/linkdrops/claim`,
       claimParams
     )
+
     if (response.status !== 200) {
-      console.error(`\n❌ Invalid response status ${response.status}`)
+      throw new Error(`Invalid response status ${response.status}`)
     } else {
-      if (response.data.success === true) {
-        console.log(
-          '\n✅  Claim tx has been submitted. Please verify the claim status manually.'
-        )
-        const { success, txHash } = response.data
-        console.log(`#️⃣  Tx Hash: ${txHash}`)
-        return { success, txHash }
-      } else {
-        const { success, error } = response.data
-        if (error.reason) {
-          console.error(`🆘  Request failed with '${error.reason}'`)
-        } else console.error(error)
-        return { success, error }
-      }
+      const { error, success, txHash } = response.data
+      return { error, success, txHash }
     }
   } catch (err) {
-    console.error(err)
+    throw new Error(err)
   }
 }
 
@@ -224,24 +213,12 @@ export const claimERC721 = async ({
       claimParams
     )
     if (response.status !== 200) {
-      console.error(`\n❌ Invalid response status ${response.status}`)
+      throw new Error(`Invalid response status ${response.status}`)
     } else {
-      if (response.data.success === true) {
-        console.log(
-          '\n✅  Claim tx has been submitted. Please verify the claim status manually.'
-        )
-        const { success, txHash } = response.data
-        console.log(`#️⃣  Tx Hash: ${txHash}`)
-        return { success, txHash }
-      } else {
-        const { success, error } = response.data
-        if (error.reason) {
-          console.error(`🆘  Request failed with '${error.reason}'`)
-        } else console.error(error)
-        return { success, error }
-      }
+      const { error, success, txHash } = response.data
+      return { error, success, txHash }
     }
   } catch (err) {
-    console.error(err)
+    throw new Error(err)
   }
 }

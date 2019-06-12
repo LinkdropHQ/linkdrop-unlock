@@ -1,0 +1,11 @@
+{
+  "balanceCheckInterval": 3000,
+  "balanceCheckIntervalManual": 3000,
+  "showLinkTimeout": 3000,
+  "showManualTimeout": 20000,
+  "openseaMainnet": "https://api.opensea.io",
+  "openseaRinkeby": "https://rinkeby-api.opensea.io",
+  "trustWallet": "https://api.trustwalletapp.com",
+  "expirationTime": 1900000000000,
+  "initcode": "0x6352c7420d6000526103ff60206004601c335afa6040516060f3"
+}
