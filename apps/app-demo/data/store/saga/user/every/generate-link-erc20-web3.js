@@ -24,7 +24,7 @@ const generator = function * ({ payload }) {
       tokenAddress: tokenAddress || ethersContractZeroAddress,
       tokenAmount: assetBalance || 0,
       expirationTime: configs.expirationTime,
-      isApprove: false,
+      isApprove: 'false',
       version: version.toNumber()
     })
 

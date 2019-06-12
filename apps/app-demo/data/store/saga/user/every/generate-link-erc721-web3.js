@@ -25,7 +25,7 @@ const generator = function * ({ payload }) {
       nftAddress: tokenAddress,
       tokenId,
       expirationTime: configs.expirationTime,
-      isApprove: false,
+      isApprove: 'false',
       version: version.toNumber()
     })
 
