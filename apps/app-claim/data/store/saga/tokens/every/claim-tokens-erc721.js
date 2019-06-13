@@ -26,7 +26,7 @@ const generator = function * ({ payload }) {
       chainId,
       receiverAddress: wallet,
       isApprove,
-      version: version.toNumber()
+      version: String(version.toNumber())
     })
 
     if (success) {
