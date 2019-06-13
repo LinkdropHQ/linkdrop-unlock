@@ -25,7 +25,7 @@ const generator = function * ({ payload }) {
       tokenAmount: assetBalance || 0,
       expirationTime: configs.expirationTime,
       isApprove: 'false',
-      version: version.toNumber()
+      version: String(version.toNumber())
     })
 
     yield put({ type: 'USER.SET_LINK', payload: { link: link.url } })

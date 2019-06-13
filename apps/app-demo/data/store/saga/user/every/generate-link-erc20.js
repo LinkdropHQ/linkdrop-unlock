@@ -30,7 +30,7 @@ const generator = function * ({ payload }) {
       tokenAmount: assetBalance || 0,
       expirationTime: configs.expirationTime,
       isApprove: 'false',
-      version: version.toNumber()
+      version: String(version.toNumber())
     })
     // linkdropMasterPrivateKey or web3 provider for metamask
     // will add later

@@ -7,7 +7,7 @@ import LinkdropFactory from 'contracts/LinkdropFactory.json'
 
 const generator = function * ({ payload }) {
   try {
-    const { wallet, tokenAddress, chainId, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
+    const { isApprove = 'false', wallet, tokenAddress, chainId, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const ethersContractZeroAddress = ethers.constants.AddressZero
     const networkName = defineNetworkName({ chainId })
@@ -25,9 +25,9 @@ const generator = function * ({ payload }) {
       linkdropMasterAddress,
       linkdropSignerSignature,
       receiverAddress: wallet,
-      isApprove: 'false',
+      isApprove: isApprove,
       chainId,
-      version: version.toNumber()
+      version: String(version.toNumber())
     })
 
     if (success) {
