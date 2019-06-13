@@ -13,6 +13,18 @@ const config = configs.get('server')
 
 const { jsonRpcUrl, factory, relayerPrivateKey } = config
 
+if (jsonRpcUrl == null || jsonRpcUrl === '') {
+  throw newError('Please provide json rpc url')
+}
+
+if (factory == null || factory === '') {
+  throw newError('Please provide proxy factory address')
+}
+
+if (relayerPrivateKey == null || relayerPrivateKey === '') {
+  throw newError('Please provide relayer private key')
+}
+
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 const relayer = new ethers.Wallet(relayerPrivateKey, provider)
 
@@ -43,8 +55,7 @@ export const claim = async (req, res) => {
     linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature,
-    isApprove
+    receiverSignature
   }
 
   // Make sure all arguments are passed
@@ -135,7 +146,6 @@ export const claim = async (req, res) => {
         )
 
         // Claim
-
         tx = await proxyFactory.claim(
           weiAmount,
           tokenAddress,
@@ -165,7 +175,6 @@ export const claim = async (req, res) => {
         )
 
         // Claim
-
         tx = await proxyFactory.claimApprove(
           weiAmount,
           tokenAddress,
@@ -201,7 +210,7 @@ export const claim = async (req, res) => {
 
       if (tokenAddress === ethers.constants.AddressZero) type = 'ETH'
       else {
-        if (weiAmount === 0) type = 'ERC20'
+        if (weiAmount == 0) type = 'ERC20'
         else type = 'ETH + ERC20'
       }
       table.push(['type', type])
@@ -259,8 +268,7 @@ export const claimERC721 = async (req, res) => {
     linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature,
-    isApprove
+    receiverSignature
   }
 
   // Make sure all arguments are passed
