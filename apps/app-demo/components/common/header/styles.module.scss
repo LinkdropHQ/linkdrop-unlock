@@ -9,7 +9,7 @@
   align-items: center;
 
   svg {
-    flex: 1 0 160px;
+    flex: 0 0 160px;
   }
 }
 
@@ -20,13 +20,14 @@
   color: $whiteColor;
   display: flex;
   align-items: center;
-  max-width: 742px;
+  max-width: 750px;
   min-height: 50px;
   padding: 6px 20px;
   width: 100%;
 
   a {
     text-decoration: underline;
+    color: $whiteColor;
   }
 }
 
