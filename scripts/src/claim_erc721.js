@@ -1,30 +1,14 @@
 import LinkdropSDK from '../../sdk/src/index'
-
 import ora from 'ora'
-import path from 'path'
 import { ethers } from 'ethers'
 import { terminal as term } from 'terminal-kit'
-import { newError, getString } from './utils'
-
-const csvToJson = require('csvtojson')
-const queryString = require('query-string')
+import { newError, getString, getUrlParams } from './utils'
 
 ethers.errors.setLogLevel('error')
 
 const JSON_RPC_URL = getString('jsonRpcUrl')
 const HOST = getString('host')
 const RECEIVER_ADDRESS = getString('receiverAddress')
-
-// Get linkdrop parameters
-const getUrlParams = async i => {
-  const csvFilePath = path.resolve(__dirname, '../output/linkdrop_erc721.csv')
-
-  let jsonArray = await csvToJson().fromFile(csvFilePath)
-  let rawUrl = jsonArray[i].url
-  let parsedUrl = await queryString.extract(rawUrl)
-  let parsed = await queryString.parse(parsedUrl)
-  return parsed
-}
 
 const claimERC721 = async () => {
   let spinner
@@ -48,7 +32,7 @@ const claimERC721 = async () => {
       linkdropMasterAddress,
       linkdropSignerSignature,
       isApprove
-    } = await getUrlParams(1)
+    } = await getUrlParams('erc721', 0)
 
     const { error, success, txHash } = await LinkdropSDK.claimERC721({
       jsonRpcUrl: JSON_RPC_URL,
