@@ -69,6 +69,6 @@ export default {
     ERROR_OCCURED_WITH_ERC721: 'Unable to find NFT-token',
     PROBLEM_WITH_EXRTERNAL_LIBRARY: 'Problem with connection to external library API. Please try later',
     NETWORK_NOT_SUPPORTED: 'Switch to {{network}}',
-    ERROR_WITH_SIGNATURE_OCCURED: 'Some error occured with Metamask signiture'
+    ERROR_WITH_SIGNATURE_OCCURED: 'Some error occured with Metamask signiture. Please reload page and try again'
   }
 }
