@@ -1,0 +1,30 @@
+/* common values */
+$blackColor: #000;
+$whiteColor: #FFF;
+$greyColor: #999;
+$bgColor: #FCF5F1;
+$greenColor: #2BC64F;
+$orangeColor: #FFA300;
+
+/* values for claim page */
+$borderHoverGreyColor: #8C8C8C;
+$bgHoverGreyColor: rgba(140, 140, 140, 0.2);
+
+/* values for linkdrop ui kit */
+$textGreyColor: #979797;
+$blackActiveColor: #8C8C8C;
+$invertedActiveColor: rgba(248, 248, 248, 0.82);
+
+:export {
+  blackColor: $blackColor;
+  whiteColor: $whiteColor;
+  greyColor: $greyColor;
+  bgColor: $bgColor;
+  greenColor: $greenColor;
+  orangeColor: $orangeColor;
+  borderHoverGreyColor: $borderHoverGreyColor;
+  bgHoverGreyColor: $bgHoverGreyColor;
+  textGreyColor: $textGreyColor;
+  blackActiveColor: $blackActiveColor;
+  invertedActiveColor: $invertedActiveColor;
+}

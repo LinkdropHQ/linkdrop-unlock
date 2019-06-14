@@ -7,24 +7,34 @@ import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
 
     /**
-    * @dev Function to set the linkdrop signer, can only be called once
-    * @param _linkdropSigner Address of linkdrop signer
+    * @dev Function called only once to set owner, linkdrop master, contract version and chain id
+    * @param _owner Owner address
+    * @param _linkdropMaster Address corresponding to master key
+    * @param _version Contract version
+    * @param _chainId Network id
     */
-    function initializer
+    function initialize
     (
-        address payable _linkdropSigner
+        address _owner,
+        address payable _linkdropMaster,
+        uint _version,
+        uint _chainId
     )
     public
     returns (bool)
     {
-        require(_initialized == false, "Initialized");
-        linkdropSigner = _linkdropSigner;
+        require(!_initialized, "Already initialized");
+        owner = _owner;
+        linkdropMaster = _linkdropMaster;
+        isLinkdropSigner[linkdropMaster] = true;
+        version = _version;
+        chainId = _chainId;
         _initialized = true;
         return true;
     }
 
-    modifier onlyLinkdropSigner() {
-        require(msg.sender == linkdropSigner, "Only linkdrop signer");
+    modifier onlyLinkdropMaster() {
+        require(msg.sender == linkdropMaster, "Only linkdrop master");
         _;
     }
 
@@ -60,45 +70,84 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     }
 
     /**
-    * @dev Function to cancel a link, can only be called by linkdrop signer
+    * @dev Function to cancel a link, can only be called by linkdrop master
     * @param _linkId Address corresponding to link key
     * @return True if success
     */
-    function cancel(address _linkId) external onlyLinkdropSigner returns (bool) {
-        require(isClaimedLink(_linkId) == false, "Claimed link");
+    function cancel(address _linkId) external onlyLinkdropMaster returns (bool) {
+        require(!isClaimedLink(_linkId), "Claimed link");
         _canceled[_linkId] = true;
         emit Canceled(_linkId, now);
         return true;
     }
 
     /**
-    * @dev Function to withdraw eth to linkdrop signer, can only be called by linkdrop signer
+    * @dev Function to withdraw eth to linkdrop master, can only be called by linkdrop master
     * @return True if success
     */
-    function withdraw() external onlyLinkdropSigner returns (bool) {
-        linkdropSigner.transfer(address(this).balance);
+    function withdraw() external onlyLinkdropMaster returns (bool) {
+        linkdropMaster.transfer(address(this).balance);
         return true;
     }
 
     /**
-    * @dev Function to pause contract, can only be called by linkdrop signer
+    * @dev Function to pause contract, can only be called by linkdrop master
     * @return True if success
     */
-    function pause() external onlyLinkdropSigner whenNotPaused returns (bool) {
+    function pause() external onlyLinkdropMaster whenNotPaused returns (bool) {
         _paused = true;
         emit Paused(now);
         return true;
     }
 
     /**
-    * @dev Function to unpause contract, can only be called by linkdrop signer
+    * @dev Function to unpause contract, can only be called by linkdrop master
     * @return True if success
     */
-    function unpause() external onlyLinkdropSigner returns (bool) {
+    function unpause() external onlyLinkdropMaster returns (bool) {
         require(paused(), "Unpaused");
         _paused = false;
         emit Unpaused(now);
         return true;
+    }
+
+    /**
+    * @dev Function to add new signing key, can only be called by linkdrop master
+    * @param _linkdropSigner Address corresponding to signing key
+    * @return True if success
+    */
+    function addSigner(address _linkdropSigner) external onlyLinkdropMaster returns (bool) {
+        require(_linkdropSigner != address(0), "Invalid address");
+        isLinkdropSigner[_linkdropSigner] = true;
+        return true;
+    }
+
+    /**
+    * @dev Function to remove signing key, can only be called by linkdrop master
+    * @param _linkdropSigner Address corresponding to signing key
+    * @return True if success
+    */
+    function removeSigner(address _linkdropSigner) external onlyLinkdropMaster returns (bool) {
+        require(_linkdropSigner != address(0), "Invalid address");
+        isLinkdropSigner[_linkdropSigner] = false;
+        return true;
+    }
+
+    /**
+    * @dev Function to destroy this contract, can only be called by owner (factory) or linkdrop master
+    * Withdraws all the remaining ETH to linkdrop master
+    */
+    function destroy() external {
+        require (msg.sender == owner || msg.sender == linkdropMaster, "Only owner or linkdrop master");
+        selfdestruct(linkdropMaster);
+    }
+
+    /**
+    * @dev Function for other contracts to be able to fetch the mastercopy version
+    * @return Master copy version
+    */
+    function getMasterCopyVersion() external view returns (uint) {
+        return version;
     }
 
     /**

@@ -2,8 +2,20 @@ pragma solidity ^0.5.6;
 
 contract LinkdropStorage {
 
-    // Address of linkdrop signer
-    address payable public linkdropSigner;
+    // Address of owner deploying this contract (usually factory)
+    address public owner;
+
+    // Address corresponding to linkdrop master key
+    address payable public linkdropMaster;
+
+    // Version of mastercopy contract
+    uint public version;
+
+    // Network id
+    uint public chainId;
+
+    // Indicates whether an address corresponds to linkdrop signing key
+    mapping (address => bool) public isLinkdropSigner;
 
     // Indicates who the link is claimed to
     mapping (address => address) public claimedTo;
@@ -23,5 +35,7 @@ contract LinkdropStorage {
     event ClaimedERC721(address indexed linkId, uint ethAmount, address indexed nft, uint tokenId, address receiver, uint timestamp);
     event Paused(uint timestamp);
     event Unpaused(uint timestamp);
+    event AddedSigningKey(address linkdropSigner, uint timestamp);
+    event RemovedSigningKey(address linkdropSigner, uint timestamp);
 
 }

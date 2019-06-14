@@ -1,0 +1,76 @@
+@import "variables";
+
+.container {
+  display: flex;
+  justify-content: center;
+  background: $whiteColor;
+  padding: 4px 10px;
+  border-radius: 5px;
+  height: 50px;
+  align-items: center;
+  max-width: 340px;
+  width: 100%;
+  border: 1px solid $blackColor;
+}
+
+.alert {
+  cursor: pointer;
+}
+
+.title {
+  color: $orangeColor;
+  font-size: 22px;
+}
+
+.titleAlert {
+  color: $orangeColor;
+}
+
+.titleSuccess {
+  color: $greenColor;
+}
+
+.loading {
+  display: inline-block;
+  position: relative;
+  width: 25px;
+  margin-right: 20px;
+  height: 25px;
+}
+
+.icon {
+  margin-right: 20px;
+}
+
+.loading div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 23px;
+  height: 23px;
+  border: 2px solid $orangeColor;
+  border-radius: 50%;
+  animation: ldsRing 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: $orangeColor transparent transparent transparent;
+}
+
+.loading div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.loading div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.loading div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes ldsRing {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

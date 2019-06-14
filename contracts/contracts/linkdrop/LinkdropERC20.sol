@@ -1,8 +1,8 @@
 pragma solidity ^0.5.6;
 
-import "./LinkdropCommon.sol";
-import "../interfaces/ILinkdropERC20.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "../interfaces/ILinkdropERC20.sol";
+import "./LinkdropCommon.sol";
 
 contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
 
@@ -12,6 +12,8 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
+    * @param _chainId Network id
     * @param _linkId Address corresponding to link key
     * @param _signature ECDSA signature of linkdrop signer
     * @return True if signed with linkdrop signer's private key
@@ -22,15 +24,32 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        uint _version,
+        uint _chainId,
         address _linkId,
         bytes memory _signature
     )
     public view
     returns (bool)
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _tokenAddress, _tokenAmount, _expiration,  _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash
+        (
+            keccak256
+            (
+                abi.encodePacked
+                (
+                    _weiAmount,
+                    _tokenAddress,
+                    _tokenAmount,
+                    _expiration,
+                    _version,
+                    _chainId,
+                    _linkId
+                )
+            )
+        );
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return signer == linkdropSigner;
+        return isLinkdropSigner[signer];
     }
 
     /**
@@ -105,7 +124,17 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         // Verify that link key is legit and signed by linkdrop signer
         require
         (
-            verifyLinkdropSignerSignature(_weiAmount, _tokenAddress, _tokenAmount, _expiration, _linkId, _linkdropSignerSignature),
+            verifyLinkdropSignerSignature
+            (
+                _weiAmount,
+                _tokenAddress,
+                _tokenAmount,
+                _expiration,
+                version,
+                chainId,
+                _linkId,
+                _linkdropSignerSignature
+            ),
             "Invalid linkdrop signer signature"
         );
 
@@ -155,7 +184,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                 _tokenAddress,
                 _tokenAmount,
                 _expiration,
-                 _linkId,
+                _linkId,
                 _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature

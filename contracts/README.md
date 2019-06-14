@@ -2,7 +2,7 @@
 
 Contracts for Linkdrop App
 
-[Technology Overview](https://medium.com/volcà/technology-overview-erc20-nft-linkdrop-c2909f9bcd19)
+[Technology Overview](https://medium.com/linkdrop-protocol/linkdrop-technical-description-2ec43f718924)
 
 ## Installation
 

@@ -8,6 +8,8 @@ interface ILinkdropERC20 {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        uint _version,
+        uint _chainId,
         address _linkId,
         bytes calldata _signature
     )
@@ -46,5 +48,5 @@ interface ILinkdropERC20 {
         bytes calldata _receiverSignature
     )
     external returns (bool);
-
+    
 }

@@ -1,0 +1,17 @@
+{
+    "jsonRpcUrl": "https://rinkeby.infura.io",
+    "host": "http://localhost:5000",
+    "chainId": "4",
+    "version": "1",
+    "linkdropMasterPrivateKey": "",
+    "masterCopy": "",
+    "factory": "",
+    "isApprove": "true",
+    "receiverAddress": "",
+    "weiAmount": "",
+    "tokenAddress": "",
+    "tokenAmount": "",
+    "linksNumber": "10",
+    "nftAddress": "",
+    "nftIds": "[0,1,2,3]"
+}

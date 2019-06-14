@@ -1,0 +1,6 @@
+{
+    "mongoURI": "",
+    "jsonRpcUrl": "https://rinkeby.infura.io",
+    "factory": "",
+    "relayerPrivateKey": ""
+}

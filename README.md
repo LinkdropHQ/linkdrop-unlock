@@ -1,64 +1,27 @@
 # Linkdrop Monorepo
-Monorepo for Linkdrop Web Application
+Monorepo for linkdrop.io, a service enabling send and receive Ether, ERC20 and/or ERC721 tokens via shareable links and QR codes.
+This repository is a monorepo including the sdk, server, smart contracts and web apps (demo and claming app).
 
-## Getting Started
+## Disclaimer
+This is a work in progress. Expect breaking changes. The code has not been audited and therefore can not be considered secure.
 
-### Installing packages
-Go to root folder of monorepo and run the yarn command:
-```
-cd linkdrop-monorepo
-yarn
-```
-
-### Application folders
-In our monorepo all applications are isolated in single folders, even react-ui-kit. For example to check the token claiming app you have first of all compile bundle file for linkdrop-ui-kit (or run webpack watch command to detect all changes). All ui-components are stored there.
-```
-cd linkdrop-ui-kit
-yarn dev
-```
-
-After that you can easily go to 'app-claim' folder and run dev server (port: 9002):
-```
-cd ../app-claim
-yarn dev:server
-```
-
-Or go to 'app-landing' and run dev server (port: 9001):
-```
-cd ../app-landing
-yarn dev:server
-```
-
-To create bundles for production you can run command 'yarn build' in 'app-claim' and 'app-landing' folders:
-```
-cd app-landing
-yarn build
-```
-
-### Bundles
-Bundles for 'app-claim' and 'app-folder' can be found in 'assets/scripts' folders in each sub-project. For 'linkdrop-ui-kit' it can be found in 'dist' folder as bundle.
+## Structure
+- [Contracts](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/contracts) - linkdrop contracts
+- [Server](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/server) - node.js server application that relays claiming transactions so that end-users don't need to have ether to claim linkdrops
+- [SDK](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/sdk) - a JS library to generate and claim links (used in web apps)
+- [Web apps](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/apps) - web apps to interact with linkdrop service for end-users.  
+- [Scripts](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/scripts)  - scripts for setting up, deploying, generating links and claiming linkdrops
+- [Configs](https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/configs) - configs used in other components (SDK, server, web apps)
 
 
-### Running the tests
-We use both testing for components and saga-actions logic. Components testing runs with Mocha, Saga testing - with jest/enzyme.
+## Building, running & testing locally 
 
-### Components testing in 'linkdrop-ui-kit'
-Run the command from 'linkdrop-ui-kit' folder:
-```
-cd ../linkdrop-ui-kit
-yarn test
-```
+To build and run locally, first follow the instructions in `scripts` - https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/scripts  
+After server is running, you can follow instructions in `apps` to serve front-end apps (demo and claiming apps) - https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/apps
 
-### Saga actions testing in 'app-claim', 'app-landing' and 'app-send' folders
-Run the command from an appropriate folder:
-```
-cd ../app-claim
-yarn test
-```
+## Demo
+You can play with demo at https://demo.linkdrop.io. The App supports only Rinkeby Test network right now.
 
-### Storybook in 'linkdrop-ui-kit'
-Run the command:
-```
-cd ../linkdrop-ui-kit
-yarn storybook
-```
+
+## License
+The current codebase is released under the [MIT License](https://opensource.org/licenses/MIT)

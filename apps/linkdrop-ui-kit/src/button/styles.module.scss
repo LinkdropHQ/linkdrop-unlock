@@ -1,0 +1,101 @@
+@import "variables";
+
+.container {
+  background: $blackColor;
+  padding: 4px 10px;
+  border-radius: 5px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  border: none;
+  justify-content: center;
+  width: 340px;
+  color: $whiteColor;
+  cursor: pointer;
+  font-size: 22px;
+  outline: none;
+  font-family: 'Inter-Medium';
+  transition: background .3s;
+  text-decoration: none;
+
+  &:active {
+    background: $blackActiveColor;
+  }
+}
+
+
+.loading {
+  display: inline-block;
+  position: relative;
+  width: 25px;
+  height: 25px;
+}
+
+.loading div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  border: 2px solid $whiteColor;
+  border-radius: 25px;
+  animation: loading 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: $whiteColor transparent transparent transparent;
+}
+
+.loading div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.loading div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.loading div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+.container svg {
+  margin-right: 10px;
+}
+
+.disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.inverted {
+  background: transparent;
+  color: $blackColor;
+  border: 1px solid $blackColor;
+
+  &:active {
+    background: $invertedActiveColor;
+    color: $blackActiveColor;
+    border-color: $blackActiveColor;
+  }
+
+  .loading {
+    div {
+      border-color: $blackColor transparent transparent transparent;
+    }
+  }
+}
+
+.smallSize {
+  font-size: 18px;
+  height: 40px;
+  padding: 8px 10px;
+  width: auto;
+  font-family: 'Inter-Regular';
+}

@@ -8,6 +8,8 @@ interface ILinkdropERC721 {
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
+        uint _version,
+        uint _chainId,
         address _linkId,
         bytes calldata _signature
     )

@@ -1,8 +1,8 @@
 pragma solidity ^0.5.6;
 
-import "./LinkdropCommon.sol";
-import "../interfaces/ILinkdropERC721.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
+import "../interfaces/ILinkdropERC721.sol";
+import "./LinkdropCommon.sol";
 
 contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
 
@@ -12,6 +12,8 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
+    * @param _version Linkdrop contract version
+    * @param _chainId Network id
     * @param _linkId Address corresponding to link key
     * @param _signature ECDSA signature of linkdrop signer
     * @return True if signed with linkdrop signer's private key
@@ -22,15 +24,32 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
+        uint _version,
+        uint _chainId,
         address _linkId,
         bytes memory _signature
     )
     public view
     returns (bool)
     {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId)));
+        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash
+        (
+            keccak256
+            (
+                abi.encodePacked
+                (
+                    _weiAmount,
+                    _nftAddress,
+                    _tokenId,
+                    _expiration,
+                    _version,
+                    _chainId,
+                    _linkId
+                )
+            )
+        );
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return signer == linkdropSigner;
+        return isLinkdropSigner[signer];
     }
 
     /**
@@ -84,7 +103,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         require(_nftAddress != address(0), "Invalid nft address");
 
         // Make sure link is not claimed
-        require(isClaimedLink(_linkId) == false, "Claimed link");
+        require(isClaimedLink(_linkId) == false, "Claimed link id");
 
         // Make sure link is not canceled
         require(isCanceledLink(_linkId) == false, "Canceled link");
@@ -101,7 +120,17 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         // Verify that link key is legit and signed by linkdrop signer's private key
         require
         (
-            verifyLinkdropSignerSignatureERC721(_weiAmount, _nftAddress, _tokenId, _expiration, _linkId, _linkdropSignerSignature),
+            verifyLinkdropSignerSignatureERC721
+            (
+                _weiAmount,
+                _nftAddress,
+                _tokenId,
+                _expiration,
+                version,
+                chainId,
+                _linkId,
+                _linkdropSignerSignature
+            ),
             "Invalid linkdrop signer signature"
         );
 
@@ -152,7 +181,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
                 _nftAddress,
                 _tokenId,
                 _expiration,
-                 _linkId,
+                _linkId,
                 _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature

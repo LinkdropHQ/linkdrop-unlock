@@ -1,101 +1,95 @@
-const ethers = require('ethers')
-const path = require('path')
-const configPath = path.resolve(__dirname, '../../config/scripts.config.json')
-const config = require(configPath)
+import { terminal as term } from 'terminal-kit'
+import { ethers } from 'ethers'
+import path from 'path'
+const csvToJson = require('csvtojson')
+const queryString = require('query-string')
 
-let { masterCopy, factory } = config
+const config = require('../../configs').get('scripts')
 
-function buildCreate2Address (creatorAddress, saltHex, byteCode) {
-  const byteCodeHash = ethers.utils.keccak256(byteCode)
-  return `0x${ethers.utils
-    .keccak256(
-      `0x${['ff', creatorAddress, saltHex, byteCodeHash]
-        .map(x => x.replace(/0x/, ''))
-        .join('')}`
-    )
-    .slice(-40)}`.toLowerCase()
+export const newError = message => {
+  const error = new Error(term.red.bold.str(message))
+  return error
 }
 
-export const computeProxyAddress = (
-  factoryAddress,
-  linkdropSignerAddress,
-  masterCopyAddress
-) => {
-  const salt = ethers.utils.solidityKeccak256(
-    ['address'],
-    [linkdropSignerAddress]
-  )
-
-  const bytecode = `0x3d602d80600a3d3981f3363d3d373d3d3d363d73${masterCopyAddress.slice(
-    2
-  )}5af43d82803e903d91602b57fd5bf3`
-
-  const proxyAddress = buildCreate2Address(factoryAddress, salt, bytecode)
-  return proxyAddress
-}
-
-// Should be signed by linkdropSigner
-export const signLink = async function (
-  linkdropSigner, // Wallet
-  tokenAddress,
-  claimAmount,
-  expirationTime,
-  linkId
-) {
-  let messageHash = ethers.utils.solidityKeccak256(
-    ['address', 'uint', 'uint', 'address'],
-    [tokenAddress, claimAmount, expirationTime, linkId]
-  )
-  let messageHashToSign = ethers.utils.arrayify(messageHash)
-  let signature = await linkdropSigner.signMessage(messageHashToSign)
-  return signature
-}
-
-// Generates new link
-export const createLink = async function (
-  linkdropSigner, // Wallet
-  tokenAddress,
-  claimAmount,
-  expirationTime
-) {
-  let linkWallet = ethers.Wallet.createRandom()
-  let linkKey = linkWallet.privateKey
-  let linkId = linkWallet.address
-  let linkdropSignerSignature = await signLink(
-    linkdropSigner,
-    tokenAddress,
-    claimAmount,
-    expirationTime,
-    linkId
-  )
-  return {
-    linkKey, // link's ephemeral private key
-    linkId, // address corresponding to link key
-    linkdropSignerSignature // signed by linkdrop verifier
+export const getString = key => {
+  if (config[key] == null || config[key] === '') {
+    throw newError(`Please provide ${key}`)
   }
+
+  return config[key]
 }
 
-export const signReceiverAddress = async function (linkKey, receiverAddress) {
-  let wallet = new ethers.Wallet(linkKey)
-  let messageHash = ethers.utils.solidityKeccak256(
-    ['address'],
-    [receiverAddress]
+export const getBool = key => {
+  if (config[key] == null || config[key] === '') {
+    throw newError(`Please provide ${key}`)
+  }
+
+  if (String(config[key]) !== 'true' && String(config[key]) !== 'false') {
+    throw newError(`Please provide valid ${key} argument`)
+  }
+
+  return config[key]
+}
+
+export const getInt = key => {
+  if (config[key] == null || config[key] === '') {
+    throw newError(`Please provide ${key}`)
+  }
+  const intNumber = parseInt(config[key])
+  if (intNumber == null) throw newError(`Please provide valid ${key}`)
+  return intNumber
+}
+
+export const getProvider = () => {
+  const JSON_RPC_URL = getString('jsonRpcUrl')
+  const provider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL)
+  return provider
+}
+
+export const getLinkdropMasterWallet = () => {
+  const LINKDROP_MASTER_PRIVATE_KEY = getString('linkdropMasterPrivateKey')
+  const provider = getProvider()
+
+  const linkdropMasterWallet = new ethers.Wallet(
+    LINKDROP_MASTER_PRIVATE_KEY,
+    provider
   )
-  let messageHashToSign = ethers.utils.arrayify(messageHash)
-  let signature = await wallet.signMessage(messageHashToSign)
-  return signature
+  return linkdropMasterWallet
 }
 
-export const getMasterCopyAddress = () => {
-  if (masterCopy == null || masterCopy === '') {
-    throw 'Please provide linkdrop master copy address'
-  }
-  return masterCopy
+export const getInitCode = () => {
+  return '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 }
 
-export const getFactoryAddress = () => {
-  if (factory == null || factory === '') {
-    throw 'Please provide factory contract address'
-  }
-  return factory
+export const getExpirationTime = () => {
+  return 12345678910
 }
+
+// Get linkdrop parameters
+export const getUrlParams = async (type, i) => {
+  const csvFilePath = path.resolve(__dirname, `../output/linkdrop_${type}.csv`)
+  const jsonArray = await csvToJson().fromFile(csvFilePath)
+  const rawUrl = jsonArray[i].url.replace('#', '')
+  const parsedUrl = await queryString.extract(rawUrl)
+  const parsed = await queryString.parse(parsedUrl)
+  return parsed
+}
+
+// const JSON_RPC_URL = getString('jsonRpcUrl')
+// const HOST = getString('host')
+// const LINKDROP_MASTER_PRIVATE_KEY = getString('linkdropMasterPrivateKey')
+// const LINKDROP_FACTORY_ADDRESS = getString('factory')
+// const WEI_AMOUNT = getInt('weiAmount')
+// const LINKS_NUMBER = getInt('linksNumber')
+// const LINKDROP_MASTER_COPY_VERSION = getInt('version')
+// const LINKDROP_MASTER_COPY_ADDRESS = getString('masterCopy')
+// const CHAIN_ID = getInt('chainId')
+// const EXPIRATION_TIME = getExpirationTime()
+// const IS_APPROVE = getBool('isApprove')
+// const TOKEN_ADDRESS = getString('tokenAddress')
+// const TOKEN_AMOUNT = getInt('tokenAmount')
+// const NFT_ADDRESS = getString('nftAddress')
+// const NFT_IDS = getString('nftIds')
+// const PROVIDER = getProvider()
+// const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
+// const INIT_CODE = getInitCode()
