@@ -8,7 +8,6 @@ import { LinkBlock, QrShare } from 'components/pages/common'
 import { copyToClipboard, getHashVariables } from 'linkdrop-commons'
 import variables from 'variables'
 import { ethers } from 'ethers'
-const location = window.location
 
 @actions(({ user: { link, loading, errors }, tokens: { standard } }) => ({ link, loading, standard, errors }))
 @translate('pages.main')
@@ -24,7 +23,6 @@ class LinkShare extends React.Component {
     const { errors: prevErrors, standard: prevStandard } = this.props
     if (errors && errors[0] && prevErrors.length === 0 && errors[0] !== prevErrors[0]) {
       window.alert(this.t(`errors.${errors[0]}`))
-      location && location.reload(true)
     }
     if (standard && !prevStandard && account && connector) {
       this.generateLink({ standard, link, account, connector })

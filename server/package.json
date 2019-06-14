@@ -16,7 +16,9 @@
     "@babel/polyfill": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "@babel/register": "^7.4.0",
-    "nodemon": "^1.18.11"
+    "nodemon": "^1.18.11",
+    "shipit-cli": "^4.2.0",
+    "shipit-deploy": "^4.1.4"
   },
   "babel": {
     "extends": "../babel.config.js"

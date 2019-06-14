@@ -13,6 +13,18 @@ const config = configs.get('server')
 
 const { jsonRpcUrl, factory, relayerPrivateKey } = config
 
+if (jsonRpcUrl == null || jsonRpcUrl === '') {
+  throw newError('Please provide json rpc url')
+}
+
+if (factory == null || factory === '') {
+  throw newError('Please provide proxy factory address')
+}
+
+if (relayerPrivateKey == null || relayerPrivateKey === '') {
+  throw newError('Please provide relayer private key')
+}
+
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 const relayer = new ethers.Wallet(relayerPrivateKey, provider)
 
@@ -43,8 +55,7 @@ export const claim = async (req, res) => {
     linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature,
-    isApprove
+    receiverSignature
   }
 
   // Make sure all arguments are passed
@@ -60,8 +71,8 @@ export const claim = async (req, res) => {
     }
   }
 
-  if (isApprove) {
-    if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
+  if (isApprove != null) {
+    if (isApprove !== 'true' && isApprove !== 'false') {
       throw newError('Please provide valid isApprove argument')
     }
   }
@@ -99,7 +110,7 @@ export const claim = async (req, res) => {
     if (oldClaimTx && oldClaimTx.txHash) {
       if (tokenAddress === ethers.constants.AddressZero) type = 'ETH'
       else {
-        if (weiAmount === 0) type = 'ERC20'
+        if (weiAmount === '0') type = 'ERC20'
         else type = 'ETH + ERC20'
       }
       table.push(['type', type])
@@ -119,7 +130,7 @@ export const claim = async (req, res) => {
       let tx, txHash
 
       // Top up pattern
-      if (!isApprove || String(isApprove) === 'false') {
+      if (isApprove == null || isApprove === 'false') {
         // Check claim params
         await proxyFactory.checkClaimParams(
           weiAmount,
@@ -135,7 +146,6 @@ export const claim = async (req, res) => {
         )
 
         // Claim
-
         tx = await proxyFactory.claim(
           weiAmount,
           tokenAddress,
@@ -148,7 +158,7 @@ export const claim = async (req, res) => {
           receiverSignature,
           { gasLimit: 500000 }
         )
-      } else if (isApprove && String(isApprove === 'true')) {
+      } else if (isApprove === 'true') {
         // Approve pattern
         // Check claim params
         await proxyFactory.checkClaimParamsApprove(
@@ -165,7 +175,6 @@ export const claim = async (req, res) => {
         )
 
         // Claim
-
         tx = await proxyFactory.claimApprove(
           weiAmount,
           tokenAddress,
@@ -201,7 +210,7 @@ export const claim = async (req, res) => {
 
       if (tokenAddress === ethers.constants.AddressZero) type = 'ETH'
       else {
-        if (weiAmount === 0) type = 'ERC20'
+        if (weiAmount === '0') type = 'ERC20'
         else type = 'ETH + ERC20'
       }
       table.push(['type', type])
@@ -259,8 +268,7 @@ export const claimERC721 = async (req, res) => {
     linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature,
-    isApprove
+    receiverSignature
   }
 
   // Make sure all arguments are passed
@@ -276,8 +284,8 @@ export const claimERC721 = async (req, res) => {
     }
   }
 
-  if (isApprove) {
-    if (String(isApprove) !== 'true' && String(isApprove) !== false) {
+  if (isApprove != null) {
+    if (isApprove !== 'true' && isApprove !== 'false') {
       throw newError('Please provide valid isApprove argument')
     }
   }
@@ -314,7 +322,7 @@ export const claimERC721 = async (req, res) => {
     const table = new Table()
 
     if (oldClaimTx && oldClaimTx.txHash) {
-      table.push(['type', `${weiAmount === 0 ? 'ERC721' : 'ETH + ERC721'}`])
+      table.push(['type', `${weiAmount === '0' ? 'ERC721' : 'ETH + ERC721'}`])
       table.push(['txHash', oldClaimTx.toObject().txHash])
 
       term.green.bold(`\nSubmitted claim transaction\n`)
@@ -329,7 +337,7 @@ export const claimERC721 = async (req, res) => {
     try {
       let tx, txHash
       // Top up pattern
-      if (!isApprove || String(isApprove) === false) {
+      if (isApprove == null || isApprove === 'false') {
         // Check claim params
         await proxyFactory.checkClaimParamsERC721(
           weiAmount,
@@ -358,7 +366,7 @@ export const claimERC721 = async (req, res) => {
           receiverSignature,
           { gasLimit: 500000 }
         )
-      } else if (isApprove && String(isApprove === 'true')) {
+      } else if (isApprove === 'true') {
         // Approve pattern
         // Check claim params
         await proxyFactory.checkClaimParamsERC721Approve(
@@ -408,7 +416,7 @@ export const claimERC721 = async (req, res) => {
 
       const document = await claimTxERC721.save()
 
-      table.push(['type', `${weiAmount === 0 ? 'ERC721' : 'ETH + ERC721'}`])
+      table.push(['type', `${weiAmount === '0' ? 'ERC721' : 'ETH + ERC721'}`])
       for (let key in claimTxERC721.toObject()) {
         if (key !== '_id' && key !== '__v') {
           table.push([key, claimTxERC721.toObject()[key]])

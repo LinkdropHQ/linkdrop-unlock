@@ -6,8 +6,8 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "dev": "webpack --watch --mode development",
-    "build": "webpack --mode production",
+    "dev": "webpack --watch --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
     "test": "NODE_PATH=. jest",
     "storybook": "start-storybook"
   },

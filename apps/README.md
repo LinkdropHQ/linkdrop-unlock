@@ -20,7 +20,7 @@ yarn
 In our monorepo all applications are isolated in single folders, even react-ui-kit. For example to check the token claiming app you have first of all compile bundle file for linkdrop-ui-kit (or run webpack watch command to detect all changes). All ui-components are stored there.
 ```
 cd linkdrop-monorepo/apps/linkdrop-ui-kit
-yarn dev
+yarn build
 ```
 
 **Running Claiming App**  

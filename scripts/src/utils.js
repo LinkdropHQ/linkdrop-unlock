@@ -1,5 +1,9 @@
 import { terminal as term } from 'terminal-kit'
 import { ethers } from 'ethers'
+import path from 'path'
+const csvToJson = require('csvtojson')
+const queryString = require('query-string')
+
 const config = require('../../configs').get('scripts')
 
 export const newError = message => {
@@ -8,7 +12,7 @@ export const newError = message => {
 }
 
 export const getString = key => {
-  if (key == null || key === '') {
+  if (config[key] == null || config[key] === '') {
     throw newError(`Please provide ${key}`)
   }
 
@@ -16,7 +20,7 @@ export const getString = key => {
 }
 
 export const getBool = key => {
-  if (key == null || key === '') {
+  if (config[key] == null || config[key] === '') {
     throw newError(`Please provide ${key}`)
   }
 
@@ -28,11 +32,11 @@ export const getBool = key => {
 }
 
 export const getInt = key => {
-  if (key == null || key === '') {
+  if (config[key] == null || config[key] === '') {
     throw newError(`Please provide ${key}`)
   }
   const intNumber = parseInt(config[key])
-  if (!intNumber) throw newError(`Please provide valid ${key}`)
+  if (intNumber == null) throw newError(`Please provide valid ${key}`)
   return intNumber
 }
 
@@ -59,6 +63,16 @@ export const getInitCode = () => {
 
 export const getExpirationTime = () => {
   return 12345678910
+}
+
+// Get linkdrop parameters
+export const getUrlParams = async (type, i) => {
+  const csvFilePath = path.resolve(__dirname, `../output/linkdrop_${type}.csv`)
+  const jsonArray = await csvToJson().fromFile(csvFilePath)
+  const rawUrl = jsonArray[i].url.replace('#', '')
+  const parsedUrl = await queryString.extract(rawUrl)
+  const parsed = await queryString.parse(parsedUrl)
+  return parsed
 }
 
 // const JSON_RPC_URL = getString('jsonRpcUrl')
