@@ -77,6 +77,12 @@
     "supertest": "^2.0.1",
     "supertest-as-promised": "^4.0.1"
   },
+  "browserslist": [
+    ">1%",
+    "last 4 versions",
+    "Firefox ESR",
+    "not ie < 9"
+  ],
   "standard": {
     "parser": "babel-eslint"
   },
