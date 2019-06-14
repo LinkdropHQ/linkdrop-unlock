@@ -16,4 +16,9 @@
   > * {
     color: $blackColor!important;
   }
+
+  > [class*="-menu"] {
+    bottom: auto;
+    top: 100%;
+  }
 }

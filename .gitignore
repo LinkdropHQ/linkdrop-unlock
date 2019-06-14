@@ -18,10 +18,10 @@ app.config.json
 server.config.json
 scripts.config.json
 
-app-claim/node_modules/
-app-claim/assets/scripts/
+apps/app-claim/node_modules/
+apps/app-claim/assets/scripts/
 
-app-landing/node_modules/
-app-landing/assets/scripts/
+apps/app-demo/node_modules/
+apps/app-demo/assets/scripts/
 
 linkdrop-ui-kit/dist/

@@ -25,7 +25,7 @@ const generator = function * ({ payload }) {
       icon = `https://trustwalletapp.com/images/tokens/${tokenAddress.toLowerCase()}.png`
     }
 
-    const amountBigNumber = utils.formatUnits((weiAmount === '0') ? tokenAmount : weiAmount, decimals)
+    const amountBigNumber = utils.formatUnits(ethWalletContract === tokenAddress ? weiAmount : tokenAmount, decimals)
     if (decimals) {
       yield put({ type: 'CONTRACT.SET_DECIMALS', payload: { decimals } })
     }
