@@ -12,6 +12,6 @@
     "terminal-kit": "^1.28.0"
   },
   "babel": {
-    "extends": "../.babelrc"
+    "extends": "../babel.config.js"
   }
 }

@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "babel": {
-    "extends": "../.babelrc"
+    "extends": "../babel.config.js"
   },
   "dependencies": {
     "axios": "^0.18.1",

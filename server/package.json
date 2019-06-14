@@ -20,7 +20,7 @@
     "cross-env": "5.0.5"
   },
   "babel": {
-    "extends": "../.babelrc"
+    "extends": "../babel.config.js"
   },
   "dependencies": {
     "cli-table": "^0.3.1",
