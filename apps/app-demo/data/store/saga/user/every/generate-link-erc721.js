@@ -1,10 +1,22 @@
+/* global CONFIG */
 import { put, select } from 'redux-saga/effects'
 import LinkdropSDK from 'sdk/src/index'
-import { jsonRpcUrl, claimHost, factory } from 'config'
 import configs from 'config-demo'
 import { defineNetworkName } from 'linkdrop-commons'
 import LinkdropFactory from 'contracts/LinkdropFactory.json'
 import { ethers } from 'ethers'
+let factory
+let claimHost
+let jsonRpcUrl
+try {
+  factory = CONFIG.factory
+  claimHost = CONFIG.claimHost
+  jsonRpcUrl = CONFIG.claimHost
+} catch (e) {
+  factory = require('config').factory
+  claimHost = require('config').claimHost
+  jsonRpcUrl = require('config').jsonRpcUrl
+}
 
 const generator = function * ({ payload }) {
   try {

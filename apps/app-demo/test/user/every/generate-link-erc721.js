@@ -1,4 +1,4 @@
-/* global describe, it, CONFIG */
+/* global describe, it */
 import { expect } from 'chai'
 import generateLinkERC721Generator from 'data/store/saga/user/every/generate-link-erc721.js'
 import { put, select } from 'redux-saga/effects'
@@ -8,7 +8,7 @@ import { ethers } from 'ethers'
 import { mocks } from 'linkdrop-commons'
 import { createMockProvider } from 'ethereum-waffle'
 import LinkdropFactory from 'contracts/LinkdropFactory.json'
-const { jsonRpcUrl, claimHost, factory } = CONFIG
+import { jsonRpcUrl, claimHost, factory } from 'config'
 
 const provider = createMockProvider()
 describe('data/store/saga/user/every/generate-link-erc721.js ERC-721', () => {

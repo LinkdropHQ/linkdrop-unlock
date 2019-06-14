@@ -1,10 +1,18 @@
+/* global CONFIG */
 import { put, select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import LinkdropSDK from 'sdk/src/index'
-import { claimHost, factory } from 'config'
 import configs from 'config-demo'
 import LinkdropFactory from 'contracts/LinkdropFactory.json'
-
+let factory
+let claimHost
+try {
+  factory = CONFIG.factory
+  claimHost = CONFIG.claimHost
+} catch (e) {
+  factory = require('config').factory
+  claimHost = require('config').claimHost
+}
 const generator = function * ({ payload }) {
   try {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })

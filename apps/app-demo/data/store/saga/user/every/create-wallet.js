@@ -4,7 +4,12 @@ import { ethers } from 'ethers'
 import LinkdropSDK from 'sdk/src/index'
 import configs from 'config-demo'
 const localStorage = (typeof window === 'undefined' ? {} : window).localStorage
-const { factory } = CONFIG
+let factory
+try {
+  factory = CONFIG.factory
+} catch (e) {
+  factory = require('config').factory
+}
 const generator = function * ({ payload }) {
   try {
     const { account } = payload

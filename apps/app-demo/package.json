@@ -95,6 +95,6 @@
     "parser": "babel-eslint"
   },
   "babel": {
-    "extends": "../../.babelrc"
+    "extends": "../../babel.config.js"
   }
 }

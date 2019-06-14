@@ -1,4 +1,4 @@
-/* global describe, it, CONFIG */
+/* global describe, it */
 import { expect } from 'chai'
 import generateLinkERC20Generator from 'data/store/saga/user/every/generate-link-erc20.js'
 import { put, select } from 'redux-saga/effects'
@@ -8,7 +8,7 @@ import configs from 'config-demo'
 import { ethers } from 'ethers'
 import LinkdropFactory from 'contracts/LinkdropFactory.json'
 import { mocks } from 'linkdrop-commons'
-const { jsonRpcUrl, claimHost, factory } = CONFIG
+import { jsonRpcUrl, claimHost, factory } from 'config'
 
 const provider = createMockProvider()
 describe('data/store/saga/user/every/generate-link-erc20.js ERC-20', () => {
