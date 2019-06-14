@@ -9,7 +9,6 @@ const generator = function * ({ payload }) {
   try {
     const { isApprove = 'false', wallet, tokenAddress, chainId, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    const ethersContractZeroAddress = ethers.constants.AddressZero
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const factoryContract = yield new ethers.Contract(factory, LinkdropFactory.abi, provider)
@@ -17,15 +16,15 @@ const generator = function * ({ payload }) {
     const { success, txHash, error: { reason = [] } = {} } = yield LinkdropSDK.claim({
       jsonRpcUrl,
       host: apiHost,
-      weiAmount: tokenAddress === ethersContractZeroAddress ? weiAmount : '0',
+      weiAmount: weiAmount || '0',
       tokenAddress,
-      tokenAmount: tokenAddress === ethersContractZeroAddress ? '0' : tokenAmount,
+      tokenAmount: tokenAmount || '0',
       expirationTime,
       linkKey,
       linkdropMasterAddress,
       linkdropSignerSignature,
       receiverAddress: wallet,
-      isApprove: isApprove,
+      isApprove,
       chainId,
       version: String(version.toNumber())
     })

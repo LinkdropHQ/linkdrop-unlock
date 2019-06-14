@@ -16,7 +16,7 @@ const generator = function * ({ payload }) {
     const { success, txHash, error } = yield LinkdropSDK.claimERC721({
       jsonRpcUrl,
       host: apiHost,
-      weiAmount,
+      weiAmount: weiAmount || '0',
       nftAddress,
       tokenId,
       expirationTime,
@@ -41,7 +41,3 @@ const generator = function * ({ payload }) {
 }
 
 export default generator
-
-generator.selectors = {
-  wallet: ({ user: { wallet } }) => wallet
-}
