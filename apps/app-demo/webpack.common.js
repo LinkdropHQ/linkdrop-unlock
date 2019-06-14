@@ -101,7 +101,10 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
-      'CONFIG': JSON.stringify((process.env.NODE_ENV === 'development') ? require(path.resolve(__dirname, '../../configs/app.config')) : require(path.resolve(__dirname, 'app.config.prod'))),
+      CONFIG: JSON.stringify((process.env.NODE_ENV === 'development') ? require(path.resolve(__dirname, '../../configs/app.config')) : require(path.resolve(__dirname, 'app.config.prod'))),
+      JSON_RPC_URL: JSON.stringify(process.env.JSON_RPC_URL),
+      MASTER_COPY: JSON.stringify(process.env.MASTER_COPY),
+      FACTORY: JSON.stringify(process.env.FACTORY),
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
       }
