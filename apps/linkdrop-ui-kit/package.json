@@ -62,7 +62,6 @@
     "babel-eslint": "^8.2.3",
     "babel-jest": "^24.7.1",
     "chai": "^3.5.0",
-    "cross-env": "^3.1.4",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.12.1",
     "identity-obj-proxy": "^3.0.0",
