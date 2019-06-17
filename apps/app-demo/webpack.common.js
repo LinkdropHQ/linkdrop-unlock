@@ -50,7 +50,8 @@ module.exports = {
     modules: [
       path.resolve('./'),
       path.resolve('./node_modules'),
-      path.resolve('../../node_modules')
+      path.resolve('../../node_modules'),
+      path.resolve('../../contracts')
     ],
     alias: {
       wallets: path.resolve(__dirname, '../../configs/wallets.config'),
