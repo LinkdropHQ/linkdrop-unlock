@@ -1,5 +1,6 @@
 const webpack = require('webpack')
 const path = require('path')
+const autoprefixer = require('autoprefixer')
 
 const CSSModuleLoader = {
   loader: 'css-loader',
@@ -28,9 +29,7 @@ const postCSSLoader = {
     ident: 'postcss',
     sourceMap: true,
     plugins: () => [
-      require('autoprefixer')({
-        browsers: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9']
-      })
+      autoprefixer()
     ]
   }
 }
@@ -99,6 +98,14 @@ module.exports = {
     }]
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      JSON_RPC_URL: process.env.JSON_RPC_URL,
+      MASTER_COPY: process.env.MASTER_COPY,
+      FACTORY: process.env.FACTORY,
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
+      }
+    })
   ]
 }
