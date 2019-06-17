@@ -1,9 +1,9 @@
 import { put, select } from 'redux-saga/effects'
 import LinkdropSDK from 'sdk/src/index'
-import { claimHost, factory } from 'config'
 import configs from 'config-demo'
 import LinkdropFactory from 'contracts/LinkdropFactory.json'
 import { ethers } from 'ethers'
+import { factory, claimHost } from 'app.config.js'
 
 const generator = function * ({ payload }) {
   try {

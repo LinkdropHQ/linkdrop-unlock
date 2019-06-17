@@ -1,10 +1,10 @@
 import { put, select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import LinkdropSDK from 'sdk/src/index'
-import { jsonRpcUrl, claimHost, factory } from 'config'
 import configs from 'config-demo'
 import { defineNetworkName } from 'linkdrop-commons'
 import LinkdropFactory from 'contracts/LinkdropFactory.json'
+import { factory, claimHost, jsonRpcUrl } from 'app.config.js'
 
 const generator = function * ({ payload }) {
   try {
