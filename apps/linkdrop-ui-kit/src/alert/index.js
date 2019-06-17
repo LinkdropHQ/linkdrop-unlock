@@ -4,7 +4,6 @@ import styles from './styles.module'
 
 class Alert extends React.Component {
   render () {
-    console.log('hello')
     const { icon, className, style = {}, noBorder } = this.props
     return <div
       style={style}
