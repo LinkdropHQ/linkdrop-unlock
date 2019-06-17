@@ -1,5 +1,5 @@
 import { put } from 'redux-saga/effects'
-import { jsonRpcUrl, factory, apiHost } from 'config'
+import { factory, apiHost, jsonRpcUrl } from 'app.config.js'
 import LinkdropSDK from 'sdk/src/index'
 import { ethers } from 'ethers'
 import { defineNetworkName } from 'linkdrop-commons'
