@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const autoprefixer = require('autoprefixer')
 
 const CSSModuleLoader = {
   loader: 'css-loader',
@@ -28,9 +29,7 @@ const postCSSLoader = {
     ident: 'postcss',
     sourceMap: true,
     plugins: () => [
-      require('autoprefixer')({
-        browsers: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9']
-      })
+      autoprefixer()
     ]
   }
 }
@@ -101,10 +100,9 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
-      CONFIG: JSON.stringify((process.env.NODE_ENV === 'development') ? require(path.resolve(__dirname, '../../configs/app.config')) : require(path.resolve(__dirname, 'app.config.prod'))),
-      JSON_RPC_URL: JSON.stringify(process.env.JSON_RPC_URL),
-      MASTER_COPY: JSON.stringify(process.env.MASTER_COPY),
-      FACTORY: JSON.stringify(process.env.FACTORY),
+      JSON_RPC_URL: process.env.JSON_RPC_URL,
+      MASTER_COPY: process.env.MASTER_COPY,
+      FACTORY: process.env.FACTORY,
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
       }
