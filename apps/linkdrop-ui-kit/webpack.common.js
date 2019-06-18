@@ -28,9 +28,7 @@ const postCSSLoader = {
     ident: 'postcss',
     sourceMap: true,
     plugins: () => [
-      autoprefixer({
-        browsers: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9']
-      })
+      autoprefixer()
     ]
   }
 }
@@ -50,10 +48,10 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx', '.json', '.scss', '.css', '*'],
     modules: [
-      path.resolve('./'),
-      path.resolve('./src'),
-      path.resolve('./node_modules'),
-      path.resolve('../../node_modules')
+      path.resolve(__dirname, './'),
+      path.resolve(__dirname, './src'),
+      path.resolve(__dirname, './node_modules'),
+      path.resolve(__dirname, '../../node_modules')
     ],
     alias: {
       variables: path.resolve(__dirname, '../linkdrop-commons/variables/index.module.scss')

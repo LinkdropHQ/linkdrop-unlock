@@ -6,12 +6,15 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "dev": "webpack --watch --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js",
-    "dev:server": "webpack-dev-server --hot --inline --config webpack.dev.js",
-    "test": "NODE_PATH=. mocha test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive"
+    "dev": "NODE_ENV=development webpack --watch --config webpack.dev.js",
+    "build": "NODE_ENV=production webpack --config webpack.prod.js",
+    "dev:server": "NODE_ENV=development webpack-dev-server --hot --inline --config webpack.dev.js",
+    "test": "NODE_ENV=development NODE_PATH=. mocha test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive"
   },
   "dependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/node": "^7.2.2",
     "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/plugin-proposal-decorators": "^7.4.0",
     "@babel/plugin-syntax-function-bind": "^7.2.0",
@@ -26,6 +29,7 @@
     "core-js": "2.6.5",
     "cross-env": "5.0.5",
     "css-loader": "^0.28.0",
+    "ethereum-waffle": "^2.0.12",
     "debounce": "^1.2.0",
     "ethers": "^4.0.27",
     "express": "^4.16.4",
@@ -63,10 +67,8 @@
     "webpack-merge": "^4.2.1"
   },
   "devDependencies": {
-    "@babel/node": "^7.0.0-beta.51",
     "@babel/plugin-transform-runtime": "^7.4.3",
     "@babel/register": "^7.4.0",
-    "babel-cli": "^7.0.0-beta.3",
     "babel-eslint": "^8.2.3",
     "babel-jest": "^24.7.1",
     "babel-plugin-webpack-alias": "^2.1.2",
@@ -74,7 +76,6 @@
     "chai": "^3.5.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.12.1",
-    "ethereum-waffle": "^2.0.9",
     "identity-obj-proxy": "^3.0.0",
     "ignore-styles": "^5.0.1",
     "jest": "^24.7.1",
@@ -87,9 +88,14 @@
     "standard-loader": "^6.0.1",
     "supertest": "^2.0.1",
     "supertest-as-promised": "^4.0.1",
-    "terser-webpack-plugin": "^1.2.3",
     "webpack-dev-server": "^3.3.1"
   },
+  "browserslist": [
+    ">1%",
+    "last 4 versions",
+    "Firefox ESR",
+    "not ie < 9"
+  ],
   "standard": {
     "parser": "babel-eslint"
   },

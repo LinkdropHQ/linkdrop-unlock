@@ -4,11 +4,11 @@ import generateLinkERC20Generator from 'data/store/saga/user/every/generate-link
 import { put, select } from 'redux-saga/effects'
 import { createMockProvider } from 'ethereum-waffle'
 import LinkdropSDK from 'sdk/src/index'
-import { jsonRpcUrl, claimHost, factory } from 'config'
 import configs from 'config-demo'
 import { ethers } from 'ethers'
 import LinkdropFactory from 'contracts/LinkdropFactory.json'
 import { mocks } from 'linkdrop-commons'
+import { jsonRpcUrl, claimHost, factory } from 'config'
 
 const provider = createMockProvider()
 describe('data/store/saga/user/every/generate-link-erc20.js ERC-20', () => {
