@@ -7,7 +7,8 @@
   "scripts": {
     "start": "npx babel-node server.js",
     "dev": "nodemon --exec npx babel-node server.js",
-    "deploy": "cd deploy && npx shipit dev deploy"
+    "deploy-rinkeby": "cd deploy && npx shipit rinkeby deploy",
+    "deploy-mainnet": "cd deploy && npx shipit mainnet deploy"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.3",
