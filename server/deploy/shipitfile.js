@@ -5,13 +5,18 @@ module.exports = shipit => {
 
   shipit.initConfig({
     default: {
-      deployTo: 'linkdrop/linkdrop-monorepo',
       repositoryUrl: 'git@github.com:LinkdropProtocol/linkdrop-monorepo.git',
       keepReleases: 3
     },
-    dev: {
+    rinkeby: {
+      deployTo: 'linkdrop/rinkeby',
       servers: 'root@rinkeby.linkdrop.io',
       branch: 'dev'
+    },
+    mainnet: {
+      deployTo: 'linkdrop/mainnet',
+      servers: 'root@rinkeby.linkdrop.io',
+      branch: 'master'
     }
   })
 
