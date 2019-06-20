@@ -4,8 +4,6 @@ module.exports = shipit => {
   const network = process.argv[2]
   const PM2_APP_NAME = `linkdrop_${network}`
 
-  process.env['NETWORK'] = network
-
   shipit.initConfig({
     default: {
       repositoryUrl: 'git@github.com:LinkdropProtocol/linkdrop-monorepo.git',
@@ -14,12 +12,18 @@ module.exports = shipit => {
     rinkeby: {
       deployTo: 'linkdrop/rinkeby',
       servers: 'root@rinkeby.linkdrop.io',
-      branch: 'staging'
+      branch: 'staging',
+      env: {
+        CUSTOM_PORT: 5004
+      }
     },
     mainnet: {
       deployTo: 'linkdrop/mainnet',
       servers: 'root@rinkeby.linkdrop.io',
-      branch: 'master'
+      branch: 'master',
+      env: {
+        CUSTOM_PORT: 5001
+      }
     }
   })
 
@@ -33,7 +37,7 @@ module.exports = shipit => {
   shipit.task('copyConfig', async () => {
     await shipit.copyToRemote(
       '../../configs/server.config.json',
-      'linkdrop/linkdrop-monorepo/current/configs/server.config.json'
+      `linkdrop/${network}/current/configs/server.config.json`
     )
   })
 
