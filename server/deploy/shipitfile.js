@@ -1,17 +1,27 @@
 module.exports = shipit => {
   require('shipit-deploy')(shipit)
 
-  const PM2_APP_NAME = 'linkdrop-server'
+  const network = process.argv[2]
+  const PM2_APP_NAME = `linkdrop-${network}`
+  let CUSTOM_PORT
+
+  if (network === 'mainnet') CUSTOM_PORT = 5001
+  else if (network === 'rinkeby') CUSTOM_PORT = 5004
 
   shipit.initConfig({
     default: {
-      deployTo: 'linkdrop/linkdrop-monorepo',
       repositoryUrl: 'git@github.com:LinkdropProtocol/linkdrop-monorepo.git',
       keepReleases: 3
     },
-    dev: {
+    rinkeby: {
+      deployTo: 'linkdrop/rinkeby',
       servers: 'root@rinkeby.linkdrop.io',
-      branch: 'dev'
+      branch: 'staging'
+    },
+    mainnet: {
+      deployTo: 'linkdrop/mainnet',
+      servers: 'root@rinkeby.linkdrop.io',
+      branch: 'master'
     }
   })
 
@@ -25,7 +35,7 @@ module.exports = shipit => {
   shipit.task('copyConfig', async () => {
     await shipit.copyToRemote(
       '../../configs/server.config.json',
-      'linkdrop/linkdrop-monorepo/current/configs/server.config.json'
+      `linkdrop/${network}/current/configs/server.config.json`
     )
   })
 
@@ -50,7 +60,7 @@ module.exports = shipit => {
     await shipit.remote(
       `cd ${
         shipit.releasePath
-      } && pm2 start --name ${PM2_APP_NAME} npm -- run server`
+      } && CUSTOM_PORT=${CUSTOM_PORT} pm2 start --name ${PM2_APP_NAME} npm -- run server`
     )
     shipit.log('Started app process')
   })

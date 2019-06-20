@@ -145,8 +145,8 @@ class MetamaskInjectedScreen extends React.Component {
     if (
       loading ||
       (currentAsset === 'erc721' && assetId.length === 0) ||
-      (currentAsset === 'erc20' && (!assetAmount || Number(assetAmount) <= 0 || !mmAssetBalanceFormatted)) ||
-      (currentAsset === ethers.constants.AddressZero && Number(ethAmount) <= 0)
+      (currentAsset === 'erc20' && (!Number(assetAmount) || !assetAmount || Number(assetAmount) <= 0 || !mmAssetBalanceFormatted)) ||
+      (currentAsset === ethers.constants.AddressZero && (!Number(ethAmount) || Number(ethAmount) <= 0))
     ) {
       disabled = true
     }
@@ -210,7 +210,7 @@ class MetamaskInjectedScreen extends React.Component {
 
   renderTokenValueInput ({ currentAsset, symbol, value, loading }) {
     if (!currentAsset || currentAsset !== 'erc20' || !symbol) { return }
-    return <AssetValueInput disabled={loading} onChange={({ value }) => this.setState({ assetAmount: value })} value={value} title={symbol} />
+    return <AssetValueInput disabled={loading} onChange={({ value }) => this.setState({ assetAmount: (value || '').replace(',', '.') })} value={value} title={symbol} />
   }
 
   renderTokenIdInput ({ currentAsset, symbol, value, loading }) {
@@ -220,7 +220,7 @@ class MetamaskInjectedScreen extends React.Component {
 
   renderEthValueInput ({ currentAsset, value, loading }) {
     if (!currentAsset || currentAsset !== ethers.constants.AddressZero) { return }
-    return <AssetValueInput disabled={loading} onChange={({ value }) => this.setState({ ethAmount: value })} value={value} title={this.t('titles.eth')} />
+    return <AssetValueInput disabled={loading} onChange={({ value }) => this.setState({ ethAmount: (value || '').replace(',', '.') })} value={value} title={this.t('titles.eth')} />
   }
 }
 
