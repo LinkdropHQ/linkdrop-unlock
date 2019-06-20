@@ -1,7 +1,7 @@
 module.exports = shipit => {
   require('shipit-deploy')(shipit)
 
-  const PM2_APP_NAME = 'linkdrop-server'
+  const PM2_APP_NAME = `linkdrop_${process.argv[2]}`
 
   shipit.initConfig({
     default: {
