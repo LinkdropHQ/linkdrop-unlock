@@ -11,6 +11,12 @@ const config = configs.get('server')
 
 const { mongoURI } = config
 
+let PORT
+if (process.env.PORT != null) PORT = process.env.PORT
+else if (process.env.NETWORK === 'mainnet') PORT = 5001
+else if (process.env.NETWORK === 'rinkeby') PORT = 5004
+else PORT = 5000
+
 // Apply middlewares
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
@@ -24,7 +30,7 @@ mongoose
   )
   .then(() => {
     // Run server
-    const PORT = process.env.PORT || 5000
+
     app.listen(PORT, () => {
       term.green.bold(`Server is up on port ${PORT}\n`)
     })
