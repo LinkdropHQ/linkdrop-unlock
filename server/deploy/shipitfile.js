@@ -2,7 +2,11 @@ module.exports = shipit => {
   require('shipit-deploy')(shipit)
 
   const network = process.argv[2]
-  const PM2_APP_NAME = `linkdrop_${network}`
+  const PM2_APP_NAME = `linkdrop-${network}`
+  let CUSTOM_PORT
+
+  if (network === 'mainnet') CUSTOM_PORT = 5001
+  else if (network === 'rinkeby') CUSTOM_PORT = 5004
 
   shipit.initConfig({
     default: {
@@ -12,18 +16,12 @@ module.exports = shipit => {
     rinkeby: {
       deployTo: 'linkdrop/rinkeby',
       servers: 'root@rinkeby.linkdrop.io',
-      branch: 'staging',
-      env: {
-        CUSTOM_PORT: 5004
-      }
+      branch: 'staging'
     },
     mainnet: {
       deployTo: 'linkdrop/mainnet',
       servers: 'root@rinkeby.linkdrop.io',
-      branch: 'master',
-      env: {
-        CUSTOM_PORT: 5001
-      }
+      branch: 'master'
     }
   })
 
@@ -62,7 +60,7 @@ module.exports = shipit => {
     await shipit.remote(
       `cd ${
         shipit.releasePath
-      } && pm2 start --name ${PM2_APP_NAME} npm -- run server`
+      } && CUSTOM_PORT=${CUSTOM_PORT} pm2 start --name ${PM2_APP_NAME} npm -- run server`
     )
     shipit.log('Started app process')
   })
