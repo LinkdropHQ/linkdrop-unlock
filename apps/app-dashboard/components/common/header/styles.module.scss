@@ -1,0 +1,60 @@
+@import "variables";
+
+.container {
+  max-width: 1280px;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: 0 auto 70px;
+  align-items: center;
+
+  svg {
+    flex: 0 0 160px;
+  }
+}
+
+.notification {
+  background: $orangeColor;
+  border-radius: 5px;
+  font-size: 18px;
+  color: $whiteColor;
+  display: flex;
+  align-items: center;
+  max-width: 750px;
+  min-height: 50px;
+  padding: 6px 20px;
+  width: 100%;
+
+  a {
+    text-decoration: underline;
+    color: $whiteColor;
+  }
+}
+
+.links {
+  display: flex;
+
+  a {
+    margin-left: 50px;
+    font-size: 18px;
+    text-decoration: none;
+    color: $blackColor;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .links {
+    display: none;
+  }
+
+  svg {
+    margin-bottom: 10px;
+  }
+
+  .container {
+    justify-content: center;
+    margin-bottom: 30px;
+    flex-direction: column;
+    align-items: center;
+  }
+}

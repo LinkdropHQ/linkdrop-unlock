@@ -1,0 +1,29 @@
+@import "variables";
+
+.container {
+  height: 110px;
+}
+
+.content {
+  max-width: 920px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  a {
+    color: $blackColor;
+    text-decoration: none;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .content {
+    flex-direction: column;
+    align-items: center;
+
+    & > * {
+      margin-bottom: 10px;
+    }
+  }
+}

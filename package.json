@@ -7,6 +7,7 @@
   "license": "MIT",
   "workspaces": [
     "apps/app-demo",
+    "apps/app-dashboard",
     "apps/app-claim",
     "contracts",
     "apps/linkdrop-ui-kit",
