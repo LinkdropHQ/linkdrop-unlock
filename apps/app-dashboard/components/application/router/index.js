@@ -1,7 +1,7 @@
 import React from 'react'
 import i18next from 'i18next'
-import { Switch, Route } from 'react-router'
-import { Main, Page, NotFound } from 'components/pages'
+import { Route, Switch } from 'react-router-dom'
+import { Main, Page, NotFound, CampaignCreate, CampaignInfo, Campaigns } from 'components/pages'
 import './styles'
 import { Web3Consumer } from 'web3-react'
 
@@ -21,7 +21,10 @@ class AppRouter extends React.Component {
       <Web3Consumer>
         {context => {
           return <Switch>
-            <Route path='/' render={props => <Main {...props} account={context.account} />} />
+            <Route path='/campaigns/create' exact component={CampaignCreate} />
+            <Route path='/campaigns/:id' exact component={CampaignInfo} />
+            <Route path='/campaigns' exact component={Campaigns} />
+            <Route path='/' exact component={Main} />
             <Route path='*' component={NotFound} />
           </Switch>
         }}

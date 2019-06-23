@@ -1,21 +1,29 @@
 import React from 'react'
-import Logo from './logo'
+import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import { translate } from 'decorators'
+import { withRouter } from 'react-router'
+import text from 'texts'
 
-@translate('components.header')
+@actions(_ => ({}))
+@translate('common.header')
 class Header extends React.Component {
   render () {
+    const currentPage = this.defineCurrentPage()
     return <header className={styles.container}>
-      <Logo />
-      <div className={styles.notification}>
-        <div dangerouslySetInnerHTML={{ __html: this.t('bugBountyNote') }} />
-      </div>
-      <div className={styles.links}>
-        <a target='_blank' href='https://linkdrop.io/'>{this.t('titles.whatIsLinkdrop')}</a>
+      <div className={styles.title}>
+        {currentPage}
       </div>
     </header>
   }
+
+  defineCurrentPage () {
+    const { location: { pathname } } = this.props
+    if (pathname === '/campaigns') { return text('common.paths.campaigns') }
+    if (pathname === '/campaigns/create') { return text('common.paths.campaignsCreate') }
+    if (pathname.indexOf('/campaigns/') > -1) { return text('common.paths.campaignsId') }
+    if (pathname === '/') { return text('common.paths.dashboard') }
+    return text(`common.paths.notFound`)
+  }
 }
 
-export default Header
+export default withRouter(Header)
