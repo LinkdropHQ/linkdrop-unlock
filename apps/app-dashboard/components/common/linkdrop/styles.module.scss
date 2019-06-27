@@ -1,0 +1,55 @@
+@import "variables";
+
+.container {
+  border: 1px solid $greyStrokeColor;
+  background: $whiteColor;
+  color: $blackColor;
+  padding: 40px;
+  border-radius: 5px;
+  margin-right: 50px;
+  max-width: 400px;
+  width: 100%;
+  margin-bottom: 50px;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 40px;
+  margin-top: 0;
+}
+
+.link, .date, .status {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.status {
+  span {
+    color: $dbGrey;
+  }
+  &.active {
+    span {
+      color: $dbBlue;
+    }
+  }
+}
+
+.date{
+  span {
+    color: $dbGrey;
+  }
+}
+
+.links {
+  margin-bottom: 60px;
+}
+
+.buttons {
+  justify-content: space-between;
+  display: flex;
+}
+
+.button {
+  padding: 4px 30px;
+}
+

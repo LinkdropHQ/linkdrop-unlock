@@ -1,6 +1,7 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
+import { Linkdrop, ActionBlock } from 'components/common'
 import { Web3Consumer } from 'web3-react'
 
 @actions(_ => ({}))
@@ -9,10 +10,56 @@ class Campaigns extends React.Component {
   render () {
     return <Web3Consumer>
       {context => <div className={styles.container}>
-        bla bla i am campaigns page
+        {LINKDROPS.map(linkdrop => <Linkdrop
+          key={linkdrop.id}
+          {...linkdrop}
+        />)}
+        <ActionBlock
+          transparent
+          title={this.t('createLinkdrop')}
+          description={this.t('createLinkdropDescription')}
+          extraContent={this.t('ercAndEth')}
+          onClick
+          buttonTitle={this.t('create')}
+        />
       </div>}
     </Web3Consumer>
   }
 }
 
 export default Campaigns
+
+const LINKDROPS = [
+  {
+    tokenAmount: 100,
+    tokenSymbol: 'BNB',
+    ethAmount: 0.1,
+    created: '2008-09-15T15:53:00+05:00',
+    status: 'active',
+    linksAmount: 10,
+    id: +(new Date()) + Math.random()
+  }, {
+    tokenAmount: 100,
+    tokenSymbol: 'BNB',
+    created: '2008-09-15T15:53:00+05:00',
+    status: 'active',
+    linksAmount: 10,
+    id: +(new Date()) + Math.random()
+  }, {
+    tokenAmount: 100,
+    tokenSymbol: 'BNB',
+    ethAmount: 0.1,
+    created: '2008-09-15T15:53:00+05:00',
+    status: 'active',
+    linksAmount: 10,
+    id: +(new Date()) + Math.random()
+  }
+]
+
+// tokenAmount,
+// tokenSymbol,
+// ethAmount,
+// created,
+// status,
+// linksAmount,
+// id

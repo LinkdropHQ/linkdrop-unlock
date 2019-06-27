@@ -1,0 +1,35 @@
+@import "variables";
+
+.container, .progressItem {
+  align-items: center;
+  display: flex;
+}
+
+.circle {
+  width: 16px;
+  height: 16px;
+  border-radius: 16px;
+  border: 1px solid $blackColor;
+}
+
+.line {
+  height: 1px;
+  border-top: 1px dashed $blackColor;
+  width: 50px;
+}
+
+.active {
+  .circle {
+    background: $blackColor;
+  }
+}
+
+.finished {
+  .circle {
+    background: $blackColor;
+  }
+  .line {
+    height: 1px;
+    border-top: 1px solid $blackColor;
+  }
+}

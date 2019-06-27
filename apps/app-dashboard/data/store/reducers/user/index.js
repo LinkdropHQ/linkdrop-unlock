@@ -1,7 +1,8 @@
 import reducers from './reducers'
 
 const initialState = {
-  loading: false
+  loading: false,
+  step: null
 }
 
 export default (state = initialState, action = {}) => {
@@ -13,5 +14,6 @@ export default (state = initialState, action = {}) => {
 }
 
 const ACTIONS = {
-  'USER.SET_LOADING': reducers.setLoading
+  'USER.SET_LOADING': reducers.setLoading,
+  'USER.SET_STEP': reducers.setStep
 }
