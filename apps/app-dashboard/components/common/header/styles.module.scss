@@ -2,9 +2,7 @@
 
 .container {
   height: 130px;
-  display: flex;
   width: 100%;
-  align-items: center;
 }
 
 .title {
@@ -12,4 +10,20 @@
   margin-right: 40px;
   line-height: 1;
   color: $blackColor;
+}
+
+.helpDesk, .main, .container {
+  display: flex;
+  align-items: center;
+}
+
+.main {
+  flex: 1 0 auto;
+}
+
+.helpDesk {
+  font-size: 20px;
+  svg {
+    margin-left: 15px;
+  }
 }

@@ -1,0 +1,27 @@
+@import "variables";
+
+.container {
+  max-width: 500px;
+  height: 40px;
+  border-radius: 5px;
+  position: relative;
+  border: 1px solid $blackColor;
+}
+
+.bar {
+  position: absolute;
+  top: 0;
+  background: $dbBlue;
+  left: 0;
+  height: 100%;
+}
+
+.data {
+  position: absolute;
+  right: 15px;
+  top: 0;
+  display: flex;
+  text-align: left;
+  align-items: center;
+  height: 100%;
+}

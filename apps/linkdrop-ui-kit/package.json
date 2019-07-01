@@ -47,6 +47,7 @@
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.8.6",
     "react-input-mask": "^2.0.4",
+    "react-number-format": "^4.0.8",
     "react-retina-image": "^2.0.5",
     "react-select": "^2.4.3",
     "react-slick": "^0.23.2",

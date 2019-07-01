@@ -1,5 +1,7 @@
 import user from './user'
+import campaigns from './campaigns'
 
 export {
-  user
+  user,
+  campaigns
 }

@@ -1,0 +1,96 @@
+@import "variables";
+
+.container {
+  border: 1px solid $greyStrokeColor;
+  background: $whiteColor;
+  color: $blackColor;
+  padding: 40px;
+  border-radius: 5px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.title {
+  font-size: 24px;
+  margin: 0 0 40px;
+}
+
+.content {
+  display: flex;
+}
+
+.automatic {
+  flex: 1 0 550px;
+  padding-right: 110px;
+  border-right: 1px solid $greyStrokeColor;
+}
+
+.manual {
+  padding-left: 50px;
+  width: 100%;
+}
+
+.text {
+  font-size: 16px;
+  margin: 0px;
+
+  &.textMargin15 {
+    margin-bottom: 15px;
+  }
+
+  &.textMargin30 {
+    margin-bottom: 30px;
+  }
+
+  &.textMargin40 {
+    margin-bottom: 40px;
+  }
+
+  &.textMargin20 {
+    margin-bottom: 20px;
+  }
+
+  &.textMargin10 {
+    margin-bottom: 10px;
+  }
+
+  &.textGrey {
+    color: $dbGrey;
+  }
+
+  &.textBold {
+    font-family: 'Inter-Bold';
+  }
+
+  &.textMargin60 {
+    margin-bottom: 60px;
+  }
+}
+
+.button {
+  padding: 4px 16px;
+
+  &.buttonMargin60 {
+    margin-bottom: 60px;
+  }
+}
+
+.codeBlock {
+  height: 300px;
+  border-radius: 5px;
+  padding: 20px;
+  border: 1px solid $greyStrokeColor;
+  width: 510px;
+  margin-bottom: 40px;
+}
+
+.buttonsContainer {
+  display: flex;
+  width: 340px;
+  margin-bottom: 40px;
+  justify-content: space-between;
+
+  .button {
+    width: 158px;
+  }
+}

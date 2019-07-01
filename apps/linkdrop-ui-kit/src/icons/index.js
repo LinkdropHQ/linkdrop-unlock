@@ -12,6 +12,9 @@ import Cross from './cross'
 import Copy from './copy'
 import Qr from './qr'
 import Close from './close'
+import ExternalLink from './external-link'
+import CloseButton from './close-button'
+import Lock from './lock'
 
 export default {
   LinkdropLogo,
@@ -27,5 +30,8 @@ export default {
   Cross,
   Copy,
   Qr,
-  Close
+  Close,
+  ExternalLink,
+  CloseButton,
+  Lock
 }

@@ -3,6 +3,7 @@ import styles from './styles.module'
 import classNames from 'classnames'
 import InputMask from 'react-input-mask'
 import PropTypes from 'prop-types'
+import NumberFormat from 'react-number-format'
 
 class Input extends React.Component {
   constructor (props) {
@@ -14,15 +15,17 @@ class Input extends React.Component {
 
   componentWillReceiveProps ({ value }) {
     const { value: prevValue } = this.state
-    if (value == null || value === prevValue) { return }
+    const { numberInput } = this.props
+    if (value == null || value === prevValue || (numberInput && Number(value) === Number(prevValue))) { return }
     this.setState({
       value
     })
   }
 
   render () {
-    const { mask, className, disabled, placeholder, centered } = this.props
+    const { mask, className, disabled, placeholder, centered, numberInput } = this.props
     const { value } = this.state
+    if (numberInput) return this.renderNumberInput()
     if (mask) return this.renderMaskInput()
     return <input placeholder={placeholder} disabled={disabled} value={value} className={this.defineClassNames({ className, disabled, centered })} onChange={e => this.changeValue(e)} />
   }
@@ -45,6 +48,12 @@ class Input extends React.Component {
     return <InputMask {...this.props} value={value} className={this.defineClassNames({ className, disabled })} onChange={e => onChange && onChange({ value: e.target.value })}>
       {(inputProps) => <input {...inputProps} />}
     </InputMask>
+  }
+
+  renderNumberInput () {
+    const { value } = this.state
+    const { className, suffix, disabled, centered, format } = this.props
+    return <NumberFormat format={format} renderText={value => <div>{value}</div>} value={value || 0} suffix={` ${suffix || ''}`} className={this.defineClassNames({ className, disabled, centered })} onChange={e => this.changeValue(e)} />
   }
 }
 

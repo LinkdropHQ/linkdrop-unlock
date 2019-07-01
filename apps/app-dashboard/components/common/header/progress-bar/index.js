@@ -13,7 +13,7 @@ class ProgressBar extends React.Component {
   }
 
   renderItem ({ idx, currentStep, stepsCount }) {
-    return <div className={classNames(styles.progressItem, {
+    return <div key={idx} className={classNames(styles.progressItem, {
       [styles.active]: idx === (currentStep - 1),
       [styles.finished]: idx < currentStep - 1
     })}>

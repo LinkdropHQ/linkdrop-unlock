@@ -12,7 +12,7 @@ class Aside extends React.Component {
     return <aside className={styles.container}>
       <div className={styles.mainBlock}>
         <div className={styles.logo}>
-          <RetinaImage width={118} {...getImages({ src: 'hole' })} />
+          <a href='/#/'><RetinaImage width={118} {...getImages({ src: 'hole' })} /></a>
         </div>
         <div className={styles.campaigns}>
           <a href='/#/campaigns'>{this.t('campaigns')}</a>

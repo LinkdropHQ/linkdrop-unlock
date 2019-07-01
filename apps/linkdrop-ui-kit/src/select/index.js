@@ -14,7 +14,7 @@ class SelectComponent extends React.Component {
   onChange ({ value }) {
     const { onChange } = this.props
     this.setState({
-      value
+      value: this.defineCurrentValue({ value })
     }, _ => onChange && onChange({ value }))
   }
 
@@ -22,7 +22,7 @@ class SelectComponent extends React.Component {
     const { value: currentValue } = this.state
     if (value && currentValue !== value) {
       this.setState({
-        value
+        value: this.defineCurrentValue({ value })
       })
     }
   }
@@ -35,10 +35,9 @@ class SelectComponent extends React.Component {
   render () {
     const { value } = this.state
     const { options = [], placeholder, className } = this.props
-    const currentValue = this.defineCurrentValue({ value })
     return <Select
       className={classNames(styles.container, className)}
-      value={currentValue}
+      value={value}
       onChange={value => this.onChange(value)}
       options={options}
       placeholder={placeholder}

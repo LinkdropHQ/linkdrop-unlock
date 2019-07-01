@@ -10,6 +10,7 @@
   height: 16px;
   border-radius: 16px;
   border: 1px solid $blackColor;
+  transition: background-color .5s;
 }
 
 .line {
@@ -20,7 +21,7 @@
 
 .active {
   .circle {
-    background: $blackColor;
+    background-color: $blackColor;
   }
 }
 

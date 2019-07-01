@@ -14,7 +14,7 @@ class Main extends React.Component {
           title='Create a Linkdrop'
           description='List of links with encoded tokens prepared to distribute'
           extraContent='ERC20 + ETH'
-          onClick
+          href='/#/campaigns/create'
           buttonTitle='Create'
         />
         <ActionBlock

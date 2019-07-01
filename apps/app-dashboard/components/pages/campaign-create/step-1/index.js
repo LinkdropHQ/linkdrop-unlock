@@ -16,19 +16,19 @@ class Step1 extends React.Component {
         <div className={styles.title}>{this.t('titles.createLinkKey')}</div>
         <div className={styles.main}>
           <div className={styles.description}>
-            <p class={classNames(styles.text, styles.textMain)}>{this.t('texts._1')}</p>
-            <p class={styles.text}>{this.t('texts._2')}</p>
-            <p class={styles.text}>{this.t('texts._3')}</p>
-            <p class={styles.text}>{this.t('texts._4')}</p>
+            <p className={classNames(styles.text, styles.textMain)}>{this.t('texts._1')}</p>
+            <p className={styles.text}>{this.t('texts._2')}</p>
+            <p className={styles.text}>{this.t('texts._3')}</p>
+            <p className={styles.text}>{this.t('texts._4')}</p>
           </div>
 
           <div className={styles.scheme}>
-            <p class={classNames(styles.text, styles.centered)}>{this.t('texts._1')}</p>
+            <p className={classNames(styles.text, styles.centered)}>{this.t('texts._5')}</p>
             <RetinaImage width={255} {...getImages({ src: 'key-preview' })} />
           </div>
         </div>
         <div className={styles.controls}>
-          <Button>{this.t('buttons.create')}</Button>
+          <Button onClick={_ => this.actions().user.setStep({ step: 2 })}>{this.t('buttons.create')}</Button>
         </div>
       </div>}
     </Web3Consumer>

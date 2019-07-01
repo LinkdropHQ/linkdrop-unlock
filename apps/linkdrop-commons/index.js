@@ -5,6 +5,7 @@ import defineNetworkName from './define-network-name'
 import capitalize from './capitalize'
 import variables from './variables/index.module.scss'
 import mocks from './mocks'
+import convertFromExponents from './convert-from-exponents'
 
 export {
   copyToClipboard,
@@ -13,5 +14,6 @@ export {
   defineNetworkName,
   capitalize,
   variables,
-  mocks
+  mocks,
+  convertFromExponents
 }
