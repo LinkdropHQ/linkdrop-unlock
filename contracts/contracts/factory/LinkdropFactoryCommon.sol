@@ -56,7 +56,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     returns (address payable)
     {
         address payable proxy = deployProxy();
-        proxy.addSigner(_signer);
+        ILinkdropCommon(proxy).addSigner(_signer);
         return proxy;
     }
 

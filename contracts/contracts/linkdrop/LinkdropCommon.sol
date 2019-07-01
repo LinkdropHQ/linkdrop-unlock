@@ -38,6 +38,11 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
         _;
     }
 
+    modifier onlyLinkdropMasterOrOwner() {
+        require (msg.sender == linkdropMaster || msg.sender == owner, "Only linkdrop master or owner");
+        _;
+    }
+
     modifier whenNotPaused() {
         require(!paused(), "Paused");
         _;
@@ -112,11 +117,11 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     }
 
     /**
-    * @dev Function to add new signing key, can only be called by linkdrop master
+    * @dev Function to add new signing key, can only be called by linkdrop master or owner (factory contract)
     * @param _linkdropSigner Address corresponding to signing key
     * @return True if success
     */
-    function addSigner(address _linkdropSigner) external onlyLinkdropMaster returns (bool) {
+    function addSigner(address _linkdropSigner) external onlyLinkdropMasterOrOwner returns (bool) {
         require(_linkdropSigner != address(0), "Invalid address");
         isLinkdropSigner[_linkdropSigner] = true;
         return true;
@@ -137,8 +142,7 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     * @dev Function to destroy this contract, can only be called by owner (factory) or linkdrop master
     * Withdraws all the remaining ETH to linkdrop master
     */
-    function destroy() external {
-        require (msg.sender == owner || msg.sender == linkdropMaster, "Only owner or linkdrop master");
+    function destroy() external onlyLinkdropMasterOrOwner {
         selfdestruct(linkdropMaster);
     }
 
