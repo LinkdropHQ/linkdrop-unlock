@@ -48,6 +48,19 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     }
 
     /**
+    * @dev Function to deploy a proxy contract for msg.sender and add a new signing key
+    * @return Proxy contract address
+    */
+    function deployProxyWithSigner(address _signer)
+    public
+    returns (address payable)
+    {
+        address payable proxy = deployProxy();
+        proxy.addSigner(_signer);
+        return proxy;
+    }
+
+    /**
     * @dev Internal function to deploy a proxy contract for linkdrop master
     * @param _linkdropMaster Address of linkdrop master
     * @return Proxy contract address
