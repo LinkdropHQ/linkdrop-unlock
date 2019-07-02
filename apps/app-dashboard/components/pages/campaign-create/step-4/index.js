@@ -11,26 +11,24 @@ import { getImages } from 'helpers'
 @translate('pages.campaignCreate')
 class Step4 extends React.Component {
   render () {
-    return <Web3Consumer>
-      {context => <div className={styles.container}>
-        <div className={styles.title}>{this.t('titles.sendEth')}</div>
-        <div className={styles.main}>
-          <div className={styles.description}>
-            <p className={classNames(styles.text, styles.textMain)}>{this.t('texts._9')}</p>
-            <p className={styles.text}>{this.t('texts._10')}</p>
-            <p className={styles.text}>{this.t('texts._11')}</p>
-          </div>
+    return <div className={styles.container}>
+      <div className={styles.title}>{this.t('titles.sendEth')}</div>
+      <div className={styles.main}>
+        <div className={styles.description}>
+          <p className={classNames(styles.text, styles.textMain)}>{this.t('texts._9')}</p>
+          <p className={styles.text}>{this.t('texts._10')}</p>
+          <p className={styles.text}>{this.t('texts._11')}</p>
+        </div>
 
-          <div className={styles.scheme}>
-            <p className={classNames(styles.text, styles.centered)}>{this.t('texts._12')}</p>
-            <RetinaImage width={255} {...getImages({ src: 'key-preview' })} />
-          </div>
+        <div className={styles.scheme}>
+          <p className={classNames(styles.text, styles.centered)}>{this.t('texts._12')}</p>
+          <RetinaImage width={255} {...getImages({ src: 'key-preview' })} />
         </div>
-        <div className={styles.controls}>
-          <Button onClick={_ => this.actions().user.setStep({ step: 5 })}>{this.t('buttons.send')}</Button>
-        </div>
-      </div>}
-    </Web3Consumer>
+      </div>
+      <div className={styles.controls}>
+        <Button onClick={_ => this.actions().user.setStep({ step: 5 })}>{this.t('buttons.send')}</Button>
+      </div>
+    </div>
   }
 }
 

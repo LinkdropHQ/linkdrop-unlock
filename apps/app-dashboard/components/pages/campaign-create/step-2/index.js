@@ -1,67 +1,118 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import { Web3Consumer } from 'web3-react'
+import { ethers } from 'ethers'
 import classNames from 'classnames'
-import { Icons } from 'linkdrop-ui-kit'
+import { Icons, Loading } from 'linkdrop-ui-kit'
 import { convertFromExponents } from 'linkdrop-commons'
 import { Button, Select, Input } from 'components/common'
+import TokenAddressInput from './token-address-input'
 
-@actions(_ => ({}))
+@actions(({ user: { chainId, loading }, tokens: { assets, symbol } }) => ({ assets, chainId, symbol, loading }))
 @translate('pages.campaignCreate')
 class Step2 extends React.Component {
   constructor (props) {
     super(props)
-    const tokenSymbol = (TOKENS[0] || {}).value
     this.state = {
-      tokenSymbol,
+      // mainnet
+      tokenSymbol: this.defineCurrentAsset(),
       tokenAmount: '0',
       ethAmount: '0',
       linksAmount: '0',
       addEth: false,
-      addIconInfo: false
+      addIconInfo: false,
+      tokenAddress: null
     }
   }
 
+  // mainnet
+  // componentDidMount () {
+  //   const { account } = this.props
+  //   this.actions().tokens.getAssets({ account })
+  // }
+  // componentWillReceiveProps ({ assets }) {
+  //   const { assets: prevAssets } = this.props
+
+  //   if (assets != null && assets.length > 0 && !Immutable.fromJS(assets).equals(Immutable.fromJS(prevAssets))) {
+  //     this.setState({
+  //       tokenSymbol: this.defineCurrentAsset(assets)
+  //     })
+  //   }
+  // }
+
+  // mainnet
+  // defineCurrentAsset (assets) {
+  //   let allAssets = assets || this.props.assets
+  //   return ((allAssets[0] || {}).contract || {}).symbol
+  // }
+
+  defineCurrentAsset (assets) {
+    return TOKENS[0].value
+  }
+
   render () {
-    const { tokenSymbol, ethAmount, linksAmount, tokenAmount, addEth } = this.state
-    return <Web3Consumer>
-      {context => <div className={styles.container}>
-        <div className={styles.title}>{this.t('titles.setupCampaign')}</div>
-        <div className={styles.main}>
-          <div className={styles.form}>
-            <div className={styles.chooseTokens}>
-              <h3 className={styles.subtitle}>{this.t('titles.chooseToken')}</h3>
-              <Select options={TOKENS} value={tokenSymbol} onChange={({ value }) => this.setField({ field: 'tokenSymbol', value })} />
-            </div>
-            <div className={styles.tokensAmount}>
-              <h3 className={styles.subtitle}>{this.t('titles.amountPerLink')}</h3>
-              <div className={styles.tokensAmountContainer}>
-                <Input numberInput suffix={tokenSymbol} className={styles.input} value={tokenAmount || 0} onChange={({ value }) => this.setField({ field: 'tokenAmount', value: parseFloat(value) })} />
-                {this.renderAddEthField()}
-              </div>
-            </div>
-
-            <div className={styles.linksAmount}>
-              <h3 className={styles.subtitle}>{this.t('titles.totalLinks')}</h3>
-              <div className={styles.linksAmountContainer}>
-                <Input numberInput className={styles.input} value={linksAmount || 0} onChange={({ value }) => this.setField({ field: 'linksAmount', value: parseFloat(value) })} />
-                {this.renderAddIconInfo()}
-              </div>
-            </div>
+    const { tokenSymbol, ethAmount, linksAmount, tokenAmount, addEth, tokenAddress } = this.state
+    const { symbol, loading } = this.props
+    console.log({ symbol })
+    const tokenType = this.defineTokenType({ tokenSymbol })
+    // mainnet
+    // const { assets } = this.props
+    // const tokens = assets.map(({ contract }) => {
+    //   return { label: `${contract.symbol} - ${contract.address}`, value: contract.symbol }
+    // })
+    return <div className={styles.container}>
+      {loading && <Loading withOverlay />}
+      <div className={styles.title}>{this.t('titles.setupCampaign')}</div>
+      <div className={styles.main}>
+        <div className={styles.form}>
+          <div className={styles.chooseTokens}>
+            <h3 className={styles.subtitle}>{this.t('titles.chooseToken')}</h3>
+            <Select options={TOKENS} value={tokenSymbol} onChange={({ value }) => this.setField({ field: 'tokenSymbol', value })} />
           </div>
-
-          <div className={styles.summary}>
-            <h3 className={styles.subtitle}>{this.t('titles.total')}</h3>
-            {this.renderTexts({ ethAmount, linksAmount, tokenAmount, tokenSymbol, addEth })}
+          {this.renderTokenInputs({ tokenType, tokenAddress, symbol, tokenSymbol, tokenAmount })}
+          <div className={styles.linksAmount}>
+            <h3 className={styles.subtitle}>{this.t('titles.totalLinks')}</h3>
+            <div className={styles.linksAmountContainer}>
+              <Input numberInput className={styles.input} value={linksAmount || 0} onChange={({ value }) => this.setField({ field: 'linksAmount', value: parseFloat(value) })} />
+              {this.renderAddIconInfo()}
+            </div>
           </div>
         </div>
 
-        <div className={styles.controls}>
-          <Button onClick={_ => this.actions().campaigns.prepareNew({ tokenAmount, ethAmount, linksAmount, tokenSymbol })}>{this.t('buttons.next')}</Button>
+        <div className={styles.summary}>
+          <h3 className={styles.subtitle}>{this.t('titles.total')}</h3>
+          {this.renderTexts({ ethAmount, linksAmount, tokenAmount, tokenSymbol: symbol || tokenSymbol, addEth })}
         </div>
-      </div>}
-    </Web3Consumer>
+      </div>
+      {this.renderNextButton({ tokenAmount, ethAmount, linksAmount, tokenSymbol: symbol || tokenSymbol })}
+    </div>
+  }
+
+  renderTokenInputs ({ tokenType, tokenAddress, symbol, tokenSymbol, tokenAmount }) {
+    const amountInput = <div className={styles.tokensAmount}>
+      <h3 className={styles.subtitle}>{this.t('titles.amountPerLink')}</h3>
+      <div className={styles.tokensAmountContainer}>
+        <Input disabled={tokenType === 'erc20' && !symbol} numberInput suffix={tokenType === 'erc20' ? symbol : tokenSymbol} className={styles.input} value={tokenAmount || 0} onChange={({ value }) => this.setField({ field: 'tokenAmount', value: parseFloat(value) })} />
+        {tokenType !== 'eth' && this.renderAddEthField()}
+      </div>
+    </div>
+    switch (tokenType) {
+      case 'erc20':
+        return <div>
+          {this.renderTokenAddressInput({ tokenAddress, tokenType })}
+          {amountInput}
+        </div>
+      case 'eth':
+        return <div>
+          {amountInput}
+        </div>
+    }
+  }
+
+  defineTokenType ({ tokenSymbol }) {
+    if (tokenSymbol === 'erc20') { return 'erc20' }
+    if (tokenSymbol === 'ETH') { return 'eth' }
+    if (tokenSymbol === 'erc721') { return 'erc721' }
   }
 
   renderAddIconInfo () {
@@ -74,6 +125,18 @@ class Step2 extends React.Component {
     return <div className={styles.iconInfoText}>
       <span>{this.t('titles.howTo')}</span>
       <div dangerouslySetInnerHTML={{ __html: this.t('titles.addIcon') }} />
+    </div>
+  }
+
+  renderNextButton ({ tokenAmount, ethAmount, linksAmount, tokenSymbol }) {
+    let action
+    if (tokenSymbol === 'ETH') {
+      action = _ => this.actions().campaigns.prepareNewEthData({ ethAmount, linksAmount, tokenSymbol })
+    } else {
+      action = _ => this.actions().campaigns.prepareNewTokensData({ tokenAmount, ethAmount, linksAmount, tokenSymbol })
+    }
+    return <div className={styles.controls}>
+      <Button onClick={action}>{this.t('buttons.next')}</Button>
     </div>
   }
 
@@ -96,7 +159,7 @@ class Step2 extends React.Component {
       return <p className={classNames(styles.text, styles.textGrey)}>{this.t('titles.fillTheField')}</p>
     }
     return <div>
-      <p className={classNames(styles.text, styles.textMargin15)}>{tokenAmount} {tokenSymbol}</p>
+      <p className={classNames(styles.text, styles.textMargin15)}>{tokenAmount * linksAmount} {tokenSymbol}</p>
       {this.renderEthTexts({ ethAmount, linksAmount, addEth })}
       {this.renderLinkContents({ tokenAmount, tokenSymbol, ethAmount, addEth, linksAmount })}
       <p className={styles.text}>{this.t('titles.serviceFee', { price: CONVERSION_RATE * linksAmount })}</p>
@@ -115,17 +178,43 @@ class Step2 extends React.Component {
   renderLinkContents ({ tokenAmount, tokenSymbol, ethAmount, addEth, linksAmount }) {
     if (!ethAmount || Number(ethAmount) === 0 || !addEth) {
       return <p className={classNames(styles.text, styles.textGrey, styles.textMargin30)}>
-        {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContents', { tokenAmount: tokenAmount / linksAmount, tokenSymbol })}`}
+        {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContents', { tokenAmount: tokenAmount, tokenSymbol })}`}
       </p>
     }
     return <p className={classNames(styles.text, styles.textGrey, styles.textMargin30)}>
-      {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContentsWithEth', { tokenAmount: tokenAmount / linksAmount, tokenSymbol, ethAmount: convertFromExponents(ethAmount / linksAmount) })}`}
+      {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContentsWithEth', { tokenAmount: tokenAmount, tokenSymbol, ethAmount: convertFromExponents(ethAmount) })}`}
     </p>
   }
 
+  renderTokenAddressInput ({ tokenAddress, tokenType }) {
+    if (tokenType === 'eth') { return null }
+    return <TokenAddressInput tokenAddress={tokenAddress} setField={({ value, field }) => this.setField({ value, field })} />
+  }
+
   setField ({ value, field }) {
+    const { tokenSymbol } = this.state
+    const { chainId } = this.props
+    if (field === 'tokenAddress' && value.length > 42) { return }
     this.setState({
       [field]: value
+    }, _ => {
+      if (field === 'tokenSymbol') {
+        if (value === 'ETH') {
+          this.setState({
+            ethAmount: 0,
+            addEth: false
+          })
+        }
+      }
+
+      if (field === 'tokenAddress') {
+        const tokenType = this.defineTokenType({ tokenSymbol })
+        if (value.length === 42) {
+          if (tokenType === 'erc20') {
+            this.actions().tokens.getTokenERC20Data({ tokenAddress: value, chainId })
+          }
+        }
+      }
     })
   }
 }
@@ -134,11 +223,11 @@ export default Step2
 
 const TOKENS = [
   {
-    label: 'BNB — 0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
-    value: 'BNB'
+    label: `ETH — ${(ethers.constants.AddressZero).slice(0, 35)}...`,
+    value: 'ETH'
   }, {
-    label: 'DAI — 0x33421a6b4bbe1b6faa2625fe562bdd9a23260359',
-    value: 'DAI'
+    label: 'Custom Token ERC20',
+    value: 'erc20'
   }
 ]
 

@@ -3,7 +3,6 @@ import i18next from 'i18next'
 import { Route, Switch } from 'react-router-dom'
 import { Main, Page, NotFound, CampaignCreate, CampaignInfo, Campaigns } from 'components/pages'
 import './styles'
-import { Web3Consumer } from 'web3-react'
 
 import { actions } from 'decorators'
 @actions(({ user }) => ({
@@ -18,17 +17,13 @@ class AppRouter extends React.Component {
 
   render () {
     return <Page>
-      <Web3Consumer>
-        {context => {
-          return <Switch>
-            <Route path='/campaigns/create' exact component={CampaignCreate} />
-            <Route path='/campaigns/:id' exact component={CampaignInfo} />
-            <Route path='/campaigns' exact component={Campaigns} />
-            <Route path='/' exact component={Main} />
-            <Route path='*' component={NotFound} />
-          </Switch>
-        }}
-      </Web3Consumer>
+      <Switch>
+        <Route path='/campaigns/create' exact component={CampaignCreate} />
+        <Route path='/campaigns/:id' exact component={CampaignInfo} />
+        <Route path='/campaigns' exact component={Campaigns} />
+        <Route path='/' exact component={Main} />
+        <Route path='*' component={NotFound} />
+      </Switch>
     </Page>
   }
 }

@@ -1,12 +1,27 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import { Web3Consumer } from 'web3-react'
 import classNames from 'classnames'
-import { Icons } from 'linkdrop-ui-kit'
+import { Icons, Loading } from 'linkdrop-ui-kit'
 import { Button, Input } from 'components/common'
 
-@actions(({ campaigns: { ethAmount, tokenAmount, linksAmount, tokenSymbol } }) => ({ ethAmount, tokenAmount, linksAmount, tokenSymbol }))
+@actions(({
+  user: {
+    loading
+  },
+  campaigns: {
+    ethAmount,
+    tokenAmount,
+    linksAmount,
+    tokenSymbol
+  } }) => ({
+  ethAmount,
+  tokenAmount,
+  linksAmount,
+  tokenSymbol,
+  loading
+})
+)
 @translate('pages.campaignCreate')
 class Step3 extends React.Component {
   constructor (props) {
@@ -16,70 +31,70 @@ class Step3 extends React.Component {
     }
   }
   render () {
-    const { ethAmount, tokenAmount, linksAmount, tokenSymbol } = this.props
+    const { ethAmount, tokenAmount, linksAmount, tokenSymbol, loading } = this.props
+    console.log({ ethAmount, tokenAmount, linksAmount, tokenSymbol })
     const { cardNumber } = this.state
-    return <Web3Consumer>
-      {context => <div className={styles.container}>
-        <div className={styles.title}>{this.t('titles.summaryPay')}</div>
-        <div className={styles.main}>
-          <div className={styles.summary}>
-            <div className={styles.summaryBox}>
-              <div>
-                <div className={styles.data}>
-                  <h3 className={styles.dataTitle}>
-                    {this.t('titles.linksToGenerate')}
-                  </h3>
+    return <div className={styles.container}>
+      {loading && <Loading withOverlay />}
+      <div className={styles.title}>{this.t('titles.summaryPay')}</div>
+      <div className={styles.main}>
+        <div className={styles.summary}>
+          <div className={styles.summaryBox}>
+            <div>
+              <div className={styles.data}>
+                <h3 className={styles.dataTitle}>
+                  {this.t('titles.linksToGenerate')}
+                </h3>
 
-                  <div className={styles.dataContent}>
-                    {linksAmount}
-                  </div>
-                </div>
-                <div className={styles.data}>
-                  <h3 className={styles.dataTitle}>
-                    {this.t('titles.serviceFeeTitle')}
-                  </h3>
-                  <div className={styles.dataContent}>
-                    {`$ ${linksAmount * CONVERSION_RATE}`}
-                  </div>
-                  <div className={styles.extraDataContent}>
-                    {this.t('titles.centsPerLink', { cents: CONVERSION_RATE * 100 })}
-                  </div>
-
+                <div className={styles.dataContent}>
+                  {linksAmount}
                 </div>
               </div>
-
-              <div>
-                <div className={styles.data}>
-                  <h3 className={styles.dataTitle}>
-                    {this.t('titles.oneLinkContainsTitle')}
-                  </h3>
-                  <div className={styles.dataContent}>
-                    {this.renderLinkContents({ ethAmount, tokenAmount, linksAmount, tokenSymbol })}
-                  </div>
-
+              <div className={styles.data}>
+                <h3 className={styles.dataTitle}>
+                  {this.t('titles.serviceFeeTitle')}
+                </h3>
+                <div className={styles.dataContent}>
+                  {`$ ${linksAmount * CONVERSION_RATE}`}
                 </div>
-                {this.renderEthAmoundData({ ethAmount })}
+                <div className={styles.extraDataContent}>
+                  {this.t('titles.centsPerLink', { cents: CONVERSION_RATE * 100 })}
+                </div>
+
               </div>
             </div>
 
-            <div className={styles.payment}>
-              <div className={styles.priceSummary} dangerouslySetInnerHTML={{ __html: this.t('titles.charge', { price: CONVERSION_RATE * 10 * linksAmount }) }} />
-              <div className={styles.methods}>{this.t('titles.methods')} <Icons.Lock /></div>
-              <Input format='#### #### #### ####' numberInput onChange={({ value }) => this.setField({ field: 'cardNumber', value })} className={styles.input} value={cardNumber} />
+            <div>
+              <div className={styles.data}>
+                <h3 className={styles.dataTitle}>
+                  {this.t('titles.oneLinkContainsTitle')}
+                </h3>
+                <div className={styles.dataContent}>
+                  {this.renderLinkContents({ ethAmount, tokenAmount, linksAmount, tokenSymbol })}
+                </div>
+
+              </div>
+              {this.renderEthAmoundData({ ethAmount })}
             </div>
           </div>
-          <div className={styles.description}>
-            <p className={styles.text}>{this.t('texts._6')}</p>
-            <p className={styles.text}>{this.t('texts._7')}</p>
-            <p className={styles.text}>{this.t('texts._8')}</p>
-          </div>
-        </div>
 
-        <div className={styles.controls}>
-          <Button onClick={_ => this.actions().campaigns.proceedPayment({ cardNumber })}>{this.t('buttons.next')}</Button>
+          {false && <div className={styles.payment}>
+            <div className={styles.priceSummary} dangerouslySetInnerHTML={{ __html: this.t('titles.charge', { price: CONVERSION_RATE * 10 * linksAmount }) }} />
+            <div className={styles.methods}>{this.t('titles.methods')} <Icons.Lock /></div>
+            <Input format='#### #### #### ####' numberInput onChange={({ value }) => this.setField({ field: 'cardNumber', value })} className={styles.input} value={cardNumber} />
+          </div>}
         </div>
-      </div>}
-    </Web3Consumer>
+        <div className={styles.description}>
+          <p className={styles.text}>{this.t('texts._6')}</p>
+          <p className={styles.text}>{this.t('texts._7')}</p>
+          <p className={styles.text}>{this.t('texts._8')}</p>
+        </div>
+      </div>
+
+      <div className={styles.controls}>
+        <Button onClick={_ => this.actions().campaigns.proceedPayment()}>{this.t('buttons.next')}</Button>
+      </div>
+    </div>
   }
 
   setField ({ value, field }) {
@@ -106,11 +121,11 @@ class Step3 extends React.Component {
   renderLinkContents ({ tokenAmount, tokenSymbol, ethAmount, linksAmount }) {
     if (!ethAmount || Number(ethAmount) === 0) {
       return <p className={styles.dataContent}>
-        {this.t('titles.oneLinkContents', { tokenAmount: tokenAmount / linksAmount, tokenSymbol })}
+        {this.t('titles.oneLinkContents', { tokenAmount, tokenSymbol })}
       </p>
     }
     return <p className={styles.dataContent}>
-      {this.t('titles.oneLinkContentsWithEth', { tokenAmount: tokenAmount / linksAmount, tokenSymbol, ethAmount: ethAmount / linksAmount })}
+      {this.t('titles.oneLinkContentsWithEth', { tokenAmount, tokenSymbol, ethAmount })}
     </p>
   }
 }

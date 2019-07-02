@@ -30,15 +30,13 @@ class Step5 extends React.Component {
   render () {
     const { linksFinished } = this.state
     const { linksAmount } = this.props
-    return <Web3Consumer>
-      {context => <div className={styles.container}>
-        <div className={styles.content}>
-          <div className={styles.title}>{this.t('titles.generatingLinks')}</div>
-          <div className={styles.subtitle} dangerouslySetInnerHTML={{ __html: this.t('titles.loadingProcess') }} />
-          <ProgressBar current={linksFinished} max={linksAmount} />
-        </div>
-      </div>}
-    </Web3Consumer>
+    return <div className={styles.container}>
+      <div className={styles.content}>
+        <div className={styles.title}>{this.t('titles.generatingLinks')}</div>
+        <div className={styles.subtitle} dangerouslySetInnerHTML={{ __html: this.t('titles.loadingProcess') }} />
+        <ProgressBar current={linksFinished} max={linksAmount} />
+      </div>
+    </div>
   }
 }
 

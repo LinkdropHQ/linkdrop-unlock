@@ -18,6 +18,10 @@ export default {
     serviceFee: '$ {{price}} in service fees',
     serviceFeePerLink: '{{price}} cents per link, for covering gas fees and our service costs',
 
+    // step2
+
+    tokenAddress: 'Token Address',
+
     // step3
     summaryPay: 'Summary & Pay',
     linksToGenerate: 'Links to generate',

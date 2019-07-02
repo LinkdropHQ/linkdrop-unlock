@@ -1,7 +1,6 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import { Web3Consumer } from 'web3-react'
 import Step1 from './step-1'
 import Step2 from './step-2'
 import Step3 from './step-3'
@@ -22,11 +21,9 @@ class CampaignCreate extends React.Component {
 
   render () {
     const { step } = this.props
-    return <Web3Consumer>
-      {context => <div className={styles.container}>
-        {this.renderPage({ step })}
-      </div>}
-    </Web3Consumer>
+    return <div className={styles.container}>
+      {this.renderPage({ step })}
+    </div>
   }
 
   renderPage ({ step }) {

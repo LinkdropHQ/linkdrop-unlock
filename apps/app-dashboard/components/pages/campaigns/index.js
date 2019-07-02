@@ -2,28 +2,25 @@ import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import { Linkdrop, ActionBlock } from 'components/common'
-import { Web3Consumer } from 'web3-react'
 
 @actions(_ => ({}))
 @translate('pages.campaigns')
 class Campaigns extends React.Component {
   render () {
-    return <Web3Consumer>
-      {context => <div className={styles.container}>
-        {LINKDROPS.map(linkdrop => <Linkdrop
-          key={linkdrop.id}
-          {...linkdrop}
-        />)}
-        <ActionBlock
-          transparent
-          title={this.t('createLinkdrop')}
-          description={this.t('createLinkdropDescription')}
-          extraContent={this.t('ercAndEth')}
-          onClick
-          buttonTitle={this.t('create')}
-        />
-      </div>}
-    </Web3Consumer>
+    return <div className={styles.container}>
+      {LINKDROPS.map(linkdrop => <Linkdrop
+        key={linkdrop.id}
+        {...linkdrop}
+      />)}
+      <ActionBlock
+        transparent
+        title={this.t('createLinkdrop')}
+        description={this.t('createLinkdropDescription')}
+        extraContent={this.t('ercAndEth')}
+        onClick
+        buttonTitle={this.t('create')}
+      />
+    </div>
   }
 }
 

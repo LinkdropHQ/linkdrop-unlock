@@ -4,22 +4,20 @@ import { Button } from 'components/common'
 import styles from './styles.module'
 import { RetinaImage } from 'linkdrop-ui-kit'
 import { getImages } from 'helpers'
+import classNames from 'classnames'
 
-@actions(_ => ({}))
+@actions(({ user: { currentAddress } }) => ({ currentAddress }))
 @translate('common.aside')
 class Aside extends React.Component {
   render () {
+    const { currentAddress } = this.props
     return <aside className={styles.container}>
       <div className={styles.mainBlock}>
         <div className={styles.logo}>
           <a href='/#/'><RetinaImage width={118} {...getImages({ src: 'hole' })} /></a>
         </div>
-        <div className={styles.campaigns}>
-          <a href='/#/campaigns'>{this.t('campaigns')}</a>
-        </div>
-        <Button className={styles.button} href='/#/campaigns/create'>
-          {this.t('create')}
-        </Button>
+        {this.renderCampaignsButton({ currentAddress })}
+        {this.renderCreateButton({ currentAddress })}
       </div>
       <div className={styles.footer}>
         <div className={styles.menu}>
@@ -34,6 +32,22 @@ class Aside extends React.Component {
         </div>
       </div>
     </aside>
+  }
+
+  renderCreateButton ({ currentAddress }) {
+    return <Button className={styles.button} disabled={!currentAddress} href={currentAddress && '/#/campaigns/create'}>
+      {this.t('create')}
+    </Button>
+  }
+
+  renderCampaignsButton ({ currentAddress }) {
+    return <div className={classNames(styles.campaigns, {
+      [styles.disabled]: !currentAddress
+    })}>
+      <a onClick={e => {
+        if (!currentAddress) { e.preventDefault() }
+      }} href='/#/campaigns'>{this.t('campaigns')}</a>
+    </div>
   }
 }
 

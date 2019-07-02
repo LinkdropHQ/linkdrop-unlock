@@ -18,18 +18,18 @@ class SelectComponent extends React.Component {
     }, _ => onChange && onChange({ value }))
   }
 
-  componentWillReceiveProps ({ value }) {
+  componentWillReceiveProps ({ value, options }) {
     const { value: currentValue } = this.state
     if (value && currentValue !== value) {
       this.setState({
-        value: this.defineCurrentValue({ value })
+        value: this.defineCurrentValue({ value, options })
       })
     }
   }
 
-  defineCurrentValue ({ value }) {
-    const { options = [] } = this.props
-    return options.find(item => item.value === value)
+  defineCurrentValue ({ value, options }) {
+    const currentOptions = options || this.props.options
+    return currentOptions.find(item => item.value === value)
   }
 
   render () {

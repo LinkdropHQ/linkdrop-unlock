@@ -55,7 +55,7 @@ module.exports = {
     alias: {
       wallets: path.resolve(__dirname, '../../configs/wallets.config'),
       config: path.resolve(__dirname, '../../configs/app.config'),
-      'config-demo': path.resolve(__dirname, '../../configs/demo.config'),
+      'config-dashboard': path.resolve(__dirname, '../../configs/dashboard.config'),
       contracts: path.resolve(__dirname, '../../contracts/build'),
       variables: path.resolve(__dirname, '../linkdrop-commons/variables/index.module.scss')
     }

@@ -15,10 +15,21 @@
   margin-bottom: 60px;
 }
 
+
 .campaigns {
   color: $whiteColor;
   font-size: 20px;
   margin-bottom: 40px;
+
+  &.disabled {
+    color: $textGreyColor;
+    font-size: 20px;
+    margin-bottom: 40px;
+    a {
+      cursor: not-allowed;
+      color: $textGreyColor;
+    }
+  }
 
   a {
     text-decoration: none;
