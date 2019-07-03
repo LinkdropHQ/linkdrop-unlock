@@ -7,6 +7,7 @@ module.exports = shipit => {
 
   if (network === 'mainnet') CUSTOM_PORT = 5001
   else if (network === 'rinkeby') CUSTOM_PORT = 5004
+  else if (network === 'ropsten') CUSTOM_PORT = 5003
 
   shipit.initConfig({
     default: {
@@ -15,6 +16,11 @@ module.exports = shipit => {
     },
     rinkeby: {
       deployTo: 'linkdrop/rinkeby',
+      servers: 'root@rinkeby.linkdrop.io',
+      branch: 'staging'
+    },
+    ropsten: {
+      deployTo: 'linkdrop/ropsten',
       servers: 'root@rinkeby.linkdrop.io',
       branch: 'staging'
     },
