@@ -6,6 +6,7 @@ import setPrivateKey from './set-private-key'
 import setTxHash from './set-tx-hash'
 import setTransactionStatus from './set-transaction-status'
 import setProxyAddress from './set-proxy-address'
+import setVersionVar from './set-version-var'
 
 export default {
   setLoading,
@@ -15,5 +16,6 @@ export default {
   setPrivateKey,
   setTxHash,
   setTransactionStatus,
-  setProxyAddress
+  setProxyAddress,
+  setVersionVar
 }

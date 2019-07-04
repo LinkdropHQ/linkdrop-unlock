@@ -6,7 +6,8 @@ import { ProgressBar } from 'components/common'
 @actions(({
   user: {
     currentAddress,
-    chainId
+    chainId,
+    version
   }, campaigns: {
     ethAmount,
     tokenAmount,
@@ -21,21 +22,25 @@ import { ProgressBar } from 'components/common'
   linksAmount,
   links,
   tokenSymbol,
-  chainId
+  chainId,
+  version
 }))
 @translate('pages.campaignCreate')
 class Step5 extends React.Component {
   componentDidMount () {
     const { chainId, currentAddress } = this.props
-    this.actions().tokens.generateERC20Link({ chainId, currentAddress })
+    this.actions().user.prepareVersionVar({ chainId, currentAddress })
   }
 
-  componentWillReceiveProps ({ links }) {
-    const { linksAmount, links: prevLinks, chainId, currentAddress } = this.props
+  componentWillReceiveProps ({ links, version }) {
+    const { linksAmount, links: prevLinks, chainId, currentAddress, version: prevVersion } = this.props
     if (links.length === linksAmount) {
       return this.actions().campaigns.save({ links })
     }
-    if (links && links.length > 0 && links.length > prevLinks.length && links.length < linksAmount) {
+    if (
+      (links && links.length > 0 && links.length > prevLinks.length && links.length < linksAmount) ||
+      (version != null && !prevVersion && prevVersion !== version)
+    ) {
       this.actions().tokens.generateERC20Link({ chainId, currentAddress })
     }
   }

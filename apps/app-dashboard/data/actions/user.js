@@ -26,6 +26,10 @@ class User {
   createProxyAddress ({ currentAddress }) {
     this.actions.dispatch({ type: '*USER.CREATE_PROXY_ADDRESS', payload: { address: currentAddress } })
   }
+
+  prepareVersionVar ({ chainId, currentAddress }) {
+    this.actions.dispatch({ type: '*USER.PREPARE_VERSION_VAR', payload: { chainId, currentAddress } })
+  }
 }
 
 export default User

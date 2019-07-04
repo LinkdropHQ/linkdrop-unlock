@@ -23,7 +23,7 @@ class Linkdrop extends React.Component {
       {this.renderTitle({ tokenAmount, tokenSymbol, ethAmount, tokenType, linksAmount })}
       {this.renderStatus({ status })}
       {this.renderDate({ created })}
-      {this.renderLinksData({ linksAmount, tokenAmount, tokenSymbol, ethAmount })}
+      {this.renderLinksData({ linksAmount, tokenAmount, tokenSymbol, ethAmount, tokenType })}
       <div className={styles.buttons}>
         <Button href={`/#/campaigns/${id}`} transparent className={styles.button}>{this.t('links')}</Button>
         <Button transparent className={styles.button}>{this.t('viewContract')}</Button>
@@ -61,7 +61,12 @@ class Linkdrop extends React.Component {
     </div>
   }
 
-  renderLinksData ({ linksAmount, tokenAmount, tokenSymbol, ethAmount }) {
+  renderLinksData ({ linksAmount, tokenAmount, tokenSymbol, ethAmount, tokenType }) {
+    if (tokenType === 'eth' && ethAmount) {
+      return <div className={styles.links}>
+        {linksAmount} {this.t('linksCount')} / {ethAmount} {tokenSymbol}
+      </div>
+    }
     if (linksAmount && tokenAmount && tokenSymbol && ethAmount) {
       return <div className={styles.links}>
         {linksAmount} {this.t('linksCount')} / {tokenAmount} {tokenSymbol}

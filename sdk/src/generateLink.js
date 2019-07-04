@@ -62,6 +62,7 @@ export const generateLink = async ({
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
   const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
+
   const { linkKey, linkId, linkdropSignerSignature } = await createLink({
     linkdropSigner,
     weiAmount,
