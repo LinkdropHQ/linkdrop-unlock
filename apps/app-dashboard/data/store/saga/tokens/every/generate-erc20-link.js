@@ -11,8 +11,7 @@ const generator = function * ({ payload }) {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const { chainId, currentAddress } = payload
     const balance = yield select(generator.selectors.ethAmount)
-    const linksAmount = yield select(generator.selectors.linksAmount)
-    const balanceDivided = Number(balance) / Number(linksAmount)
+    const balanceDivided = Number(balance)
     const weiAmount = utils.parseEther(String(balanceDivided))
     const privateKey = yield select(generator.selectors.privateKey)
     const ethersContractZeroAddress = ethers.constants.AddressZero
@@ -45,7 +44,6 @@ const generator = function * ({ payload }) {
 export default generator
 generator.selectors = {
   ethAmount: ({ campaigns: { ethAmount } }) => ethAmount,
-  linksAmount: ({ campaigns: { linksAmount } }) => linksAmount,
   privateKey: ({ user: { privateKey } }) => privateKey,
   links: ({ campaigns: { links } }) => links
 }

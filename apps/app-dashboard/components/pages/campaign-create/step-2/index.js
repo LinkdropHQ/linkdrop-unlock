@@ -4,18 +4,17 @@ import styles from './styles.module'
 import { ethers } from 'ethers'
 import classNames from 'classnames'
 import { Icons, Loading } from 'linkdrop-ui-kit'
-import { convertFromExponents } from 'linkdrop-commons'
 import { Button, Select, Input } from 'components/common'
 import TokenAddressInput from './token-address-input'
-
+import LinksContent from './links-content'
+import NextButton from './next-button'
 @actions(({ user: { chainId, currentAddress, loading, proxyAddress }, tokens: { assets, symbol } }) => ({ assets, chainId, symbol, loading, proxyAddress, currentAddress }))
 @translate('pages.campaignCreate')
 class Step2 extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      // mainnet
-      tokenSymbol: this.defineCurrentAsset(),
+      tokenSymbol: TOKENS[0].value,
       tokenAmount: '0',
       ethAmount: '0',
       linksAmount: '0',
@@ -53,10 +52,6 @@ class Step2 extends React.Component {
   //   return ((allAssets[0] || {}).contract || {}).symbol
   // }
 
-  defineCurrentAsset (assets) {
-    return TOKENS[0].value
-  }
-
   render () {
     const { tokenSymbol, ethAmount, linksAmount, tokenAmount, addEth, tokenAddress } = this.state
     const { symbol, loading } = this.props
@@ -87,10 +82,10 @@ class Step2 extends React.Component {
 
         <div className={styles.summary}>
           <h3 className={styles.subtitle}>{this.t('titles.total')}</h3>
-          {this.renderTexts({ ethAmount, linksAmount, tokenAmount, tokenSymbol: symbol || tokenSymbol, addEth })}
+          {this.renderTexts({ ethAmount, tokenType, linksAmount, tokenAmount, tokenSymbol: symbol || tokenSymbol, addEth })}
         </div>
       </div>
-      {this.renderNextButton({ tokenAmount, ethAmount, linksAmount, tokenSymbol: symbol || tokenSymbol })}
+      {this.renderNextButton({ tokenAmount, ethAmount, linksAmount, tokenSymbol: symbol || tokenSymbol, tokenType })}
     </div>
   }
 
@@ -118,9 +113,9 @@ class Step2 extends React.Component {
   }
 
   defineTokenType ({ tokenSymbol }) {
-    if (tokenSymbol === 'erc20') { return 'erc20' }
+    if (tokenSymbol === 'ERC20') { return 'erc20' }
     if (tokenSymbol === 'ETH') { return 'eth' }
-    if (tokenSymbol === 'erc721') { return 'erc721' }
+    if (tokenSymbol === 'ERC721') { return 'erc721' }
   }
 
   renderAddIconInfo () {
@@ -136,16 +131,8 @@ class Step2 extends React.Component {
     </div>
   }
 
-  renderNextButton ({ tokenAmount, ethAmount, linksAmount, tokenSymbol }) {
-    let action
-    if (tokenSymbol === 'ETH') {
-      action = _ => this.actions().campaigns.prepareNewEthData({ ethAmount, linksAmount, tokenSymbol })
-    } else {
-      action = _ => this.actions().campaigns.prepareNewTokensData({ tokenAmount, ethAmount, linksAmount, tokenSymbol })
-    }
-    return <div className={styles.controls}>
-      <Button onClick={action}>{this.t('buttons.next')}</Button>
-    </div>
+  renderNextButton ({ tokenAmount, ethAmount, linksAmount, tokenSymbol, tokenType }) {
+    return <NextButton tokenAmount={tokenAmount} ethAmount={ethAmount} linksAmount={linksAmount} tokenSymbol={tokenSymbol} tokenType={tokenType} />
   }
 
   renderAddEthField () {
@@ -162,7 +149,7 @@ class Step2 extends React.Component {
     </div>
   }
 
-  renderTexts ({ ethAmount, linksAmount, tokenAmount, tokenSymbol, addEth }) {
+  renderTexts ({ ethAmount, linksAmount, tokenAmount, tokenSymbol, addEth, tokenType }) {
     const value = tokenSymbol === 'erc20' ? tokenAmount : ethAmount
     if (!linksAmount || Number(linksAmount) === 0 || !value || Number(value) === 0) {
       return <p className={classNames(styles.text, styles.textGrey)}>{this.t('titles.fillTheField')}</p>
@@ -170,7 +157,7 @@ class Step2 extends React.Component {
     return <div>
       {tokenSymbol === 'erc20' && <p className={classNames(styles.text, styles.textMargin15)}>{value * linksAmount} {tokenSymbol}</p>}
       {this.renderEthTexts({ ethAmount, linksAmount, addEth })}
-      {this.renderLinkContents({ tokenAmount, tokenSymbol, ethAmount, addEth, linksAmount })}
+      {this.renderLinkContents({ tokenAmount, tokenSymbol, ethAmount, tokenType })}
       <p className={styles.text}>{this.t('titles.serviceFee', { price: CONVERSION_RATE * linksAmount })}</p>
       <p className={classNames(styles.text, styles.textGrey)}>{this.t('titles.serviceFeePerLink', { price: CONVERSION_RATE * 100 })}</p>
     </div>
@@ -184,15 +171,8 @@ class Step2 extends React.Component {
     </div>
   }
 
-  renderLinkContents ({ tokenAmount, tokenSymbol, ethAmount, addEth, linksAmount }) {
-    if (!tokenAmount || Number(tokenAmount) === 0) {
-      return <p className={classNames(styles.text, styles.textGrey, styles.textMargin30)}>
-        {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContents', { tokenAmount: ethAmount, tokenSymbol })}`}
-      </p>
-    }
-    return <p className={classNames(styles.text, styles.textGrey, styles.textMargin30)}>
-      {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContentsWithEth', { tokenAmount, tokenSymbol, ethAmount: convertFromExponents(ethAmount) })}`}
-    </p>
+  renderLinkContents ({ tokenAmount, tokenSymbol, ethAmount, tokenType }) {
+    return <LinksContent tokenAmount={tokenAmount} tokenSymbol={tokenSymbol} ethAmount={ethAmount} tokenType={tokenType} />
   }
 
   renderTokenAddressInput ({ tokenAddress, tokenType }) {
@@ -236,7 +216,7 @@ const TOKENS = [
     value: 'ETH'
   }, {
     label: 'Custom Token ERC20',
-    value: 'erc20'
+    value: 'ERC20'
   }
 ]
 

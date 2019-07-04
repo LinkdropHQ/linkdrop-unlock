@@ -16,26 +16,30 @@ class Linkdrop extends React.Component {
       created,
       status,
       linksAmount,
+      tokenType,
       id
     } = this.props
     return <div className={styles.container}>
-      {this.renderTitle({ tokenAmount, tokenSymbol, ethAmount })}
+      {this.renderTitle({ tokenAmount, tokenSymbol, ethAmount, tokenType, linksAmount })}
       {this.renderStatus({ status })}
       {this.renderDate({ created })}
       {this.renderLinksData({ linksAmount, tokenAmount, tokenSymbol, ethAmount })}
       <div className={styles.buttons}>
-        <Button transparent className={styles.button}>{this.t('links')}</Button>
+        <Button href={`/#/campaigns/${id}`} transparent className={styles.button}>{this.t('links')}</Button>
         <Button transparent className={styles.button}>{this.t('viewContract')}</Button>
       </div>
     </div>
   }
 
-  renderTitle ({ tokenAmount, tokenSymbol, ethAmount }) {
-    if (tokenAmount && tokenSymbol && !ethAmount) {
-      return <div className={styles.title}>{`${this.t('linkdrop')}: ${tokenAmount} ${tokenSymbol}` }</div>
+  renderTitle ({ tokenAmount, tokenSymbol, ethAmount, tokenType, linksAmount }) {
+    if (tokenType === 'erc20' && !ethAmount) {
+      return <div className={styles.title}>{`${this.t('linkdrop')}: ${tokenAmount * linksAmount} ${tokenSymbol}` }</div>
     }
-    if (tokenAmount && tokenSymbol && ethAmount) {
-      return <div className={styles.title}>{`${this.t('linkdrop')}: ${tokenAmount}${tokenSymbol} + ${this.t('eth')}` }</div>
+    if (tokenType === 'erc20' && !ethAmount) {
+      return <div className={styles.title}>{`${this.t('linkdrop')}: ${tokenAmount * linksAmount} ${tokenSymbol} + ${this.t('eth')}` }</div>
+    }
+    if (tokenType === 'eth' && ethAmount) {
+      return <div className={styles.title}>{`${this.t('linkdrop')}: ${ethAmount * linksAmount} ${tokenSymbol}` }</div>
     }
     return null
   }

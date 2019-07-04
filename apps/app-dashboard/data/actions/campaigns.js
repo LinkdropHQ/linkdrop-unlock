@@ -3,9 +3,9 @@ class Campaign {
     this.actions = actions
   }
 
-  prepareNewTokensData ({ tokenAmount, ethAmount, linksAmount, tokenSymbol }) {
+  prepareNewERC20Data ({ tokenAmount, ethAmount, linksAmount, tokenSymbol }) {
     this.actions.dispatch({
-      type: '*CAMPAIGNS.PREPARE_NEW_TOKENS_DATA',
+      type: '*CAMPAIGNS.PREPARE_NEW_ERC20_DATA',
       payload: {
         tokenAmount,
         ethAmount,
@@ -31,6 +31,24 @@ class Campaign {
       type: '*CAMPAIGNS.PROCEED_PAYMENT',
       payload: {
         cardNumber
+      }
+    })
+  }
+
+  save ({ links }) {
+    this.actions.dispatch({
+      type: '*CAMPAIGNS.SAVE',
+      payload: {
+        links
+      }
+    })
+  }
+
+  getCSV ({ links }) {
+    this.actions.dispatch({
+      type: '*CAMPAIGNS.GET_CSV',
+      payload: {
+        links
       }
     })
   }

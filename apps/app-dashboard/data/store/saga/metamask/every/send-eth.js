@@ -17,7 +17,7 @@ const generator = function * ({ payload }) {
     const proxyAddress = yield select(generator.selectors.proxyAddress)
     const ethValueWei = utils.parseEther(String(ethAmount))
     const promise = new Promise((resolve, reject) => {
-      web3Obj.eth.sendTransaction({ to: proxyAddress, from: fromWallet, value: ethValueWei }, result => resolve({ result }))
+      web3Obj.eth.sendTransaction({ to: proxyAddress, gas: 73000, from: fromWallet, value: ethValueWei }, result => resolve({ result }))
     })
     const { result } = yield promise
     if (String(result) === 'null') {

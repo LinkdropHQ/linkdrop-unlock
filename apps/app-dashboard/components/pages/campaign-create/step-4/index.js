@@ -1,7 +1,6 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import { Web3Consumer } from 'web3-react'
 import classNames from 'classnames'
 import { Button } from 'components/common'
 import { RetinaImage } from 'linkdrop-ui-kit'

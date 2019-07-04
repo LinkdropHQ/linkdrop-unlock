@@ -2,13 +2,15 @@ import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import classNames from 'classnames'
-import { Web3Consumer } from 'web3-react'
 import { Button } from 'components/common'
 
-@actions(({ campaigns: { ethAmount, tokenAmount, linksAmount, tokenSymbol } }) => ({ ethAmount, tokenAmount, linksAmount, tokenSymbol }))
+@actions(({ campaigns: { items, current } }) => ({ items, current }))
 @translate('pages.campaignCreate')
 class Step6 extends React.Component {
   render () {
+    const { items, current, campaignToCheck } = this.props
+    const currentCampaign = items.find(item => item.id === Number(campaignToCheck || current))
+    const links = (currentCampaign || {}).links
     return <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.automatic}>
@@ -20,7 +22,9 @@ class Step6 extends React.Component {
           <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.contactUs')}</p>
           <Button className={classNames(styles.button, styles.buttonMargin60)}>{this.t('buttons.useLinkdropSdk')}</Button>
           <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.codeDetails')}</p>
-          <div className={styles.codeBlock}>s</div>
+          <textarea disabled className={styles.codeBlock}>
+            {this.t('texts.codeBlock')}
+          </textarea>
           <p className={classNames(styles.text, styles.textMargin10)}>{this.t('titles.contractParams')}</p>
           <p className={classNames(styles.text, styles.textMargin10)}>{this.t('titles.address', { address: 'asdasdasd' })}</p>
           <p className={classNames(styles.text, styles.textMargin10)}>{this.t('titles.verificationKey', { verificationKey: 'asdasdasd' })}</p>
@@ -29,7 +33,7 @@ class Step6 extends React.Component {
           <p className={styles.text}>{this.t('titles.downloadFile')}</p>
           <p className={classNames(styles.text, styles.textGrey, styles.textMargin40)}>{this.t('titles.manual')}</p>
           <div className={styles.buttonsContainer}>
-            <Button className={styles.button}>{this.t('buttons.downlpadCsv')}</Button>
+            <Button onClick={_ => links && this.actions().campaigns.getCSV({ links })} className={styles.button}>{this.t('buttons.downloadCsv')}</Button>
             <Button transparent className={styles.button}>{this.t('buttons.qr')}</Button>
           </div>
           <p className={classNames(styles.text, styles.textMargin60)} dangerouslySetInnerHTML={{ __html: this.t('titles.howToClaimPreview') }} />

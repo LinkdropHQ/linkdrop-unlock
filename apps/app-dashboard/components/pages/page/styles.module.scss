@@ -9,10 +9,22 @@
 .container {
   padding: 0px;
   display: flex;
+  position: relative;
 }
 
 .mainWrapper {
   height: 100vh;
   background: $bgColor;
   width: 100%;
+}
+
+.easterEgg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  z-index: 100;
+  cursor: pointer;
+  height: 10px;
+  opacity: 0;
 }

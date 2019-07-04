@@ -79,7 +79,21 @@ export default {
     _9: 'One more thing, to complete generating links you need to send Ether for links to Linkdrop Contract',
     _10: 'Ether will be stored in Linkdrop Contract. You can stop campaign anytime and get back your Ether.',
     _11: 'To send 10 ETH to Linkdrop Contract simply click on “Send” button and confirm transaction.',
-    _12: 'MetaMask will show you Transaction pop-up that you need to confirm'
+    _12: 'MetaMask will show you Transaction pop-up that you need to confirm',
+    codeBlock: `// import library
+const linkGenerator = require(‘volca-link-generator’);
+
+// init link generator
+const linkGenerator = LinkGenerator({
+       verificationPK: ‘32ebc000000000000000000000000000000000000000
+       contractAddress: ‘0xa712700000000000000000000000000000000000’
+       networkId: ‘3’
+});
+
+//Usage example:
+// Generating claim link for tokenId #1
+const tokenId = 1;
+const claimLink = linkGenerator.generatorNFT(tokenId);`
   },
   buttons: {
     create: 'Create',
@@ -90,8 +104,7 @@ export default {
     send: 'Send',
     useLinkdropSdk: 'Use Linkdrop SDK',
     seeOnGithub: 'See How-To On Github',
-    downlpadCsv: 'Download CSV',
+    downloadCsv: 'Download CSV',
     qr: 'QR-Codes'
-
   }
 }

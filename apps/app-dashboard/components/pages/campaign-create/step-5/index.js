@@ -1,10 +1,28 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import { Web3Consumer } from 'web3-react'
 import { ProgressBar } from 'components/common'
 
-@actions(({ user: { currentAddress, chainId }, campaigns: { ethAmount, tokenAmount, linksAmount, tokenSymbol, links } }) => ({ ethAmount, currentAddress, tokenAmount, linksAmount, links, tokenSymbol, chainId }))
+@actions(({
+  user: {
+    currentAddress,
+    chainId
+  }, campaigns: {
+    ethAmount,
+    tokenAmount,
+    linksAmount,
+    tokenSymbol,
+    links
+  }
+}) => ({
+  ethAmount,
+  currentAddress,
+  tokenAmount,
+  linksAmount,
+  links,
+  tokenSymbol,
+  chainId
+}))
 @translate('pages.campaignCreate')
 class Step5 extends React.Component {
   componentDidMount () {

@@ -9,7 +9,8 @@ import { Button, Input } from 'components/common'
     loading,
     currentAddress,
     errors,
-    chainId
+    chainId,
+    proxyAddress
   },
   tokens: {
     ethBalanceFormatted
@@ -32,7 +33,8 @@ import { Button, Input } from 'components/common'
   currentAddress,
   metamaskStatus,
   chainId,
-  ethBalanceFormatted
+  ethBalanceFormatted,
+  proxyAddress
 })
 )
 @translate('pages.campaignCreate')
@@ -45,9 +47,10 @@ class Step3 extends React.Component {
   }
 
   componentWillReceiveProps ({ metamaskStatus, errors, ethBalanceFormatted }) {
-    const { metamaskStatus: prevMetamaskStatus, errors: prevErrors, ethBalanceFormatted: prevEthBalanceFormatted, currentAddress, chainId } = this.props
+    const { metamaskStatus: prevMetamaskStatus, errors: prevErrors, ethBalanceFormatted: prevEthBalanceFormatted, proxyAddress, chainId } = this.props
+    console.log({ proxyAddress })
     if (metamaskStatus && metamaskStatus === 'finished' && metamaskStatus !== prevMetamaskStatus) {
-      this.intervalCheck = window.setInterval(_ => this.actions().tokens.getEthBalance({ account: currentAddress, chainId }), 3000)
+      this.intervalCheck = window.setInterval(_ => this.actions().tokens.getEthBalance({ account: proxyAddress, chainId }), 3000)
       return
     }
     if (errors && errors[0] && prevErrors.length === 0 && errors[0] !== prevErrors[0]) {

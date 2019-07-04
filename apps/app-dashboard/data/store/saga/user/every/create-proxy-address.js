@@ -9,7 +9,7 @@ const generator = function * ({ payload }) {
     const { address } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const proxyAddr = yield LinkdropSDK.computeProxyAddress(factory, address, configs.initcode)
-    yield put({ type: 'USER.SET_PROXY_ADDRESS', payload: { wallet: proxyAddr } })
+    yield put({ type: 'USER.SET_PROXY_ADDRESS', payload: { proxyAddress: proxyAddr } })
     ls && ls.setItem && ls.setItem('proxyAddr', proxyAddr)
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
   } catch (e) {

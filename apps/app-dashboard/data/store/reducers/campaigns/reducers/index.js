@@ -3,11 +3,19 @@ import setTokenSymbol from './set-token-symbol'
 import setEthAmount from './set-eth-amount'
 import setLinksAmount from './set-links-amount'
 import setLinks from './set-links'
+import setTokenType from './set-token-type'
+import setDate from './set-date'
+import setItems from './set-items'
+import setCurrent from './set-current'
 
 export default {
   setTokenAmount,
   setTokenSymbol,
   setEthAmount,
   setLinksAmount,
-  setLinks
+  setLinks,
+  setTokenType,
+  setDate,
+  setItems,
+  setCurrent
 }
