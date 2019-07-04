@@ -1,6 +1,7 @@
 import { terminal as term } from 'terminal-kit'
 import configs from '../configs'
 
+const asyncHandler = require('express-async-handler')
 const mongoose = require('mongoose')
 const express = require('express')
 const app = express()
@@ -18,10 +19,10 @@ app.use(cors())
 
 // Set up default mongoose connection
 mongoose
-  .connect(
-    mongoURI || 'mongodb://localhost:27017/linkdrop_db',
-    { useNewUrlParser: true, useCreateIndex: true }
-  )
+  .connect(mongoURI || 'mongodb://localhost:27017/linkdrop_db', {
+    useNewUrlParser: true,
+    useCreateIndex: true
+  })
   .then(() => {
     // Run server
 
@@ -38,5 +39,17 @@ mongoose
 
 // Define routes
 app.get('/', (req, res) => res.send('👋  Hello from linkdrop server'))
-app.post('/api/v1/linkdrops/claim', claimController.claim)
-app.post('/api/v1/linkdrops/claim-erc721', claimController.claimERC721)
+app.post('/api/v1/linkdrops/claim', asyncHandler(claimController.claim))
+app.post(
+  '/api/v1/linkdrops/claim-erc721',
+  asyncHandler(claimController.claimERC721)
+)
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err)
+  res.status(err.status || 500)
+  let error = err.message || 'Server error!'
+  res.send({ success: false, error })
+  return null
+})
