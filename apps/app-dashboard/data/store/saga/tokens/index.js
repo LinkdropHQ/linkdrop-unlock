@@ -4,10 +4,14 @@ import getAssets from './every/get-assets'
 import getTokenERC20Data from './every/get-token-erc20-data'
 import getTokenERC721Data from './every/get-token-erc721-data'
 import getEthData from './every/get-eth-data'
+import getEthBalance from './every/get-eth-balance'
+import generateErc20Link from './every/generate-erc20-link'
 
 export default function * () {
   yield takeEvery('*TOKENS.GET_ASSETS', getAssets)
   yield takeEvery('*TOKENS.GET_TOKEN_ERC20_DATA', getTokenERC20Data)
   yield takeEvery('*TOKENS.GET_TOKEN_ERC721_DATA', getTokenERC721Data)
   yield takeEvery('*TOKENS.GET_ETH_DATA', getEthData)
+  yield takeEvery('*TOKENS.GET_ETH_BALANCE', getEthBalance)
+  yield takeEvery('*TOKENS.GENERATE_ERC20_LINK', generateErc20Link)
 }

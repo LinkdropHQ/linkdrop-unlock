@@ -3,18 +3,34 @@ import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import classNames from 'classnames'
 import { Button } from 'components/common'
-import { RetinaImage } from 'linkdrop-ui-kit'
+import { RetinaImage, Loading } from 'linkdrop-ui-kit'
 import { getImages } from 'helpers'
 
-@actions(_ => ({}))
+@actions(({ user: { chainId, transactionStatus, currentAddress, loading, txHash, privateKey } }) => ({ chainId, transactionStatus, currentAddress, txHash, loading, privateKey }))
 @translate('pages.campaignCreate')
 class Step1 extends React.Component {
-  componentDidMount () {
-    this.actions().user.createSigningKey()
-  }
+  componentWillReceiveProps ({ txHash, transactionStatus }) {
+    const { txHash: prevTxHash, chainId, transactionStatus: prevTransactionStatus } = this.props
+    if (txHash != null && !prevTxHash && prevTxHash !== txHash) {
+      this.txHashCheck = window.setInterval(_ => this.actions().user.checkTxHash({ txHash, chainId }), 3000)
+      return
+    }
 
+    if (transactionStatus != null && prevTransactionStatus !== transactionStatus) {
+      if (transactionStatus === 'failed') {
+        window.alert('Failed!')
+      }
+      if (transactionStatus === 'success') {
+        window.alert('Success!')
+        window.setTimeout(_ => this.actions().user.setStep({ step: 2 }), 3000)
+      }
+      window.clearInterval(this.txHashCheck)
+    }
+  }
   render () {
+    const { loading, txHash, transactionStatus } = this.props
     return <div className={styles.container}>
+      {loading && <Loading withOverlay />}
       <div className={styles.title}>{this.t('titles.createLinkKey')}</div>
       <div className={styles.main}>
         <div className={styles.description}>
@@ -30,9 +46,14 @@ class Step1 extends React.Component {
         </div>
       </div>
       <div className={styles.controls}>
-        <Button onClick={_ => this.actions().user.setStep({ step: 2 })}>{this.t('buttons.create')}</Button>
+        <Button disabled={txHash && !transactionStatus} onClick={_ => this.onClick()}>{this.t('buttons.create')}</Button>
       </div>
     </div>
+  }
+
+  onClick () {
+    const { chainId, currentAddress } = this.props
+    this.actions().user.createSigningKey({ chainId, account: currentAddress })
   }
 }
 

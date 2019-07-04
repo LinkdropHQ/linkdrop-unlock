@@ -8,10 +8,14 @@ import Step4 from './step-4'
 import Step5 from './step-5'
 import Step6 from './step-6'
 
-@actions(({ user: { step } }) => ({ step }))
+@actions(({ user: { step, privateKey } }) => ({ step, privateKey }))
 @translate('pages.campaignCreate')
 class CampaignCreate extends React.Component {
   componentDidMount () {
+    const { privateKey } = this.props
+    if (privateKey) {
+      return this.actions().user.setStep({ step: 2 })
+    }
     this.actions().user.setStep({ step: 1 })
   }
 

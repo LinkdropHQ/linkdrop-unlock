@@ -1,10 +1,15 @@
 import reducers from './reducers'
+const ls = window.localStorage
 
 const initialState = {
   loading: false,
   step: null,
   currentAddress: null,
-  chainId: null
+  chainId: null,
+  privateKey: ls && ls.getItem && ls.getItem('privateKey'),
+  txHash: null,
+  transactionStatus: null,
+  proxyAddress: ls && ls.getItem && ls.getItem('proxyAddr')
 }
 
 export default (state = initialState, action = {}) => {
@@ -19,5 +24,9 @@ const ACTIONS = {
   'USER.SET_LOADING': reducers.setLoading,
   'USER.SET_STEP': reducers.setStep,
   'USER.SET_CURRENT_ADDRESS': reducers.setCurrentAddress,
-  'USER.SET_CHAIN_ID': reducers.setChainId
+  'USER.SET_CHAIN_ID': reducers.setChainId,
+  'USER.SET_PRIVATE_KEY': reducers.setPrivateKey,
+  'USER.SET_TX_HASH': reducers.setTxHash,
+  'USER.SET_TRANSACTION_STATUS': reducers.setTransactionStatus,
+  'USER.SET_PROXY_ADDRESS': reducers.setProxyAddress
 }

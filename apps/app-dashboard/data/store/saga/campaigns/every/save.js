@@ -3,6 +3,7 @@ import { delay } from 'redux-saga'
 
 const generator = function * ({ payload }) {
   try {
+    const { links } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     yield delay(1000)
     yield put({ type: 'USER.SET_STEP', payload: { step: 5 } })

@@ -5,7 +5,6 @@ const generator = function * ({ payload }) {
   try {
     const { account } = payload
     const { total, docs } = yield call(getTokensTrustwallet, { wallet: account })
-    console.log({ total, docs })
     if (total && total > 0) {
       yield put({ type: 'TOKENS.SET_ASSETS', payload: { assets: docs } })
     }

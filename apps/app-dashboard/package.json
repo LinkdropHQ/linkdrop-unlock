@@ -26,6 +26,7 @@
     "body-parser": "^1.17.1",
     "classnames": "^2.2.5",
     "connected-react-router": "^6.3.2",
+    "convert-array-to-csv": "^1.0.8",
     "core-js": "2.6.5",
     "cross-env": "5.0.5",
     "css-loader": "^0.28.0",

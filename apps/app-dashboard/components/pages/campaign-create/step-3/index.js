@@ -1,13 +1,21 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import classNames from 'classnames'
 import { Icons, Loading } from 'linkdrop-ui-kit'
 import { Button, Input } from 'components/common'
 
 @actions(({
   user: {
-    loading
+    loading,
+    currentAddress,
+    errors,
+    chainId
+  },
+  tokens: {
+    ethBalanceFormatted
+  },
+  metamask: {
+    status: metamaskStatus
   },
   campaigns: {
     ethAmount,
@@ -18,8 +26,13 @@ import { Button, Input } from 'components/common'
   ethAmount,
   tokenAmount,
   linksAmount,
+  errors,
   tokenSymbol,
-  loading
+  loading,
+  currentAddress,
+  metamaskStatus,
+  chainId,
+  ethBalanceFormatted
 })
 )
 @translate('pages.campaignCreate')
@@ -30,9 +43,26 @@ class Step3 extends React.Component {
       cardNumber: '0000 0000 0000 0000'
     }
   }
+
+  componentWillReceiveProps ({ metamaskStatus, errors, ethBalanceFormatted }) {
+    const { metamaskStatus: prevMetamaskStatus, errors: prevErrors, ethBalanceFormatted: prevEthBalanceFormatted, currentAddress, chainId } = this.props
+    if (metamaskStatus && metamaskStatus === 'finished' && metamaskStatus !== prevMetamaskStatus) {
+      this.intervalCheck = window.setInterval(_ => this.actions().tokens.getEthBalance({ account: currentAddress, chainId }), 3000)
+      return
+    }
+    if (errors && errors[0] && prevErrors.length === 0 && errors[0] !== prevErrors[0]) {
+      window.alert(this.t(`errors.${errors[0]}`))
+      this.intervalCheck && window.clearInterval(this.intervalCheck)
+    }
+    if (ethBalanceFormatted && Number(ethBalanceFormatted) > 0 && ethBalanceFormatted !== prevEthBalanceFormatted) {
+      this.intervalCheck && window.clearInterval(this.intervalCheck)
+      window.alert('found!')
+      window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), 3000)
+    }
+  }
+
   render () {
     const { ethAmount, tokenAmount, linksAmount, tokenSymbol, loading } = this.props
-    console.log({ ethAmount, tokenAmount, linksAmount, tokenSymbol })
     const { cardNumber } = this.state
     return <div className={styles.container}>
       {loading && <Loading withOverlay />}
@@ -74,7 +104,7 @@ class Step3 extends React.Component {
                 </div>
 
               </div>
-              {this.renderEthAmoundData({ ethAmount })}
+              {tokenAmount && this.renderEthAmoundData({ ethAmount, linksAmount })}
             </div>
           </div>
 
@@ -92,7 +122,11 @@ class Step3 extends React.Component {
       </div>
 
       <div className={styles.controls}>
-        <Button onClick={_ => this.actions().campaigns.proceedPayment()}>{this.t('buttons.next')}</Button>
+        <Button onClick={_ => {
+          const { ethAmount, currentAddress } = this.props
+          this.actions().metamask.sendEth({ ethAmount: ethAmount * linksAmount, account: currentAddress })
+          // this.actions().campaigns.proceedPayment({})
+        }}>{this.t('buttons.next')}</Button>
       </div>
     </div>
   }
@@ -103,14 +137,14 @@ class Step3 extends React.Component {
     })
   }
 
-  renderEthAmoundData ({ ethAmount }) {
+  renderEthAmoundData ({ ethAmount, linksAmount }) {
     if (!ethAmount || Number(ethAmount) === 0) { return null }
     return <div className={styles.data}>
       <h3 className={styles.dataTitle}>
         {this.t('titles.totalEthInLinks')}
       </h3>
       <div className={styles.dataContent}>
-        {ethAmount} ETH
+        {ethAmount * linksAmount} ETH
       </div>
       <div className={styles.extraDataContent}>
         {this.t('titles.ethHold')}
@@ -119,6 +153,11 @@ class Step3 extends React.Component {
   }
 
   renderLinkContents ({ tokenAmount, tokenSymbol, ethAmount, linksAmount }) {
+    if (ethAmount && !tokenAmount && tokenSymbol === 'ETH') {
+      return <p className={styles.dataContent}>
+        {this.t('titles.oneLinkContents', { tokenAmount: ethAmount, tokenSymbol })}
+      </p>
+    }
     if (!ethAmount || Number(ethAmount) === 0) {
       return <p className={styles.dataContent}>
         {this.t('titles.oneLinkContents', { tokenAmount, tokenSymbol })}
