@@ -7,8 +7,6 @@ import setTxHash from './set-tx-hash'
 import setTransactionStatus from './set-transaction-status'
 import setProxyAddress from './set-proxy-address'
 import setVersionVar from './set-version-var'
-import setLinkdropSigner from './set-linkdrop-signer'
-import setProvider from './set-provider'
 
 export default {
   setLoading,
@@ -19,7 +17,5 @@ export default {
   setTxHash,
   setTransactionStatus,
   setProxyAddress,
-  setVersionVar,
-  setLinkdropSigner,
-  setProvider
+  setVersionVar
 }
