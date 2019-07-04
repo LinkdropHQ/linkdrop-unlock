@@ -5,9 +5,9 @@ module.exports = shipit => {
   const PM2_APP_NAME = `linkdrop-${network}`
   let CUSTOM_PORT
 
-  if (network === 'mainnet') CUSTOM_PORT = 5001
-  else if (network === 'rinkeby') CUSTOM_PORT = 5004
-  else if (network === 'ropsten') CUSTOM_PORT = 5003
+  if (network === 'mainnet') CUSTOM_PORT = 10001
+  else if (network === 'rinkeby') CUSTOM_PORT = 10004
+  else if (network === 'ropsten') CUSTOM_PORT = 10003
 
   shipit.initConfig({
     default: {
