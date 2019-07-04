@@ -5,7 +5,8 @@ export const generateLink = async ({
   jsonRpcUrl,
   chainId,
   host,
-  linkdropMasterPrivateKey,
+  linkdropMasterAddress,
+  linkdropSignerPrivateKey,
   weiAmount,
   tokenAddress,
   tokenAmount,
@@ -25,8 +26,12 @@ export const generateLink = async ({
     throw new Error('Please provide host')
   }
 
-  if (linkdropMasterPrivateKey === null || linkdropMasterPrivateKey === '') {
-    throw new Error(`Please provide linkdropMaster's private key`)
+  if (linkdropMasterAddress === null || linkdropMasterAddress === '') {
+    throw new Error(`Please provide linkdrop master's address`)
+  }
+
+  if (linkdropSignerPrivateKey === null || linkdropSignerPrivateKey === '') {
+    throw new Error(`Please provide linkdrop signer's private key`)
   }
 
   if (weiAmount === null || weiAmount === '') {
@@ -56,9 +61,9 @@ export const generateLink = async ({
   }
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-  const linkdropMaster = new ethers.Wallet(linkdropMasterPrivateKey, provider)
+  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
   const { linkKey, linkId, linkdropSignerSignature } = await createLink({
-    linkdropSigner: linkdropMaster,
+    linkdropSigner,
     weiAmount,
     tokenAddress,
     tokenAmount,
@@ -68,9 +73,7 @@ export const generateLink = async ({
   })
 
   // Construct link
-  let url = `${host}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&&linkKey=${linkKey}&linkdropMasterAddress=${
-    linkdropMaster.address
-  }&linkdropSignerSignature=${linkdropSignerSignature}`
+  let url = `${host}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&&linkKey=${linkKey}&linkdropMasterAddress=${linkdropMasterAddress}&linkdropSignerSignature=${linkdropSignerSignature}`
 
   // Add isApprove param to url
   if (String(isApprove) === 'true') {
@@ -84,7 +87,8 @@ export const generateLinkERC721 = async ({
   jsonRpcUrl,
   chainId,
   host,
-  linkdropMasterPrivateKey,
+  linkdropMasterAddress,
+  linkdropSignerPrivateKey,
   weiAmount,
   nftAddress,
   tokenId,
@@ -104,8 +108,12 @@ export const generateLinkERC721 = async ({
     throw new Error('Please provide host')
   }
 
-  if (linkdropMasterPrivateKey === null || linkdropMasterPrivateKey === '') {
-    throw new Error(`Please provide linkdropMaster's private key`)
+  if (linkdropMasterAddress === null || linkdropMasterAddress === '') {
+    throw new Error(`Please provide linkdrop master's address`)
+  }
+
+  if (linkdropSignerPrivateKey === null || linkdropSignerPrivateKey === '') {
+    throw new Error(`Please provide linkdrop signer's private key`)
   }
 
   if (weiAmount === null || weiAmount === '') {
@@ -139,10 +147,10 @@ export const generateLinkERC721 = async ({
   }
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-  const linkdropMaster = new ethers.Wallet(linkdropMasterPrivateKey, provider)
+  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
 
   const { linkKey, linkId, linkdropSignerSignature } = await createLinkERC721({
-    linkdropSigner: linkdropMaster,
+    linkdropSigner,
     weiAmount,
     nftAddress,
     tokenId,
@@ -152,9 +160,7 @@ export const generateLinkERC721 = async ({
   })
 
   // Construct link
-  let url = `${host}/#/receive?weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&linkKey=${linkKey}&linkdropMasterAddress=${
-    linkdropMaster.address
-  }&linkdropSignerSignature=${linkdropSignerSignature}`
+  let url = `${host}/#/receive?weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&linkKey=${linkKey}&linkdropMasterAddress=${linkdropMasterAddress}&linkdropSignerSignature=${linkdropSignerSignature}`
 
   // Add isApprove param to url
   if (String(isApprove) === 'true') {
