@@ -10,7 +10,9 @@ const initialState = {
   txHash: null,
   transactionStatus: null,
   proxyAddress: ls && ls.getItem && ls.getItem('proxyAddr'),
-  version: null
+  version: null,
+  provider: null,
+  linkdropSigner: null
 }
 
 export default (state = initialState, action = {}) => {
@@ -30,5 +32,7 @@ const ACTIONS = {
   'USER.SET_TX_HASH': reducers.setTxHash,
   'USER.SET_TRANSACTION_STATUS': reducers.setTransactionStatus,
   'USER.SET_PROXY_ADDRESS': reducers.setProxyAddress,
-  'USER.SET_VERSION_VAR': reducers.setVersionVar
+  'USER.SET_VERSION_VAR': reducers.setVersionVar,
+  'USER.SET_LINKDROP_SIGNER': reducers.setLinkdropSigner,
+  'USER.SET_PROVIDER': reducers.setLinkdropProvider
 }

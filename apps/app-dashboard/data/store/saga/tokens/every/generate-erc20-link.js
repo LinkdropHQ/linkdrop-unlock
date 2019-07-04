@@ -13,6 +13,8 @@ const generator = function * ({ payload }) {
     const privateKey = yield select(generator.selectors.privateKey)
     const ethersContractZeroAddress = ethers.constants.AddressZero
     const version = yield select(generator.selectors.version)
+    const provider = yield select(generator.selectors.provider)
+    const linkdropSigner = yield select(generator.selectors.linkdropSigner)
     const startToGetLink = +(new Date())
     const link = yield LinkdropSDK.generateLink({
       jsonRpcUrl,
@@ -25,7 +27,9 @@ const generator = function * ({ payload }) {
       tokenAmount: 0,
       expirationTime: configs.expirationTime,
       isApprove: 'false',
-      version: String(version.toNumber())
+      version: String(version.toNumber()),
+      linkdropSigner,
+      provider
     })
     console.log('link was generated in sdk for: ', `${+(new Date()) - startToGetLink} ms`)
     const links = yield select(generator.selectors.links)
@@ -42,5 +46,7 @@ generator.selectors = {
   ethAmount: ({ campaigns: { ethAmount } }) => ethAmount,
   privateKey: ({ user: { privateKey } }) => privateKey,
   links: ({ campaigns: { links } }) => links,
-  version: ({ user: { version } }) => version
+  version: ({ user: { version } }) => version,
+  provider: ({ user: { provider } }) => provider,
+  linkdropSigner: ({ user: { linkdropSigner } }) => linkdropSigner
 }
