@@ -143,7 +143,9 @@ export const generate = async () => {
         jsonRpcUrl: JSON_RPC_URL,
         chainId: CHAIN_ID,
         host: HOST,
-        linkdropMasterPrivateKey: LINKDROP_MASTER_PRIVATE_KEY,
+        linkdropMasterAddress: new ethers.Wallet(LINKDROP_MASTER_PRIVATE_KEY)
+          .address,
+        linkdropSignerPrivateKey: LINKDROP_MASTER_PRIVATE_KEY,
         weiAmount: WEI_AMOUNT,
         nftAddress: NFT_ADDRESS,
         tokenId: tokenIds[i],
