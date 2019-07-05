@@ -1,7 +1,7 @@
 import { put, select } from 'redux-saga/effects'
 import { ethers, utils } from 'ethers'
 import LinkdropSDK from 'sdk/src/index'
-import configs from 'config-demo'
+import configs from 'config-dashboard'
 import { claimHost, jsonRpcUrl } from 'app.config.js'
 
 const generator = function * ({ payload }) {

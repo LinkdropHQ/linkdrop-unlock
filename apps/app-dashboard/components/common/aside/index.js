@@ -35,7 +35,15 @@ class Aside extends React.Component {
   }
 
   renderCreateButton ({ currentAddress }) {
-    return <Button className={styles.button} disabled={!currentAddress} href={currentAddress && '/#/campaigns/create'}>
+    return <Button
+      className={styles.button}
+      onClick={_ => {
+        if (!currentAddress) { return }
+        this.actions().user.setStep({ step: 1 })
+        window.location.href = '/#/campaigns/create'
+      }}
+      disabled={!currentAddress}
+    >
       {this.t('create')}
     </Button>
   }

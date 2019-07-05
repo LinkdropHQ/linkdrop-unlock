@@ -3,6 +3,8 @@ import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import { Icons, Loading } from 'linkdrop-ui-kit'
 import { Button, Input } from 'components/common'
+import EthAmountData from './eth-amount-data'
+import LinkContents from './link-contents'
 
 @actions(({
   user: {
@@ -13,7 +15,10 @@ import { Button, Input } from 'components/common'
     proxyAddress
   },
   tokens: {
-    ethBalanceFormatted
+    ethBalanceFormatted,
+    erc20BalanceFormatted,
+    standard,
+    address
   },
   metamask: {
     status: metamaskStatus
@@ -27,6 +32,7 @@ import { Button, Input } from 'components/common'
   ethAmount,
   tokenAmount,
   linksAmount,
+  address,
   errors,
   tokenSymbol,
   loading,
@@ -34,7 +40,9 @@ import { Button, Input } from 'components/common'
   metamaskStatus,
   chainId,
   ethBalanceFormatted,
-  proxyAddress
+  proxyAddress,
+  standard,
+  erc20BalanceFormatted
 })
 )
 @translate('pages.campaignCreate')
@@ -46,21 +54,47 @@ class Step3 extends React.Component {
     }
   }
 
-  componentWillReceiveProps ({ metamaskStatus, errors, ethBalanceFormatted }) {
-    const { metamaskStatus: prevMetamaskStatus, errors: prevErrors, ethBalanceFormatted: prevEthBalanceFormatted, proxyAddress, chainId } = this.props
-    console.log({ proxyAddress })
+  componentWillReceiveProps ({ metamaskStatus, errors, ethBalanceFormatted, erc20BalanceFormatted }) {
+    const {
+      metamaskStatus: prevMetamaskStatus,
+      errors: prevErrors,
+      ethBalanceFormatted: prevEthBalanceFormatted,
+      erc20BalanceFormatted: prevErc20BalanceFormatted,
+      proxyAddress,
+      chainId,
+      standard,
+      address: tokenAddress,
+      ethAmount
+    } = this.props
+
     if (metamaskStatus && metamaskStatus === 'finished' && metamaskStatus !== prevMetamaskStatus) {
-      this.intervalCheck = window.setInterval(_ => this.actions().tokens.getEthBalance({ account: proxyAddress, chainId }), 3000)
+      if (standard === 'eth') {
+        this.intervalCheck = window.setInterval(_ => this.actions().tokens.getEthBalance({ account: proxyAddress, chainId }), 3000)
+      } else if (standard === 'erc20' && !ethAmount) {
+        this.intervalCheck = window.setInterval(_ => this.actions().tokens.getERC20Balance({ chainId, tokenAddress, account: proxyAddress }), 3000)
+      }
+      // тут будет логика проверки для эфира и токена одновремнно
       return
     }
     if (errors && errors[0] && prevErrors.length === 0 && errors[0] !== prevErrors[0]) {
       window.alert(this.t(`errors.${errors[0]}`))
       this.intervalCheck && window.clearInterval(this.intervalCheck)
     }
-    if (ethBalanceFormatted && Number(ethBalanceFormatted) > 0 && ethBalanceFormatted !== prevEthBalanceFormatted) {
-      this.intervalCheck && window.clearInterval(this.intervalCheck)
-      window.alert('found!')
-      window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), 3000)
+
+    if (standard === 'eth') {
+      if (ethBalanceFormatted && Number(ethBalanceFormatted) > 0 && ethBalanceFormatted !== prevEthBalanceFormatted) {
+        this.intervalCheck && window.clearInterval(this.intervalCheck)
+        window.alert('found ETH!')
+        window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), 1000)
+      }
+    }
+
+    if (standard === 'erc20') {
+      if (erc20BalanceFormatted && Number(erc20BalanceFormatted) > 0 && erc20BalanceFormatted !== prevErc20BalanceFormatted) {
+        this.intervalCheck && window.clearInterval(this.intervalCheck)
+        window.alert('found ERC20!')
+        window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), 1000)
+      }
     }
   }
 
@@ -103,11 +137,11 @@ class Step3 extends React.Component {
                   {this.t('titles.oneLinkContainsTitle')}
                 </h3>
                 <div className={styles.dataContent}>
-                  {this.renderLinkContents({ ethAmount, tokenAmount, linksAmount, tokenSymbol })}
+                  <LinkContents ethAmount={ethAmount} tokenAmount={tokenAmount} tokenSymbol={tokenSymbol} />
                 </div>
 
               </div>
-              {tokenAmount && this.renderEthAmoundData({ ethAmount, linksAmount })}
+              <EthAmountData ethAmount={ethAmount} linksAmount={linksAmount} tokenAmount={tokenAmount} />
             </div>
           </div>
 
@@ -126,10 +160,15 @@ class Step3 extends React.Component {
 
       <div className={styles.controls}>
         <Button onClick={_ => {
-          const { ethAmount, currentAddress } = this.props
-          this.actions().metamask.sendEth({ ethAmount: ethAmount * linksAmount, account: currentAddress })
-          // this.actions().campaigns.proceedPayment({})
-        }}>{this.t('buttons.next')}</Button>
+          const { ethAmount, currentAddress, standard } = this.props
+          if (standard === 'eth') {
+            this.actions().metamask.sendEth({ ethAmount: ethAmount * linksAmount, account: currentAddress })
+          } else if (standard === 'erc20') {
+            this.actions().metamask.sendErc20({ tokenAmount: tokenAmount * linksAmount, ethAmount: ethAmount * linksAmount, account: currentAddress })
+          }
+        }}>
+          {this.t('buttons.next')}
+        </Button>
       </div>
     </div>
   }
@@ -138,37 +177,6 @@ class Step3 extends React.Component {
     this.setState({
       [field]: value
     })
-  }
-
-  renderEthAmoundData ({ ethAmount, linksAmount }) {
-    if (!ethAmount || Number(ethAmount) === 0) { return null }
-    return <div className={styles.data}>
-      <h3 className={styles.dataTitle}>
-        {this.t('titles.totalEthInLinks')}
-      </h3>
-      <div className={styles.dataContent}>
-        {ethAmount * linksAmount} ETH
-      </div>
-      <div className={styles.extraDataContent}>
-        {this.t('titles.ethHold')}
-      </div>
-    </div>
-  }
-
-  renderLinkContents ({ tokenAmount, tokenSymbol, ethAmount, linksAmount }) {
-    if (ethAmount && !tokenAmount && tokenSymbol === 'ETH') {
-      return <p className={styles.dataContent}>
-        {this.t('titles.oneLinkContents', { tokenAmount: ethAmount, tokenSymbol })}
-      </p>
-    }
-    if (!ethAmount || Number(ethAmount) === 0) {
-      return <p className={styles.dataContent}>
-        {this.t('titles.oneLinkContents', { tokenAmount, tokenSymbol })}
-      </p>
-    }
-    return <p className={styles.dataContent}>
-      {this.t('titles.oneLinkContentsWithEth', { tokenAmount, tokenSymbol, ethAmount })}
-    </p>
   }
 }
 

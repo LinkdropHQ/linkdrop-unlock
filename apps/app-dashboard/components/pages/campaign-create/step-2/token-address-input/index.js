@@ -5,9 +5,10 @@ import { Input } from 'components/common'
 
 @actions(_ => ({}))
 @translate('pages.campaignCreate')
-class TokenAddressERC20Input extends React.Component {
+class TokenAddressInput extends React.Component {
   render () {
-    const { tokenAddress, setField } = this.props
+    const { tokenAddress, setField, tokenType } = this.props
+    if (tokenType === 'eth') { return null }
     return <div className={styles.tokenAddress}>
       <h3 className={styles.subtitle}>{this.t('titles.tokenAddress')}</h3>
       <div className={styles.tokensAddressContainer}>
@@ -17,4 +18,4 @@ class TokenAddressERC20Input extends React.Component {
   }
 }
 
-export default TokenAddressERC20Input
+export default TokenAddressInput

@@ -10,16 +10,16 @@ class LinksContent extends React.Component {
   render () {
     const { tokenType, ethAmount, tokenSymbol, tokenAmount } = this.props
     if (tokenType === 'eth') {
-      return <p className={classNames(styles.text, styles.textGrey, styles.textMargin30)}>
+      return <p className={classNames(styles.text, styles.textMargin30)}>
         {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContents', { tokenAmount: ethAmount, tokenSymbol: 'ETH' })}`}
       </p>
     }
     if (tokenType === 'erc20' && ethAmount) {
-      return <p className={classNames(styles.text, styles.textGrey, styles.textMargin30)}>
+      return <p className={classNames(styles.text, styles.textMargin30)}>
         {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContentsWithEth', { tokenAmount, tokenSymbol, ethAmount: convertFromExponents(ethAmount) })}`}
       </p>
     }
-    return <p className={classNames(styles.text, styles.textGrey, styles.textMargin30)}>
+    return <p className={classNames(styles.text, styles.textMargin30)}>
       {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContents', { tokenAmount, tokenSymbol })}`}
     </p>
   }

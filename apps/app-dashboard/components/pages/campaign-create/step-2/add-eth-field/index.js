@@ -8,7 +8,8 @@ import { Icons } from 'linkdrop-ui-kit'
 @translate('pages.campaignCreate')
 class AddEthField extends React.Component {
   render () {
-    const { addEth, ethAmount, setField } = this.props
+    const { addEth, ethAmount, tokenType, setField } = this.props
+    if (tokenType === 'eth') return null
     if (!addEth) {
       return <div className={styles.ethAddButton}>
         <Button

@@ -8,11 +8,11 @@ class Tokens {
   }
 
   getTokenERC20Data ({ tokenAddress, chainId }) {
-    this.actions.dispatch({ type: '*TOKENS.GET_TOKEN_ERC20_DATA', payload: { tokenAddress, chainId } })
+    this.actions.dispatch({ type: '*TOKENS.GET_ERC20_DATA', payload: { tokenAddress, chainId } })
   }
 
   getTokenERC721Data ({ tokenAddress, chainId }) {
-    this.actions.dispatch({ type: '*TOKENS.GET_TOKEN_ERC721_DATA', payload: { tokenAddress, chainId } })
+    this.actions.dispatch({ type: '*TOKENS.GET_ERC721_DATA', payload: { tokenAddress, chainId } })
   }
 
   getEthData () {
@@ -21,6 +21,10 @@ class Tokens {
 
   getEthBalance ({ account, chainId }) {
     this.actions.dispatch({ type: '*TOKENS.GET_ETH_BALANCE', payload: { account, chainId } })
+  }
+
+  getERC20Balance ({ chainId, tokenAddress, account }) {
+    this.actions.dispatch({ type: '*TOKENS.GET_ERC20_BALANCE', payload: { chainId, tokenAddress, account } })
   }
 
   generateERC20Link ({ chainId, currentAddress }) {

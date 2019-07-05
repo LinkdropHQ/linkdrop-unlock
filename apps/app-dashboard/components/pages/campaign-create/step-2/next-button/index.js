@@ -10,9 +10,9 @@ class NextButton extends React.Component {
     const { ethAmount = 0, tokenSymbol, tokenAmount = 0, linksAmount = 0, tokenType } = this.props
     let action
     if (tokenType === 'eth') {
-      action = _ => this.actions().campaigns.prepareNewEthData({ ethAmount, linksAmount, tokenSymbol })
+      action = _ => this.actions().campaigns.prepareNewEthData({ ethAmount, linksAmount, tokenSymbol, tokenType })
     } else if (tokenType === 'erc20') {
-      action = _ => this.actions().campaigns.prepareNewERC20Data({ tokenAmount, ethAmount, linksAmount, tokenSymbol })
+      action = _ => this.actions().campaigns.prepareNewERC20Data({ tokenAmount, ethAmount, linksAmount, tokenSymbol, tokenType })
     }
     return <div className={styles.controls}>
       <Button onClick={action}>{this.t('buttons.next')}</Button>

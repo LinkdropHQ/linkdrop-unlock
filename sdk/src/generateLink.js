@@ -12,9 +12,7 @@ export const generateLink = async ({
   tokenAmount,
   expirationTime,
   version,
-  isApprove,
-  provider,
-  linkdropSigner
+  isApprove
 }) => {
   if (jsonRpcUrl === null || jsonRpcUrl === '') {
     throw new Error('Please provide json rpc url')
@@ -61,6 +59,10 @@ export const generateLink = async ({
       throw new Error('Please provide valid isApprove argument')
     }
   }
+
+  const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
+  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
+
   const startToGetLink = +(new Date())
   const { linkKey, linkId, linkdropSignerSignature } = await createLink({
     linkdropSigner,

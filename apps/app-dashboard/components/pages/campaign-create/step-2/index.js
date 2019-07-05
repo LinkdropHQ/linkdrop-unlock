@@ -3,13 +3,14 @@ import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import { ethers } from 'ethers'
 import classNames from 'classnames'
-import { Icons, Loading } from 'linkdrop-ui-kit'
-import { Button, Select, Input } from 'components/common'
+import { Loading } from 'linkdrop-ui-kit'
+import { Select, Input } from 'components/common'
 import TokenAddressInput from './token-address-input'
 import LinksContent from './links-content'
 import NextButton from './next-button'
 import AddIconInfo from './add-icon-info'
 import AddEthField from './add-eth-field'
+import EthTexts from './eth-texts'
 
 @actions(({ user: { chainId, currentAddress, loading, proxyAddress }, tokens: { assets, symbol } }) => ({ assets, chainId, symbol, loading, proxyAddress, currentAddress }))
 @translate('pages.campaignCreate')
@@ -73,22 +74,36 @@ class Step2 extends React.Component {
             <h3 className={styles.subtitle}>{this.t('titles.chooseToken')}</h3>
             <Select options={TOKENS} value={tokenSymbol} onChange={({ value }) => this.setField({ field: 'tokenSymbol', value })} />
           </div>
-          {this.renderTokenInputs({ tokenType, tokenAddress, symbol, tokenSymbol, tokenAmount, addEth })}
+          {this.renderTokenInputs({ ethAmount, tokenType, tokenAddress, symbol, tokenSymbol, tokenAmount, addEth })}
           <div className={styles.linksAmount}>
             <h3 className={styles.subtitle}>{this.t('titles.totalLinks')}</h3>
             <div className={styles.linksAmountContainer}>
               <Input numberInput className={styles.input} value={linksAmount || 0} onChange={({ value }) => this.setField({ field: 'linksAmount', value: parseFloat(value) })} />
-              {this.renderAddIconInfo({ addIconInfo })}
+              <AddIconInfo addIconInfo={addIconInfo} />
             </div>
           </div>
         </div>
 
         <div className={styles.summary}>
           <h3 className={styles.subtitle}>{this.t('titles.total')}</h3>
-          {this.renderTexts({ ethAmount, tokenType, linksAmount, tokenAmount, tokenSymbol: symbol || tokenSymbol, addEth })}
+          {this.renderTexts({
+            tokenAddress,
+            ethAmount,
+            tokenType,
+            linksAmount,
+            tokenAmount,
+            tokenSymbol: symbol || tokenSymbol,
+            addEth
+          })}
         </div>
       </div>
-      {this.renderNextButton({ tokenAmount, ethAmount, linksAmount, tokenSymbol: symbol || tokenSymbol, tokenType })}
+      <NextButton
+        tokenAmount={tokenAmount}
+        ethAmount={ethAmount}
+        linksAmount={linksAmount}
+        tokenSymbol={symbol}
+        tokenType={tokenType}
+      />
     </div>
   }
 
@@ -98,14 +113,26 @@ class Step2 extends React.Component {
     const amountInput = <div className={styles.tokensAmount}>
       <h3 className={styles.subtitle}>{this.t('titles.amountPerLink')}</h3>
       <div className={styles.tokensAmountContainer}>
-        <Input disabled={tokenType === 'erc20' && !symbol} numberInput suffix={tokenType === 'erc20' ? symbol : tokenSymbol} className={styles.input} value={value} onChange={({ value }) => this.setField({ field: fieldToChange, value: parseFloat(value) })} />
-        {tokenType !== 'eth' && this.renderAddEthField({ addEth, ethAmount })}
+        <Input
+          disabled={tokenType === 'erc20' && !symbol}
+          numberInput
+          suffix={tokenType === 'erc20' ? symbol : tokenSymbol}
+          className={styles.input}
+          value={value}
+          onChange={({ value }) => this.setField({ field: fieldToChange, value: parseFloat(value) })}
+        />
+        <AddEthField
+          tokenType={tokenType}
+          addEth={addEth}
+          ethAmount={ethAmount}
+          setField={({ value, field }) => this.setField({ value, field })}
+        />
       </div>
     </div>
     switch (tokenType) {
       case 'erc20':
         return <div>
-          {this.renderTokenAddressInput({ tokenAddress, tokenType })}
+          <TokenAddressInput tokenAddress={tokenAddress} tokenType={tokenType} setField={({ value, field }) => this.setField({ value, field })} />
           {amountInput}
         </div>
       case 'eth':
@@ -121,47 +148,25 @@ class Step2 extends React.Component {
     if (tokenSymbol === 'ERC721') { return 'erc721' }
   }
 
-  renderAddIconInfo ({ addIconInfo }) {
-    return <AddIconInfo addIconInfo={addIconInfo} />
-  }
-
-  renderNextButton ({ tokenAmount, ethAmount, linksAmount, tokenSymbol, tokenType }) {
-    return <NextButton tokenAmount={tokenAmount} ethAmount={ethAmount} linksAmount={linksAmount} tokenSymbol={tokenSymbol} tokenType={tokenType} />
-  }
-
-  renderAddEthField ({ addEth, ethAmount }) {
-    return <AddEthField addEth={addEth} ethAmount={ethAmount} setField={({ value, field }) => this.setField({ value, field })} />
-  }
-
-  renderTexts ({ ethAmount, linksAmount, tokenAmount, tokenSymbol, addEth, tokenType }) {
+  renderTexts ({ ethAmount, tokenAddress, linksAmount, tokenAmount, tokenSymbol, addEth, tokenType }) {
     const value = tokenSymbol === 'erc20' ? tokenAmount : ethAmount
-    if (!linksAmount || Number(linksAmount) === 0 || !value || Number(value) === 0) {
-      return <p className={classNames(styles.text, styles.textGrey)}>{this.t('titles.fillTheField')}</p>
+    if (tokenSymbol === 'erc20') {
+      if (!linksAmount || !value || !tokenAddress || !tokenSymbol) {
+        return <p className={classNames(styles.text, styles.textGrey)}>{this.t('titles.fillTheField')}</p>
+      }
+    }
+    if (tokenSymbol === 'eth') {
+      if (!linksAmount || Number(linksAmount) === 0 || !value || Number(value) === 0) {
+        return <p className={classNames(styles.text, styles.textGrey)}>{this.t('titles.fillTheField')}</p>
+      }
     }
     return <div>
       {tokenSymbol === 'erc20' && <p className={classNames(styles.text, styles.textMargin15)}>{value * linksAmount} {tokenSymbol}</p>}
-      {this.renderEthTexts({ ethAmount, linksAmount, addEth })}
-      {this.renderLinkContents({ tokenAmount, tokenSymbol, ethAmount, tokenType })}
+      <EthTexts ethAmount={ethAmount} linksAmount={linksAmount} />
+      <LinksContent tokenAmount={tokenAmount} tokenSymbol={tokenSymbol} ethAmount={ethAmount} tokenType={tokenType} />
       <p className={styles.text}>{this.t('titles.serviceFee', { price: CONVERSION_RATE * linksAmount })}</p>
       <p className={classNames(styles.text, styles.textGrey)}>{this.t('titles.serviceFeePerLink', { price: CONVERSION_RATE * 100 })}</p>
     </div>
-  }
-
-  renderEthTexts ({ ethAmount, linksAmount, addEth }) {
-    if (!ethAmount || Number(ethAmount) === 0) { return null }
-    return <div>
-      <p className={styles.text}>{this.t('titles.ethInLinks', { ethAmount: ethAmount * linksAmount, linksAmount })}</p>
-      <p className={classNames(styles.text, styles.textGrey, styles.textMargin30)}>{this.t('titles.holdEth')}</p>
-    </div>
-  }
-
-  renderLinkContents ({ tokenAmount, tokenSymbol, ethAmount, tokenType }) {
-    return <LinksContent tokenAmount={tokenAmount} tokenSymbol={tokenSymbol} ethAmount={ethAmount} tokenType={tokenType} />
-  }
-
-  renderTokenAddressInput ({ tokenAddress, tokenType }) {
-    if (tokenType === 'eth') { return null }
-    return <TokenAddressInput tokenAddress={tokenAddress} setField={({ value, field }) => this.setField({ value, field })} />
   }
 
   setField ({ value, field }) {
@@ -172,12 +177,10 @@ class Step2 extends React.Component {
       [field]: value
     }, _ => {
       if (field === 'tokenSymbol') {
-        if (value === 'ETH') {
-          this.setState({
-            ethAmount: 0,
-            addEth: false
-          })
-        }
+        this.setState({
+          ethAmount: 0,
+          addEth: false
+        })
       }
 
       if (field === 'tokenAddress') {

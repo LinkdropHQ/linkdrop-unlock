@@ -1,6 +1,6 @@
 import { put } from 'redux-saga/effects'
 import LinkdropSDK from 'sdk/src/index'
-import configs from 'config-demo'
+import configs from 'config-dashboard'
 import { factory } from 'app.config.js'
 const ls = (typeof window === 'undefined' ? {} : window).localStorage
 

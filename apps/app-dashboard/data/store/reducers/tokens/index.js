@@ -6,7 +6,8 @@ const initialState = {
   decimals: null,
   standard: null,
   address: null,
-  ethBalanceFormatted: null
+  ethBalanceFormatted: null,
+  erc20BalanceFormatted: null
 }
 
 export default (state = initialState, action = {}) => {
@@ -23,6 +24,7 @@ const ACTIONS = {
   'TOKENS.SET_TOKEN_SYMBOL': reducers.setTokenSymbol,
   'TOKENS.SET_TOKEN_ADDRESS': reducers.setTokenAddress,
   'TOKENS.SET_TOKEN_STANDARD': reducers.setTokenStandard,
-  'TOKENS.SET_TOKEN_DECIMALS': reducers.setTokenDecimlas,
-  'TOKENS.SET_ETH_BALANCE': reducers.setEthBalance
+  'TOKENS.SET_TOKEN_DECIMALS': reducers.setTokenDecimals,
+  'TOKENS.SET_ETH_BALANCE': reducers.setEthBalance,
+  'TOKENS.SET_ERC20_BALANCE': reducers.setERC20Balance
 }
