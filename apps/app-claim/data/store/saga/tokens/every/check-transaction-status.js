@@ -17,7 +17,3 @@ const generator = function * ({ payload }) {
 }
 
 export default generator
-
-generator.selectors = {
-  wallet: ({ user: { wallet } }) => wallet
-}

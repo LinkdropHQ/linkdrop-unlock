@@ -62,6 +62,8 @@ export const generateLink = async ({
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
   const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
+
+  const startToGetLink = +(new Date())
   const { linkKey, linkId, linkdropSignerSignature } = await createLink({
     linkdropSigner,
     weiAmount,
@@ -71,6 +73,7 @@ export const generateLink = async ({
     version,
     chainId
   })
+  console.log('request to server from sdk: ', `${+(new Date()) - startToGetLink} ms`)
 
   // Construct link
   let url = `${host}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&&linkKey=${linkKey}&linkdropMasterAddress=${linkdropMasterAddress}&linkdropSignerSignature=${linkdropSignerSignature}`

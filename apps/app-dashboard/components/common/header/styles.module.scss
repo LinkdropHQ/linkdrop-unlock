@@ -1,0 +1,29 @@
+@import "variables";
+
+.container {
+  height: 130px;
+  width: 100%;
+}
+
+.title {
+  font-size: 24px;
+  margin-right: 40px;
+  line-height: 1;
+  color: $blackColor;
+}
+
+.helpDesk, .main, .container {
+  display: flex;
+  align-items: center;
+}
+
+.main {
+  flex: 1 0 auto;
+}
+
+.helpDesk {
+  font-size: 20px;
+  svg {
+    margin-left: 15px;
+  }
+}

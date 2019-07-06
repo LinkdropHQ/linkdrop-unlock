@@ -1,0 +1,60 @@
+@import "variables";
+
+.container {
+  width: 257px;
+  height: 100vh;
+  position: relative;
+  padding: 25px 50px 40px;
+  background: $blackColor;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  cursor: pointer;
+  margin-bottom: 60px;
+}
+
+
+.campaigns {
+  color: $whiteColor;
+  font-size: 20px;
+  margin-bottom: 40px;
+
+  &.disabled {
+    color: $textGreyColor;
+    font-size: 20px;
+    margin-bottom: 40px;
+    a {
+      cursor: not-allowed;
+      color: $textGreyColor;
+    }
+  }
+
+  a {
+    text-decoration: none;
+    color: $whiteColor;
+  }
+}
+
+.button {
+  border: 1px solid $whiteColor;
+}
+
+.menu {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mainBlock {
+  flex: 1 0;
+}
+
+.copyright, .menu {
+  margin-bottom: 20px;
+}
+
+.copyright, .menu, .dashboard {
+  color: $dbGrey;
+  font-size: 15px;
+}

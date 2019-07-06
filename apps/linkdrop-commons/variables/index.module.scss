@@ -15,6 +15,12 @@ $textGreyColor: #979797;
 $blackActiveColor: #8C8C8C;
 $invertedActiveColor: rgba(248, 248, 248, 0.82);
 
+/* values for linkdrop dashboard */
+$bgColor: #F1F3F4;
+$dbGrey: #979797;
+$dbBlue: #0025FF;
+$greyStrokeColor: #E5E5E5;
+
 :export {
   blackColor: $blackColor;
   whiteColor: $whiteColor;
@@ -27,4 +33,8 @@ $invertedActiveColor: rgba(248, 248, 248, 0.82);
   textGreyColor: $textGreyColor;
   blackActiveColor: $blackActiveColor;
   invertedActiveColor: $invertedActiveColor;
+  bgColor: $bgColor;
+  dbGrey: $dbGrey;
+  dbBlue: $dbBlue;
+  greyStrokeColor: $greyStrokeColor;
 }

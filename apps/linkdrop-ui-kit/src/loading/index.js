@@ -5,10 +5,14 @@ import PropTypes from 'prop-types'
 
 class Loading extends React.Component {
   render () {
-    const { size = 'normal', container, className } = this.props
-    return <div className={classNames(styles.container, styles[`${size}Size`], className, {
-      [styles.asContainer]: container
-    })} />
+    const { size = 'normal', container, className, withOverlay } = this.props
+    return <div className={classNames({
+      [styles.withOverlay]: withOverlay
+    })}>
+      <div className={classNames(styles.container, styles[`${size}Size`], className, {
+        [styles.asContainer]: container
+      })} />
+    </div>
   }
 }
 

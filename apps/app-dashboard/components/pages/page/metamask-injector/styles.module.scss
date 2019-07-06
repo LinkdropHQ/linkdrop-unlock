@@ -1,0 +1,42 @@
+@import "variables";
+
+.title {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  font-family: 'Inter-Regular';
+  font-weight: normal;
+}
+
+.subtitle {
+  font-size: 16px;
+  font-weight: normal;
+  margin: 0 0 20px 0;
+  font-family: 'Inter-Regular';
+}
+
+.container {
+  max-width: 250px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: -130px;
+  height: calc(100vh - 130px);
+  flex-direction: column;
+  text-align: center;
+}
+
+.button {
+  button {
+    background: $blackColor;
+    border-radius: 5px;
+    font-size: 16px;
+    height: 40px;
+    width: auto;
+    min-width: auto;
+    padding: 4px 50px;
+    border: 1px solid #fff;
+    font-family: 'Inter-Regular';
+  }
+}

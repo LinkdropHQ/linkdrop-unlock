@@ -1,0 +1,20 @@
+@import "variables";
+
+.container {
+  max-width: none;
+  outline: none;
+  box-shadow: none;
+
+  > div:first-child, > div:nth-child(2) {
+    height: 40px;
+  }
+
+  > * {
+    color: $blackColor!important;
+  }
+
+  > [class*="-menu"] {
+    bottom: auto;
+    top: 100%;
+  }
+}
