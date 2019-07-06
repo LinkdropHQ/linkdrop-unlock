@@ -1,7 +1,6 @@
 import { put } from 'redux-saga/effects'
-import { ethers } from 'ethers'
 import TokenMock from 'contracts/TokenMock.json'
-import { utils } from 'ethers'
+import { utils, ethers } from 'ethers'
 import { defineNetworkName } from 'linkdrop-commons'
 console.log(utils)
 
