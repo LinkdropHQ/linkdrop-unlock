@@ -13,6 +13,8 @@ const generator = function * ({ payload }) {
     const privateKey = yield select(generator.selectors.privateKey)
     const ethersContractZeroAddress = ethers.constants.AddressZero
     const version = yield select(generator.selectors.version)
+    const start = +(new Date())
+    console.log('start: ', start)
     const link = yield LinkdropSDK.generateLink({
       jsonRpcUrl,
       chainId,
@@ -26,6 +28,7 @@ const generator = function * ({ payload }) {
       isApprove: 'false',
       version: String(version.toNumber())
     })
+    console.log('finished one link generate: ', +(new Date()) - start)
     const links = yield select(generator.selectors.links)
     const linksUpdated = links.concat(link.url)
     yield put({ type: 'CAMPAIGNS.SET_LINKS', payload: { links: linksUpdated } })
