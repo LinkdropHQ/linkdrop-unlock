@@ -1,1 +1,1 @@
-export default (state, { payload: { erc20BalanceFormatted } }) => ({ ...state, erc20BalanceFormatted })
+export default (state, { payload: { erc20BalanceFormatted, erc20Balance } }) => ({ ...state, erc20BalanceFormatted, erc20Balance })

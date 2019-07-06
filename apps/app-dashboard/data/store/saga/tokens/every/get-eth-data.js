@@ -6,7 +6,7 @@ const generator = function * ({ payload }) {
     const ethWalletContract = ethers.constants.AddressZero
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { tokenAddress: ethWalletContract } })
-    yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc20' } })
+    yield put({ type: 'TOKENS.SET_TOKEN_TYPE', payload: { tokenType: 'erc20' } })
     yield put({ type: 'TOKENS.SET_SYMBOL', payload: { symbol: 'ETH' } })
     yield put({ type: 'TOKENS.SET_DECIMALS', payload: { decimals: 18 } })
 

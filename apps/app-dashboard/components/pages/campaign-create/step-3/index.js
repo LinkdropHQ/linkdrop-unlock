@@ -17,7 +17,7 @@ import LinkContents from './link-contents'
   tokens: {
     ethBalanceFormatted,
     erc20BalanceFormatted,
-    standard,
+    tokenType,
     address
   },
   metamask: {
@@ -41,7 +41,7 @@ import LinkContents from './link-contents'
   chainId,
   ethBalanceFormatted,
   proxyAddress,
-  standard,
+  tokenType,
   erc20BalanceFormatted
 })
 )
@@ -62,15 +62,15 @@ class Step3 extends React.Component {
       erc20BalanceFormatted: prevErc20BalanceFormatted,
       proxyAddress,
       chainId,
-      standard,
+      tokenType,
       address: tokenAddress,
       ethAmount
     } = this.props
 
     if (metamaskStatus && metamaskStatus === 'finished' && metamaskStatus !== prevMetamaskStatus) {
-      if (standard === 'eth') {
+      if (tokenType === 'eth') {
         this.intervalCheck = window.setInterval(_ => this.actions().tokens.getEthBalance({ account: proxyAddress, chainId }), 3000)
-      } else if (standard === 'erc20' && !ethAmount) {
+      } else if (tokenType === 'erc20' && !ethAmount) {
         this.intervalCheck = window.setInterval(_ => this.actions().tokens.getERC20Balance({ chainId, tokenAddress, account: proxyAddress }), 3000)
       }
       // тут будет логика проверки для эфира и токена одновремнно
@@ -81,7 +81,7 @@ class Step3 extends React.Component {
       this.intervalCheck && window.clearInterval(this.intervalCheck)
     }
 
-    if (standard === 'eth') {
+    if (tokenType === 'eth') {
       if (ethBalanceFormatted && Number(ethBalanceFormatted) > 0 && ethBalanceFormatted !== prevEthBalanceFormatted) {
         this.intervalCheck && window.clearInterval(this.intervalCheck)
         window.alert('found ETH!')
@@ -89,7 +89,7 @@ class Step3 extends React.Component {
       }
     }
 
-    if (standard === 'erc20') {
+    if (tokenType === 'erc20') {
       if (erc20BalanceFormatted && Number(erc20BalanceFormatted) > 0 && erc20BalanceFormatted !== prevErc20BalanceFormatted) {
         this.intervalCheck && window.clearInterval(this.intervalCheck)
         window.alert('found ERC20!')
@@ -160,10 +160,11 @@ class Step3 extends React.Component {
 
       <div className={styles.controls}>
         <Button onClick={_ => {
-          const { ethAmount, currentAddress, standard } = this.props
-          if (standard === 'eth') {
+          const { ethAmount, currentAddress, tokenType } = this.props
+          console.log({ tokenType })
+          if (tokenType === 'eth') {
             this.actions().metamask.sendEth({ ethAmount: ethAmount * linksAmount, account: currentAddress })
-          } else if (standard === 'erc20') {
+          } else if (tokenType === 'erc20') {
             this.actions().metamask.sendErc20({ tokenAmount: tokenAmount * linksAmount, ethAmount: ethAmount * linksAmount, account: currentAddress })
           }
         }}>

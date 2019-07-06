@@ -9,7 +9,7 @@ const generator = function * ({ payload }) {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const { tokenAddress, chainId } = payload
     yield put({ type: 'TOKENS.SET_TOKEN_ADDRESS', payload: { address: tokenAddress } })
-    yield put({ type: 'TOKENS.SET_TOKEN_STANDARD', payload: { standard: 'erc721' } })
+    yield put({ type: 'TOKENS.SET_TOKEN_TYPE', payload: { tokenType: 'erc721' } })
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const tokenContract = yield new ethers.Contract(tokenAddress, NFTMock.abi, provider)

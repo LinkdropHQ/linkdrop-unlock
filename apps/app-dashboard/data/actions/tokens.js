@@ -30,6 +30,10 @@ class Tokens {
   generateERC20Link ({ chainId, currentAddress }) {
     this.actions.dispatch({ type: '*TOKENS.GENERATE_ERC20_LINK', payload: { chainId, currentAddress } })
   }
+
+  generateETHLink ({ chainId, currentAddress }) {
+    this.actions.dispatch({ type: '*TOKENS.GENERATE_ETH_LINK', payload: { chainId, currentAddress } })
+  }
 }
 
 export default Tokens
