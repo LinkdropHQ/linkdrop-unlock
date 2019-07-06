@@ -2,7 +2,6 @@ import { createLink, createLinkERC721 } from './utils'
 const ethers = require('ethers')
 
 export const generateLink = async ({
-  jsonRpcUrl,
   chainId,
   host,
   linkdropMasterAddress,
@@ -14,10 +13,6 @@ export const generateLink = async ({
   version,
   isApprove
 }) => {
-  if (jsonRpcUrl === null || jsonRpcUrl === '') {
-    throw new Error('Please provide json rpc url')
-  }
-
   if (chainId === null || chainId === '') {
     throw new Error('Please provide chainId')
   }
@@ -60,10 +55,8 @@ export const generateLink = async ({
     }
   }
 
-  const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
+  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey)
 
-  const startToGetLink = +(new Date())
   const { linkKey, linkId, linkdropSignerSignature } = await createLink({
     linkdropSigner,
     weiAmount,
@@ -73,7 +66,6 @@ export const generateLink = async ({
     version,
     chainId
   })
-  console.log('request to server from sdk: ', `${+(new Date()) - startToGetLink} ms`)
 
   // Construct link
   let url = `${host}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&&linkKey=${linkKey}&linkdropMasterAddress=${linkdropMasterAddress}&linkdropSignerSignature=${linkdropSignerSignature}`
@@ -87,7 +79,6 @@ export const generateLink = async ({
 }
 
 export const generateLinkERC721 = async ({
-  jsonRpcUrl,
   chainId,
   host,
   linkdropMasterAddress,
@@ -99,10 +90,6 @@ export const generateLinkERC721 = async ({
   version,
   isApprove
 }) => {
-  if (jsonRpcUrl === null || jsonRpcUrl === '') {
-    throw new Error('Please provide json rpc url')
-  }
-
   if (chainId === null || chainId === '') {
     throw new Error('Please provide chain id')
   }
@@ -149,8 +136,7 @@ export const generateLinkERC721 = async ({
     }
   }
 
-  const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey, provider)
+  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey)
 
   const { linkKey, linkId, linkdropSignerSignature } = await createLinkERC721({
     linkdropSigner,
