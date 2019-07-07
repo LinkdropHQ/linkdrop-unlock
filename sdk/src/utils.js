@@ -1,6 +1,5 @@
 const ethers = require('ethers')
 const Wallet = require('ethereumjs-wallet')
-
 export const buildCreate2Address = (creatorAddress, saltHex, byteCode) => {
   const byteCodeHash = ethers.utils.keccak256(byteCode)
   return `0x${ethers.utils
@@ -56,9 +55,8 @@ export const createLink = async ({
   version,
   chainId
 }) => {
-  let linkWallet = generateAccount()
-  let linkKey = linkWallet.privateKey
-  let linkId = linkWallet.address
+  let { address: linkId, privateKey: linkKey } = generateAccount()
+
   let linkdropSignerSignature = await signLink({
     linkdropSigner,
     weiAmount,
@@ -115,9 +113,8 @@ export const createLinkERC721 = async ({
   version,
   chainId
 }) => {
-  let linkWallet = generateAccount()
-  let linkKey = linkWallet.privateKey
-  let linkId = linkWallet.address
+  let { address: linkId, privateKey: linkKey } = generateAccount()
+
   let linkdropSignerSignature = await signLinkERC721({
     linkdropSigner,
     weiAmount,
@@ -178,6 +175,6 @@ export const signReceiverAddress = async (linkKey, receiverAddress) => {
 export const generateAccount = () => {
   const wallet = Wallet.generate()
   const address = wallet.getChecksumAddressString()
-  const privateKey = wallet.getPrivateKey()
+  const privateKey = wallet.getPrivateKeyString()
   return { address, privateKey }
 }
