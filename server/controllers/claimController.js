@@ -13,6 +13,8 @@ const config = configs.get('server')
 
 const { jsonRpcUrl, factory, relayerPrivateKey } = config
 
+const ONE_GWEI = ethers.utils.parseUnits('1', 'gwei')
+
 if (jsonRpcUrl == null || jsonRpcUrl === '') {
   throw newError('Please provide json rpc url')
 }
@@ -128,6 +130,8 @@ export const claim = async (req, res) => {
   try {
     let tx, txHash
 
+    const gasPrice = Math.max(await provider.getGasPrice(), ONE_GWEI.mul(10))
+
     // Top up pattern
     if (isApprove == null || isApprove === 'false') {
       // Check claim params
@@ -155,7 +159,7 @@ export const claim = async (req, res) => {
         linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
-        { gasLimit: 500000 }
+        { gasLimit: 500000, gasPrice: gasPrice }
       )
     } else if (isApprove === 'true') {
       // Approve pattern
@@ -184,9 +188,11 @@ export const claim = async (req, res) => {
         linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
-        { gasLimit: 500000 }
+        { gasLimit: 500000, gasPrice: gasPrice }
       )
     }
+
+    tx.wait(2)
 
     txHash = tx.hash
 
@@ -331,6 +337,8 @@ export const claimERC721 = async (req, res) => {
 
   try {
     let tx, txHash
+    const gasPrice = Math.max(await provider.getGasPrice(), ONE_GWEI.mul(10))
+
     // Top up pattern
     if (isApprove == null || isApprove === 'false') {
       // Check claim params
@@ -359,7 +367,7 @@ export const claimERC721 = async (req, res) => {
         linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
-        { gasLimit: 500000 }
+        { gasLimit: 500000, gasPrice: gasPrice }
       )
     } else if (isApprove === 'true') {
       // Approve pattern
@@ -389,7 +397,7 @@ export const claimERC721 = async (req, res) => {
         linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
-        { gasLimit: 500000 }
+        { gasLimit: 500000, gasPrice: gasPrice }
       )
     }
     txHash = tx.hash
