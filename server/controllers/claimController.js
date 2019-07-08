@@ -130,7 +130,7 @@ export const claim = async (req, res) => {
   try {
     let tx, txHash
 
-    const gasPrice = Math.max(await provider.getGasPrice(), ONE_GWEI.mul(10))
+    const gasPrice = Math.max(await provider.getGasPrice(), ONE_GWEI.mul(5))
 
     // Top up pattern
     if (isApprove == null || isApprove === 'false') {
@@ -337,7 +337,7 @@ export const claimERC721 = async (req, res) => {
 
   try {
     let tx, txHash
-    const gasPrice = Math.max(await provider.getGasPrice(), ONE_GWEI.mul(10))
+    const gasPrice = Math.max(await provider.getGasPrice(), ONE_GWEI.mul(5))
 
     // Top up pattern
     if (isApprove == null || isApprove === 'false') {

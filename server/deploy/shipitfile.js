@@ -27,7 +27,7 @@ module.exports = shipit => {
     mainnet: {
       deployTo: 'linkdrop/mainnet',
       servers: 'root@rinkeby.linkdrop.io',
-      branch: 'dev'
+      branch: 'master'
     }
   })
 
