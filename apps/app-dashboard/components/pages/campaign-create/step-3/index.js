@@ -17,7 +17,6 @@ import LinkContents from './link-contents'
   tokens: {
     ethBalanceFormatted,
     erc20BalanceFormatted,
-    tokenType,
     address
   },
   metamask: {
@@ -27,6 +26,7 @@ import LinkContents from './link-contents'
     ethAmount,
     tokenAmount,
     linksAmount,
+    tokenType,
     tokenSymbol
   } }) => ({
   ethAmount,
@@ -58,48 +58,30 @@ class Step3 extends React.Component {
     const {
       metamaskStatus: prevMetamaskStatus,
       errors: prevErrors,
-      ethBalanceFormatted: prevEthBalanceFormatted,
       erc20BalanceFormatted: prevErc20BalanceFormatted,
       proxyAddress,
       chainId,
-      tokenType,
       address: tokenAddress,
-      ethAmount
+      currentAddress
     } = this.props
 
     if (metamaskStatus && metamaskStatus === 'finished' && metamaskStatus !== prevMetamaskStatus) {
-      if (tokenType === 'eth') {
-        this.intervalCheck = window.setInterval(_ => this.actions().tokens.getEthBalance({ account: proxyAddress, chainId }), 3000)
-      } else if (tokenType === 'erc20' && !ethAmount) {
-        this.intervalCheck = window.setInterval(_ => this.actions().tokens.getERC20Balance({ chainId, tokenAddress, account: proxyAddress }), 3000)
-      }
-      // тут будет логика проверки для эфира и токена одновремнно
-      return
+      this.intervalCheck = window.setInterval(_ => this.actions().tokens.getERC20Balance({ chainId, tokenAddress, account: proxyAddress, currentAddress }), 3000)
     }
     if (errors && errors[0] && prevErrors.length === 0 && errors[0] !== prevErrors[0]) {
       window.alert(this.t(`errors.${errors[0]}`))
       this.intervalCheck && window.clearInterval(this.intervalCheck)
     }
 
-    if (tokenType === 'eth') {
-      if (ethBalanceFormatted && Number(ethBalanceFormatted) > 0 && ethBalanceFormatted !== prevEthBalanceFormatted) {
-        this.intervalCheck && window.clearInterval(this.intervalCheck)
-        window.alert('found ETH!')
-        window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), 1000)
-      }
-    }
-
-    if (tokenType === 'erc20') {
-      if (erc20BalanceFormatted && Number(erc20BalanceFormatted) > 0 && erc20BalanceFormatted !== prevErc20BalanceFormatted) {
-        this.intervalCheck && window.clearInterval(this.intervalCheck)
-        window.alert('found ERC20!')
-        window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), 1000)
-      }
+    if (erc20BalanceFormatted && Number(erc20BalanceFormatted) > 0 && erc20BalanceFormatted !== prevErc20BalanceFormatted) {
+      this.intervalCheck && window.clearInterval(this.intervalCheck)
+      window.alert('found ERC20!')
+      window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), 1000)
     }
   }
 
   render () {
-    const { ethAmount, tokenAmount, linksAmount, tokenSymbol, loading } = this.props
+    const { ethAmount, tokenType, tokenAmount, linksAmount, tokenSymbol, loading, currentAddress } = this.props
     const { cardNumber } = this.state
     return <div className={styles.container}>
       {loading && <Loading withOverlay />}
@@ -160,12 +142,12 @@ class Step3 extends React.Component {
 
       <div className={styles.controls}>
         <Button onClick={_ => {
-          const { ethAmount, currentAddress, tokenType } = this.props
-          console.log({ tokenType })
-          if (tokenType === 'eth') {
-            this.actions().metamask.sendEth({ ethAmount: ethAmount * linksAmount, account: currentAddress })
-          } else if (tokenType === 'erc20') {
-            this.actions().metamask.sendErc20({ tokenAmount: tokenAmount * linksAmount, ethAmount: ethAmount * linksAmount, account: currentAddress })
+          // если только эфир или если токены с эфиром, то переходим на дргуой экран
+          if (tokenType === 'eth' || (tokenType === 'erc20' && ethAmount)) {
+            this.actions().user.setStep({ step: 4 })
+          } else if (tokenType === 'erc20' && !ethAmount) {
+            // если только токены, то отправляем сразу
+            this.actions().metamask.sendErc20({ tokenAmount: tokenAmount * linksAmount, account: currentAddress })
           }
         }}>
           {this.t('buttons.next')}

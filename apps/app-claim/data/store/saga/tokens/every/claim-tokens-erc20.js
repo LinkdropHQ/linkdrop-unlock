@@ -33,7 +33,7 @@ const generator = function * ({ payload }) {
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })
     } else {
       if (reason.length > 0) {
-        if (reason[0] === 'Insufficient amount of eth') {
+        if (reason[0] === 'Insufficient amount of tokens' || reason[0] === 'Insufficient amount of eth') {
           yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['LINK_FAILED'] } })
         }
       }

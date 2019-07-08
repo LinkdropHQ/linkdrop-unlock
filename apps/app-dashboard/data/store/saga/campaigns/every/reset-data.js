@@ -7,7 +7,6 @@ const generator = function * ({ payload }) {
     yield put({ type: 'CAMPAIGNS.SET_TOKEN_TYPE', payload: { tokenType: null } })
     yield put({ type: 'CAMPAIGNS.SET_DATE', payload: { date: null } })
     yield put({ type: 'CAMPAIGNS.SET_LINKS', payload: { links: [] } })
-    // token type -> assets type
     yield put({ type: 'CAMPAIGNS.SET_ETH_AMOUNT', payload: { ethAmount: null } })
     yield put({ type: 'CAMPAIGNS.SET_LINKS_AMOUNT', payload: { linksAmount: null } })
   } catch (e) {

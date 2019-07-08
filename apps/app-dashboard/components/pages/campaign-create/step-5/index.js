@@ -9,14 +9,12 @@ import { ProgressBar } from 'components/common'
     chainId,
     version
   },
-  tokens: {
-    tokenType
-  },
   campaigns: {
     ethAmount,
     tokenAmount,
     linksAmount,
     tokenSymbol,
+    tokenType,
     links
   }
 }) => ({
@@ -65,7 +63,6 @@ class Step5 extends React.Component {
 
   render () {
     const { linksAmount, links } = this.props
-    console.log({ linksAmount, links })
     return <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.title}>{this.t('titles.generatingLinks')}</div>

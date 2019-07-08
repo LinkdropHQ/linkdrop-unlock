@@ -6,7 +6,7 @@ import { defineNetworkName } from 'linkdrop-commons'
 const generator = function * ({ payload }) {
   try {
     yield put({ type: 'USER.SET_ERRORS', payload: { errors: [] } })
-    const { chainId, tokenAddress, account } = payload
+    const { chainId, tokenAddress, account, currentAddress } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
@@ -14,9 +14,8 @@ const generator = function * ({ payload }) {
     // checking balance of ERC-20 from blockchain by tokenAddress
     const tokenContract = yield new ethers.Contract(tokenAddress, TokenMock.abi, provider)
     const decimals = yield select(generator.selectors.decimals)
-    const erc20Balance = yield tokenContract.balanceOf(account)
+    const erc20Balance = yield tokenContract.allowance(currentAddress, account)
     const erc20BalanceFormatted = utils.formatUnits(erc20Balance, decimals)
-    console.log({ erc20BalanceFormatted })
     if (Number(erc20BalanceFormatted) > 0) {
       yield put({ type: 'TOKENS.SET_ERC20_BALANCE', payload: { erc20BalanceFormatted, erc20Balance } })
     }

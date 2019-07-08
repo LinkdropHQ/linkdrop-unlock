@@ -5,11 +5,13 @@ import LinkdropSDK from 'sdk/src/index'
 import configs from 'config-dashboard'
 import { claimHost, jsonRpcUrl } from 'app.config.js'
 
-const generator = function*({ payload }) {
+const generator = function * ({ payload }) {
   try {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const { chainId, currentAddress } = payload
     const erc20Balance = yield select(generator.selectors.tokenAmount)
+    const ethBalance = yield select(generator.selectors.ethAmount)
+    const weiAmount = utils.parseEther(String(Number(ethBalance || 0)))
     const decimals = yield select(generator.selectors.decimals)
     const erc20BalanceFormatted = utils.parseUnits(
       String(erc20Balance),
@@ -24,12 +26,12 @@ const generator = function*({ payload }) {
       chainId,
       host: claimHost,
       linkdropSignerPrivateKey: privateKey,
-      weiAmount: 0,
+      weiAmount: weiAmount || 0,
       linkdropMasterAddress: currentAddress,
       tokenAddress: tokenAddress,
       tokenAmount: String(erc20BalanceFormatted),
       expirationTime: configs.expirationTime,
-      isApprove: 'false',
+      isApprove: 'true',
       version: String(version.toNumber())
     })
 
@@ -46,6 +48,7 @@ const generator = function*({ payload }) {
 export default generator
 generator.selectors = {
   tokenAmount: ({ campaigns: { tokenAmount } }) => tokenAmount,
+  ethAmount: ({ campaigns: { ethAmount } }) => ethAmount,
   privateKey: ({ user: { privateKey } }) => privateKey,
   links: ({ campaigns: { links } }) => links,
   decimals: ({ tokens: { decimals } }) => decimals,

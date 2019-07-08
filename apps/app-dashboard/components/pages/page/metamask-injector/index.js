@@ -13,7 +13,6 @@ class MetamaskInjector extends React.Component {
       <div className={styles.button}>
         <Web3Connect.Button
           onConnect={provider => {
-            console.log('metamask injector', { currentAddress: provider.selectedAddress })
             if (provider.selectedAddress) {
               this.actions().user.setCurrentAddress({ currentAddress: provider.selectedAddress })
             }

@@ -37,7 +37,7 @@ export default {
     cvc: 'CVC',
 
     // step4
-    sendEth: 'Send 10 ETH to Linkdrop Contract',
+    sendEth: 'Send {{ethAmount}} ETH to Linkdrop Contract',
 
     // step5
     generatingLinks: 'Generating links…',

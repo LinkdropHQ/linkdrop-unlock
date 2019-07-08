@@ -7,10 +7,12 @@ class Metamask {
     this.actions.dispatch({ type: '*METAMASK.SEND_ETH', payload: { ethAmount, account } })
   }
 
-  sendErc20 ({ tokenAmount, ethAmount, account }) {
-    if (!ethAmount) {
-      this.actions.dispatch({ type: '*METAMASK.SEND_ERC20', payload: { account, tokenAmount } })
-    }
+  sendErc20 ({ tokenAmount, account }) {
+    this.actions.dispatch({ type: '*METAMASK.SEND_ERC20', payload: { account, tokenAmount } })
+  }
+
+  sendErc20WithEth ({ account, ethAmount, tokenAmount }) {
+    this.actions.dispatch({ type: '*METAMASK.SEND_ERC20_WITH_ETH', payload: { account, ethAmount, tokenAmount } })
   }
 }
 

@@ -11,7 +11,7 @@ export default (num) => {
   if (mag < 0) {
     z = sign + '0.'
     while (mag++) z += '0'
-    return z + str.replace(/^\-/, '')
+    return z + str.replace(/^-/, '')
   }
   mag -= str.length
   while (mag--) z += '0'

@@ -35,11 +35,11 @@ class Linkdrop extends React.Component {
     if (tokenType === 'erc20' && !ethAmount) {
       return <div className={styles.title}>{`${this.t('linkdrop')}: ${tokenAmount * linksAmount} ${tokenSymbol}` }</div>
     }
-    if (tokenType === 'erc20' && !ethAmount) {
+    if (tokenType === 'erc20' && ethAmount) {
       return <div className={styles.title}>{`${this.t('linkdrop')}: ${tokenAmount * linksAmount} ${tokenSymbol} + ${this.t('eth')}` }</div>
     }
     if (tokenType === 'eth' && ethAmount) {
-      return <div className={styles.title}>{`${this.t('linkdrop')}: ${ethAmount * linksAmount} ${tokenSymbol}` }</div>
+      return <div className={styles.title}>{`${this.t('linkdrop')}: ${ethAmount * linksAmount} ETH` }</div>
     }
     return null
   }
@@ -64,7 +64,7 @@ class Linkdrop extends React.Component {
   renderLinksData ({ linksAmount, tokenAmount, tokenSymbol, ethAmount, tokenType }) {
     if (tokenType === 'eth' && ethAmount) {
       return <div className={styles.links}>
-        {linksAmount} {this.t('linksCount')} / {ethAmount} {tokenSymbol}
+        {linksAmount} {this.t('linksCount')} / {ethAmount} ETH
       </div>
     }
     if (linksAmount && tokenAmount && tokenSymbol && ethAmount) {
@@ -74,7 +74,7 @@ class Linkdrop extends React.Component {
     }
 
     return <div className={styles.links}>
-      {linksAmount} {this.t('linksCount')} / {tokenAmount} {tokenSymbol} + {ethAmount} {this.t('eth')}
+      {linksAmount} {this.t('linksCount')} / {tokenAmount} {tokenSymbol}
     </div>
   }
 }

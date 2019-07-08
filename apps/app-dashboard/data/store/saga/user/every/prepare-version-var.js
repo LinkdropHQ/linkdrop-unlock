@@ -6,14 +6,12 @@ import { defineNetworkName } from 'linkdrop-commons'
 
 const generator = function * ({ payload }) {
   try {
-    const startToGetVersion = +(new Date())
     const { chainId, currentAddress } = payload
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const factoryContract = yield new ethers.Contract(factory, LinkdropFactory.abi, provider)
     const version = yield factoryContract.getProxyMasterCopyVersion(currentAddress)
     yield put({ type: 'USER.SET_VERSION_VAR', payload: { version } })
-    console.log('version was defined for: ', `${+(new Date()) - startToGetVersion} ms`)
   } catch (e) {
     console.error(e)
   }
