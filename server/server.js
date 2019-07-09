@@ -7,7 +7,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const claimController = require('./controllers/claimController')
-
+const lastTxHashController = require('./controllers/lastTxHashController')
 const config = configs.get('server')
 
 const { mongoURI } = config
@@ -43,6 +43,10 @@ app.post('/api/v1/linkdrops/claim', asyncHandler(claimController.claim))
 app.post(
   '/api/v1/linkdrops/claim-erc721',
   asyncHandler(claimController.claimERC721)
+)
+app.get(
+  '/api/v1/linkdrops/getLastTxHash/:paramsHash',
+  asyncHandler(lastTxHashController.getLastTxHash)
 )
 
 // Error handling

@@ -191,8 +191,33 @@ export const claim = async (req, res) => {
         { gasLimit: 500000, gasPrice: gasPrice }
       )
     }
-
-    tx.wait(2)
+    // Save hash of claim params
+    const paramsHash = ethers.utils.solidityKeccak256(
+      [
+        'uint256',
+        'address',
+        'uint256',
+        'uint256',
+        'address',
+        'address',
+        'bytes',
+        'address',
+        'bytes',
+        'address'
+      ],
+      [
+        weiAmount,
+        tokenAddress,
+        tokenAmount,
+        expirationTime,
+        linkId,
+        linkdropMasterAddress,
+        linkdropSignerSignature,
+        receiverAddress,
+        receiverSignature,
+        proxyAddress
+      ]
+    )
 
     txHash = tx.hash
 
@@ -208,6 +233,7 @@ export const claim = async (req, res) => {
       linkdropMasterAddress,
       receiverAddress,
       proxyAddress,
+      paramsHash,
       txHash
     })
 
@@ -400,6 +426,35 @@ export const claimERC721 = async (req, res) => {
         { gasLimit: 500000, gasPrice: gasPrice }
       )
     }
+
+    // Save hash of claim params
+    const paramsHash = ethers.utils.solidityKeccak256(
+      [
+        'uint256',
+        'address',
+        'uint256',
+        'uint256',
+        'address',
+        'address',
+        'bytes',
+        'address',
+        'bytes',
+        'address'
+      ],
+      [
+        weiAmount,
+        nftAddress,
+        tokenId,
+        expirationTime,
+        linkId,
+        linkdropMasterAddress,
+        linkdropSignerSignature,
+        receiverAddress,
+        receiverSignature,
+        proxyAddress
+      ]
+    )
+
     txHash = tx.hash
 
     // Save claim tx to database
@@ -414,6 +469,7 @@ export const claimERC721 = async (req, res) => {
       linkdropMasterAddress,
       receiverAddress,
       proxyAddress,
+      paramsHash,
       txHash
     })
 
