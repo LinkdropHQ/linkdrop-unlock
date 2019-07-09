@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import { Button } from 'components/common'
 import { RetinaImage } from 'linkdrop-ui-kit'
 import { getImages } from 'helpers'
+import config from 'config-dashboard'
 
 @actions(({
   user: {
@@ -60,9 +61,9 @@ class Step4 extends React.Component {
     } = this.props
 
     if (metamaskStatus && metamaskStatus === 'finished' && metamaskStatus !== prevMetamaskStatus) {
-      this.intervalEthCheck = window.setInterval(_ => this.actions().tokens.getEthBalance({ account: proxyAddress, chainId }), 3000)
+      this.intervalEthCheck = window.setInterval(_ => this.actions().tokens.getEthBalance({ account: proxyAddress, chainId }), config.balanceCheckInterval)
       if (tokenType === 'erc20') {
-        this.intervalErc20Check = window.setInterval(_ => this.actions().tokens.getERC20Balance({ chainId, tokenAddress: address, account: proxyAddress, currentAddress }), 3000)
+        this.intervalErc20Check = window.setInterval(_ => this.actions().tokens.getERC20Balance({ chainId, tokenAddress: address, account: proxyAddress, currentAddress }), config.balanceCheckInterval)
       }
       return
     }
@@ -75,7 +76,7 @@ class Step4 extends React.Component {
       if (ethBalanceFormatted && Number(ethBalanceFormatted) > 0 && ethBalanceFormatted !== prevEthBalanceFormatted) {
         this.intervalEthCheck && window.clearInterval(this.intervalEthCheck)
         window.alert('found ETH!')
-        window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), 1000)
+        window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), config.nextStepTimeout)
       }
     }
 
@@ -84,7 +85,7 @@ class Step4 extends React.Component {
         this.intervalEthCheck && window.clearInterval(this.intervalEthCheck)
         this.intervalErc20Check && window.clearInterval(this.intervalErc20Check)
         window.alert('found All Tokens!')
-        window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), 1000)
+        window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), config.nextStepTimeout)
       }
     }
   }

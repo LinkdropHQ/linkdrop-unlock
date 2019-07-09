@@ -5,6 +5,7 @@ import { Icons, Loading } from 'linkdrop-ui-kit'
 import { Button, Input } from 'components/common'
 import EthAmountData from './eth-amount-data'
 import LinkContents from './link-contents'
+import config from 'config-dashboard'
 
 @actions(({
   user: {
@@ -66,7 +67,7 @@ class Step3 extends React.Component {
     } = this.props
 
     if (metamaskStatus && metamaskStatus === 'finished' && metamaskStatus !== prevMetamaskStatus) {
-      this.intervalCheck = window.setInterval(_ => this.actions().tokens.getERC20Balance({ chainId, tokenAddress, account: proxyAddress, currentAddress }), 3000)
+      this.intervalCheck = window.setInterval(_ => this.actions().tokens.getERC20Balance({ chainId, tokenAddress, account: proxyAddress, currentAddress }), config.balanceCheckInterval)
     }
     if (errors && errors[0] && prevErrors.length === 0 && errors[0] !== prevErrors[0]) {
       window.alert(this.t(`errors.${errors[0]}`))
@@ -76,7 +77,7 @@ class Step3 extends React.Component {
     if (erc20BalanceFormatted && Number(erc20BalanceFormatted) > 0 && erc20BalanceFormatted !== prevErc20BalanceFormatted) {
       this.intervalCheck && window.clearInterval(this.intervalCheck)
       window.alert('found ERC20!')
-      window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), 1000)
+      window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), config.nextStepTimeout)
     }
   }
 

@@ -67,9 +67,9 @@ class Linkdrop extends React.Component {
         {linksAmount} {this.t('linksCount')} / {ethAmount} ETH
       </div>
     }
-    if (linksAmount && tokenAmount && tokenSymbol && ethAmount) {
+    if (tokenType === 'erc20' && linksAmount && tokenAmount && tokenSymbol && ethAmount) {
       return <div className={styles.links}>
-        {linksAmount} {this.t('linksCount')} / {tokenAmount} {tokenSymbol}
+        {linksAmount} {this.t('linksCount')} / {tokenAmount} {tokenSymbol} + {ethAmount} ETH
       </div>
     }
 
