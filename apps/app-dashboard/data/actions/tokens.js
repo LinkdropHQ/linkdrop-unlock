@@ -23,8 +23,8 @@ class Tokens {
     this.actions.dispatch({ type: '*TOKENS.GET_ETH_BALANCE', payload: { account, chainId } })
   }
 
-  getERC20Balance ({ chainId, tokenAddress, account }) {
-    this.actions.dispatch({ type: '*TOKENS.GET_ERC20_BALANCE', payload: { chainId, tokenAddress, account } })
+  getERC20Balance ({ chainId, tokenAddress, account, currentAddress }) {
+    this.actions.dispatch({ type: '*TOKENS.GET_ERC20_BALANCE', payload: { chainId, tokenAddress, account, currentAddress } })
   }
 
   generateERC20Link ({ chainId, currentAddress }) {

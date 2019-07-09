@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import { Button } from 'components/common'
 import { RetinaImage, Loading } from 'linkdrop-ui-kit'
 import { getImages } from 'helpers'
+import config from 'config-dashboard'
 
 @actions(({ user: { chainId, transactionStatus, currentAddress, loading, txHash, privateKey } }) => ({ chainId, transactionStatus, currentAddress, txHash, loading, privateKey }))
 @translate('pages.campaignCreate')
@@ -22,7 +23,7 @@ class Step1 extends React.Component {
       }
       if (transactionStatus === 'success') {
         window.alert('Success!')
-        window.setTimeout(_ => this.actions().user.setStep({ step: 2 }), 3000)
+        window.setTimeout(_ => this.actions().user.setStep({ step: 2 }), config.nextStepTimeout)
       }
       window.clearInterval(this.txHashCheck)
     }

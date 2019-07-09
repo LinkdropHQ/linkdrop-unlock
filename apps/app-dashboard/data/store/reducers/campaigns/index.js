@@ -7,7 +7,7 @@ const initialState = {
   tokenSymbol: null,
   ethAmount: null,
   linksAmount: null,
-  tokenType: null,
+  tokenType: 'bloblo',
   date: null,
   links: [],
   items: campaignsDecoded,
