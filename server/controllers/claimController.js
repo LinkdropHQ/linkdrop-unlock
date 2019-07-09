@@ -11,7 +11,7 @@ const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
 const config = configs.get('server')
 
-const { jsonRpcUrl, factory, relayerPrivateKey } = config
+const { jsonRpcUrl, factory, relayerPrivateKey, INFURA_PROJECT_ID } = config
 
 const ONE_GWEI = ethers.utils.parseUnits('1', 'gwei')
 
@@ -27,7 +27,13 @@ if (relayerPrivateKey == null || relayerPrivateKey === '') {
   throw newError('Please provide relayer private key')
 }
 
-const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
+if (INFURA_PROJECT_ID == null || INFURA_PROJECT_ID === '') {
+  throw newError('Please provide infura project id')
+}
+
+const provider = new ethers.providers.JsonRpcProvider(
+  `${jsonRpcUrl}/v3/${INFURA_PROJECT_ID}`
+)
 const relayer = new ethers.Wallet(relayerPrivateKey, provider)
 
 export const claim = async (req, res) => {
