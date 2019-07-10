@@ -1,4 +1,5 @@
 import { put, select } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 import { ethers, utils } from 'ethers'
 import LinkdropSDK from 'sdk/src/index'
 import configs from 'config-dashboard'
@@ -26,6 +27,7 @@ const generator = function * ({ payload }) {
       isApprove: 'true',
       version: String(version.toNumber())
     })
+    yield delay(10)
     const links = yield select(generator.selectors.links)
     const linksUpdated = links.concat(link.url)
     yield put({ type: 'CAMPAIGNS.SET_LINKS', payload: { links: linksUpdated } })

@@ -14,7 +14,6 @@ class CampaignCreate extends React.Component {
   componentDidMount () {
     const { privateKey, proxyAddress, currentAddress } = this.props
     if (!proxyAddress) {
-      console.log('creating')
       this.actions().user.createProxyAddress({ currentAddress })
     }
     if (privateKey) {
