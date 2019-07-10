@@ -30,7 +30,6 @@ export const getLastTxHash = async (req, res) => {
     })) || (await ClaimTxERC721.findOne({ paramsHash }))
 
   if (claimTx && claimTx.txHash) {
-    console.log(claimTx)
     return res.json({
       success: true,
       txHash: claimTx.txHash
@@ -38,7 +37,7 @@ export const getLastTxHash = async (req, res) => {
   } else {
     return res.json({
       success: false,
-      error: 'No tx found for a given params hash'
+      error: 'No tx found with a given params hash'
     })
   }
 }

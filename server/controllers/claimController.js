@@ -93,17 +93,37 @@ export const claim = async (req, res) => {
     initcode
   )
 
+  // Save hash of claim params
+  const paramsHash = ethers.utils.solidityKeccak256(
+    [
+      'uint256',
+      'address',
+      'uint256',
+      'uint256',
+      'address',
+      'address',
+      'bytes',
+      'address',
+      'bytes',
+      'address'
+    ],
+    [
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime,
+      linkId,
+      linkdropMasterAddress,
+      linkdropSignerSignature,
+      receiverAddress,
+      receiverSignature,
+      proxyAddress
+    ]
+  )
+
   // Check whether a claim tx exists in database
   const oldClaimTx = await ClaimTx.findOne({
-    weiAmount,
-    tokenAddress,
-    tokenAmount,
-    expirationTime,
-    version,
-    chainId,
-    linkId,
-    linkdropMasterAddress,
-    receiverAddress
+    paramsHash
   })
   const table = new Table()
   let type
@@ -128,9 +148,9 @@ export const claim = async (req, res) => {
   }
 
   try {
-    let tx, txHash
-
-    const gasPrice = Math.max(await provider.getGasPrice(), ONE_GWEI.mul(5))
+    let tx
+    // let gasPrice = await provider.getGasPrice()
+    let gasPrice = ethers.utils.parseUnits('0.005', 'gwei')
 
     // Top up pattern
     if (isApprove == null || isApprove === 'false') {
@@ -161,6 +181,35 @@ export const claim = async (req, res) => {
         receiverSignature,
         { gasLimit: 500000, gasPrice: gasPrice }
       )
+      const interval = setInterval(async () => {
+        if (tx.hash != null) {
+          if ((await provider.getTransactionReceipt(tx.hash)) != null) {
+            return clearInterval(interval)
+          } else {
+            gasPrice = gasPrice.add(ONE_GWEI)
+
+            tx = await proxyFactory.claim(
+              weiAmount,
+              tokenAddress,
+              tokenAmount,
+              expirationTime,
+              linkId,
+              linkdropMasterAddress,
+              linkdropSignerSignature,
+              receiverAddress,
+              receiverSignature,
+              { gasLimit: 500000, gasPrice: gasPrice, nonce: tx.nonce }
+            )
+
+            const claimTx = await ClaimTx.findOne({
+              paramsHash
+            })
+
+            claimTx.txHash = tx.hash
+            await claimTx.save()
+          }
+        }
+      }, 60 * 1000)
     } else if (isApprove === 'true') {
       // Approve pattern
       // Check claim params
@@ -190,36 +239,41 @@ export const claim = async (req, res) => {
         receiverSignature,
         { gasLimit: 500000, gasPrice: gasPrice }
       )
-    }
-    // Save hash of claim params
-    const paramsHash = ethers.utils.solidityKeccak256(
-      [
-        'uint256',
-        'address',
-        'uint256',
-        'uint256',
-        'address',
-        'address',
-        'bytes',
-        'address',
-        'bytes',
-        'address'
-      ],
-      [
-        weiAmount,
-        tokenAddress,
-        tokenAmount,
-        expirationTime,
-        linkId,
-        linkdropMasterAddress,
-        linkdropSignerSignature,
-        receiverAddress,
-        receiverSignature,
-        proxyAddress
-      ]
-    )
 
-    txHash = tx.hash
+      const interval = setInterval(async () => {
+        if (tx.hash != null) {
+          const txReceipt = await provider.getTransactionReceipt(tx.hash)
+          if (txReceipt != null) {
+            console.log({ txReceipt })
+            console.log('Clearing interval..')
+            return clearInterval(interval)
+          } else {
+            console.log('Increasing gas price...')
+            gasPrice = gasPrice.add(ONE_GWEI)
+
+            tx = await proxyFactory.claimApprove(
+              weiAmount,
+              tokenAddress,
+              tokenAmount,
+              expirationTime,
+              linkId,
+              linkdropMasterAddress,
+              linkdropSignerSignature,
+              receiverAddress,
+              receiverSignature,
+              { gasLimit: 500000, gasPrice: gasPrice, nonce: tx.nonce }
+            )
+
+            const claimTx = await ClaimTx.findOne({
+              paramsHash
+            })
+
+            claimTx.txHash = tx.hash
+            await claimTx.save()
+          }
+        }
+      }, 60 * 1000)
+    }
 
     // Save claim tx to database
     const claimTx = new ClaimTx({
@@ -234,10 +288,10 @@ export const claim = async (req, res) => {
       receiverAddress,
       proxyAddress,
       paramsHash,
-      txHash
+      txHash: tx.hash
     })
 
-    const document = await claimTx.save()
+    await claimTx.save()
 
     if (tokenAddress === ethers.constants.AddressZero) type = 'ETH'
     else {
@@ -257,7 +311,7 @@ export const claim = async (req, res) => {
 
     res.json({
       success: true,
-      txHash: txHash
+      txHash: tx.hash
     })
   } catch (error) {
     term.red.bold(`\n${error.reason ? error.reason : error}\n`)
@@ -332,18 +386,37 @@ export const claimERC721 = async (req, res) => {
     initcode
   )
 
-  // Check whether a claim tx exists in database
+  // Save hash of claim params
+  const paramsHash = ethers.utils.solidityKeccak256(
+    [
+      'uint256',
+      'address',
+      'uint256',
+      'uint256',
+      'address',
+      'address',
+      'bytes',
+      'address',
+      'bytes',
+      'address'
+    ],
+    [
+      weiAmount,
+      nftAddress,
+      tokenId,
+      expirationTime,
+      linkId,
+      linkdropMasterAddress,
+      linkdropSignerSignature,
+      receiverAddress,
+      receiverSignature,
+      proxyAddress
+    ]
+  )
 
+  // Check whether a claim tx exists in database
   const oldClaimTx = await ClaimTxERC721.findOne({
-    weiAmount,
-    nftAddress,
-    tokenId,
-    expirationTime,
-    version,
-    chainId,
-    linkId,
-    linkdropMasterAddress,
-    receiverAddress
+    paramsHash
   })
 
   const table = new Table()
@@ -362,8 +435,8 @@ export const claimERC721 = async (req, res) => {
   }
 
   try {
-    let tx, txHash
-    const gasPrice = Math.max(await provider.getGasPrice(), ONE_GWEI.mul(5))
+    let tx
+    let gasPrice = await provider.getGasPrice()
 
     // Top up pattern
     if (isApprove == null || isApprove === 'false') {
@@ -382,7 +455,6 @@ export const claimERC721 = async (req, res) => {
       )
 
       // Claim
-
       tx = await proxyFactory.claimERC721(
         weiAmount,
         nftAddress,
@@ -395,6 +467,35 @@ export const claimERC721 = async (req, res) => {
         receiverSignature,
         { gasLimit: 500000, gasPrice: gasPrice }
       )
+      const interval = setInterval(async () => {
+        if (tx.hash != null) {
+          if ((await provider.getTransactionReceipt(tx.hash)) != null) {
+            return clearInterval(interval)
+          } else {
+            gasPrice = gasPrice.add(ONE_GWEI)
+
+            tx = await proxyFactory.claimERC721(
+              weiAmount,
+              nftAddress,
+              tokenId,
+              expirationTime,
+              linkId,
+              linkdropMasterAddress,
+              linkdropSignerSignature,
+              receiverAddress,
+              receiverSignature,
+              { gasLimit: 500000, gasPrice: gasPrice, nonce: tx.nonce }
+            )
+
+            const claimTxERC721 = await ClaimTxERC721.findOne({
+              paramsHash
+            })
+
+            claimTxERC721.txHash = tx.hash
+            await claimTxERC721.save()
+          }
+        }
+      }, 60 * 1000)
     } else if (isApprove === 'true') {
       // Approve pattern
       // Check claim params
@@ -412,7 +513,6 @@ export const claimERC721 = async (req, res) => {
       )
 
       // Claim
-
       tx = await proxyFactory.claimERC721Approve(
         weiAmount,
         nftAddress,
@@ -425,37 +525,37 @@ export const claimERC721 = async (req, res) => {
         receiverSignature,
         { gasLimit: 500000, gasPrice: gasPrice }
       )
+
+      const interval = setInterval(async () => {
+        if (tx.hash != null) {
+          if ((await provider.getTransactionReceipt(tx.hash)) != null) {
+            return clearInterval(interval)
+          } else {
+            gasPrice = gasPrice.add(ONE_GWEI)
+
+            tx = await proxyFactory.claimERC721Approve(
+              weiAmount,
+              nftAddress,
+              tokenId,
+              expirationTime,
+              linkId,
+              linkdropMasterAddress,
+              linkdropSignerSignature,
+              receiverAddress,
+              receiverSignature,
+              { gasLimit: 500000, gasPrice: gasPrice, nonce: tx.nonce }
+            )
+
+            const claimTxERC721 = await ClaimTxERC721.findOne({
+              paramsHash
+            })
+
+            claimTxERC721.txHash = tx.hash
+            await claimTxERC721.save()
+          }
+        }
+      }, 60 * 1000)
     }
-
-    // Save hash of claim params
-    const paramsHash = ethers.utils.solidityKeccak256(
-      [
-        'uint256',
-        'address',
-        'uint256',
-        'uint256',
-        'address',
-        'address',
-        'bytes',
-        'address',
-        'bytes',
-        'address'
-      ],
-      [
-        weiAmount,
-        nftAddress,
-        tokenId,
-        expirationTime,
-        linkId,
-        linkdropMasterAddress,
-        linkdropSignerSignature,
-        receiverAddress,
-        receiverSignature,
-        proxyAddress
-      ]
-    )
-
-    txHash = tx.hash
 
     // Save claim tx to database
     const claimTxERC721 = new ClaimTxERC721({
@@ -470,10 +570,10 @@ export const claimERC721 = async (req, res) => {
       receiverAddress,
       proxyAddress,
       paramsHash,
-      txHash
+      txHash: tx.hash
     })
 
-    const document = await claimTxERC721.save()
+    await claimTxERC721.save()
 
     table.push(['type', `${weiAmount === '0' ? 'ERC721' : 'ETH + ERC721'}`])
     for (let key in claimTxERC721.toObject()) {
