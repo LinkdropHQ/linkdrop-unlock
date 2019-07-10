@@ -11,6 +11,7 @@ import NextButton from './next-button'
 import AddIconInfo from './add-icon-info'
 import AddEthField from './add-eth-field'
 import EthTexts from './eth-texts'
+import config from 'config-dashboard'
 
 @actions(({ user: { chainId, currentAddress, loading, proxyAddress }, tokens: { assets, symbol } }) => ({ assets, chainId, symbol, loading, proxyAddress, currentAddress }))
 @translate('pages.campaignCreate')
@@ -157,8 +158,8 @@ class Step2 extends React.Component {
       {tokenSymbol === 'erc20' && <p className={classNames(styles.text, styles.textMargin15)}>{value * linksAmount} {tokenSymbol}</p>}
       <EthTexts ethAmount={ethAmount} linksAmount={linksAmount} />
       <LinksContent tokenAmount={tokenAmount} tokenSymbol={tokenSymbol} ethAmount={ethAmount} tokenType={tokenType} />
-      <p className={styles.text}>{this.t('titles.serviceFee', { price: CONVERSION_RATE * linksAmount })}</p>
-      <p className={classNames(styles.text, styles.textGrey)}>{this.t('titles.serviceFeePerLink', { price: CONVERSION_RATE * 100 })}</p>
+      <p className={styles.text}>{this.t('titles.serviceFee', { price: config.linkPrice * linksAmount })}</p>
+      <p className={classNames(styles.text, styles.textGrey)}>{this.t('titles.serviceFeePerLink', { price: config.linkPrice * 100 })}</p>
     </div>
   }
 
@@ -199,5 +200,3 @@ const TOKENS = [
     value: 'ERC20'
   }
 ]
-
-const CONVERSION_RATE = 0.2
