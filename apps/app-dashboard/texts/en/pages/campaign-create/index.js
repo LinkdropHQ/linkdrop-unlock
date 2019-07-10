@@ -72,7 +72,7 @@ export default {
 
     // step3
     _6: 'By service fees, we cover Gas costs for links distribution and our operation costs.',
-    _7: 'For now, we charge fix price — 20 Cents per link. We plan to add monthly plans soon. For Enterprise customers, we offer custom solutions. Contact us for more details.',
+    _7: 'For now, we charge fix price — {{price}} Cents per link. We plan to add monthly plans soon. For Enterprise customers, we offer custom solutions. Contact us for more details.',
     _8: 'We use Stripe to process payments so we don’t know and don’t store your bank card details.',
 
     // step4

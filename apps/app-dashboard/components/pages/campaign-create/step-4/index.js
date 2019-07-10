@@ -61,10 +61,7 @@ class Step4 extends React.Component {
       errors: prevErrors,
       proxyAddress,
       ethBalanceFormatted: prevEthBalanceFormatted,
-      chainId,
-      tokenType,
-      currentAddress,
-      address
+      chainId
     } = this.props
 
     if (metamaskStatus && metamaskStatus === 'finished' && metamaskStatus !== prevMetamaskStatus) {
@@ -72,9 +69,6 @@ class Step4 extends React.Component {
         loading: true
       }, _ => {
         this.intervalEthCheck = window.setInterval(_ => this.actions().tokens.getEthBalance({ account: proxyAddress, chainId }), config.balanceCheckInterval)
-        if (tokenType === 'erc20') {
-          this.intervalErc20Check = window.setInterval(_ => this.actions().tokens.getERC20Balance({ chainId, tokenAddress: address, account: proxyAddress, currentAddress }), config.balanceCheckInterval)
-        }
       })
     }
     if (errors && errors[0] && prevErrors.length === 0 && errors[0] !== prevErrors[0]) {
@@ -83,39 +77,23 @@ class Step4 extends React.Component {
         loading: false
       }, _ => {
         this.intervalEthCheck && window.clearInterval(this.intervalEthCheck)
-        this.intervalErc20Check && window.clearInterval(this.intervalErc20Check)
       })
     }
 
-    if (tokenType === 'eth') {
-      if (ethBalanceFormatted && Number(ethBalanceFormatted) > 0 && ethBalanceFormatted !== prevEthBalanceFormatted) {
-        this.setState({
-          loading: false
-        }, _ => {
-          this.intervalEthCheck && window.clearInterval(this.intervalEthCheck)
-          window.alert('found ETH!')
-          window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), config.nextStepTimeout)
-        })
-      }
-    }
-
-    if (tokenType === 'erc20') {
-      if ((ethBalanceFormatted && Number(ethBalanceFormatted) > 0) && (erc20BalanceFormatted && Number(erc20BalanceFormatted) > 0)) {
-        this.setState({
-          loading: false
-        }, _ => {
-          this.intervalEthCheck && window.clearInterval(this.intervalEthCheck)
-          this.intervalErc20Check && window.clearInterval(this.intervalErc20Check)
-          window.alert('found All Tokens!')
-          window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), config.nextStepTimeout)
-        })
-      }
+    if (ethBalanceFormatted && Number(ethBalanceFormatted) > 0 && ethBalanceFormatted !== prevEthBalanceFormatted) {
+      this.setState({
+        loading: false
+      }, _ => {
+        this.intervalEthCheck && window.clearInterval(this.intervalEthCheck)
+        window.alert('found ETH!')
+        window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), config.nextStepTimeout)
+      })
     }
   }
 
   render () {
     const { loading: stateLoading } = this.state
-    const { linksAmount, ethAmount, currentAddress, tokenType, tokenAmount, loading } = this.props
+    const { linksAmount, ethAmount, currentAddress, tokenType, loading } = this.props
     return <div className={styles.container}>
       {(loading || stateLoading) && <Loading withOverlay />}
       <div className={styles.title}>{this.t('titles.sendEth', { ethAmount: ethAmount * linksAmount })}</div>
@@ -125,7 +103,6 @@ class Step4 extends React.Component {
           <p className={styles.text}>{this.t('texts._10')}</p>
           <p className={styles.text}>{this.t('texts._11', { ethAmount: ethAmount * linksAmount })}</p>
         </div>
-
         <div className={styles.scheme}>
           <p className={classNames(styles.text, styles.centered)}>{this.t('texts._12')}</p>
           <RetinaImage width={255} {...getImages({ src: 'key-preview' })} />
@@ -135,11 +112,7 @@ class Step4 extends React.Component {
         <Button
           disabled={loading || stateLoading}
           onClick={_ => {
-            if (ethAmount && tokenType === 'erc20') {
-              this.actions().metamask.sendErc20WithEth({ tokenAmount: tokenAmount * linksAmount, account: currentAddress, ethAmount: ethAmount * linksAmount })
-            } else if (ethAmount && tokenType === 'eth') {
-              this.actions().metamask.sendEth({ ethAmount: ethAmount * linksAmount, account: currentAddress })
-            }
+            this.actions().metamask.sendEth({ ethAmount: ethAmount * linksAmount, account: currentAddress })
           }}
         >
           {this.t('buttons.send')}

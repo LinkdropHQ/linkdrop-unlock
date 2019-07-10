@@ -51,7 +51,8 @@ class Step3 extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      cardNumber: '0000 0000 0000 0000'
+      cardNumber: '0000 0000 0000 0000',
+      loading: false
     }
   }
 
@@ -63,29 +64,44 @@ class Step3 extends React.Component {
       proxyAddress,
       chainId,
       address: tokenAddress,
-      currentAddress
+      currentAddress,
+      tokenType,
+      ethAmount
     } = this.props
 
     if (metamaskStatus && metamaskStatus === 'finished' && metamaskStatus !== prevMetamaskStatus) {
-      this.intervalCheck = window.setInterval(_ => this.actions().tokens.getERC20Balance({ chainId, tokenAddress, account: proxyAddress, currentAddress }), config.balanceCheckInterval)
+      this.setState({
+        loading: true
+      }, _ => {
+        this.intervalCheck = window.setInterval(_ => this.actions().tokens.getERC20Balance({ chainId, tokenAddress, account: proxyAddress, currentAddress }), config.balanceCheckInterval)
+      })
     }
     if (errors && errors[0] && prevErrors.length === 0 && errors[0] !== prevErrors[0]) {
-      window.alert(this.t(`errors.${errors[0]}`))
-      this.intervalCheck && window.clearInterval(this.intervalCheck)
+      this.setState({
+        loading: false
+      }, _ => {
+        window.alert(this.t(`errors.${errors[0]}`))
+        this.intervalCheck && window.clearInterval(this.intervalCheck)
+      })
     }
 
     if (erc20BalanceFormatted && Number(erc20BalanceFormatted) > 0 && erc20BalanceFormatted !== prevErc20BalanceFormatted) {
-      this.intervalCheck && window.clearInterval(this.intervalCheck)
-      window.alert('found ERC20!')
-      window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), config.nextStepTimeout)
+      this.setState({
+        loading: false
+      }, _ => {
+        this.intervalCheck && window.clearInterval(this.intervalCheck)
+        window.alert('found ERC20!')
+        const nextStep = tokenType === 'eth' || (tokenType === 'erc20' && ethAmount) ? 4 : 5
+        window.setTimeout(_ => this.actions().user.setStep({ step: nextStep }), config.nextStepTimeout)
+      })
     }
   }
 
   render () {
     const { ethAmount, tokenType, tokenAmount, linksAmount, tokenSymbol, loading, currentAddress } = this.props
-    const { cardNumber } = this.state
+    const { cardNumber, loading: stateLoading } = this.state
     return <div className={styles.container}>
-      {loading && <Loading withOverlay />}
+      {(stateLoading || loading) && <Loading withOverlay />}
       <div className={styles.title}>{this.t('titles.summaryPay')}</div>
       <div className={styles.main}>
         <div className={styles.summary}>
@@ -105,10 +121,10 @@ class Step3 extends React.Component {
                   {this.t('titles.serviceFeeTitle')}
                 </h3>
                 <div className={styles.dataContent}>
-                  {`$ ${linksAmount * CONVERSION_RATE}`}
+                  {`$ ${linksAmount * config.linkPrice}`}
                 </div>
                 <div className={styles.extraDataContent}>
-                  {this.t('titles.centsPerLink', { cents: CONVERSION_RATE * 100 })}
+                  {this.t('titles.centsPerLink', { cents: config.linkPrice * 100 })}
                 </div>
 
               </div>
@@ -129,25 +145,23 @@ class Step3 extends React.Component {
           </div>
 
           {false && <div className={styles.payment}>
-            <div className={styles.priceSummary} dangerouslySetInnerHTML={{ __html: this.t('titles.charge', { price: CONVERSION_RATE * 10 * linksAmount }) }} />
+            <div className={styles.priceSummary} dangerouslySetInnerHTML={{ __html: this.t('titles.charge', { price: config.linkPrice * 10 * linksAmount }) }} />
             <div className={styles.methods}>{this.t('titles.methods')} <Icons.Lock /></div>
             <Input format='#### #### #### ####' numberInput onChange={({ value }) => this.setField({ field: 'cardNumber', value })} className={styles.input} value={cardNumber} />
           </div>}
         </div>
         <div className={styles.description}>
           <p className={styles.text}>{this.t('texts._6')}</p>
-          <p className={styles.text}>{this.t('texts._7')}</p>
+          <p className={styles.text}>{this.t('texts._7', { price: config.linkPrice * 100 })}</p>
           <p className={styles.text}>{this.t('texts._8')}</p>
         </div>
       </div>
 
       <div className={styles.controls}>
         <Button onClick={_ => {
-          // если только эфир или если токены с эфиром, то переходим на дргуой экран
-          if (tokenType === 'eth' || (tokenType === 'erc20' && ethAmount)) {
+          if (tokenType === 'eth') {
             this.actions().user.setStep({ step: 4 })
-          } else if (tokenType === 'erc20' && !ethAmount) {
-            // если только токены, то отправляем сразу
+          } else {
             this.actions().metamask.sendErc20({ tokenAmount: tokenAmount * linksAmount, account: currentAddress })
           }
         }}>
@@ -165,5 +179,3 @@ class Step3 extends React.Component {
 }
 
 export default Step3
-
-const CONVERSION_RATE = 0.2
