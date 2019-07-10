@@ -293,7 +293,7 @@ export const claimERC721 = async (req, res) => {
   }
 
   if (isApprove != null) {
-    if (isApprove !== 'true' && isApprove !== 'false') {
+    if (isApprove !== true && isApprove !== 'false') {
       throw newError('Please provide valid isApprove argument')
     }
   }
@@ -313,7 +313,6 @@ export const claimERC721 = async (req, res) => {
   )
 
   // Check whether a claim tx exists in database
-
   const oldClaimTx = await ClaimTxERC721.findOne({
     weiAmount,
     nftAddress,

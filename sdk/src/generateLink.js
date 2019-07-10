@@ -5,7 +5,7 @@ export const generateLink = async ({
   chainId,
   host,
   linkdropMasterAddress,
-  linkdropSignerPrivateKey,
+  signingKeyOrWallet,
   weiAmount,
   tokenAddress,
   tokenAmount,
@@ -25,8 +25,8 @@ export const generateLink = async ({
     throw new Error(`Please provide linkdrop master's address`)
   }
 
-  if (linkdropSignerPrivateKey === null || linkdropSignerPrivateKey === '') {
-    throw new Error(`Please provide linkdrop signer's private key`)
+  if (signingKeyOrWallet === null || signingKeyOrWallet === '') {
+    throw new Error(`Please provide signing key or wallet`)
   }
 
   if (weiAmount === null || weiAmount === '') {
@@ -55,7 +55,13 @@ export const generateLink = async ({
     }
   }
 
-  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey)
+  let linkdropSigner
+
+  if (typeof signingKeyOrWallet === 'string') {
+    linkdropSigner = new ethers.Wallet(signingKeyOrWallet)
+  } else if (typeof signingKeyOrWallet === 'object') {
+    linkdropSigner = signingKeyOrWallet
+  }
 
   const { linkKey, linkId, linkdropSignerSignature } = await createLink({
     linkdropSigner,
@@ -82,7 +88,7 @@ export const generateLinkERC721 = async ({
   chainId,
   host,
   linkdropMasterAddress,
-  linkdropSignerPrivateKey,
+  signingKeyOrWallet,
   weiAmount,
   nftAddress,
   tokenId,
@@ -102,8 +108,8 @@ export const generateLinkERC721 = async ({
     throw new Error(`Please provide linkdrop master's address`)
   }
 
-  if (linkdropSignerPrivateKey === null || linkdropSignerPrivateKey === '') {
-    throw new Error(`Please provide linkdrop signer's private key`)
+  if (signingKeyOrWallet === null || signingKeyOrWallet === '') {
+    throw new Error(`Please provide signing key or wallet`)
   }
 
   if (weiAmount === null || weiAmount === '') {
@@ -136,7 +142,13 @@ export const generateLinkERC721 = async ({
     }
   }
 
-  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey)
+  let linkdropSigner
+
+  if (typeof signingKeyOrWallet === 'string') {
+    linkdropSigner = new ethers.Wallet(signingKeyOrWallet)
+  } else if (typeof signingKeyOrWallet === 'object') {
+    linkdropSigner = signingKeyOrWallet
+  }
 
   const { linkKey, linkId, linkdropSignerSignature } = await createLinkERC721({
     linkdropSigner,

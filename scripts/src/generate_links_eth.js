@@ -20,6 +20,7 @@ import fs from 'fs'
 
 const JSON_RPC_URL = getString('jsonRpcUrl')
 const HOST = getString('host')
+const CHAIN = getString('chain')
 const LINKDROP_MASTER_PRIVATE_KEY = getString('linkdropMasterPrivateKey')
 const LINKDROP_FACTORY_ADDRESS = getString('factory')
 const WEI_AMOUNT = getInt('weiAmount')
@@ -33,6 +34,13 @@ const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 const INIT_CODE = getInitCode()
 
 export const generate = async () => {
+  const linkdropSDK = await LinkdropSDK({
+    linkdropMasterAddress: new ethers.Wallet(LINKDROP_MASTER_PRIVATE_KEY)
+      .address,
+    chain: CHAIN,
+    jsonRpcUrl: JSON_RPC_URL
+  })
+
   let spinner, tx
   try {
     spinner = ora({
@@ -41,11 +49,7 @@ export const generate = async () => {
     })
     spinner.start()
 
-    const proxyAddress = LinkdropSDK.computeProxyAddress(
-      LINKDROP_FACTORY_ADDRESS,
-      LINKDROP_MASTER_WALLET.address,
-      INIT_CODE
-    )
+    const proxyAddress = linkdropSDK.getProxyAddress()
 
     let cost = WEI_AMOUNT * LINKS_NUMBER
     let amountToSend
@@ -82,13 +86,8 @@ export const generate = async () => {
         linkId,
         linkKey,
         linkdropSignerSignature
-      } = await LinkdropSDK.generateLink({
-        jsonRpcUrl: JSON_RPC_URL,
-        chainId: CHAIN_ID,
-        host: HOST,
-        linkdropMasterAddress: new ethers.Wallet(LINKDROP_MASTER_PRIVATE_KEY)
-          .address,
-        linkdropSignerPrivateKey: LINKDROP_MASTER_PRIVATE_KEY,
+      } = await linkdropSDK.generateLink({
+        signingKeyOrWallet: LINKDROP_MASTER_PRIVATE_KEY,
         weiAmount: WEI_AMOUNT,
         tokenAddress: ethers.constants.AddressZero,
         tokenAmount: 0,

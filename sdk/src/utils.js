@@ -18,28 +18,21 @@ export const computeBytecode = masterCopyAddress => {
   return bytecode
 }
 
-// const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
-export const computeProxyAddress = (
-  factoryAddress,
-  linkdropSignerAddress,
-  initcode
-) => {
+export const computeProxyAddress = (factoryAddress, linkdropMasterAddress) => {
   if (factoryAddress == null || factoryAddress === '') {
     throw new Error('Please provide factory address')
   }
 
-  if (linkdropSignerAddress == null || linkdropSignerAddress === '') {
-    throw new Error('Please provide linkdropSigner address')
-  }
-
-  if (initcode == null || initcode === '') {
-    throw new Error('Please provide initcode')
+  if (linkdropMasterAddress == null || linkdropMasterAddress === '') {
+    throw new Error('Please provide linkdrop master address')
   }
 
   const salt = ethers.utils.solidityKeccak256(
     ['address'],
-    [linkdropSignerAddress]
+    [linkdropMasterAddress]
   )
+
+  const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 
   const proxyAddress = buildCreate2Address(factoryAddress, salt, initcode)
   return proxyAddress
@@ -162,11 +155,6 @@ export const signReceiverAddress = async (linkKey, receiverAddress) => {
   let signature = await wallet.signMessage(messageHashToSign)
   return signature
 }
-
-/**
- * @desc Generate Ethereum Account
- * @return {'address': String, 'privateKey': String}
- */
 
 /**
  * Function to generate new account
