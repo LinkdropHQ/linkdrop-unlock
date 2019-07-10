@@ -28,13 +28,6 @@ class Step2 extends React.Component {
     }
   }
 
-  componentDidMount () {
-    const { proxyAddress, currentAddress } = this.props
-    if (!proxyAddress) {
-      this.actions().user.createProxyAddress({ currentAddress })
-    }
-  }
-
   // mainnet
   // componentDidMount () {
   //   const { account } = this.props

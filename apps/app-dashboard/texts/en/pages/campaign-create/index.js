@@ -78,7 +78,7 @@ export default {
     // step4
     _9: 'One more thing, to complete generating links you need to send Ether for links to Linkdrop Contract',
     _10: 'Ether will be stored in Linkdrop Contract. You can stop campaign anytime and get back your Ether.',
-    _11: 'To send 10 ETH to Linkdrop Contract simply click on “Send” button and confirm transaction.',
+    _11: 'To send {{ethAmount}} ETH to Linkdrop Contract simply click on “Send” button and confirm transaction.',
     _12: 'MetaMask will show you Transaction pop-up that you need to confirm',
     codeBlock: `// import library
 const linkGenerator = require(‘volca-link-generator’);
