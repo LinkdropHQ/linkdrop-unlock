@@ -8,11 +8,15 @@ import Step4 from './step-4'
 import Step5 from './step-5'
 import Step6 from './step-6'
 
-@actions(({ user: { step, privateKey } }) => ({ step, privateKey }))
+@actions(({ user: { step, privateKey, proxyAddress, currentAddress } }) => ({ proxyAddress, currentAddress, step, privateKey }))
 @translate('pages.campaignCreate')
 class CampaignCreate extends React.Component {
   componentDidMount () {
-    const { privateKey } = this.props
+    const { privateKey, proxyAddress, currentAddress } = this.props
+    if (!proxyAddress) {
+      console.log('creating')
+      this.actions().user.createProxyAddress({ currentAddress })
+    }
     if (privateKey) {
       return this.actions().user.setStep({ step: 2 })
     }
