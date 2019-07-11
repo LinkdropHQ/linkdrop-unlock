@@ -5,7 +5,7 @@ import * as claimUtils from './claim'
 import LinkdropFactory from '../../contracts/build/LinkdropFactory'
 import { ethers } from 'ethers'
 
-const LinkdropSDK = async ({
+const LinkdropSDK = ({
   linkdropMasterAddress,
   chain = 'mainnet',
   chainId = getChainId(chain),
@@ -22,6 +22,7 @@ const LinkdropSDK = async ({
     throw new Error('Please provide valid chain and/or chain id')
   }
 
+  let version
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
   const factoryContract = new ethers.Contract(
     factory,
@@ -29,9 +30,9 @@ const LinkdropSDK = async ({
     provider
   )
 
-  const version = await factoryContract.getProxyMasterCopyVersion(
-    linkdropMasterAddress
-  )
+  const getVersion = async () => {
+    return factoryContract.getProxyMasterCopyVersion(linkdropMasterAddress)
+  }
 
   const generateLink = async ({
     signingKeyOrWallet,
@@ -50,12 +51,12 @@ const LinkdropSDK = async ({
       tokenAddress,
       tokenAmount,
       expirationTime,
-      version,
+      version: version || (await getVersion()),
       isApprove
     })
   }
 
-  const generateLinkERC721 = ({
+  const generateLinkERC721 = async ({
     signingKeyOrWallet,
     weiAmount,
     nftAddress,
@@ -72,7 +73,7 @@ const LinkdropSDK = async ({
       nftAddress,
       tokenId,
       expirationTime,
-      version,
+      version: version || (await getVersion()),
       isApprove
     })
   }
@@ -81,7 +82,7 @@ const LinkdropSDK = async ({
     return computeProxyAddress(factory, linkdropMasterAddress)
   }
 
-  const claim = ({
+  const claim = async ({
     weiAmount,
     tokenAddress,
     tokenAmount,
@@ -110,7 +111,7 @@ const LinkdropSDK = async ({
     })
   }
 
-  const claimERC721 = ({
+  const claimERC721 = async ({
     weiAmount,
     nftAddress,
     tokenId,

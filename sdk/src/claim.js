@@ -1,7 +1,7 @@
 import { signReceiverAddress } from './utils'
-
 const ethers = require('ethers')
 const axios = require('axios')
+
 export const claim = async ({
   jsonRpcUrl,
   apiHost,
