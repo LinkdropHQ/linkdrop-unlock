@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import TransactionSchema from './Transaction'
 
 const OperationSchema = new mongoose.Schema({
   type: {
@@ -6,9 +7,13 @@ const OperationSchema = new mongoose.Schema({
     required: true,
     enum: ['claim', 'metatx']
   },
+  transactions: [TransactionSchema],
+  // data for the operation:
+  // (different for each operation type)
   data: {
     type: Object
   },
+  // should be equal to status of the latest transaction
   status: {
     type: String,
     required: true,
@@ -18,5 +23,4 @@ const OperationSchema = new mongoose.Schema({
 })
 
 const Operation = mongoose.model('Operation', OperationSchema)
-
 export default Operation
