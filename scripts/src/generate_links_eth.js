@@ -1,7 +1,6 @@
 import {
   newError,
   getLinkdropMasterWallet,
-  getInitCode,
   getExpirationTime,
   getProvider,
   getString,
@@ -19,19 +18,15 @@ import fastcsv from 'fast-csv'
 import fs from 'fs'
 
 const JSON_RPC_URL = getString('jsonRpcUrl')
-const HOST = getString('host')
-const CHAIN = getString('chain')
+const CHAIN = getString('CHAIN')
 const LINKDROP_MASTER_PRIVATE_KEY = getString('linkdropMasterPrivateKey')
-const LINKDROP_FACTORY_ADDRESS = getString('factory')
 const WEI_AMOUNT = getInt('weiAmount')
 const LINKS_NUMBER = getInt('linksNumber')
 const LINKDROP_MASTER_COPY_VERSION = getInt('version')
-const CHAIN_ID = getInt('chainId')
 const EXPIRATION_TIME = getExpirationTime()
 const IS_APPROVE = getBool('isApprove')
 const PROVIDER = getProvider()
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
-const INIT_CODE = getInitCode()
 
 export const generate = async () => {
   const linkdropSDK = await LinkdropSDK({
