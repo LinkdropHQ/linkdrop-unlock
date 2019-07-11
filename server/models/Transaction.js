@@ -47,6 +47,8 @@ const TransactionSchema = new mongoose.Schema({
       type: Number
     }
   }
+}, {
+  timestamps: true
 })
 
 export default TransactionSchema
