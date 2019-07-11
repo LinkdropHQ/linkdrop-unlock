@@ -2,33 +2,67 @@
 
 ## Short description
 
-SDK for computing proxy address, generating claim links and claiming linkdrops
+SDK for computing proxy address, generating and claiming linkdrops
 
 ## Installation
 
 ```bash
-yarn add https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/dev/sdk
+yarn add @linkdrop/sdk@https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/dev/sdk
 ```
 
 ## Usage
 
 ```js
-const LinkdropSDK = require('sdk')
+const LinkdropSDK = require('@linkdrop/sdk')
+
+// OR
+
+import LinkdropSDK from '@linkdrop/sdk'
+```
+
+### Initialization
+
+```js
+const linkdropSDK = LinkdropSDK({
+  linkdropMasterAddress: <LINKDROP_MASTER_ADDRESS>,
+  chain = <CHAIN>, // 'mainnet' by default
+  chainId = <CHAIN_ID>, // getChainId(chain) by default
+  jsonRpcUrl = <JSON_RPC_URL>, // `https://${chain}.infura.io` by default,
+  apiHost = <API_HOST>, // `https://${chain}.linkdrop.io` by default
+  claimHost = <CLAIM_HOST>, // 'https://claim.linkdrop.io' by default
+  factory = <LINKDROP_FACTORY_ADDRESS>, // '0xDEF008f43a36ba4D3523d2e26eF1A6d4C83b4df8' by default
+}) )
 ```
 
 ### Compute proxy address
 
 ```js
-const proxyAddress = LinkdropSDK.computeProxyAddress(factoryAddress, senderAddress, masterCopyAddress)
+const proxyAddress = LinkdropSDK.computeProxyAddress(
+  factoryAddress,
+  senderAddress,
+  masterCopyAddress
+)
 ```
 
 This function will use hash of `senderAddress` as salt and return built CREATE2 address
 
-
 ### Generate link for ETH or ERC20
 
 ```js
-const {url, linkId, linkKey, senderSignature} = await LinkdropSDK.generateLink(jsonRpcUrl, networkId, host, senderPrivateKey, token, amount, expirationTime)
+const {
+  url,
+  linkId,
+  linkKey,
+  senderSignature
+} = await LinkdropSDK.generateLink(
+  jsonRpcUrl,
+  networkId,
+  host,
+  senderPrivateKey,
+  token,
+  amount,
+  expirationTime
+)
 ```
 
 This function will generate link for claiming ETH or any ERC20 token and return the following params `url, linkId, linkKey, senderSignature`
@@ -36,16 +70,38 @@ This function will generate link for claiming ETH or any ERC20 token and return 
 ### Generate link for ERC721
 
 ```js
-const {url, linkId, linkKey, senderSignature} = await LinkdropSDK.generateLinkERC721(jsonRpcUrl, networkId, host, senderPrivateKey, nft, tokenId, expirationTime)
+const {
+  url,
+  linkId,
+  linkKey,
+  senderSignature
+} = await LinkdropSDK.generateLinkERC721(
+  jsonRpcUrl,
+  networkId,
+  host,
+  senderPrivateKey,
+  nft,
+  tokenId,
+  expirationTime
+)
 ```
 
 This function will generate link for claiming ERC721 token and return the following params `url, linkId, linkKey, senderSignature`
 
-
 ### Claim ETH or ERC20
 
 ```js
-const txHash = await LinkdropSDK.claim(jsonRpcUrl, host, token, amount, expirationTime, linkKey, senderAddress, senderSignature, receiverAddress)
+const txHash = await LinkdropSDK.claim(
+  jsonRpcUrl,
+  host,
+  token,
+  amount,
+  expirationTime,
+  linkKey,
+  senderAddress,
+  senderSignature,
+  receiverAddress
+)
 ```
 
 This function will claim ETH or ERC20 token by making a POST request to server endpoint. Make sure the server is up by running `yarn server`
@@ -55,7 +111,17 @@ Upon successful request function will log tx hash to the console
 ### Claim ERC721
 
 ```js
-const txHash = await LinkdropSDK.claimERC721(jsonRpcUrl, host, nft, tokenId, expirationTime, linkKey, senderAddress, senderSignature, receiverAddress)
+const txHash = await LinkdropSDK.claimERC721(
+  jsonRpcUrl,
+  host,
+  nft,
+  tokenId,
+  expirationTime,
+  linkKey,
+  senderAddress,
+  senderSignature,
+  receiverAddress
+)
 ```
 
 This function will claim ETH or ERC20 token by making a POST request to server endpoint. Make sure the server is up by running `yarn server`.
