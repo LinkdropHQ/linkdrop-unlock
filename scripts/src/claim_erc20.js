@@ -35,7 +35,7 @@ const claim = async () => {
       isApprove
     } = await getUrlParams('erc20', 0)
 
-    const linkdropSDK = await initLinkdropSDK({
+    const linkdropSDK = LinkdropSDK({
       linkdropMasterAddress,
       chain: CHAIN,
       jsonRpcUrl: JSON_RPC_URL,

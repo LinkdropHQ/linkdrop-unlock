@@ -32,14 +32,13 @@ const NFT_IDS = getString('nftIds')
 const PROVIDER = getProvider()
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 
-export const generate = async () => {
-  const linkdropSDK = await LinkdropSDK({
-    linkdropMasterAddress: new ethers.Wallet(LINKDROP_MASTER_PRIVATE_KEY)
-      .address,
-    chain: CHAIN,
-    jsonRpcUrl: JSON_RPC_URL
-  })
+const linkdropSDK = LinkdropSDK({
+  linkdropMasterAddress: new ethers.Wallet(LINKDROP_MASTER_PRIVATE_KEY).address,
+  chain: CHAIN,
+  jsonRpcUrl: JSON_RPC_URL
+})
 
+export const generate = async () => {
   let spinner, tx
   try {
     spinner = ora({

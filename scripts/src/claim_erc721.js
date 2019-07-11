@@ -35,14 +35,14 @@ const claimERC721 = async () => {
       isApprove
     } = await getUrlParams('erc721', 0)
 
-    const linkdropSDK = await LinkdropSDK({
+    const linkdropSDK = LinkdropSDK({
       linkdropMasterAddress,
       chain: CHAIN,
       jsonRpcUrl: JSON_RPC_URL,
       apiHost: API_HOST
     })
 
-    const { error, success, txHash } = await LinkdropSDK.claimERC721({
+    const { error, success, txHash } = await linkdropSDK.claimERC721({
       jsonRpcUrl: JSON_RPC_URL,
       apiHost: API_HOST,
       weiAmount,
