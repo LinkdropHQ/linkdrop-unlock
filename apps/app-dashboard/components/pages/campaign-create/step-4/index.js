@@ -2,7 +2,7 @@ import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import classNames from 'classnames'
-import { Button } from 'components/common'
+import { Button, PageHeader } from 'components/common'
 import { RetinaImage, Loading } from 'linkdrop-ui-kit'
 import { getImages } from 'helpers'
 import config from 'config-dashboard'
@@ -96,7 +96,7 @@ class Step4 extends React.Component {
     const { linksAmount, ethAmount, currentAddress, tokenType, loading } = this.props
     return <div className={styles.container}>
       {(loading || stateLoading) && <Loading withOverlay />}
-      <div className={styles.title}>{this.t('titles.sendEth', { ethAmount: ethAmount * linksAmount })}</div>
+      <PageHeader title={this.t('titles.sendEth', { ethAmount: ethAmount * linksAmount })} />
       <div className={styles.main}>
         <div className={styles.description}>
           {tokenType === 'erc20' && <p className={classNames(styles.text, styles.textMain)}>{this.t('texts._9')}</p>}

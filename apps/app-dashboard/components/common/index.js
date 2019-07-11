@@ -6,6 +6,7 @@ import Linkdrop from './linkdrop'
 import Input from './input'
 import Select from './select'
 import ProgressBar from './progress-bar'
+import PageHeader from './page-header'
 
 export {
   Aside,
@@ -15,5 +16,6 @@ export {
   Linkdrop,
   Input,
   Select,
-  ProgressBar
+  ProgressBar,
+  PageHeader
 }

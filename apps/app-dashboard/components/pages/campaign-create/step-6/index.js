@@ -2,7 +2,7 @@ import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import classNames from 'classnames'
-import { Button } from 'components/common'
+import { Button, PageHeader } from 'components/common'
 
 @actions(({ campaigns: { items, current } }) => ({ items, current }))
 @translate('pages.campaignCreate')
@@ -14,7 +14,7 @@ class Step6 extends React.Component {
     return <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.automatic}>
-          <div className={styles.title}>{this.t('titles.getTheLinks')}</div>
+          <PageHeader title={this.t('titles.getTheLinks')} />
           <p className={styles.text}>{this.t('titles.linkdropSdk')}</p>
           <p className={classNames(styles.text, styles.textGrey, styles.textMargin40)}>{this.t('titles.automaticDistribution')}</p>
           <p className={styles.text}>{this.t('titles.nodeJsSupport')}</p>

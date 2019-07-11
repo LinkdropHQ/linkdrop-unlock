@@ -4,7 +4,7 @@ import styles from './styles.module'
 import { ethers } from 'ethers'
 import classNames from 'classnames'
 import { Loading } from 'linkdrop-ui-kit'
-import { Select, Input } from 'components/common'
+import { Select, Input, PageHeader } from 'components/common'
 import TokenAddressInput from './token-address-input'
 import LinksContent from './links-content'
 import NextButton from './next-button'
@@ -61,7 +61,7 @@ class Step2 extends React.Component {
     // })
     return <div className={styles.container}>
       {loading && <Loading withOverlay />}
-      <div className={styles.title}>{this.t('titles.setupCampaign')}</div>
+      <PageHeader title={this.t('titles.setupCampaign')} />
       <div className={styles.main}>
         <div className={styles.form}>
           <div className={styles.chooseTokens}>
@@ -72,7 +72,7 @@ class Step2 extends React.Component {
           <div className={styles.linksAmount}>
             <h3 className={styles.subtitle}>{this.t('titles.totalLinks')}</h3>
             <div className={styles.linksAmountContainer}>
-              <Input numberInput className={styles.input} value={linksAmount || 0} onChange={({ value }) => this.setField({ field: 'linksAmount', value: parseFloat(value) })} />
+              <Input numberInput className={styles.input} value={linksAmount} onChange={({ value }) => this.setField({ field: 'linksAmount', value: parseFloat(value) })} />
               <AddIconInfo addIconInfo={addIconInfo} />
             </div>
           </div>
@@ -167,6 +167,11 @@ class Step2 extends React.Component {
     const { tokenSymbol } = this.state
     const { chainId } = this.props
     if (field === 'tokenAddress' && value.length > 42) { return }
+    if (field === 'ethAmount' || field === 'tokenAmount') {
+      return this.setState({
+        [field]: value && String(value).replace(',', '.')
+      })
+    }
     this.setState({
       [field]: value
     }, _ => {

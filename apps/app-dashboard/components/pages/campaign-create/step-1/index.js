@@ -2,7 +2,7 @@ import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import classNames from 'classnames'
-import { Button } from 'components/common'
+import { Button, PageHeader } from 'components/common'
 import { RetinaImage, Loading } from 'linkdrop-ui-kit'
 import { getImages } from 'helpers'
 import config from 'config-dashboard'
@@ -28,18 +28,18 @@ class Step1 extends React.Component {
     }
 
     if (transactionStatus != null && prevTransactionStatus !== transactionStatus) {
-      this.setState({
-        loading: false
-      }, _ => {
-        if (transactionStatus === 'failed') {
+      if (transactionStatus === 'failed') {
+        this.setState({
+          loading: false
+        }, _ => {
           window.alert('Failed!')
-        }
-        if (transactionStatus === 'success') {
-          window.alert('Success!')
-          window.setTimeout(_ => this.actions().user.setStep({ step: 2 }), config.nextStepTimeout)
-        }
-        window.clearInterval(this.txHashCheck)
-      })
+        })
+      }
+      if (transactionStatus === 'success') {
+        window.alert('Success!')
+        window.setTimeout(_ => this.actions().user.setStep({ step: 2 }), config.nextStepTimeout)
+      }
+      window.clearInterval(this.txHashCheck)
     }
   }
   render () {
@@ -47,7 +47,7 @@ class Step1 extends React.Component {
     const { loading: stateLoading } = this.state
     return <div className={styles.container}>
       {(loading || stateLoading) && <Loading withOverlay />}
-      <div className={styles.title}>{this.t('titles.createLinkKey')}</div>
+      <PageHeader title={this.t('titles.createLinkKey')} />
       <div className={styles.main}>
         <div className={styles.description}>
           <p className={classNames(styles.text, styles.textMain)}>{this.t('texts._1')}</p>

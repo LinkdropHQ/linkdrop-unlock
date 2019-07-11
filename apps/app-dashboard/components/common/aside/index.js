@@ -14,7 +14,7 @@ class Aside extends React.Component {
     return <aside className={styles.container}>
       <div className={styles.mainBlock}>
         <div className={styles.logo}>
-          <a href='/#/'><RetinaImage width={118} {...getImages({ src: 'hole' })} /></a>
+          <a href='/#/'><RetinaImage alwaysHighRes width={118} {...getImages({ src: 'hole' })} /></a>
         </div>
         {this.renderCampaignsButton({ currentAddress })}
         {this.renderCreateButton({ currentAddress, items })}

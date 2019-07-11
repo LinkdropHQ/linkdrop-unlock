@@ -5,9 +5,10 @@ import { translate, actions } from 'decorators'
 import { Scrollbars } from 'react-custom-scrollbars'
 import MetamaskInjector from './metamask-injector'
 import { Loading } from 'linkdrop-ui-kit'
+import NetworkNotSupported from './network-not-supported'
 const ls = window.localStorage
 
-@actions(({ user: { currentAddress } }) => ({ currentAddress }))
+@actions(({ user: { currentAddress, chainId } }) => ({ currentAddress, chainId }))
 @translate('pages.page')
 class Page extends React.Component {
   componentDidMount () {
@@ -15,11 +16,15 @@ class Page extends React.Component {
   }
 
   defineContent ({ currentAddress }) {
+    const { chainId } = this.props
     if (currentAddress === null) {
       return <Loading />
     }
     if (!currentAddress) {
       return <MetamaskInjector />
+    }
+    if (Number(chainId) !== 4 && Number(chainId) !== 1) {
+      return <NetworkNotSupported />
     }
     return this.props.children
   }

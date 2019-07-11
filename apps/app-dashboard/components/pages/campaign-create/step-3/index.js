@@ -2,7 +2,7 @@ import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import { Icons, Loading } from 'linkdrop-ui-kit'
-import { Button, Input } from 'components/common'
+import { Button, Input, PageHeader } from 'components/common'
 import EthAmountData from './eth-amount-data'
 import LinkContents from './link-contents'
 import config from 'config-dashboard'
@@ -102,7 +102,7 @@ class Step3 extends React.Component {
     const { cardNumber, loading: stateLoading } = this.state
     return <div className={styles.container}>
       {(stateLoading || loading) && <Loading withOverlay />}
-      <div className={styles.title}>{this.t('titles.summaryPay')}</div>
+      <PageHeader title={this.t('titles.summaryPay')} />
       <div className={styles.main}>
         <div className={styles.summary}>
           <div className={styles.summaryBox}>

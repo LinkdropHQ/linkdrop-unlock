@@ -15,7 +15,7 @@ export default {
     oneLinkContains: 'One link contains: ',
     oneLinkContentsWithEth: '{{tokenAmount}} {{tokenSymbol}} + {{ethAmount}} ETH',
     oneLinkContents: '{{tokenAmount}} {{tokenSymbol}}',
-    serviceFee: '$ {{price}} in service fees',
+    serviceFee: '${{price}} in service fees',
     serviceFeePerLink: '{{price}} cents per link, for covering gas fees and our service costs',
 
     // step2
@@ -30,7 +30,7 @@ export default {
     totalEthInLinks: 'Total ETH in links',
     centsPerLink: '{{cents}} Cents per link',
     ethHold: 'Will be hold in Linkdrop Contract',
-    charge: 'We charge you <strong>$ {{price}}</strong> to start generate links',
+    charge: 'We charge you <strong>${{price}}</strong> to start generate links',
     methods: 'Credit or debit card',
     cardNumber: 'Card number',
     expireDate: 'MM / YY',
