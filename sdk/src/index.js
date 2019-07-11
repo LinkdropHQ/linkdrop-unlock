@@ -95,7 +95,7 @@ const LinkdropSDK = async ({
   }) => {
     return claimUtils.claim({
       jsonRpcUrl,
-      host: apiHost,
+      apiHost,
       weiAmount,
       tokenAddress,
       tokenAmount,
@@ -124,7 +124,7 @@ const LinkdropSDK = async ({
   }) => {
     return claimUtils.claimERC721({
       jsonRpcUrl,
-      host: apiHost,
+      apiHost,
       weiAmount,
       nftAddress,
       tokenId,

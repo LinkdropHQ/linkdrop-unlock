@@ -4,7 +4,7 @@ const ethers = require('ethers')
 const axios = require('axios')
 export const claim = async ({
   jsonRpcUrl,
-  host,
+  apiHost,
   weiAmount,
   tokenAddress,
   tokenAmount,
@@ -21,8 +21,8 @@ export const claim = async ({
     throw new Error('Please provide json rpc url')
   }
 
-  if (host === null || host === '') {
-    throw new Error('Please provide host')
+  if (apiHost === null || apiHost === '') {
+    throw new Error('Please provide api host')
   }
 
   if (weiAmount === null || weiAmount === '') {
@@ -96,7 +96,7 @@ export const claim = async ({
   }
   try {
     const response = await axios.post(
-      `${host}/api/v1/linkdrops/claim`,
+      `${apiHost}/api/v1/linkdrops/claim`,
       claimParams
     )
 
@@ -113,7 +113,7 @@ export const claim = async ({
 
 export const claimERC721 = async ({
   jsonRpcUrl,
-  host,
+  apiHost,
   weiAmount,
   nftAddress,
   tokenId,
@@ -130,8 +130,8 @@ export const claimERC721 = async ({
     throw new Error('Please provide json rpc url')
   }
 
-  if (host === null || host === '') {
-    throw new Error('Please provide host')
+  if (apiHost === null || apiHost === '') {
+    throw new Error('Please provide api host')
   }
 
   if (weiAmount === null || weiAmount === '') {
@@ -209,7 +209,7 @@ export const claimERC721 = async ({
   }
   try {
     const response = await axios.post(
-      `${host}/api/v1/linkdrops/claim-erc721`,
+      `${apiHost}/api/v1/linkdrops/claim-erc721`,
       claimParams
     )
     if (response.status !== 200) {

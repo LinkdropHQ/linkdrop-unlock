@@ -11,7 +11,13 @@ const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
 const config = configs.get('server')
 
-const { jsonRpcUrl, factory, relayerPrivateKey, INFURA_PROJECT_ID } = config
+const {
+  jsonRpcUrl,
+  factory,
+  relayerPrivateKey,
+  INFURA_PROJECT_ID,
+  chain
+} = config
 
 const ONE_GWEI = ethers.utils.parseUnits('1', 'gwei')
 
@@ -80,10 +86,16 @@ export const claim = async (req, res) => {
   }
 
   if (isApprove != null) {
-    if (isApprove !== 'true' && isApprove !== 'false') {
+    if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
       throw newError('Please provide valid isApprove argument')
     }
   }
+
+  const linkdropSDK = await LinkdropSDK({
+    linkdropMasterAddress,
+    chain,
+    jsonRpcUrl
+  })
 
   const proxyFactory = new ethers.Contract(
     factory,
@@ -91,13 +103,7 @@ export const claim = async (req, res) => {
     relayer
   )
 
-  const initcode = await proxyFactory.getInitcode()
-
-  const proxyAddress = await LinkdropSDK.computeProxyAddress(
-    factory,
-    linkdropMasterAddress,
-    initcode
-  )
+  const proxyAddress = await linkdropSDK.getProxyAddress()
 
   // Check whether a claim tx exists in database
   const oldClaimTx = await ClaimTx.findOne({
