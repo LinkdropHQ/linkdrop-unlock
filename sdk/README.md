@@ -34,17 +34,11 @@ const linkdropSDK = LinkdropSDK({
 }) )
 ```
 
-### Compute proxy address
+### Get proxy address
 
 ```js
-const proxyAddress = LinkdropSDK.computeProxyAddress(
-  factoryAddress,
-  senderAddress,
-  masterCopyAddress
-)
+const proxyAddress = linkdropSDK.getProxyAddress()
 ```
-
-This function will use hash of `senderAddress` as salt and return built CREATE2 address
 
 ### Generate link for ETH or ERC20
 
@@ -53,19 +47,18 @@ const {
   url,
   linkId,
   linkKey,
-  senderSignature
-} = await LinkdropSDK.generateLink(
-  jsonRpcUrl,
-  networkId,
-  host,
-  senderPrivateKey,
-  token,
-  amount,
-  expirationTime
-)
+  linkdropSignerSignature
+} = await linkdropSDK.generateLink({
+    signingKeyOrWallet, // Signing private key or ethers.js Wallet instance
+    weiAmount, // Amount of wei per claim
+    tokenAddress, // ERC20 token address
+    tokenAmount, // Amount of ERC20 tokens per claim
+    expirationTime = 12345678910, // Link expiration time
+    isApprove = true
+  })
 ```
 
-This function will generate link for claiming ETH or any ERC20 token and return the following params `url, linkId, linkKey, senderSignature`
+This function will generate link for claiming ETH or any ERC20 token and return the following params `url, linkId, linkKey, linkdropSignerSignature`
 
 ### Generate link for ERC721
 
@@ -74,19 +67,18 @@ const {
   url,
   linkId,
   linkKey,
-  senderSignature
-} = await LinkdropSDK.generateLinkERC721(
-  jsonRpcUrl,
-  networkId,
-  host,
-  senderPrivateKey,
-  nft,
-  tokenId,
-  expirationTime
-)
+  linkdropSignerSignature
+} = await linkdropSDK.generateLinkERC721({
+    signingKeyOrWallet, // Signing private key or ethers.js Wallet instance
+    weiAmount, // Amount of wei per claim
+    nftAddress, // ERC721 token address
+    tokenId, // Token id
+    expirationTime = 12345678910, // Link expiration time
+    isApprove = true
+  })
 ```
 
-This function will generate link for claiming ERC721 token and return the following params `url, linkId, linkKey, senderSignature`
+This function will generate link for claiming ERC721 token and return the following params `url, linkId, linkKey, linkdropSignerSignature`
 
 ### Claim ETH or ERC20
 
