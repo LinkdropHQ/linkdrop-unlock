@@ -110,7 +110,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         require(_expiration >= now, "Expired link");
 
         // Make sure eth amount is available for this contract
-        require(address(this).balance >= _weiAmount, "Insufficient amount of eth");
+        require(address(this).balance >= _weiAmount + registry.getFee(address(this)), "Insufficient funds");
 
         // Make sure tokens are available for this contract
         if (_tokenAddress != address(0)) {
@@ -172,6 +172,9 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     whenNotPaused
     returns (bool)
     {
+        // Make sure only whitelisted relayer calls this function
+        require(registry.isWhitelistedRelayer(tx.origin), "Only whitelisted relayer");
+
         // Make sure params are valid
         require
         (
@@ -202,7 +205,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     }
 
     /**
-    * @dev Internal function to transfer ETH and/or ERC20 tokens
+    * @dev Internal function to transfer ethers and/or ERC20 tokens
     * @param _weiAmount Amount of wei to be claimed
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
@@ -212,14 +215,17 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     function _transferFundsApproved(uint _weiAmount, address _tokenAddress, uint _tokenAmount, address payable _receiver)
     internal returns (bool)
     {
-        // Transfer ETH
+        // Transfer fees
+        tx.origin.transfer(registry.getFee(address(this)));
+
+        // Transfer ethers
         if (_weiAmount > 0) {
             _receiver.transfer(_weiAmount);
         }
 
         // Transfer tokens
         if (_tokenAmount > 0) {
-            IERC20(_tokenAddress).transferFrom(linkdropMaster, _receiver, _tokenAmount);
+            require(IERC20(_tokenAddress).transferFrom(linkdropMaster, _receiver, _tokenAmount), "");
         }
 
         return true;

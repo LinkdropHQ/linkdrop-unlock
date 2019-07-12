@@ -1,6 +1,9 @@
 pragma solidity ^0.5.6;
+import "../registry/Registry.sol";
 
 contract LinkdropFactoryStorage {
+
+    Registry public registry;
 
     // Address of factory owner
     address payable public owner;

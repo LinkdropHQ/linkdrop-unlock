@@ -195,7 +195,6 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
     external
     returns (bool)
     {
-
         // Check whether the proxy is deployed for linkdrop master and deploy if not
         if (!isDeployed(_linkdropMaster, _campaignId)) {
             _deployProxy(_linkdropMaster, _campaignId);

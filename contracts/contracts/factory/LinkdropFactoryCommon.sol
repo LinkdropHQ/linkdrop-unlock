@@ -87,7 +87,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
 
         deployed[salt] = proxy;
 
-        // Initialize owner address, linkdrop master address and master copy version in proxy contract
+        // Initialize owner address, linkdrop master address master copy version and registry address in proxy contract
         require
         (
             ILinkdropCommon(proxy).initialize
@@ -95,7 +95,8 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
                 address(this), // Owner address
                 _linkdropMaster, // Linkdrop master address
                 masterCopyVersion,
-                chainId
+                chainId,
+                registry
             ),
             "Failed to initialize"
         );
@@ -163,7 +164,8 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
                 address(0), // Owner address
                 address(0), // Linkdrop master address
                 masterCopyVersion,
-                chainId
+                chainId,
+                registry
             ),
             "Failed to initialize"
         );

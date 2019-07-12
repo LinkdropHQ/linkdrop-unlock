@@ -108,7 +108,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         require(_expiration >= now, "Expired link");
 
         // Make sure eth amount is available for this contract
-        require(address(this).balance >= _weiAmount, "Insufficient funds");
+        require(address(this).balance >= _weiAmount + registry.getFee(address(this)), "Insufficient funds");
 
         // Make sure nft is available for this contract
         require(IERC721(_nftAddress).isApprovedForAll(linkdropMaster, address(this)), "Unavailable token");
@@ -166,6 +166,9 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     returns (bool)
     {
 
+        // Make sure only whitelisted relayer calls this function
+        require(registry.isWhitelistedRelayer(tx.origin), "Only whitelisted relayer");
+
         // Make sure params are valid
         require
         (
@@ -196,7 +199,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     }
 
     /**
-    * @dev Internal function to transfer ETH and/or ERC721 tokens
+    * @dev Internal function to transfer ethers and/or ERC721 tokens
     * @param _weiAmount Amount of wei to be claimed
     * @param _nftAddress NFT address
     * @param _tokenId Amount of tokens to be claimed (in atomic value)
@@ -206,11 +209,15 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     function _transferFundsApprovedERC721(uint _weiAmount, address _nftAddress, uint _tokenId, address payable _receiver)
     internal returns (bool)
     {
-        // Transfer ETH
+        // Transfer fees
+        tx.origin.transfer(registry.getFee(address(this)));
+
+        // Transfer ethers
         if (_weiAmount > 0) {
             _receiver.transfer(_weiAmount);
         }
 
+        // Transfer NFT
         IERC721(_nftAddress).safeTransferFrom(linkdropMaster, _receiver, _tokenId);
 
         return true;

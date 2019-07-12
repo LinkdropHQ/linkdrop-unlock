@@ -12,6 +12,7 @@ import {
 import LinkdropFactory from '../build/LinkdropFactory'
 import LinkdropMastercopy from '../build/LinkdropMastercopy'
 import NFTMock from '../build/NFTMock'
+import Registry from '../build/Registry'
 
 import {
   computeProxyAddress,
@@ -30,13 +31,16 @@ const { expect } = chai
 
 let provider = createMockProvider()
 
-let [linkdropMaster, receiver, nonsender, linkdropSigner] = getWallets(provider)
+let [linkdropMaster, receiver, nonsender, linkdropSigner, relayer] = getWallets(
+  provider
+)
 
 let masterCopy
 let factory
 let proxy
 let proxyAddress
 let nftInstance
+let registry
 
 let link
 let receiverAddress
@@ -47,6 +51,7 @@ let tokenId
 let expirationTime
 let version
 let bytecode
+let standardFee
 
 const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 const chainId = 4 // Rinkeby
@@ -55,6 +60,11 @@ const campaignId = 0
 describe('ETH/ERC721 linkdrop tests', () => {
   before(async () => {
     nftInstance = await deployContract(linkdropMaster, NFTMock)
+    registry = await deployContract(linkdropMaster, Registry)
+    await registry.addRelayer(relayer.address)
+    const isWhitelisted = await registry.isWhitelistedRelayer(relayer.address)
+    expect(isWhitelisted).to.be.true
+    standardFee = await registry.standardFee()
   })
 
   it('should deploy master copy of linkdrop implementation', async () => {
@@ -69,7 +79,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
     factory = await deployContract(
       linkdropMaster,
       LinkdropFactory,
-      [masterCopy.address, chainId],
+      [masterCopy.address, chainId, registry.address],
       {
         gasLimit: 6000000
       }
@@ -148,6 +158,13 @@ describe('ETH/ERC721 linkdrop tests', () => {
   })
 
   it('should revert while checking claim params with unavailable token', async () => {
+    await linkdropMaster.sendTransaction({
+      to: proxy.address,
+      value: ethers.utils.parseEther('2')
+    })
+
+    factory = factory.connect(relayer)
+
     weiAmount = 0
     nftAddress = nftInstance.address
     tokenId = 1
@@ -672,6 +689,11 @@ describe('ETH/ERC721 linkdrop tests', () => {
       LinkdropMastercopy.abi,
       linkdropMaster
     )
+
+    await linkdropMaster.sendTransaction({
+      to: proxy.address,
+      value: ethers.utils.parseEther('2')
+    })
 
     link = await createLink(
       linkdropSigner,
