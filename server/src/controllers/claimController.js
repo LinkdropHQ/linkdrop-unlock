@@ -4,7 +4,7 @@ import ClaimTx from '../models/claimTx'
 import ClaimTxERC721 from '../models/claimTxERC721'
 import { newError } from '../../../scripts/src/utils'
 import configs from '../../../configs'
-import { terminal as term } from 'terminal-kit'
+import logger from '../utils/logger'
 
 import Table from 'cli-table'
 const ethers = require('ethers')
@@ -64,7 +64,7 @@ export const claim = async (req, res) => {
   for (let key in body) {
     if (!req.body[key]) {
       const error = `Please provide ${key} argument\n`
-      term.red.bold(error)
+      logger.error(error)
 
       return res.json({
         success: false,
@@ -138,8 +138,8 @@ export const claim = async (req, res) => {
 
     table.push(['txHash', oldClaimTx.toObject().txHash])
 
-    term.green.bold(`\nSubmitted claim transaction\n`)
-    term.bold(table.toString(), '\n')
+    logger.info(`\nSubmitted claim transaction\n`)
+    logger.info(table.toString(), '\n')
 
     return res.json({
       success: true,
@@ -306,15 +306,15 @@ export const claim = async (req, res) => {
       }
     }
 
-    term.green.bold(`\nSubmitted claim transaction\n`)
-    term.bold(table.toString(), '\n')
+    logger.info(`\nSubmitted claim transaction\n`)
+    logger.info(table.toString(), '\n')
 
     res.json({
       success: true,
       txHash: tx.hash
     })
   } catch (error) {
-    term.red.bold(`\n${error.reason ? error.reason : error}\n`)
+    logger.info(`\n${error.reason ? error.reason : error}\n`)
 
     return res.json({
       success: false,
@@ -357,7 +357,7 @@ export const claimERC721 = async (req, res) => {
   for (let key in body) {
     if (!req.body[key]) {
       const error = `Please provide ${key} argument\n`
-      term.red.bold(error)
+      logger.error(error)
 
       return res.json({
         success: false,
@@ -425,8 +425,8 @@ export const claimERC721 = async (req, res) => {
     table.push(['type', `${weiAmount === '0' ? 'ERC721' : 'ETH + ERC721'}`])
     table.push(['txHash', oldClaimTx.toObject().txHash])
 
-    term.green.bold(`\nSubmitted claim transaction\n`)
-    term.bold(table.toString(), '\n')
+    logger.info(`\nSubmitted claim transaction\n`)
+    logger.info(table.toString(), '\n')
 
     return res.json({
       success: true,
@@ -582,15 +582,15 @@ export const claimERC721 = async (req, res) => {
       }
     }
 
-    term.green.bold(`\nSubmitted claim transaction\n`)
-    term.bold(table.toString(), '\n')
+    logger.info(`\nSubmitted claim transaction\n`)
+    logger.info(table.toString(), '\n')
 
     res.json({
       success: true,
       txHash: tx.hash
     })
   } catch (error) {
-    term.red.bold(`\n${error.reason ? error.reason : error}\n`)
+    logger.error(`\n${error.reason ? error.reason : error}\n`)
 
     return res.json({
       success: false,

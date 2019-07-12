@@ -1,6 +1,5 @@
-import { terminal as term } from 'terminal-kit'
 import connectDB from './src/models/connectDB'
-
+import logger from './src/utils/logger'
 const asyncHandler = require('express-async-handler')
 const express = require('express')
 const app = express()
@@ -19,10 +18,10 @@ connectDB()
       // Run server
       const PORT = process.env.PORT || process.env.CUSTOM_PORT || 5000
       app.listen(PORT, () => {
-        term.green.bold(`Server is up on port ${PORT}\n`)
+         logger.info(`Server is up on port ${PORT}\n`)
       })
     }).catch(err => {
-      term.red.bold(`${err}\n`)
+       logger.error(`${err}\n`)
       process.exit(1)
     })
 
