@@ -1,6 +1,6 @@
 pragma solidity ^0.5.6;
 
-import "../LinkdropCommon.sol";
+import "./LinkdropCommon.sol";
 import "../../interfaces/ILinkdropERC721.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 

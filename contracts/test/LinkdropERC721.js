@@ -87,7 +87,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
     )
 
     await expect(
-      factory.deployProxy( {
+      factory.deployProxy({
         gasLimit: 6000000
       })
     ).to.emit(factory, 'Deployed')
@@ -305,7 +305,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
-        { gasLimit: 80000 }
+        { gasLimit: 500000 }
       )
     ).to.be.reverted
   })
@@ -372,12 +372,8 @@ describe('ETH/ERC721 linkdrop tests', () => {
   })
 
   it('should fail to claim nft by expired link', async () => {
-    // Transfering nft from linkdropMaster to Linkdrop Contract
-    await nftInstance.transferFrom(
-      linkdropMaster.address,
-      proxy.address,
-      tokenId
-    )
+    // Approving all tokens from linkdropMaster to Linkdrop Contract
+    await nftInstance.setApprovalForAll(proxy.address, true)
 
     link = await createLink(
       linkdropSigner,
@@ -437,7 +433,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
     ).to.be.revertedWith('Invalid linkdrop signer signature')
   })
 
-  it('should fail to claim nft with invalid chain id', async () => {
+  it('should fail to claim nft with invalid chaind id', async () => {
     let invalidChainId = 0
     link = await createLink(
       linkdropSigner,
@@ -525,12 +521,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
 
   it('should fail to claim nft with fake linkdropMaster signature', async () => {
     tokenId = 2
-    // Approving nft from linkdropMaster to Linkdrop Contract
-    await nftInstance.transferFrom(
-      linkdropMaster.address,
-      proxy.address,
-      tokenId
-    )
 
     let wallet = ethers.Wallet.createRandom()
     let linkId = wallet.address
@@ -651,12 +641,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
 
   it('should succesfully claim nft and deploy proxy if not deployed yet', async () => {
     tokenId = 3
-    // Transfering nft from linkdropMaster to Linkdrop Contract
-    await nftInstance.transferFrom(
-      linkdropMaster.address,
-      proxyAddress,
-      tokenId
-    )
 
     nftAddress = nftInstance.address
     expirationTime = 11234234223
@@ -715,12 +699,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
 
   it('should succesfully claim eth and nft simulteneously', async () => {
     tokenId = 4
-    // Transfering nft from linkdropMaster to Linkdrop Contract
-    await nftInstance.transferFrom(
-      linkdropMaster.address,
-      proxyAddress,
-      tokenId
-    )
 
     weiAmount = 15 // wei
 

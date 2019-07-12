@@ -1,8 +1,8 @@
 pragma solidity ^0.5.6;
 
-import "../../interfaces/ILinkdropERC721.sol";
-import "../../interfaces/ILinkdropFactoryERC721.sol";
-import "../LinkdropFactoryCommon.sol";
+import "../interfaces/ILinkdropERC721.sol";
+import "../interfaces/ILinkdropFactoryERC721.sol";
+import "./LinkdropFactoryCommon.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 
 contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon {
