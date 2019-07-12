@@ -1,4 +1,4 @@
-import configs from '../../configs'
+import configs from '../../../configs'
 const mongoose = require('mongoose')
 
 // Set up default mongoose connection

@@ -1,7 +1,7 @@
 import ClaimTx from '../models/claimTx'
 import ClaimTxERC721 from '../models/claimTxERC721'
-import { newError } from '../../scripts/src/utils'
-import configs from '../../configs'
+import { newError } from '../../../scripts/src/utils'
+import configs from '../../../configs'
 const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
 const config = configs.get('server')

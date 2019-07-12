@@ -1,13 +1,12 @@
 import { terminal as term } from 'terminal-kit'
-import connectDB from './models/connectDB'
+import connectDB from './src/models/connectDB'
 
 const asyncHandler = require('express-async-handler')
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const claimController = require('./controllers/claimController')
-const lastTxHashController = require('./controllers/lastTxHashController')
-
+const claimController = require('./src/controllers/claimController')
+const lastTxHashController = require('./src/controllers/lastTxHashController')
 
 // Apply middlewares
 app.use(express.urlencoded({ extended: false }))

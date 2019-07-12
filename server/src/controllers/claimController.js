@@ -1,9 +1,9 @@
-import LinkdropFactory from '../../contracts/build/LinkdropFactory'
-import LinkdropSDK from '../../sdk/src/index'
+import LinkdropFactory from '../../../contracts/build/LinkdropFactory'
+import LinkdropSDK from '../../../sdk/src/index'
 import ClaimTx from '../models/claimTx'
 import ClaimTxERC721 from '../models/claimTxERC721'
-import { newError } from '../../scripts/src/utils'
-import configs from '../../configs'
+import { newError } from '../../../scripts/src/utils'
+import configs from '../../../configs'
 import { terminal as term } from 'terminal-kit'
 
 import Table from 'cli-table'
