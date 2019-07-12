@@ -12,8 +12,6 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
-    * @param _version Linkdrop contract version
-    * @param _chainId Network id
     * @param _linkId Address corresponding to link key
     * @param _signature ECDSA signature of linkdrop signer
     * @return True if signed with linkdrop signer's private key
@@ -24,8 +22,6 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        uint _version,
-        uint _chainId,
         address _linkId,
         bytes memory _signature
     )
@@ -42,8 +38,8 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
                     _nftAddress,
                     _tokenId,
                     _expiration,
-                    _version,
-                    _chainId,
+                    version,
+                    chainId,
                     _linkId
                 )
             )
@@ -126,8 +122,6 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
                 _nftAddress,
                 _tokenId,
                 _expiration,
-                version,
-                chainId,
                 _linkId,
                 _linkdropSignerSignature
             ),

@@ -202,8 +202,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
         nftAddress,
         tokenId,
         expirationTime,
-        version,
-        chainId,
         link.linkId,
         link.linkdropSignerSignature
       )

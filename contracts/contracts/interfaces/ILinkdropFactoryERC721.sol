@@ -8,13 +8,11 @@ interface ILinkdropFactoryERC721 {
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        uint _version,
-        uint _chainId,
         address _linkId,
         address _linkdropSigner,
         bytes calldata _linkdropSignerSignature
     )
-    external pure
+    external view
     returns (bool);
 
     function verifyReceiverSignatureERC721

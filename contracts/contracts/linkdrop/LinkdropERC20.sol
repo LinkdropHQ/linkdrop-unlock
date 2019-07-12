@@ -12,8 +12,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
-    * @param _version Linkdrop contract version
-    * @param _chainId Network id
     * @param _linkId Address corresponding to link key
     * @param _signature ECDSA signature of linkdrop signer
     * @return True if signed with linkdrop signer's private key
@@ -24,8 +22,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
-        uint _version,
-        uint _chainId,
         address _linkId,
         bytes memory _signature
     )
@@ -42,8 +38,8 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                     _tokenAddress,
                     _tokenAmount,
                     _expiration,
-                    _version,
-                    _chainId,
+                    version,
+                    chainId,
                     _linkId
                 )
             )
@@ -133,8 +129,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                 _tokenAddress,
                 _tokenAmount,
                 _expiration,
-                version,
-                chainId,
                 _linkId,
                 _linkdropSignerSignature
             ),

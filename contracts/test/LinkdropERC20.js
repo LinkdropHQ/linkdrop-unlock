@@ -189,8 +189,6 @@ describe('ETH/ERC20 linkdrop tests', () => {
         tokenAddress,
         tokenAmount,
         expirationTime,
-        version,
-        chainId,
         link.linkId,
         link.linkdropSignerSignature
       )

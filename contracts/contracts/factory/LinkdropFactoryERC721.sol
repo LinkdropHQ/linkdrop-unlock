@@ -13,8 +13,6 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
     * @param _nftAddress NFT address
     * @param _tokenId Token id to be claimed
     * @param _expiration Unix timestamp of link expiration time
-    * @param _masterCopyVersion Linkdrop master copy contract version
-    * @param _chainId Network id
     * @param _linkId Address corresponding to link key
     * @param _linkdropSigner Address of linkdrop signer
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
@@ -26,13 +24,11 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
         address _nftAddress,
         uint _tokenId,
         uint _expiration,
-        uint _masterCopyVersion,
-        uint _chainId,
         address _linkId,
         address _linkdropSigner,
         bytes memory _linkdropSignerSignature
     )
-    public pure
+    public view
     returns (bool)
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash
@@ -45,8 +41,8 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
                     _nftAddress,
                     _tokenId,
                     _expiration,
-                    _masterCopyVersion,
-                    _chainId,
+                    masterCopyVersion,
+                    chainId,
                     _linkId
                 )
             )
@@ -141,8 +137,6 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
                     _nftAddress,
                     _tokenId,
                     _expiration,
-                    masterCopyVersion,
-                    chainId,
                     _linkId,
                     _linkdropMaster,
                     _linkdropSignerSignature

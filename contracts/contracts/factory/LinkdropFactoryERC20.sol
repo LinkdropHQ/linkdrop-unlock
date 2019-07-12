@@ -13,8 +13,6 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
-    * @param _masterCopyVersion Linkdrop master copy contract version
-    * @param _chainId Network id
     * @param _linkId Address corresponding to link key
     * @param _linkdropSigner Address of linkdrop signer
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
@@ -26,13 +24,11 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
-        uint _masterCopyVersion,
-        uint _chainId,
         address _linkId,
         address _linkdropSigner,
         bytes memory _linkdropSignerSignature
     )
-    public pure
+    public view
     returns (bool)
     {
         bytes32 prefixedHash = ECDSA.toEthSignedMessageHash
@@ -45,8 +41,8 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
                     _tokenAddress,
                     _tokenAmount,
                     _expiration,
-                    _masterCopyVersion,
-                    _chainId,
+                    masterCopyVersion,
+                    chainId,
                     _linkId
                 )
             )
@@ -145,8 +141,6 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
                     _tokenAddress,
                     _tokenAmount,
                     _expiration,
-                    masterCopyVersion,
-                    chainId,
                     _linkId,
                     _linkdropMaster,
                     _linkdropSignerSignature
