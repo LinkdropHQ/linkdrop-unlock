@@ -11,6 +11,7 @@ import {
 
 import LinkdropFactory from '../build/LinkdropFactory'
 import LinkdropMastercopy from '../build/LinkdropMastercopy'
+import Registry from '../build/Registry'
 
 import { computeBytecode, computeProxyAddress } from '../scripts/utils'
 
@@ -23,12 +24,13 @@ const { expect } = chai
 
 let provider = createMockProvider()
 
-let [linkdropMaster, deployer] = getWallets(provider)
+let [linkdropMaster, deployer, relayer] = getWallets(provider)
 
 let masterCopy
 let factory
 let proxy
 let bytecode
+let registry
 
 const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 const chainId = 4 // Rinkeby
@@ -36,6 +38,13 @@ const campaignId = 0
 
 describe('Proxy upgradability tests', () => {
   //
+
+  it('should deploy registry and whitelist relayer', async () => {
+    registry = await deployContract(deployer, Registry)
+    await registry.addRelayer(relayer.address)
+    const isWhitelisted = await registry.isWhitelistedRelayer(relayer.address)
+    expect(isWhitelisted).to.be.true
+  })
   it('should deploy initial master copy of linkdrop implementation', async () => {
     masterCopy = await deployContract(deployer, LinkdropMastercopy, [], {
       gasLimit: 6000000
@@ -59,7 +68,7 @@ describe('Proxy upgradability tests', () => {
     factory = await deployContract(
       deployer,
       LinkdropFactory,
-      [masterCopy.address, chainId],
+      [masterCopy.address, chainId, registry.address],
       {
         gasLimit: 6000000
       }

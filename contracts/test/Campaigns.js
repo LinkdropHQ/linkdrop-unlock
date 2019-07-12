@@ -12,6 +12,7 @@ import {
 import LinkdropFactory from '../build/LinkdropFactory'
 import LinkdropMastercopy from '../build/LinkdropMastercopy'
 import TokenMock from '../build/TokenMock'
+import Registry from '../build/Registry'
 
 import { computeProxyAddress, computeBytecode } from '../scripts/utils'
 
@@ -25,13 +26,14 @@ const { expect } = chai
 
 let provider = createMockProvider()
 
-let [deployer, linkdropMaster, linkdropSigner] = getWallets(provider)
+let [deployer, linkdropMaster, linkdropSigner, relayer] = getWallets(provider)
 
 let masterCopy
 let factory
 let proxy
 let proxyAddress
 let tokenInstance
+let registry
 
 let link
 let receiverAddress
@@ -44,6 +46,7 @@ let version
 let bytecode
 
 let campaignId
+let standardFee
 
 const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 const chainId = 4 // Rinkeby
@@ -51,6 +54,11 @@ const chainId = 4 // Rinkeby
 describe('Campaigns tests', () => {
   before(async () => {
     tokenInstance = await deployContract(linkdropMaster, TokenMock)
+    registry = await deployContract(deployer, Registry)
+    await registry.addRelayer(relayer.address)
+    const isWhitelisted = await registry.isWhitelistedRelayer(relayer.address)
+    expect(isWhitelisted).to.be.true
+    standardFee = await registry.standardFee()
   })
 
   it('should deploy master copy of linkdrop implementation', async () => {
@@ -65,7 +73,7 @@ describe('Campaigns tests', () => {
     factory = await deployContract(
       deployer,
       LinkdropFactory,
-      [masterCopy.address, chainId],
+      [masterCopy.address, chainId, registry.address],
       {
         gasLimit: 6000000
       }
@@ -73,6 +81,7 @@ describe('Campaigns tests', () => {
     expect(factory.address).to.not.eq(ethers.constants.AddressZero)
     let version = await factory.masterCopyVersion()
     expect(version).to.eq(1)
+    factory = factory.connect(relayer)
   })
 
   it('should deploy proxy for the first campaign with signing key', async () => {

@@ -452,7 +452,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     ).to.be.revertedWith('Invalid linkdrop signer signature')
   })
 
-  it('should succesfully claim tokens with valid claim params', async () => {
+  it('should succesfully claim tokens with valid claim params and send fee to relayer', async () => {
     // Approving tokens from linkdropMaster to Linkdrop Contract
     await tokenInstance.approve(proxy.address, tokenAmount)
 
