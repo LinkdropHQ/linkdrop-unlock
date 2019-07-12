@@ -1,6 +1,6 @@
 pragma solidity ^0.5.6;
 
-interface ILinkdropERC20Approve {
+interface ILinkdropERC20 {
 
     function verifyLinkdropSignerSignature
     (
@@ -23,7 +23,7 @@ interface ILinkdropERC20Approve {
     )
     external view returns (bool);
 
-    function checkClaimParamsApprove
+    function checkClaimParams
     (
         uint _weiAmount,
         address _tokenAddress,
@@ -36,7 +36,7 @@ interface ILinkdropERC20Approve {
     )
     external view returns (bool);
 
-    function claimApprove
+    function claim
     (
         uint _weiAmount,
         address _tokenAddress,

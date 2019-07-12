@@ -1,10 +1,10 @@
 pragma solidity ^0.5.6;
 
 import "../LinkdropCommon.sol";
-import "../../interfaces/approve/ILinkdropERC721Approve.sol";
+import "../../interfaces/ILinkdropERC721.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 
-contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
+contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
 
     /**
     * @dev Function to verify linkdrop signer's signature
@@ -85,7 +85,7 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
     * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
-    function checkClaimParamsERC721Approve
+    function checkClaimParamsERC721
     (
         uint _weiAmount,
         address _nftAddress,
@@ -156,7 +156,7 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
     * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
-    function claimERC721Approve
+    function claimERC721
     (
         uint _weiAmount,
         address _nftAddress,
@@ -175,7 +175,7 @@ contract LinkdropERC721Approve is ILinkdropERC721Approve, LinkdropCommon {
         // Make sure params are valid
         require
         (
-            checkClaimParamsERC721Approve
+            checkClaimParamsERC721
             (
                 _weiAmount,
                 _nftAddress,

@@ -1,10 +1,10 @@
 pragma solidity ^0.5.6;
 
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "../interfaces/approve/ILinkdropERC20Approve.sol";
+import "../interfaces/ILinkdropERC20sol";
 import "../LinkdropCommon.sol";
 
-contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
+contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
 
     /**
     * @dev Function to verify linkdrop signer's signature
@@ -85,7 +85,7 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
     * @param _receiverSignature ECDSA signature of linkdrop receiver,
     * @return True if success
     */
-    function checkClaimParamsApprove
+    function checkClaimParams
     (
         uint _weiAmount,
         address _tokenAddress,
@@ -163,7 +163,7 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
     * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @return True if success
     */
-    function claimApprove
+    function claim
     (
         uint _weiAmount,
         address _tokenAddress,
@@ -181,7 +181,7 @@ contract LinkdropERC20Approve is ILinkdropERC20Approve, LinkdropCommon {
         // Make sure params are valid
         require
         (
-            checkClaimParamsApprove
+            checkClaimParams
             (
                 _weiAmount,
                 _tokenAddress,
