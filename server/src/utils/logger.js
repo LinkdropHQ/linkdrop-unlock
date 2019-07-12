@@ -1,8 +1,13 @@
 const { createLogger, format, transports } = require('winston')
 
+const loggerFormat = format.combine(
+  format.colorize(),
+  format.simple()
+)
+
 const logger = createLogger({
   level: process.env.LOG_LEVEL || 'debug',
-  format: format.simple(),
+  format: loggerFormat,
   transports: [
     //
     // - Write to all logs with level `info` and below to `quick-start-combined.log`.
