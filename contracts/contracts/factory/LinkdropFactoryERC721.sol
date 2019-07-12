@@ -80,6 +80,7 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _linkdropMaster Address corresponding to linkdrop master key
+    * @param _campaignId Campaign id
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
@@ -93,6 +94,7 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
         uint _expiration,
         address _linkId,
         address payable _linkdropMaster,
+        uint _campaignId,
         bytes memory _linkdropSignerSignature,
         address _receiver,
         bytes memory _receiverSignature,
@@ -102,9 +104,9 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
     returns (bool)
     {
         // If proxy is deployed
-        if (isDeployed(_linkdropMaster)) {
+        if (isDeployed(_linkdropMaster, _campaignId)) {
 
-            return ILinkdropERC721(deployed[_linkdropMaster]).checkClaimParamsERC721
+            return ILinkdropERC721(deployed[salt(_linkdropMaster, _campaignId)]).checkClaimParamsERC721
             (
                 _weiAmount,
                 _nftAddress,
@@ -167,6 +169,7 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _linkdropMaster Address corresponding to linkdrop master key
+    * @param _campaignId Campaign id
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
@@ -180,6 +183,7 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
         uint _expiration,
         address _linkId,
         address payable _linkdropMaster,
+        uint _campaignId,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
@@ -188,12 +192,12 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
     returns (bool)
     {
         // Check whether the proxy is deployed for linkdrop signer and deploy if not
-        if (!isDeployed(_linkdropMaster)) {
-            _deployProxy(_linkdropMaster);
+        if (!isDeployed(_linkdropMaster, _campaignId)) {
+            _deployProxy(_linkdropMaster, _campaignId);
         }
 
         // Call claim function in the context of proxy contract
-        ILinkdropERC721(deployed[_linkdropMaster]).claimERC721
+        ILinkdropERC721(deployed[salt(_linkdropMaster, _campaignId)]).claimERC721
         (
             _weiAmount,
             _nftAddress,

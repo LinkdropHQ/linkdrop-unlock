@@ -80,6 +80,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _linkdropMaster Address corresponding to linkdrop master key
+    * @param _campaignId Campaign id
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
@@ -93,6 +94,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         uint _expiration,
         address _linkId,
         address payable _linkdropMaster,
+        uint _campaignId,
         bytes memory _linkdropSignerSignature,
         address _receiver,
         bytes memory _receiverSignature,
@@ -102,9 +104,9 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
     returns (bool)
     {
         // If proxy is deployed
-        if (isDeployed(_linkdropMaster)) {
+        if (isDeployed(_linkdropMaster, _campaignId)) {
 
-            return ILinkdropERC20(deployed[_linkdropMaster]).checkClaimParams
+            return ILinkdropERC20(deployed[salt(_linkdropMaster, _campaignId)]).checkClaimParams
             (
                 _weiAmount,
                 _tokenAddress,
@@ -122,7 +124,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
             // Make sure claim amount is available for proxy contract
             require
             (
-                _proxy.balance >= _weiAmount,"Insufficient amount of eth"
+                _proxy.balance >= _weiAmount, "Insufficient amount of eth"
             );
 
             if (_tokenAddress != address(0)) {
@@ -171,6 +173,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
     * @param _expiration Unix timestamp of link expiration time
     * @param _linkId Address corresponding to link key
     * @param _linkdropMaster Address corresponding to linkdrop master key
+    * @param _campaignId Campaign id
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
@@ -184,6 +187,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         uint _expiration,
         address _linkId,
         address payable _linkdropMaster,
+        uint _campaignId,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
@@ -193,12 +197,12 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
     {
 
         // Check whether the proxy is deployed for linkdrop master and deploy if not
-        if (!isDeployed(_linkdropMaster)) {
-            _deployProxy(_linkdropMaster);
+        if (!isDeployed(_linkdropMaster, _campaignId)) {
+            _deployProxy(_linkdropMaster, _campaignId);
         }
 
         // Call claim function in the context of proxy contract
-        ILinkdropERC20(deployed[_linkdropMaster]).claim
+        ILinkdropERC20(deployed[salt(_linkdropMaster, _campaignId)]).claim
         (
             _weiAmount,
             _tokenAddress,

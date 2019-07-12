@@ -32,6 +32,7 @@ interface ILinkdropFactoryERC721 {
         uint _expiration,
         address _linkId,
         address payable _linkdropMaster,
+        uint _campaignId,
         bytes calldata _linkdropSignerSignature,
         address _receiver,
         bytes calldata _receiverSignature,
@@ -48,6 +49,7 @@ interface ILinkdropFactoryERC721 {
         uint _expiration,
         address _linkId,
         address payable _linkdropMaster,
+        uint _campaignId,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature
