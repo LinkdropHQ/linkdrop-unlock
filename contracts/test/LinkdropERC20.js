@@ -47,7 +47,7 @@ let tokenAmount
 let expirationTime
 let version
 let bytecode
-let campaignId
+const campaignId = 0
 
 const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 const chainId = 4 // Rinkeby
@@ -80,7 +80,6 @@ describe('ETH/ERC20 linkdrop tests', () => {
   })
 
   it('should deploy proxy and delegate to implementation', async () => {
-    campaignId = 0
     // Compute next address with js function
     proxyAddress = computeProxyAddress(
       factory.address,

@@ -32,6 +32,7 @@ let bytecode
 
 const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 const chainId = 4 // Rinkeby
+const campaignId = 0
 
 describe('Proxy upgradability tests', () => {
   //
@@ -88,13 +89,14 @@ describe('Proxy upgradability tests', () => {
     let expectedAddress = computeProxyAddress(
       factory.address,
       linkdropMaster.address,
+      campaignId,
       initcode
     )
 
     factory = factory.connect(linkdropMaster)
 
     await expect(
-      factory.deployProxy({
+      factory.deployProxy(campaignId, {
         gasLimit: 6000000
       })
     ).to.emit(factory, 'Deployed')
@@ -138,52 +140,71 @@ describe('Proxy upgradability tests', () => {
   it('proxy owner should be able to destroy proxy', async () => {
     factory = factory.connect(linkdropMaster)
 
-    let isDeployed = await factory.isDeployed(linkdropMaster.address)
+    let isDeployed = await factory.isDeployed(
+      linkdropMaster.address,
+      campaignId
+    )
     expect(isDeployed).to.eq(true)
 
     let computedAddress = computeProxyAddress(
       factory.address,
       linkdropMaster.address,
+      campaignId,
       initcode
     )
 
     let deployedAddress = await factory.functions.deployed(
-      linkdropMaster.address
+      ethers.utils.solidityKeccak256(
+        ['address', 'uint256'],
+        [linkdropMaster.address, campaignId]
+      )
     )
     expect(deployedAddress.toString().toLowerCase()).to.eq(
       computedAddress.toString().toLowerCase()
     )
 
     await expect(
-      factory.destroyProxy({
+      factory.destroyProxy(campaignId, {
         gasLimit: 6400000
       })
     ).to.emit(factory, 'Destroyed')
 
-    isDeployed = await factory.isDeployed(linkdropMaster.address)
+    isDeployed = await factory.isDeployed(linkdropMaster.address, campaignId)
     expect(isDeployed).to.eq(false)
 
-    deployedAddress = await factory.functions.deployed(linkdropMaster.address)
+    deployedAddress = await factory.functions.deployed(
+      ethers.utils.solidityKeccak256(
+        ['address', 'uint256'],
+        [linkdropMaster.address, campaignId]
+      )
+    )
     expect(deployedAddress).to.eq(ethers.constants.AddressZero)
   })
 
   it('should deploy upgraded proxy to the same address as before', async () => {
     await expect(
-      factory.deployProxy({
+      factory.deployProxy(campaignId, {
         gasLimit: 6400000
       })
     ).to.emit(factory, 'Deployed')
 
-    let isDeployed = await factory.isDeployed(linkdropMaster.address)
+    let isDeployed = await factory.isDeployed(
+      linkdropMaster.address,
+      campaignId
+    )
     expect(isDeployed).to.eq(true)
 
     let deployedAddress = await factory.functions.deployed(
-      linkdropMaster.address
+      ethers.utils.solidityKeccak256(
+        ['address', 'uint256'],
+        [linkdropMaster.address, campaignId]
+      )
     )
 
     let computedAddress = computeProxyAddress(
       factory.address,
       linkdropMaster.address,
+      campaignId,
       initcode
     )
 

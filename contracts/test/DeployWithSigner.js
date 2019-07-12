@@ -48,6 +48,8 @@ let expirationTime
 let version
 let bytecode
 
+const campaignId = 0
+
 const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 const chainId = 4 // Rinkeby
 
@@ -83,11 +85,12 @@ describe('Deploy with signer tests', () => {
     let expectedAddress = computeProxyAddress(
       factory.address,
       linkdropMaster.address,
+      campaignId,
       initcode
     )
 
     await expect(
-      factory.deployProxyWithSigner(linkdropSigner.address, {
+      factory.deployProxyWithSigner(campaignId, linkdropSigner.address, {
         gasLimit: 6000000
       })
     ).to.emit(factory, 'Deployed')

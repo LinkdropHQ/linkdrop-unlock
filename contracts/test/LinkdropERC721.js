@@ -50,6 +50,7 @@ let bytecode
 
 const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 const chainId = 4 // Rinkeby
+const campaignId = 0
 
 describe('ETH/ERC721 linkdrop tests', () => {
   before(async () => {
@@ -83,11 +84,12 @@ describe('ETH/ERC721 linkdrop tests', () => {
     proxyAddress = computeProxyAddress(
       factory.address,
       linkdropMaster.address,
+      campaignId,
       initcode
     )
 
     await expect(
-      factory.deployProxy({
+      factory.deployProxy(campaignId, {
         gasLimit: 6000000
       })
     ).to.emit(factory, 'Deployed')
@@ -172,6 +174,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         expirationTime,
         link.linkId,
         linkdropMaster.address,
+        campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -300,6 +303,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         expirationTime,
         link.linkId,
         linkdropMaster.address,
+        campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -332,6 +336,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         expirationTime,
         link.linkId,
         linkdropMaster.address,
+        campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -361,6 +366,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         expirationTime,
         link.linkId,
         linkdropMaster.address,
+        campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -393,6 +399,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         0,
         link.linkId,
         linkdropMaster.address,
+        campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -423,6 +430,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         expirationTime,
         link.linkId,
         linkdropMaster.address,
+        campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -453,6 +461,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         expirationTime,
         link.linkId,
         linkdropMaster.address,
+        campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -482,6 +491,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
       expirationTime,
       link.linkId,
       linkdropMaster.address,
+      campaignId,
       link.linkdropSignerSignature,
       receiverAddress,
       receiverSignature,
@@ -495,6 +505,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
   it('should be able to check link claimed from factory instance', async () => {
     let claimed = await factory.isClaimedLink(
       linkdropMaster.address,
+      campaignId,
       link.linkId
     )
     expect(claimed).to.eq(true)
@@ -509,6 +520,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         expirationTime,
         link.linkId,
         linkdropMaster.address,
+        campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -535,6 +547,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         expirationTime,
         linkId,
         linkdropMaster.address,
+        campaignId,
         fakeSignature,
         receiverAddress,
         receiverSignature,
@@ -576,6 +589,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         expirationTime,
         link.linkId,
         linkdropMaster.address,
+        campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -607,6 +621,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         expirationTime,
         link.linkId,
         linkdropMaster.address,
+        campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -647,6 +662,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
     proxyAddress = await computeProxyAddress(
       factory.address,
       linkdropMaster.address,
+      campaignId,
       initcode
     )
 
@@ -678,6 +694,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         expirationTime,
         link.linkId,
         linkdropMaster.address,
+        campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
         receiverSignature,
@@ -727,6 +744,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
       expirationTime,
       link.linkId,
       linkdropMaster.address,
+      campaignId,
       link.linkdropSignerSignature,
       receiverAddress,
       receiverSignature,
