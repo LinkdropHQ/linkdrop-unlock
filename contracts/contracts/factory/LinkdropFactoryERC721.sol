@@ -191,6 +191,10 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
     external
     returns (bool)
     {
+
+        // Make sure only whitelisted relayer calls this function
+        require(registry.isWhitelistedRelayer(msg.sender), "Only whitelisted relayer");
+
         // Check whether the proxy is deployed for linkdrop signer and deploy if not
         if (!isDeployed(_linkdropMaster, _campaignId)) {
             _deployProxy(_linkdropMaster, _campaignId);
@@ -206,7 +210,8 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
             _linkId,
             _linkdropSignerSignature,
             _receiver,
-            _receiverSignature
+            _receiverSignature,
+            msg.sender // Fee receiver
         );
 
         return true;

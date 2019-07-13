@@ -148,6 +148,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
+    * @param _feeReceiver Address to transfer fees to
     * @return True if success
     */
     function claimERC721
@@ -159,15 +160,14 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         address _linkId,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
-        bytes calldata _receiverSignature
+        bytes calldata _receiverSignature,
+        address payable _feeReceiver
     )
     external
+    onlyLinkdropMasterOrOwner
     whenNotPaused
     returns (bool)
     {
-
-        // Make sure only whitelisted relayer calls this function
-        require(registry.isWhitelistedRelayer(tx.origin), "Only whitelisted relayer");
 
         // Make sure params are valid
         require
@@ -190,7 +190,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         claimedTo[_linkId] = _receiver;
 
         // Make sure transfer succeeds
-        require(_transferFundsApprovedERC721(_weiAmount, _nftAddress, _tokenId, _receiver), "Transfer failed");
+        require(_transferFundsERC721(_weiAmount, _nftAddress, _tokenId, _receiver, _feeReceiver), "Transfer failed");
 
         // Log claim
         emit ClaimedERC721(_linkId, _weiAmount, _nftAddress, _tokenId, _receiver, now);
@@ -204,13 +204,21 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     * @param _nftAddress NFT address
     * @param _tokenId Amount of tokens to be claimed (in atomic value)
     * @param _receiver Address to transfer funds to
+    * @param _feeReceiver Address to transfer fees to
     * @return True if success
     */
-    function _transferFundsApprovedERC721(uint _weiAmount, address _nftAddress, uint _tokenId, address payable _receiver)
+    function _transferFundsERC721
+    (
+        uint _weiAmount,
+        address _nftAddress,
+        uint _tokenId,
+        address payable _receiver,
+        address payable _feeReceiver
+    )
     internal returns (bool)
     {
         // Transfer fees
-        tx.origin.transfer(registry.getFee(address(this)));
+        _feeReceiver.transfer(registry.getFee(address(this)));
 
         // Transfer ethers
         if (_weiAmount > 0) {

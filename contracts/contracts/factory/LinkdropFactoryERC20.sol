@@ -213,7 +213,8 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
             _linkId,
             _linkdropSignerSignature,
             _receiver,
-            _receiverSignature
+            _receiverSignature,
+            msg.sender // Fee receiver
         );
 
         return true;

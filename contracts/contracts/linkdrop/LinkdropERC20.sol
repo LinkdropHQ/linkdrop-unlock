@@ -214,7 +214,14 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _feeReceiver Address to transfer fees to
     * @return True if success
     */
-    function _transferFunds(uint _weiAmount, address _tokenAddress, uint _tokenAmount, address payable _receiver, address payable _feeReceiver)
+    function _transferFunds
+    (
+        uint _weiAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
+        address payable _receiver,
+        address payable _feeReceiver
+    )
     internal returns (bool)
     {
         // Transfer fees
