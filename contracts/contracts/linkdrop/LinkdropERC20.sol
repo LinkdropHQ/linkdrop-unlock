@@ -155,6 +155,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
+    * @param _feeReceiver Address to transfer fees to
     * @return True if success
     */
     function claim
@@ -166,14 +167,14 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _linkId,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
-        bytes calldata _receiverSignature
+        bytes calldata _receiverSignature,
+        address payable _feeReceiver
     )
     external
+    onlyLinkdropMasterOrOwner
     whenNotPaused
     returns (bool)
     {
-        // Make sure only whitelisted relayer calls this function
-        require(registry.isWhitelistedRelayer(tx.origin), "Only whitelisted relayer");
 
         // Make sure params are valid
         require
@@ -196,7 +197,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         claimedTo[_linkId] = _receiver;
 
         // Make sure transfer succeeds
-        require(_transferFundsApproved(_weiAmount, _tokenAddress, _tokenAmount, _receiver), "Transfer failed");
+        require(_transferFunds(_weiAmount, _tokenAddress, _tokenAmount, _receiver, _feeReceiver), "Transfer failed");
 
         // Emit claim event
         emit Claimed(_linkId, _weiAmount, _tokenAddress, _tokenAmount, _receiver, now);
@@ -210,13 +211,14 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _receiver Address to transfer funds to
+    * @param _feeReceiver Address to transfer fees to
     * @return True if success
     */
-    function _transferFundsApproved(uint _weiAmount, address _tokenAddress, uint _tokenAmount, address payable _receiver)
+    function _transferFunds(uint _weiAmount, address _tokenAddress, uint _tokenAmount, address payable _receiver, address payable _feeReceiver)
     internal returns (bool)
     {
         // Transfer fees
-        tx.origin.transfer(registry.getFee(address(this)));
+        _feeReceiver.transfer(registry.getFee(address(this)));
 
         // Transfer ethers
         if (_weiAmount > 0) {

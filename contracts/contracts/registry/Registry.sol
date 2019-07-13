@@ -4,7 +4,6 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 contract Registry is Ownable {
 
     mapping (address => bool) whitelisted;
-
     mapping (address => uint) fees;
 
     uint constant public standardFee = 10 ** 9; // 10 GWei
