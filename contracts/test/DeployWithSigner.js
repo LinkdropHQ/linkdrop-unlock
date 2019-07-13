@@ -86,7 +86,7 @@ describe('Deploy with signer tests', () => {
     expect(version).to.eq(1)
   })
 
-  it('should deploy proxy with signing key and delegate to implementation', async () => {
+  it('should deploy proxy with signing key and topup with ethers in single tx', async () => {
     // Compute next address with js function
     let expectedAddress = computeProxyAddress(
       factory.address,
@@ -95,8 +95,11 @@ describe('Deploy with signer tests', () => {
       initcode
     )
 
+    const value = 100 // wei
+
     await expect(
       factory.deployProxyWithSigner(campaignId, linkdropSigner.address, {
+        value,
         gasLimit: 6000000
       })
     ).to.emit(factory, 'Deployed')
@@ -118,5 +121,8 @@ describe('Deploy with signer tests', () => {
 
     let isSigner = await proxy.isLinkdropSigner(linkdropSigner.address)
     expect(isSigner).to.eq(true)
+
+    const balance = await provider.getBalance(proxy.address)
+    expect(balance).to.eq(value)
   })
 })

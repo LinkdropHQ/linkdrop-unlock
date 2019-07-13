@@ -24,7 +24,7 @@ contract Registry is Ownable {
 
     function addRelayer(address _relayer) external onlyOwner returns (bool) {
         require(_relayer != address(0), "Invalid address");
-        require(!isWhitelistedRelayer(_relayer), "Already whitelisted address");
+        require(!isWhitelistedRelayer(_relayer), "Whitelisted address");
         whitelisted[_relayer] = true;
         return true;
     }

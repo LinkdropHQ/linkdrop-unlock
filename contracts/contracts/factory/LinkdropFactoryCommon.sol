@@ -44,6 +44,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     */
     function deployProxy(uint _campaignId)
     public
+    payable
     returns (address payable proxy)
     {
         proxy = _deployProxy(msg.sender, _campaignId);
@@ -57,6 +58,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     */
     function deployProxyWithSigner(uint _campaignId, address _signer)
     public
+    payable
     returns (address payable proxy)
     {
         proxy = deployProxy(_campaignId);
@@ -101,6 +103,9 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
             "Failed to initialize"
         );
 
+        // Send funds attached to proxy contract
+        proxy.transfer(msg.value);
+
         emit Deployed(_linkdropMaster, proxy, salt, now);
         return proxy;
     }
@@ -114,12 +119,11 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     public
     returns (bool)
     {
-        address payable proxyOwner = msg.sender;
-        require(isDeployed(proxyOwner, _campaignId), "Not deployed");
+        require(isDeployed(msg.sender, _campaignId), "Not deployed");
         address payable proxy = address(uint160(deployed[salt(msg.sender, _campaignId)]));
         ILinkdropCommon(proxy).destroy();
         delete deployed[salt(msg.sender, _campaignId)];
-        emit Destroyed(proxyOwner, proxy, now);
+        emit Destroyed(msg.sender, proxy, now);
         return true;
     }
 
