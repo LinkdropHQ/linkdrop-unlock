@@ -57,7 +57,6 @@ export const claim = async (req, res) => {
     receiverAddress,
     receiverSignature
   }
-  res.bod.xy - 1
   
   // Make sure all arguments are passed
   for (let key in body) {
