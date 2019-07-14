@@ -39,10 +39,17 @@ app.get(
 )
 
 // Error handling
-app.use((err, req, res, next) => {
-  console.error(err)
-  res.status(err.status || 500)
-  let error = err.message || 'Server error!'
-  res.send({ success: false, error })
+app.use((error, req, res, next) => {
+  logger.error(error.message)  
+  if (error.isOperational) {
+    res.status(error.statusCode)
+    res.send({ success: false, error: error.message })
+  } else {
+    // don't send error details to the scary external world
+    logger.error(error.stack)
+    let errorMsg = 'Server error occured!'
+    res.status(500)
+    res.send({ success: false, error: errorMsg })
+  }
   return null
 })

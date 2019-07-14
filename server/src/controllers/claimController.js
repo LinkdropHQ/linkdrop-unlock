@@ -2,29 +2,27 @@ import LinkdropFactory from '../../../contracts/build/LinkdropFactory'
 import LinkdropSDK from '../../../sdk/src/index'
 import ClaimTx from '../models/claimTx'
 import ClaimTxERC721 from '../models/claimTxERC721'
-import { newError } from '../../../scripts/src/utils'
 import configs from '../../../configs'
 import logger from '../utils/logger'
+import { BadRequestError } from '../utils/errors'
 
 import Table from 'cli-table'
 const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
 const config = configs.get('server')
-
 const { jsonRpcUrl, factory, relayerPrivateKey } = config
-
 const ONE_GWEI = ethers.utils.parseUnits('1', 'gwei')
 
 if (jsonRpcUrl == null || jsonRpcUrl === '') {
-  throw newError('Please provide json rpc url')
+  throw new Error('Please provide json rpc url')
 }
 
 if (factory == null || factory === '') {
-  throw newError('Please provide proxy factory address')
+  throw new Error('Please provide proxy factory address')
 }
 
 if (relayerPrivateKey == null || relayerPrivateKey === '') {
-  throw newError('Please provide relayer private key')
+  throw new Error('Please provide relayer private key')
 }
 
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
@@ -59,24 +57,18 @@ export const claim = async (req, res) => {
     receiverAddress,
     receiverSignature
   }
-
+  res.bod.xy - 1
+  
   // Make sure all arguments are passed
   for (let key in body) {
     if (!req.body[key]) {
-      const error = `Please provide ${key} argument\n`
-      logger.error(error)
-
-      return res.json({
-        success: false,
-        error
-      })
+      const error = `Please provide ${key} argument`
+      throw new BadRequestError(error)
     }
   }
 
-  if (isApprove != null) {
-    if (isApprove !== 'true' && isApprove !== 'false') {
-      throw newError('Please provide valid isApprove argument')
-    }
+  if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
+    throw new BadRequestError('Please provide valid isApprove argument')
   }
 
   const proxyFactory = new ethers.Contract(
@@ -368,7 +360,7 @@ export const claimERC721 = async (req, res) => {
 
   if (isApprove != null) {
     if (isApprove !== 'true' && isApprove !== 'false') {
-      throw newError('Please provide valid isApprove argument')
+      throw new Error('Please provide valid isApprove argument')
     }
   }
 
