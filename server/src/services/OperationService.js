@@ -7,11 +7,6 @@ class OperationService {
   }
   
   async create (id, type, data, tx = null) {
-    // const transaction = {
-    //   hash: tx.hash,
-    //   status: 'pending',
-    //   params: tx
-    // }
     const operation = new Operation({
       id,
       type,
