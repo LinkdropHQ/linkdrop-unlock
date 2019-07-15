@@ -39,7 +39,8 @@ const LinkdropSDK = ({
     weiAmount,
     tokenAddress,
     tokenAmount,
-    expirationTime = 12345678910
+    expirationTime = 12345678910,
+    campaignId
   }) => {
     return generateLinkUtils.generateLink({
       chainId,

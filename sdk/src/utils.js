@@ -55,7 +55,9 @@ export const createLink = async ({
   tokenAmount,
   expirationTime,
   version,
-  chainId
+  chainId,
+  campaignId,
+  proxyAddress
 }) => {
   let { address: linkId, privateKey: linkKey } = generateAccount()
 
@@ -67,7 +69,8 @@ export const createLink = async ({
     expirationTime,
     version,
     chainId,
-    linkId
+    linkId,
+    proxyAddress
   })
 
   return {
@@ -86,10 +89,11 @@ export const signLink = async ({
   expirationTime,
   version,
   chainId,
-  linkId
+  linkId,
+  proxyAddress
 }) => {
   let messageHash = ethers.utils.solidityKeccak256(
-    ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address'],
+    ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address', 'address'],
     [
       weiAmount,
       tokenAddress,
@@ -97,7 +101,8 @@ export const signLink = async ({
       expirationTime,
       version,
       chainId,
-      linkId
+      linkId,
+      proxyAddress
     ]
   )
   let messageHashToSign = ethers.utils.arrayify(messageHash)
@@ -113,7 +118,8 @@ export const createLinkERC721 = async ({
   tokenId,
   expirationTime,
   version,
-  chainId
+  chainId,
+  proxyAddress
 }) => {
   let { address: linkId, privateKey: linkKey } = generateAccount()
 
@@ -125,7 +131,8 @@ export const createLinkERC721 = async ({
     expirationTime,
     version,
     chainId,
-    linkId
+    linkId,
+    proxyAddress
   })
   return {
     linkKey, // link's ephemeral private key
@@ -143,11 +150,21 @@ export const signLinkERC721 = async ({
   expirationTime,
   version,
   chainId,
-  linkId
+  linkId,
+  proxyAddress
 }) => {
   let messageHash = ethers.utils.solidityKeccak256(
-    ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address'],
-    [weiAmount, nftAddress, tokenId, expirationTime, version, chainId, linkId]
+    ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address', 'address'],
+    [
+      weiAmount,
+      nftAddress,
+      tokenId,
+      expirationTime,
+      version,
+      chainId,
+      linkId,
+      proxyAddress
+    ]
   )
   let messageHashToSign = ethers.utils.arrayify(messageHash)
   let signature = await linkdropSigner.signMessage(messageHashToSign)

@@ -1,7 +1,9 @@
-import { createLink, createLinkERC721 } from './utils'
+import { createLink, createLinkERC721, computeProxyAddress } from './utils'
+import { link } from 'ethereum-waffle'
 const ethers = require('ethers')
 
 export const generateLink = async ({
+  factoryAddress,
   chainId,
   host,
   linkdropMasterAddress,
@@ -10,7 +12,8 @@ export const generateLink = async ({
   tokenAddress,
   tokenAmount,
   expirationTime,
-  version
+  version,
+  campaignId
 }) => {
   if (chainId === null || chainId === '') {
     throw new Error('Please provide chainId')
@@ -48,13 +51,22 @@ export const generateLink = async ({
     throw new Error('Please provide contract version')
   }
 
-  let linkdropSigner
+  if (campaignId === null || campaignId === '') {
+    throw new Error('Please provide campaign id')
+  }
 
+  let linkdropSigner
   if (typeof signingKeyOrWallet === 'string') {
     linkdropSigner = new ethers.Wallet(signingKeyOrWallet)
   } else if (typeof signingKeyOrWallet === 'object') {
     linkdropSigner = signingKeyOrWallet
   }
+
+  const proxyAddress = computeProxyAddress(
+    factoryAddress,
+    linkdropMasterAddress,
+    campaignId
+  )
 
   const { linkKey, linkId, linkdropSignerSignature } = await createLink({
     linkdropSigner,
@@ -63,7 +75,8 @@ export const generateLink = async ({
     tokenAmount,
     expirationTime,
     version,
-    chainId
+    chainId,
+    proxyAddress
   })
 
   // Construct link
@@ -73,6 +86,7 @@ export const generateLink = async ({
 }
 
 export const generateLinkERC721 = async ({
+  factoryAddress,
   chainId,
   host,
   linkdropMasterAddress,
@@ -81,7 +95,8 @@ export const generateLinkERC721 = async ({
   nftAddress,
   tokenId,
   expirationTime,
-  version
+  version,
+  campaignId
 }) => {
   if (chainId === null || chainId === '') {
     throw new Error('Please provide chain id')
@@ -123,13 +138,22 @@ export const generateLinkERC721 = async ({
     throw new Error('Please provide contract version')
   }
 
-  let linkdropSigner
+  if (campaignId === null || campaignId === '') {
+    throw new Error('Please provide campaign id')
+  }
 
+  let linkdropSigner
   if (typeof signingKeyOrWallet === 'string') {
     linkdropSigner = new ethers.Wallet(signingKeyOrWallet)
   } else if (typeof signingKeyOrWallet === 'object') {
     linkdropSigner = signingKeyOrWallet
   }
+
+  const proxyAddress = computeProxyAddress(
+    factoryAddress,
+    linkdropMasterAddress,
+    campaignId
+  )
 
   const { linkKey, linkId, linkdropSignerSignature } = await createLinkERC721({
     linkdropSigner,
@@ -138,7 +162,8 @@ export const generateLinkERC721 = async ({
     tokenId,
     expirationTime,
     version,
-    chainId
+    chainId,
+    proxyAddress
   })
 
   // Construct link
