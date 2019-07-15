@@ -28,4 +28,8 @@ logger.table = (obj, logLevel = 'debug') => {
   logger[logLevel](`\n${table.toString()}`)
 }
 
+logger.json = (obj, logLevel = 'debug') => {
+  logger[logLevel](JSON.stringify(obj, null, 2))
+}
+
 export default logger

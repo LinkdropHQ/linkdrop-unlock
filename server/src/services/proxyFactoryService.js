@@ -1,34 +1,18 @@
 import LinkdropFactory from '../../../contracts/build/LinkdropFactory'
-import configs from '../../../configs'
 import LinkdropSDK from '../../../sdk/src/index'
+import relayerWalletService from './relayerWalletService'
+import configs from '../../../configs'
+const config = configs.get('server')
 const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
-const config = configs.get('server')
-const { jsonRpcUrl, factory, relayerPrivateKey } = config
-
-// #TODO move to special function
-if (jsonRpcUrl == null || jsonRpcUrl === '') {
-  throw new Error('Please provide json rpc url')
-}
-
-if (factory == null || factory === '') {
-  throw new Error('Please provide proxy factory address')
-}
-
-if (relayerPrivateKey == null || relayerPrivateKey === '') {
-  throw new Error('Please provide relayer private key')
-}
 
 class ProxyFactoryService {
   constructor () {
-    const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-    const relayer = new ethers.Wallet(relayerPrivateKey, provider)
-    
     // initialize proxy factory
     this.contract = new ethers.Contract(
-      factory,
+      config.factory,
       LinkdropFactory.abi,
-      relayer
+      relayerWalletService.relayerWallet
     )
   }
   
@@ -154,7 +138,7 @@ class ProxyFactoryService {
   async computeProxyAddress (masterAddress) {
     const initcode = await this.contract.getInitcode()
     return LinkdropSDK.computeProxyAddress(
-      factory,
+      config.factory,
       masterAddress,
       initcode
     )

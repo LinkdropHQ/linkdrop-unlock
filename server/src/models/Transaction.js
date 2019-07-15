@@ -13,7 +13,7 @@ const TransactionSchema = new mongoose.Schema({
     type: String,
     required: true,
     default: 'created',
-    enum: ['created', 'pending', 'completed', 'error']
+    enum: ['created', 'pending', 'completed', 'error', 'dropped']
   },
   // mimics web3.eth.sendTransaction params
   params: {
