@@ -16,6 +16,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
     * @param _linkId Address corresponding to link key
     * @param _linkdropSigner Address of linkdrop signer
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
+    * @param _proxy Address of proxy contract
     * @return True if signed with linkdrop signer's private key
     */
     function verifyLinkdropSignerSignature
@@ -26,7 +27,8 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         uint _expiration,
         address _linkId,
         address _linkdropSigner,
-        bytes memory _linkdropSignerSignature
+        bytes memory _linkdropSignerSignature,
+        address _proxy
     )
     public view
     returns (bool)
@@ -43,7 +45,8 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
                     _expiration,
                     masterCopyVersion,
                     chainId,
-                    _linkId
+                    _linkId,
+                    _proxy
                 )
             )
         );
@@ -84,6 +87,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
+    * @param _proxy Address of proxy contract
     * @return True if success
     */
     function checkClaimParams
@@ -145,7 +149,8 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
                     _expiration,
                     _linkId,
                     _linkdropMaster,
-                    _linkdropSignerSignature
+                    _linkdropSignerSignature,
+                    _proxy
                 ),
                 "Invalid linkdrop signer signature"
             );

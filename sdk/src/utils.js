@@ -1,5 +1,6 @@
 const ethers = require('ethers')
 const Wallet = require('ethereumjs-wallet')
+
 export const buildCreate2Address = (creatorAddress, saltHex, byteCode) => {
   const byteCodeHash = ethers.utils.keccak256(byteCode)
   return `0x${ethers.utils
@@ -18,7 +19,11 @@ export const computeBytecode = masterCopyAddress => {
   return bytecode
 }
 
-export const computeProxyAddress = (factoryAddress, linkdropMasterAddress) => {
+export const computeProxyAddress = (
+  factoryAddress,
+  linkdropMasterAddress,
+  campaignId
+) => {
   if (factoryAddress == null || factoryAddress === '') {
     throw new Error('Please provide factory address')
   }
@@ -27,9 +32,13 @@ export const computeProxyAddress = (factoryAddress, linkdropMasterAddress) => {
     throw new Error('Please provide linkdrop master address')
   }
 
+  if (campaignId == null || campaignId === '') {
+    throw new Error('Please provide campaign id')
+  }
+
   const salt = ethers.utils.solidityKeccak256(
-    ['address'],
-    [linkdropMasterAddress]
+    ['address', 'uint256'],
+    [linkdropMasterAddress, campaignId]
   )
 
   const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'

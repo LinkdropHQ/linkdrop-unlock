@@ -10,7 +10,8 @@ interface ILinkdropFactoryERC721 {
         uint _expiration,
         address _linkId,
         address _linkdropSigner,
-        bytes calldata _linkdropSignerSignature
+        bytes calldata _linkdropSignerSignature,
+        address _proxy
     )
     external view
     returns (bool);
