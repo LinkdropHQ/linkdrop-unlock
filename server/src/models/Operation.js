@@ -8,6 +8,12 @@ const OperationSchema = new mongoose.Schema({
     index: true,
     enum: ['claim', 'metatx']
   },
+  id: {
+    type: String,
+    required: true,
+    index: true,
+    unique: true
+  },
   transactions: [TransactionSchema],
   // data for the operation in unstructed format
   // as it's different for different operation types

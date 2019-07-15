@@ -1,3 +1,4 @@
+import Table from 'cli-table'
 const { createLogger, format, transports } = require('winston')
 
 const loggerFormat = format.combine(
@@ -16,5 +17,15 @@ const logger = createLogger({
     new transports.Console({ level: process.env.LOG_LEVEL })
   ]
 })
+
+logger.table = (obj, logLevel = 'debug') => {
+  const table = new Table()
+  for (let key in obj) {
+    if (key !== '_id' && key !== '__v') {
+      table.push([key, obj[key]])
+    }
+  }
+  logger[logLevel](`\n${table.toString()}`)
+}
 
 export default logger

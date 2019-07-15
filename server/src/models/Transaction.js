@@ -31,7 +31,7 @@ const TransactionSchema = new mongoose.Schema({
       required: true
     },
     // The amount of gas used for the transaction (unused gas is refunded).
-    gas: {
+    gasLimit: {
       type: Number,
       required: true
     },
