@@ -39,8 +39,7 @@ const LinkdropSDK = ({
     weiAmount,
     tokenAddress,
     tokenAmount,
-    expirationTime = 12345678910,
-    isApprove = true
+    expirationTime = 12345678910
   }) => {
     return generateLinkUtils.generateLink({
       chainId,
@@ -51,8 +50,7 @@ const LinkdropSDK = ({
       tokenAddress,
       tokenAmount,
       expirationTime,
-      version: version || (await getVersion()),
-      isApprove
+      version: version || (await getVersion())
     })
   }
 
@@ -61,8 +59,7 @@ const LinkdropSDK = ({
     weiAmount,
     nftAddress,
     tokenId,
-    expirationTime = 12345678910,
-    isApprove = true
+    expirationTime = 12345678910
   }) => {
     return generateLinkUtils.generateLinkERC721({
       chainId,
@@ -73,8 +70,7 @@ const LinkdropSDK = ({
       nftAddress,
       tokenId,
       expirationTime,
-      version: version || (await getVersion()),
-      isApprove
+      version: version || (await getVersion())
     })
   }
 
@@ -89,8 +85,7 @@ const LinkdropSDK = ({
     expirationTime = 12345678910,
     linkKey,
     linkdropSignerSignature,
-    receiverAddress,
-    isApprove = true
+    receiverAddress
   }) => {
     return claimUtils.claim({
       jsonRpcUrl,
@@ -104,8 +99,7 @@ const LinkdropSDK = ({
       linkKey,
       linkdropMasterAddress,
       linkdropSignerSignature,
-      receiverAddress,
-      isApprove
+      receiverAddress
     })
   }
 
@@ -116,8 +110,7 @@ const LinkdropSDK = ({
     expirationTime = 12345678910,
     linkKey,
     linkdropSignerSignature,
-    receiverAddress,
-    isApprove = true
+    receiverAddress
   }) => {
     return claimUtils.claimERC721({
       jsonRpcUrl,
@@ -131,8 +124,7 @@ const LinkdropSDK = ({
       linkKey,
       linkdropMasterAddress,
       linkdropSignerSignature,
-      receiverAddress,
-      isApprove
+      receiverAddress
     })
   }
 

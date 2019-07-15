@@ -10,8 +10,7 @@ export const generateLink = async ({
   tokenAddress,
   tokenAmount,
   expirationTime,
-  version,
-  isApprove
+  version
 }) => {
   if (chainId === null || chainId === '') {
     throw new Error('Please provide chainId')
@@ -49,12 +48,6 @@ export const generateLink = async ({
     throw new Error('Please provide contract version')
   }
 
-  if (isApprove) {
-    if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
-      throw new Error('Please provide valid isApprove argument')
-    }
-  }
-
   let linkdropSigner
 
   if (typeof signingKeyOrWallet === 'string') {
@@ -76,11 +69,6 @@ export const generateLink = async ({
   // Construct link
   let url = `${host}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&linkKey=${linkKey}&linkdropMasterAddress=${linkdropMasterAddress}&linkdropSignerSignature=${linkdropSignerSignature}`
 
-  // Add isApprove param to url
-  if (String(isApprove) === 'true') {
-    url = `${url}&isApprove=${isApprove}`
-  }
-
   return { url, linkId, linkKey, linkdropSignerSignature }
 }
 
@@ -93,8 +81,7 @@ export const generateLinkERC721 = async ({
   nftAddress,
   tokenId,
   expirationTime,
-  version,
-  isApprove
+  version
 }) => {
   if (chainId === null || chainId === '') {
     throw new Error('Please provide chain id')
@@ -136,12 +123,6 @@ export const generateLinkERC721 = async ({
     throw new Error('Please provide contract version')
   }
 
-  if (isApprove) {
-    if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
-      throw new Error('Please provide valid isApprove argument')
-    }
-  }
-
   let linkdropSigner
 
   if (typeof signingKeyOrWallet === 'string') {
@@ -162,11 +143,6 @@ export const generateLinkERC721 = async ({
 
   // Construct link
   let url = `${host}/#/receive?weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&linkKey=${linkKey}&linkdropMasterAddress=${linkdropMasterAddress}&linkdropSignerSignature=${linkdropSignerSignature}`
-
-  // Add isApprove param to url
-  if (String(isApprove) === 'true') {
-    url = `${url}&isApprove=${isApprove}`
-  }
 
   return { url, linkId, linkKey, linkdropSignerSignature }
 }
