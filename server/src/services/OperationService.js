@@ -1,6 +1,9 @@
 import logger from '../utils/logger'
 import Operation from '../models/Operation'
 import relayerWalletService from './relayerWalletService'
+const ethers = require('ethers')
+const ONE_GWEI = ethers.utils.parseUnits('1', 'gwei')
+const BigNumber = require('bignumber.js')
 
 class OperationService {
   findById (id) {
@@ -26,7 +29,7 @@ class OperationService {
   }
 
   async updateOnTransactionMined (id, txHash, receipt) {
-    logger.debug(`Updating operation (${id}) on tx mined (${txHash}`)
+    logger.debug(`Updating operation (${id}) on tx mined (${txHash})`)
     const operation = await this.findById(id)
     const status = receipt.status === 1 ? 'completed' : 'error'
     operation.status = status
@@ -43,12 +46,48 @@ class OperationService {
     logger.debug(`Operation ${id} updated on tx mined`)
     logger.json(operation)
   }
+
+  async retryTransaction (id, txHash) {
+    logger.info(`Retrying operation (${id}) with new tx...`)
+    const operation = await this.findById(id)
+    const transaction = operation.transactions.filter(tx => (tx.hash === txHash))[0].toObject()
+
+    let {
+      nonce,
+      gasPrice,
+      gasLimit,
+      value,
+      data,
+      to
+    } = transaction.params
+    // increase gas price
+    gasPrice = ONE_GWEI.add(gasPrice)
+
+    const params = {
+      nonce,
+      gasPrice,
+      gasLimit,
+      value: ethers.utils.parseUnits(value),
+      data,
+      to
+    }
+    logger.json(params)
+    const newTx = await relayerWalletService.relayerWallet.sendTransaction(params)
+    logger.info(`Submitted new tx ${newTx.hash}`)
+    logger.json(newTx)
+    
+    // add new tx to database
+    this.addTransaction(id, newTx)
+  }
   
   async trackTransaction (id, txHash) {
     logger.debug(`Listening for mined tx ${txHash}...`)
-    
+    // time for loop
+    const LOOP_TIME = 1000
+    // maximum time to wait before retrying tx with more gas
+    const WAIT_TIME_BEFORE_RETRY = 5000
     let waitTime = 0
-    const loopTime = 10000
+    let retried = false
     
     const _tick = async () => {
       logger.debug(`Trying to get receipt for tx ${txHash} (${waitTime}ms passed...)`)
@@ -59,20 +98,27 @@ class OperationService {
         return null
       }
       
+      // if tx was mined
       const receipt = await relayerWalletService.provider.getTransactionReceipt(txHash)
-      // tx was mined
       if (receipt) {
         logger.debug(`Tx ${txHash} mined!`)
         logger.json(receipt)
 
-        // #todo: save transaction status in db
+        // save transaction status in db
         this.updateOnTransactionMined(id, txHash, receipt)
-        
         return null
       }
       
-      waitTime += loopTime
-      setTimeout(_tick, loopTime)
+      // if transaction is pending for a long time
+      // and wasn't retried before
+      // retry the tx again with more gas
+      if (!retried && waitTime > WAIT_TIME_BEFORE_RETRY) {
+        this.retryTransaction(id, txHash)
+        retried = true
+      }
+      
+      waitTime += LOOP_TIME
+      setTimeout(_tick, LOOP_TIME)
     }
     
     _tick()
