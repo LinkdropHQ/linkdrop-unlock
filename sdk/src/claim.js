@@ -14,7 +14,8 @@ export const claim = async ({
   linkKey,
   linkdropMasterAddress,
   linkdropSignerSignature,
-  receiverAddress
+  receiverAddress,
+  campaignId
 }) => {
   if (jsonRpcUrl === null || jsonRpcUrl === '') {
     throw new Error('Please provide json rpc url')
@@ -64,6 +65,10 @@ export const claim = async ({
     throw new Error('Please provide receiver address')
   }
 
+  if (campaignId === null || campaignId === '') {
+    throw new Error('Please provide campaign id')
+  }
+
   // Get provider
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
@@ -84,7 +89,8 @@ export const claim = async ({
     linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature
+    receiverSignature,
+    campaignId
   }
   try {
     const response = await axios.post(
@@ -115,7 +121,8 @@ export const claimERC721 = async ({
   linkKey,
   linkdropMasterAddress,
   linkdropSignerSignature,
-  receiverAddress
+  receiverAddress,
+  campaignId
 }) => {
   if (jsonRpcUrl === null || jsonRpcUrl === '') {
     throw new Error('Please provide json rpc url')
@@ -169,6 +176,10 @@ export const claimERC721 = async ({
     throw new Error('Please provide receiver address')
   }
 
+  if (campaignId === null || campaignId === '') {
+    throw new Error('Please provide campaign id')
+  }
+
   // Get provider
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
@@ -189,7 +200,8 @@ export const claimERC721 = async ({
     linkdropMasterAddress,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature
+    receiverSignature,
+    campaignId
   }
   try {
     const response = await axios.post(

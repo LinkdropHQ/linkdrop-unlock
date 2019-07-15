@@ -75,8 +75,8 @@ const LinkdropSDK = ({
     })
   }
 
-  const getProxyAddress = () => {
-    return computeProxyAddress(factory, linkdropMasterAddress)
+  const getProxyAddress = (campaingId = 0) => {
+    return computeProxyAddress(factory, linkdropMasterAddress, campaingId)
   }
 
   const claim = async ({
@@ -86,7 +86,8 @@ const LinkdropSDK = ({
     expirationTime = 12345678910,
     linkKey,
     linkdropSignerSignature,
-    receiverAddress
+    receiverAddress,
+    campaignId = 0
   }) => {
     return claimUtils.claim({
       jsonRpcUrl,
@@ -100,7 +101,8 @@ const LinkdropSDK = ({
       linkKey,
       linkdropMasterAddress,
       linkdropSignerSignature,
-      receiverAddress
+      receiverAddress,
+      campaignId
     })
   }
 
@@ -111,7 +113,8 @@ const LinkdropSDK = ({
     expirationTime = 12345678910,
     linkKey,
     linkdropSignerSignature,
-    receiverAddress
+    receiverAddress,
+    campaignId = 0
   }) => {
     return claimUtils.claimERC721({
       jsonRpcUrl,
@@ -125,7 +128,8 @@ const LinkdropSDK = ({
       linkKey,
       linkdropMasterAddress,
       linkdropSignerSignature,
-      receiverAddress
+      receiverAddress,
+      campaignId
     })
   }
 

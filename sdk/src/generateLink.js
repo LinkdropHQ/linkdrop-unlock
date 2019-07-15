@@ -1,5 +1,4 @@
 import { createLink, createLinkERC721, computeProxyAddress } from './utils'
-import { link } from 'ethereum-waffle'
 const ethers = require('ethers')
 
 export const generateLink = async ({
