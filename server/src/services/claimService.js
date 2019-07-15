@@ -3,7 +3,6 @@ import logger from '../utils/logger'
 import proxyFactoryService from './proxyFactoryService'
 import operationService from './operationService'
 
-
 class ClaimService {
   _computeId ({ linkId, linkdropMasterAddress }) {
     return `claim-${linkdropMasterAddress.toLowerCase()}-${linkId.toLowerCase()}`
@@ -15,17 +14,6 @@ class ClaimService {
     return operationService.findById(id)
   }
   
-  // Save claim operation to database
-  async _saveClaimOperationToDB (claimParams, tx) {
-    const id = this._computeId(claimParams)
-    logger.debug('Saving claim operation to database...')
-    const operation = await operationService.create(id, 'claim', claimParams, tx)
-
-    logger.info(`Submitted claim transaction: ${tx.hash}`)
-
-    return operation
-  }
-
   _checkClaimParams (params) {
     if (!params.weiAmount) {
       throw new BadRequestError('Please provide weiAmount argument')
@@ -93,14 +81,18 @@ class ClaimService {
     await proxyFactoryService.checkClaimParams(params)
     logger.debug('Blockchain params check passed. Submitting claim tx...')
 
+    // save claim operation to database
+    const claimId = this._computeId(params)
+    logger.debug('Saving claim operation to database...')
+    await operationService.create(claimId, 'claim', params, null)
+
     // send claim transaction to blockchain
     const tx = await proxyFactoryService.claim(params)
     logger.info('Submitted claim tx: ' + tx.hash)
-    logger.debug('Tx details: ' + JSON.stringify(tx))
     
-    // save to db
-    await this._saveClaimOperationToDB(params, tx)
-
+    // add transaction details to database
+    await operationService.addTransaction(claimId, tx)
+    
     return tx.hash
   }
 }
