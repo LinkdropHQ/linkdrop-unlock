@@ -1,6 +1,9 @@
 pragma solidity ^0.5.6;
+import "../registry/Registry.sol";
 
 contract LinkdropFactoryStorage {
+
+    Registry public registry;
 
     // Address of factory owner
     address payable public owner;
@@ -17,8 +20,8 @@ contract LinkdropFactoryStorage {
     // Network id
     uint public chainId;
 
-    // Maps sender address to its corresponding proxy address
-    mapping (address => address) public deployed;
+    // Maps hash(sender address, campaign id) to its corresponding proxy address
+    mapping (bytes32 => address) public deployed;
 
     // Events
     event Deployed(address payable owner, address payable proxy, bytes32 salt, uint timestamp);

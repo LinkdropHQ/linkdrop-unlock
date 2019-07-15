@@ -11,6 +11,7 @@ import {
 
 import LinkdropFactory from '../build/LinkdropFactory'
 import LinkdropMastercopy from '../build/LinkdropMastercopy'
+import Registry from '../build/Registry'
 
 import { computeBytecode, computeProxyAddress } from '../scripts/utils'
 
@@ -23,18 +24,27 @@ const { expect } = chai
 
 let provider = createMockProvider()
 
-let [linkdropMaster, deployer] = getWallets(provider)
+let [linkdropMaster, deployer, relayer] = getWallets(provider)
 
 let masterCopy
 let factory
 let proxy
 let bytecode
+let registry
 
 const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 const chainId = 4 // Rinkeby
+const campaignId = 0
 
 describe('Proxy upgradability tests', () => {
   //
+
+  it('should deploy registry and whitelist relayer', async () => {
+    registry = await deployContract(deployer, Registry)
+    await registry.addRelayer(relayer.address)
+    const isWhitelisted = await registry.isWhitelistedRelayer(relayer.address)
+    expect(isWhitelisted).to.be.true
+  })
   it('should deploy initial master copy of linkdrop implementation', async () => {
     masterCopy = await deployContract(deployer, LinkdropMastercopy, [], {
       gasLimit: 6000000
@@ -58,7 +68,7 @@ describe('Proxy upgradability tests', () => {
     factory = await deployContract(
       deployer,
       LinkdropFactory,
-      [masterCopy.address, chainId],
+      [masterCopy.address, chainId, registry.address],
       {
         gasLimit: 6000000
       }
@@ -88,13 +98,14 @@ describe('Proxy upgradability tests', () => {
     let expectedAddress = computeProxyAddress(
       factory.address,
       linkdropMaster.address,
+      campaignId,
       initcode
     )
 
     factory = factory.connect(linkdropMaster)
 
     await expect(
-      factory.deployProxy({
+      factory.deployProxy(campaignId, {
         gasLimit: 6000000
       })
     ).to.emit(factory, 'Deployed')
@@ -138,52 +149,71 @@ describe('Proxy upgradability tests', () => {
   it('proxy owner should be able to destroy proxy', async () => {
     factory = factory.connect(linkdropMaster)
 
-    let isDeployed = await factory.isDeployed(linkdropMaster.address)
+    let isDeployed = await factory.isDeployed(
+      linkdropMaster.address,
+      campaignId
+    )
     expect(isDeployed).to.eq(true)
 
     let computedAddress = computeProxyAddress(
       factory.address,
       linkdropMaster.address,
+      campaignId,
       initcode
     )
 
     let deployedAddress = await factory.functions.deployed(
-      linkdropMaster.address
+      ethers.utils.solidityKeccak256(
+        ['address', 'uint256'],
+        [linkdropMaster.address, campaignId]
+      )
     )
     expect(deployedAddress.toString().toLowerCase()).to.eq(
       computedAddress.toString().toLowerCase()
     )
 
     await expect(
-      factory.destroyProxy({
+      factory.destroyProxy(campaignId, {
         gasLimit: 6400000
       })
     ).to.emit(factory, 'Destroyed')
 
-    isDeployed = await factory.isDeployed(linkdropMaster.address)
+    isDeployed = await factory.isDeployed(linkdropMaster.address, campaignId)
     expect(isDeployed).to.eq(false)
 
-    deployedAddress = await factory.functions.deployed(linkdropMaster.address)
+    deployedAddress = await factory.functions.deployed(
+      ethers.utils.solidityKeccak256(
+        ['address', 'uint256'],
+        [linkdropMaster.address, campaignId]
+      )
+    )
     expect(deployedAddress).to.eq(ethers.constants.AddressZero)
   })
 
   it('should deploy upgraded proxy to the same address as before', async () => {
     await expect(
-      factory.deployProxy({
+      factory.deployProxy(campaignId, {
         gasLimit: 6400000
       })
     ).to.emit(factory, 'Deployed')
 
-    let isDeployed = await factory.isDeployed(linkdropMaster.address)
+    let isDeployed = await factory.isDeployed(
+      linkdropMaster.address,
+      campaignId
+    )
     expect(isDeployed).to.eq(true)
 
     let deployedAddress = await factory.functions.deployed(
-      linkdropMaster.address
+      ethers.utils.solidityKeccak256(
+        ['address', 'uint256'],
+        [linkdropMaster.address, campaignId]
+      )
     )
 
     let computedAddress = computeProxyAddress(
       factory.address,
       linkdropMaster.address,
+      campaignId,
       initcode
     )
 

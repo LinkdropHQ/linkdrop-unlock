@@ -72,13 +72,13 @@ export default {
 
     // step3
     _6: 'By service fees, we cover Gas costs for links distribution and our operation costs.',
-    _7: 'For now, we charge fix price — 20 Cents per link. We plan to add monthly plans soon. For Enterprise customers, we offer custom solutions. Contact us for more details.',
+    _7: 'For now, we charge fix price — {{price}} Cents per link. We plan to add monthly plans soon. For Enterprise customers, we offer custom solutions. Contact us for more details.',
     _8: 'We use Stripe to process payments so we don’t know and don’t store your bank card details.',
 
     // step4
     _9: 'One more thing, to complete generating links you need to send Ether for links to Linkdrop Contract',
     _10: 'Ether will be stored in Linkdrop Contract. You can stop campaign anytime and get back your Ether.',
-    _11: 'To send 10 ETH to Linkdrop Contract simply click on “Send” button and confirm transaction.',
+    _11: 'To send {{ethAmount}} ETH to Linkdrop Contract simply click on “Send” button and confirm transaction.',
     _12: 'MetaMask will show you Transaction pop-up that you need to confirm',
     codeBlock: `// import library
 const linkGenerator = require(‘volca-link-generator’);
