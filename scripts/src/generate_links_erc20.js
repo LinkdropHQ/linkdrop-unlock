@@ -10,7 +10,6 @@ import fs from 'fs'
 import {
   newError,
   getString,
-  getBool,
   getInt,
   getLinkdropMasterWallet,
   getExpirationTime,
@@ -22,13 +21,12 @@ const CHAIN = getString('CHAIN')
 const LINKDROP_MASTER_PRIVATE_KEY = getString('linkdropMasterPrivateKey')
 const WEI_AMOUNT = getInt('weiAmount')
 const LINKS_NUMBER = getInt('linksNumber')
-const LINKDROP_MASTER_COPY_VERSION = getInt('version')
 const EXPIRATION_TIME = getExpirationTime()
-const IS_APPROVE = getBool('isApprove')
 const TOKEN_ADDRESS = getString('tokenAddress')
 const TOKEN_AMOUNT = getInt('tokenAmount')
 const PROVIDER = getProvider()
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
+const CAMPAIGN_ID = getInt('CAMPAIGN_ID')
 
 const linkdropSDK = LinkdropSDK({
   linkdropMasterAddress: new ethers.Wallet(LINKDROP_MASTER_PRIVATE_KEY).address,
@@ -50,7 +48,6 @@ export const generate = async () => {
     // Send tokens to proxy
     if (TOKEN_AMOUNT > 0 && TOKEN_ADDRESS !== ethers.constants.AddressZero) {
       const cost = TOKEN_AMOUNT * LINKS_NUMBER
-      let amount
 
       const tokenContract = await new ethers.Contract(
         TOKEN_ADDRESS,
@@ -60,49 +57,23 @@ export const generate = async () => {
       const tokenSymbol = await tokenContract.symbol()
       const tokenDecimals = await tokenContract.decimals()
 
-      if (String(IS_APPROVE) === 'false') {
-        // Transfer tokens
-        const proxyBalance = await tokenContract.balanceOf(proxyAddress)
-        if (proxyBalance < cost) {
-          amount = cost - proxyBalance
-
-          spinner.info(
-            term.bold.str(
-              `Transfering ${amount /
-                Math.pow(
-                  10,
-                  tokenDecimals
-                )} ${tokenSymbol} to ^g${proxyAddress}`
-            )
+      // Approve tokens
+      const proxyAllowance = await tokenContract.allowance(
+        LINKDROP_MASTER_WALLET.address,
+        proxyAddress
+      )
+      if (proxyAllowance < cost) {
+        spinner.info(
+          term.bold.str(
+            `Approving ${cost /
+              Math.pow(10, tokenDecimals)} ${tokenSymbol} to ^g${proxyAddress}`
           )
-
-          tx = await tokenContract.transfer(proxyAddress, amount, {
-            gasLimit: 600000
-          })
-          term.bold(`Tx Hash: ^g${tx.hash}\n`)
-        }
-      } else if (String(IS_APPROVE) === 'true') {
-        // Approve tokens
-        const proxyAllowance = await tokenContract.allowance(
-          LINKDROP_MASTER_WALLET.address,
-          proxyAddress
         )
-        if (proxyAllowance < cost) {
-          spinner.info(
-            term.bold.str(
-              `Approving ${cost /
-                Math.pow(
-                  10,
-                  tokenDecimals
-                )} ${tokenSymbol} to ^g${proxyAddress}`
-            )
-          )
 
-          tx = await tokenContract.approve(proxyAddress, cost, {
-            gasLimit: 600000
-          })
-          term.bold(`Tx Hash: ^g${tx.hash}\n`)
-        }
+        tx = await tokenContract.approve(proxyAddress, cost, {
+          gasLimit: 600000
+        })
+        term.bold(`Tx Hash: ^g${tx.hash}\n`)
       }
     }
 
@@ -149,8 +120,7 @@ export const generate = async () => {
         tokenAddress: TOKEN_ADDRESS,
         tokenAmount: TOKEN_AMOUNT,
         expirationTime: EXPIRATION_TIME,
-        version: LINKDROP_MASTER_COPY_VERSION,
-        isApprove: IS_APPROVE
+        campaignId: CAMPAIGN_ID
       })
 
       let link = { i, linkId, linkKey, linkdropSignerSignature, url }

@@ -32,7 +32,7 @@ const claimERC721 = async () => {
       linkKey,
       linkdropMasterAddress,
       linkdropSignerSignature,
-      isApprove
+      campaignId
     } = await getUrlParams('erc721', 0)
 
     const linkdropSDK = LinkdropSDK({
@@ -55,7 +55,7 @@ const claimERC721 = async () => {
       linkdropMasterAddress,
       linkdropSignerSignature,
       receiverAddress: RECEIVER_ADDRESS,
-      isApprove
+      campaignId
     })
 
     if (success === true && txHash) {

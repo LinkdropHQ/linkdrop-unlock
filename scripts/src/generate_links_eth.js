@@ -4,8 +4,7 @@ import {
   getExpirationTime,
   getProvider,
   getString,
-  getInt,
-  getBool
+  getInt
 } from './utils'
 
 import LinkdropSDK from '../../sdk/src/index'
@@ -22,11 +21,10 @@ const CHAIN = getString('CHAIN')
 const LINKDROP_MASTER_PRIVATE_KEY = getString('linkdropMasterPrivateKey')
 const WEI_AMOUNT = getInt('weiAmount')
 const LINKS_NUMBER = getInt('linksNumber')
-const LINKDROP_MASTER_COPY_VERSION = getInt('version')
 const EXPIRATION_TIME = getExpirationTime()
-const IS_APPROVE = getBool('isApprove')
 const PROVIDER = getProvider()
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
+const CAMPAIGN_ID = getInt('CAMPAIGN_ID')
 
 const linkdropSDK = LinkdropSDK({
   linkdropMasterAddress: new ethers.Wallet(LINKDROP_MASTER_PRIVATE_KEY).address,
@@ -43,9 +41,10 @@ export const generate = async () => {
     })
     spinner.start()
 
-    const proxyAddress = linkdropSDK.getProxyAddress()
+    const proxyAddress = linkdropSDK.getProxyAddress(CAMPAIGN_ID)
 
     let cost = WEI_AMOUNT * LINKS_NUMBER
+
     let amountToSend
 
     const tokenSymbol = 'ETH'
@@ -86,8 +85,7 @@ export const generate = async () => {
         tokenAddress: ethers.constants.AddressZero,
         tokenAmount: 0,
         expirationTime: EXPIRATION_TIME,
-        version: LINKDROP_MASTER_COPY_VERSION,
-        isApprove: IS_APPROVE
+        campaignId: CAMPAIGN_ID
       })
 
       let link = { i, linkId, linkKey, linkdropSignerSignature, url }

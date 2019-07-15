@@ -56,7 +56,6 @@ export const createLink = async ({
   expirationTime,
   version,
   chainId,
-  campaignId,
   proxyAddress
 }) => {
   let { address: linkId, privateKey: linkKey } = generateAccount()

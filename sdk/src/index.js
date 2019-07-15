@@ -12,7 +12,7 @@ const LinkdropSDK = ({
   jsonRpcUrl = `https://${chain}.infura.io`,
   apiHost = `https://${chain}.linkdrop.io`,
   claimHost = 'https://claim.linkdrop.io',
-  factory = '0xDEF008f43a36ba4D3523d2e26eF1A6d4C83b4df8'
+  factory = '0x01e7F4C72182Eb4421AFB1Ec99cee9Ef5B83EE18'
 }) => {
   if (linkdropMasterAddress == null || linkdropMasterAddress === '') {
     throw new Error('Please provide linkdrop master address')
@@ -22,16 +22,19 @@ const LinkdropSDK = ({
     throw new Error('Please provide valid chain and/or chain id')
   }
 
-  let version
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
+
   const factoryContract = new ethers.Contract(
     factory,
     LinkdropFactory.abi,
     provider
   )
 
-  const getVersion = async () => {
-    return factoryContract.getProxyMasterCopyVersion(linkdropMasterAddress)
+  const getVersion = async campaignId => {
+    return factoryContract.getProxyMasterCopyVersion(
+      linkdropMasterAddress,
+      campaignId
+    )
   }
 
   const generateLink = async ({
@@ -40,18 +43,20 @@ const LinkdropSDK = ({
     tokenAddress,
     tokenAmount,
     expirationTime = 12345678910,
-    campaignId
+    campaignId = 0
   }) => {
     return generateLinkUtils.generateLink({
+      factoryAddress: factory,
       chainId,
-      host: claimHost,
+      claimHost,
       linkdropMasterAddress,
       signingKeyOrWallet,
       weiAmount,
       tokenAddress,
       tokenAmount,
       expirationTime,
-      version: version || (await getVersion())
+      version: await getVersion(campaignId),
+      campaignId
     })
   }
 
@@ -60,18 +65,21 @@ const LinkdropSDK = ({
     weiAmount,
     nftAddress,
     tokenId,
-    expirationTime = 12345678910
+    expirationTime = 12345678910,
+    campaignId = 0
   }) => {
     return generateLinkUtils.generateLinkERC721({
+      factoryAddress: factory,
       chainId,
-      host: claimHost,
+      claimHost,
       linkdropMasterAddress,
       signingKeyOrWallet,
       weiAmount,
       nftAddress,
       tokenId,
       expirationTime,
-      version: version || (await getVersion())
+      version: await getVersion(campaignId),
+      campaignId
     })
   }
 
@@ -96,7 +104,7 @@ const LinkdropSDK = ({
       tokenAddress,
       tokenAmount,
       expirationTime,
-      version,
+      version: await getVersion(campaignId),
       chainId,
       linkKey,
       linkdropMasterAddress,
@@ -123,7 +131,7 @@ const LinkdropSDK = ({
       nftAddress,
       tokenId,
       expirationTime,
-      version,
+      version: await getVersion(campaignId),
       chainId,
       linkKey,
       linkdropMasterAddress,

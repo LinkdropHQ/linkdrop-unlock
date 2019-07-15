@@ -19,6 +19,9 @@ const appConfigPath = configs.getPath('app')
 
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 const LINKDROP_MASTER_COPY_ADDRESS = getString('masterCopy')
+
+const REGISTRY_ADDRESS = getString('REGISTRY_ADDRESS')
+
 const CHAIN_ID = getInt('chainId')
 
 export const deploy = async () => {
@@ -42,8 +45,10 @@ export const deploy = async () => {
     proxyFactory = await factory.deploy(
       LINKDROP_MASTER_COPY_ADDRESS,
       CHAIN_ID,
+      REGISTRY_ADDRESS,
       {
-        gasLimit: 6000000
+        gasLimit: 6500000
+        // gasPrice: ethers.utils.parseUnits('10', 'gwei')
       }
     )
 
