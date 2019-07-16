@@ -22,6 +22,8 @@ const LinkdropSDK = ({
     throw new Error('Please provide valid chain and/or chain id')
   }
 
+  let version = {}
+
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
   const factoryContract = new ethers.Contract(
@@ -31,10 +33,13 @@ const LinkdropSDK = ({
   )
 
   const getVersion = async campaignId => {
-    return factoryContract.getProxyMasterCopyVersion(
-      linkdropMasterAddress,
-      campaignId
-    )
+    if (!version[campaignId]) {
+      version[campaignId] = await factoryContract.getProxyMasterCopyVersion(
+        linkdropMasterAddress,
+        campaignId
+      )
+    }
+    return version[campaignId]
   }
 
   const generateLink = async ({
@@ -45,6 +50,7 @@ const LinkdropSDK = ({
     expirationTime = 12345678910,
     campaignId = 0
   }) => {
+    console.log('\n Generating link')
     return generateLinkUtils.generateLink({
       factoryAddress: factory,
       chainId,
@@ -55,7 +61,7 @@ const LinkdropSDK = ({
       tokenAddress,
       tokenAmount,
       expirationTime,
-      version: await getVersion(campaignId),
+      version: version[campaignId] || (await getVersion(campaignId)),
       campaignId
     })
   }
@@ -78,7 +84,7 @@ const LinkdropSDK = ({
       nftAddress,
       tokenId,
       expirationTime,
-      version: await getVersion(campaignId),
+      version: version[campaignId] || (await getVersion(campaignId)),
       campaignId
     })
   }
@@ -104,7 +110,7 @@ const LinkdropSDK = ({
       tokenAddress,
       tokenAmount,
       expirationTime,
-      version: await getVersion(campaignId),
+      version: version[campaignId] || (await getVersion(campaignId)),
       chainId,
       linkKey,
       linkdropMasterAddress,
@@ -131,7 +137,7 @@ const LinkdropSDK = ({
       nftAddress,
       tokenId,
       expirationTime,
-      version: await getVersion(campaignId),
+      version: version[campaignId] || (await getVersion(campaignId)),
       chainId,
       linkKey,
       linkdropMasterAddress,
