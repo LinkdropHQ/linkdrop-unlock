@@ -1,8 +1,18 @@
 pragma solidity ^0.5.6;
+import "../registry/Registry.sol";
 
 interface ILinkdropCommon {
 
-    function initialize(address _owner, address payable _linkdropSigner, uint _version, uint _chainId) external returns (bool);
+    function initialize
+    (
+        address _owner,
+        address payable _linkdropMaster,
+        uint _version,
+        uint _chainId,
+        Registry _registry
+    )
+    external returns (bool);
+
     function isClaimedLink(address _linkId) external view returns (bool);
     function isCanceledLink(address _linkId) external view returns (bool);
     function paused() external view returns (bool);

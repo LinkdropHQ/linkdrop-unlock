@@ -12,8 +12,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _expiration Unix timestamp of link expiration time
-    * @param _version Linkdrop contract version
-    * @param _chainId Network id
     * @param _linkId Address corresponding to link key
     * @param _signature ECDSA signature of linkdrop signer
     * @return True if signed with linkdrop signer's private key
@@ -24,8 +22,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
-        uint _version,
-        uint _chainId,
         address _linkId,
         bytes memory _signature
     )
@@ -42,8 +38,8 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                     _tokenAddress,
                     _tokenAmount,
                     _expiration,
-                    _version,
-                    _chainId,
+                    version,
+                    chainId,
                     _linkId
                 )
             )
@@ -114,11 +110,14 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         require(_expiration >= now, "Expired link");
 
         // Make sure eth amount is available for this contract
-        require(address(this).balance >= _weiAmount, "Insufficient amount of eth");
+        require(address(this).balance >= _weiAmount.add(registry.getFee(address(this))), "Insufficient funds");
 
         // Make sure tokens are available for this contract
         if (_tokenAddress != address(0)) {
-            require(IERC20(_tokenAddress).balanceOf(address(this)) >= _tokenAmount, "Insufficient amount of tokens");
+            require
+            (
+                IERC20(_tokenAddress).allowance(linkdropMaster, address(this)) >= _tokenAmount, "Insufficient amount of tokens"
+            );
         }
 
         // Verify that link key is legit and signed by linkdrop signer
@@ -130,8 +129,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                 _tokenAddress,
                 _tokenAmount,
                 _expiration,
-                version,
-                chainId,
                 _linkId,
                 _linkdropSignerSignature
             ),
@@ -158,6 +155,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
+    * @param _feeReceiver Address to transfer fees to
     * @return True if success
     */
     function claim
@@ -169,12 +167,15 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _linkId,
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
-        bytes calldata _receiverSignature
+        bytes calldata _receiverSignature,
+        address payable _feeReceiver
     )
     external
+    onlyLinkdropMasterOrOwner
     whenNotPaused
     returns (bool)
     {
+
         // Make sure params are valid
         require
         (
@@ -196,7 +197,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         claimedTo[_linkId] = _receiver;
 
         // Make sure transfer succeeds
-        require(_transferFunds(_weiAmount, _tokenAddress, _tokenAmount, _receiver), "Transfer failed");
+        require(_transferFunds(_weiAmount, _tokenAddress, _tokenAmount, _receiver, _feeReceiver), "Transfer failed");
 
         // Emit claim event
         emit Claimed(_linkId, _weiAmount, _tokenAddress, _tokenAmount, _receiver, now);
@@ -205,24 +206,35 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     }
 
     /**
-    * @dev Internal function to transfer ETH and/or ERC20 tokens
+    * @dev Internal function to transfer ethers and/or ERC20 tokens
     * @param _weiAmount Amount of wei to be claimed
     * @param _tokenAddress Token address
     * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
     * @param _receiver Address to transfer funds to
+    * @param _feeReceiver Address to transfer fees to
     * @return True if success
     */
-    function _transferFunds(uint _weiAmount, address _tokenAddress, uint _tokenAmount, address payable _receiver)
+    function _transferFunds
+    (
+        uint _weiAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
+        address payable _receiver,
+        address payable _feeReceiver
+    )
     internal returns (bool)
     {
-        // Transfer ETH
+        // Transfer fees
+        _feeReceiver.transfer(registry.getFee(address(this)));
+
+        // Transfer ethers
         if (_weiAmount > 0) {
             _receiver.transfer(_weiAmount);
         }
 
         // Transfer tokens
         if (_tokenAmount > 0) {
-            IERC20(_tokenAddress).transfer(_receiver, _tokenAmount);
+            require(IERC20(_tokenAddress).transferFrom(linkdropMaster, _receiver, _tokenAmount), "");
         }
 
         return true;

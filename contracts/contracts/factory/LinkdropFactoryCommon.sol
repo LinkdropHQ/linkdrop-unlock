@@ -11,25 +11,27 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     /**
     * @dev Indicates whether a proxy contract for linkdrop master is deployed or not
     * @param _linkdropMaster Address of linkdrop master
+    * @param _campaignId Campaign id
     * @return True if deployed
     */
-    function isDeployed(address _linkdropMaster) public view returns (bool) {
-        return (deployed[_linkdropMaster] != address(0));
+    function isDeployed(address _linkdropMaster, uint _campaignId) public view returns (bool) {
+        return (deployed[salt(_linkdropMaster, _campaignId)] != address(0));
     }
 
     /**
     * @dev Indicates whether a link is claimed or not
-    * @param _linkdropMaster Address of lindkrop signer
+    * @param _linkdropMaster Address of lindkrop master
+    * @param _campaignId Campaign id
     * @param _linkId Address corresponding to link key
     * @return True if claimed
     */
-    function isClaimedLink(address payable _linkdropMaster, address _linkId) public view returns (bool) {
+    function isClaimedLink(address payable _linkdropMaster, uint _campaignId, address _linkId) public view returns (bool) {
 
-        if (!isDeployed(_linkdropMaster)) {
+        if (!isDeployed(_linkdropMaster, _campaignId)) {
             return false;
         }
         else {
-            address payable proxy = address(uint160(deployed[_linkdropMaster]));
+            address payable proxy = address(uint160(deployed[salt(_linkdropMaster, _campaignId)]));
             return ILinkdropCommon(proxy).isClaimedLink(_linkId);
         }
 
@@ -37,55 +39,57 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
 
     /**
     * @dev Function to deploy a proxy contract for msg.sender
+    * @param _campaignId Campaign id
     * @return Proxy contract address
     */
-    function deployProxy()
+    function deployProxy(uint _campaignId)
     public
-    returns (address payable)
+    payable
+    returns (address payable proxy)
     {
-        address payable proxy = _deployProxy(msg.sender);
-        return proxy;
+        proxy = _deployProxy(msg.sender, _campaignId);
     }
 
     /**
     * @dev Function to deploy a proxy contract for msg.sender and add a new signing key
+    * @param _campaignId Campaign id
+    * @param _signer Address corresponding to signing key
     * @return Proxy contract address
     */
-    function deployProxyWithSigner(address _signer)
+    function deployProxyWithSigner(uint _campaignId, address _signer)
     public
-    returns (address payable)
+    payable
+    returns (address payable proxy)
     {
-        address payable proxy = deployProxy();
+        proxy = deployProxy(_campaignId);
         ILinkdropCommon(proxy).addSigner(_signer);
-        return proxy;
     }
 
     /**
     * @dev Internal function to deploy a proxy contract for linkdrop master
     * @param _linkdropMaster Address of linkdrop master
+    * @param _campaignId Campaign id
     * @return Proxy contract address
     */
-    function _deployProxy(address payable _linkdropMaster)
+    function _deployProxy(address payable _linkdropMaster, uint _campaignId)
     internal
-    returns (address payable)
+    returns (address payable proxy)
     {
 
-        require(!isDeployed(_linkdropMaster), "Deployed");
+        require(!isDeployed(_linkdropMaster, _campaignId), "Deployed");
         require(_linkdropMaster != address(0), "Invalid linkdrop master address");
 
-        bytes32 salt = keccak256(abi.encodePacked(_linkdropMaster));
+        bytes32 salt = salt(_linkdropMaster, _campaignId);
         bytes memory initcode = getInitcode();
-
-        address payable proxy;
 
         assembly {
             proxy := create2(0, add(initcode, 0x20), mload(initcode), salt)
             if iszero(extcodesize(proxy)) { revert(0, 0) }
         }
 
-        deployed[_linkdropMaster] = proxy;
+        deployed[salt] = proxy;
 
-        // Initialize owner address, linkdrop master address and master copy version in proxy contract
+        // Initialize owner address, linkdrop master address master copy version and registry address in proxy contract
         require
         (
             ILinkdropCommon(proxy).initialize
@@ -93,10 +97,14 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
                 address(this), // Owner address
                 _linkdropMaster, // Linkdrop master address
                 masterCopyVersion,
-                chainId
+                chainId,
+                registry
             ),
             "Failed to initialize"
         );
+
+        // Send funds attached to proxy contract
+        proxy.transfer(msg.value);
 
         emit Deployed(_linkdropMaster, proxy, salt, now);
         return proxy;
@@ -104,18 +112,18 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
 
     /**
     * @dev Function to destroy proxy contract, called by proxy owner
+    * @param _campaignId Campaign id
     * @return True if destroyed successfully
     */
-    function destroyProxy()
+    function destroyProxy(uint _campaignId)
     public
     returns (bool)
     {
-        address payable proxyOwner = msg.sender;
-        require(isDeployed(proxyOwner), "Not deployed");
-        address payable proxy = address(uint160(deployed[proxyOwner]));
+        require(isDeployed(msg.sender, _campaignId), "Not deployed");
+        address payable proxy = address(uint160(deployed[salt(msg.sender, _campaignId)]));
         ILinkdropCommon(proxy).destroy();
-        delete deployed[proxyOwner];
-        emit Destroyed(proxyOwner, proxy, now);
+        delete deployed[salt(msg.sender, _campaignId)];
+        emit Destroyed(msg.sender, proxy, now);
         return true;
     }
 
@@ -160,7 +168,8 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
                 address(0), // Owner address
                 address(0), // Linkdrop master address
                 masterCopyVersion,
-                chainId
+                chainId,
+                registry
             ),
             "Failed to initialize"
         );
@@ -180,17 +189,29 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
 
     /**
     * @dev Function to fetch the master copy version installed (or to be installed) to proxy
+    * @param _linkdropMaster Address of linkdrop master
+    * @param _campaignId Campaign id
     * @return Master copy version
     */
-    function getProxyMasterCopyVersion(address _linkdropMaster) external view returns (uint) {
+    function getProxyMasterCopyVersion(address _linkdropMaster, uint _campaignId) external view returns (uint) {
 
-        if (!isDeployed(_linkdropMaster)) {
+        if (!isDeployed(_linkdropMaster, _campaignId)) {
             return masterCopyVersion;
         }
         else {
-            address payable proxy = address(uint160(deployed[_linkdropMaster]));
+            address payable proxy = address(uint160(deployed[salt(_linkdropMaster, _campaignId)]));
             return ILinkdropCommon(proxy).getMasterCopyVersion();
         }
+    }
+
+    /**
+     * @dev Function to hash `_linkdropMaster` and `_campaignId` params. Used as salt when deploying with create2
+     * @param _linkdropMaster Address of linkdrop master
+     * @param _campaignId Campaign id
+     * @return Hash of passed arguments
+     */
+    function salt(address _linkdropMaster, uint _campaignId) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(_linkdropMaster, _campaignId));
     }
 
 }

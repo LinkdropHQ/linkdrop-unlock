@@ -1,7 +1,7 @@
 import { utils } from 'ethers'
 const ethers = require('ethers')
 
-function buildCreate2Address (creatorAddress, saltHex, byteCode) {
+function buildCreate2Address(creatorAddress, saltHex, byteCode) {
   const byteCodeHash = utils.keccak256(byteCode)
   return `0x${utils
     .keccak256(
@@ -24,16 +24,20 @@ export const computeBytecode = masterCopyAddress => {
 export const computeProxyAddress = (
   factoryAddress,
   linkdropMasterAddress,
+  campaignId,
   initcode
 ) => {
-  const salt = utils.solidityKeccak256(['address'], [linkdropMasterAddress])
+  const salt = utils.solidityKeccak256(
+    ['address', 'uint256'],
+    [linkdropMasterAddress, campaignId]
+  )
   // const bytecode = computePendingRuntimeCode(masterCopyAddress)
   const proxyAddress = buildCreate2Address(factoryAddress, salt, initcode)
   return proxyAddress
 }
 
-// Should be signed by sender
-export const signLink = async function (
+// Should be signed by linkdrop master (sender)
+export const signLink = async (
   linkdropSigner, // Wallet
   ethAmount,
   tokenAddress,
@@ -42,7 +46,7 @@ export const signLink = async function (
   version,
   chainId,
   linkId
-) {
+) => {
   let messageHash = ethers.utils.solidityKeccak256(
     ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address'],
     [
@@ -61,7 +65,7 @@ export const signLink = async function (
 }
 
 // Generates new link
-export const createLink = async function (
+export const createLink = async (
   linkdropSigner, // Wallet
   ethAmount,
   tokenAddress,
@@ -69,7 +73,7 @@ export const createLink = async function (
   expirationTime,
   version,
   chainId
-) {
+) => {
   let linkWallet = ethers.Wallet.createRandom()
   let linkKey = linkWallet.privateKey
   let linkId = linkWallet.address
@@ -90,7 +94,7 @@ export const createLink = async function (
   }
 }
 
-export const signReceiverAddress = async function (linkKey, receiverAddress) {
+export const signReceiverAddress = async (linkKey, receiverAddress) => {
   let wallet = new ethers.Wallet(linkKey)
   let messageHash = ethers.utils.solidityKeccak256(
     ['address'],
