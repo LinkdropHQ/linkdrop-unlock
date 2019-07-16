@@ -2,19 +2,20 @@ import { BadRequestError } from '../utils/errors'
 import logger from '../utils/logger'
 import proxyFactoryService from './proxyFactoryService'
 import operationService from './operationService'
+import linkdropService from './linkdropService'
 
 class ClaimService {
-  _computeId ({ linkId, linkdropMasterAddress }) {
+  _computeId({ linkId, linkdropMasterAddress }) {
     return `claim-${linkdropMasterAddress.toLowerCase()}-${linkId.toLowerCase()}`
   }
-  
+
   // Check whether a claim tx exists in database
-  findClaimInDB ({ linkId, linkdropMasterAddress }) {
+  findClaimInDB({ linkId, linkdropMasterAddress }) {
     const id = this._computeId({ linkId, linkdropMasterAddress })
     return operationService.findById(id)
   }
-  
-  _checkClaimParams (params) {
+
+  _checkClaimParams(params) {
     if (!params.weiAmount) {
       throw new BadRequestError('Please provide weiAmount argument')
     }
@@ -40,7 +41,9 @@ class ClaimService {
       throw new BadRequestError('Please provide linkdropMasterAddress argument')
     }
     if (!params.linkdropSignerSignature) {
-      throw new BadRequestError('Please provide linkdropSignerSignature argument')
+      throw new BadRequestError(
+        'Please provide linkdropSignerSignature argument'
+      )
     }
     if (!params.receiverAddress) {
       throw new BadRequestError('Please provide receiverAddress argument')
@@ -48,19 +51,18 @@ class ClaimService {
     if (!params.receiverSignature) {
       throw new BadRequestError('Please provide receiverSignature argument')
     }
-    if (!params.isApprove) {
-      throw new BadRequestError('Please provide isApprove argument')
+
+    if (!params.campaignId) {
+      throw new BadRequestError('Please provide campaignId argument')
     }
-    if (String(params.isApprove) !== 'true' && String(params.isApprove) !== 'false') {
-      throw new BadRequestError('Please provide valid isApprove argument')
-    }
+
     logger.debug('Valid claim params: ' + JSON.stringify(params))
   }
-  
-  async claim (params) {
+
+  async claim(params) {
     // Make sure all arguments are passed
     this._checkClaimParams(params)
-    
+
     // Check whether a claim tx exists in database
     const claim = await this.findClaimInDB(params)
     if (claim) {
@@ -68,15 +70,19 @@ class ClaimService {
       throw new Error('Claim link was already submitted')
     }
     logger.debug("Claim doesn't exist in database yet. Creating new claim...")
-        
+
     // compute proxyAddress from master address
-    const proxyAddress = await proxyFactoryService.computeProxyAddress(params.linkdropMasterAddress)
+    const proxyAddress = await linkdropService.getProxyAddress(
+      params.linkdropMasterAddress,
+      params.campaignId
+    )
+
     logger.debug(`Proxy address computed: ${proxyAddress}`)
     params = {
-        ...params,
+      ...params,
       proxyAddress
     }
-    
+
     // blockhain check that params are valid
     await proxyFactoryService.checkClaimParams(params)
     logger.debug('Blockchain params check passed. Submitting claim tx...')
@@ -89,10 +95,10 @@ class ClaimService {
     // send claim transaction to blockchain
     const tx = await proxyFactoryService.claim(params)
     logger.info('Submitted claim tx: ' + tx.hash)
-    
+
     // add transaction details to database
     await operationService.addTransaction(claimId, tx)
-    
+
     return tx.hash
   }
 }

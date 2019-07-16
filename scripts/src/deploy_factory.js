@@ -47,12 +47,14 @@ export const deploy = async () => {
       CHAIN_ID,
       REGISTRY_ADDRESS,
       {
-        gasLimit: 6500000
-        // gasPrice: ethers.utils.parseUnits('10', 'gwei')
+        gasLimit: 5000000,
+        gasPrice: ethers.utils.parseUnits('10', 'gwei')
       }
     )
 
     await proxyFactory.deployed()
+
+    await proxyFactory.deployProxy(5)
   } catch (err) {
     spinner.fail(term.bold.red.str('Failed to deploy contract'))
     throw newError(err)

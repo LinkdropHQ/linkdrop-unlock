@@ -5,13 +5,13 @@ import ora from 'ora'
 import { ethers } from 'ethers'
 import { terminal as term } from 'terminal-kit'
 import { newError, getString, getUrlParams } from './utils'
-
 ethers.errors.setLogLevel('error')
 
 const JSON_RPC_URL = getString('jsonRpcUrl')
 const CHAIN = getString('CHAIN')
 const API_HOST = getString('API_HOST')
 const RECEIVER_ADDRESS = getString('receiverAddress')
+const FACTORY_ADDRESS = getString('factory')
 
 const claim = async () => {
   let spinner
@@ -41,7 +41,8 @@ const claim = async () => {
       linkdropMasterAddress,
       chain: CHAIN,
       jsonRpcUrl: JSON_RPC_URL,
-      apiHost: API_HOST
+      apiHost: API_HOST,
+      factory: FACTORY_ADDRESS
     })
 
     const { error, success, txHash } = await linkdropSDK.claim({

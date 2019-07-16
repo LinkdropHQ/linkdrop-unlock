@@ -7,12 +7,12 @@ import { ethers } from 'ethers'
 
 const LinkdropSDK = ({
   linkdropMasterAddress,
-  chain = 'mainnet',
+  chain = 'rinkeby',
   chainId = getChainId(chain),
   jsonRpcUrl = `https://${chain}.infura.io`,
   apiHost = `https://${chain}.linkdrop.io`,
   claimHost = 'https://claim.linkdrop.io',
-  factory = '0x2882D3a779aEFA7Be092331B088AE06F6A7198D6'
+  factory = '0x8474b1c7C3E0381Cb03544B9163C82739d8DA764'
 }) => {
   if (linkdropMasterAddress == null || linkdropMasterAddress === '') {
     throw new Error('Please provide linkdrop master address')
@@ -50,7 +50,6 @@ const LinkdropSDK = ({
     expirationTime = 12345678910,
     campaignId = 0
   }) => {
-    console.log('\n Generating link')
     return generateLinkUtils.generateLink({
       factoryAddress: factory,
       chainId,

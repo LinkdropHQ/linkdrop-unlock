@@ -6,7 +6,7 @@ contract Registry is Ownable {
     mapping (address => bool) whitelisted;
     mapping (address => uint) fees;
 
-    uint constant public standardFee = 0.002 ether;
+    uint constant public standardFee = 0.0002 ether;
 
     function getFee(address _key) external view returns (uint) {
         return fees[_key] == 0 ? standardFee : fees[_key];
