@@ -14,8 +14,7 @@ import config from 'config-dashboard'
     loading,
     currentAddress,
     errors,
-    chainId,
-    proxyAddress
+    chainId
   },
   tokens: {
     ethBalanceFormatted,
@@ -29,6 +28,7 @@ import config from 'config-dashboard'
     ethAmount,
     tokenAmount,
     linksAmount,
+    proxyAddress,
     tokenType,
     tokenSymbol
   } }) => ({
@@ -48,7 +48,7 @@ import config from 'config-dashboard'
   erc20BalanceFormatted
 }))
 @translate('pages.campaignCreate')
-class Step3 extends React.Component {
+class Step2 extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -101,7 +101,6 @@ class Step3 extends React.Component {
         })
       }
     } else if (tokenType === 'erc20') {
-      console.log({ erc20BalanceFormatted, prevErc20BalanceFormatted })
       if (erc20BalanceFormatted && Number(erc20BalanceFormatted) > 0 && erc20BalanceFormatted !== prevErc20BalanceFormatted) {
         this.setState({
           loading: false
@@ -183,4 +182,4 @@ class Step3 extends React.Component {
   }
 }
 
-export default Step3
+export default Step2

@@ -7,18 +7,10 @@ import Step3 from './step-3'
 import Step4 from './step-4'
 import Step5 from './step-5'
 
-@actions(({ campaigns: { items }, user: { step, privateKey, proxyAddress, currentAddress } }) => ({ items, proxyAddress, currentAddress, step, privateKey }))
+@actions(({ campaigns: { items, proxyAddress }, user: { step, privateKey, currentAddress } }) => ({ items, proxyAddress, currentAddress, step, privateKey }))
 @translate('pages.campaignCreate')
 class CampaignCreate extends React.Component {
   componentDidMount () {
-    const { proxyAddress, currentAddress, items } = this.props
-    if (!proxyAddress) {
-      this.actions().campaigns.createProxyAddress({ currentAddress })
-    }
-    if (items && items.length > 0) {
-      window.location.href = '#/campaigns/'
-    }
-
     this.actions().user.setStep({ step: 1 })
   }
 

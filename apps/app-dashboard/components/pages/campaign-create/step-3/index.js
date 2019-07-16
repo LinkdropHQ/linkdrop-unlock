@@ -12,8 +12,7 @@ import numeral from 'numeral'
     loading,
     currentAddress,
     errors,
-    chainId,
-    proxyAddress
+    chainId
   },
   tokens: {
     ethBalanceFormatted,
@@ -26,6 +25,7 @@ import numeral from 'numeral'
   campaigns: {
     ethAmount,
     tokenAmount,
+    proxyAddress,
     linksAmount,
     tokenType,
     tokenSymbol
@@ -47,7 +47,7 @@ import numeral from 'numeral'
 })
 )
 @translate('pages.campaignCreate')
-class Step4 extends React.Component {
+class Step3 extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -128,4 +128,4 @@ class Step4 extends React.Component {
   }
 }
 
-export default Step4
+export default Step3

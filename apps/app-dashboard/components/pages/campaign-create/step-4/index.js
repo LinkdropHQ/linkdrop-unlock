@@ -6,8 +6,7 @@ import { ProgressBar } from 'components/common'
 @actions(({
   user: {
     currentAddress,
-    chainId,
-    version
+    chainId
   },
   campaigns: {
     ethAmount,
@@ -25,34 +24,32 @@ import { ProgressBar } from 'components/common'
   links,
   tokenSymbol,
   chainId,
-  version,
   tokenType
 }))
 @translate('pages.campaignCreate')
-class Step5 extends React.Component {
+class Step4 extends React.Component {
   componentDidMount () {
-    const { chainId, currentAddress } = this.props
-    this.actions().user.prepareVersionVar({ chainId, currentAddress })
+    const { chainId, currentAddress, tokenType } = this.props
+    if (tokenType === 'eth') {
+      this.actions().tokens.generateETHLink({ chainId, currentAddress })
+    } else if (tokenType === 'erc20') {
+      this.actions().tokens.generateERC20Link({ chainId, currentAddress })
+    }
   }
 
-  componentWillReceiveProps ({ links, version }) {
+  componentWillReceiveProps ({ links }) {
     const {
       linksAmount,
       links: prevLinks,
       chainId,
       currentAddress,
-      version: prevVersion,
       tokenType
     } = this.props
     // save campaign when links ready
     if (links.length === linksAmount) {
       return this.actions().campaigns.save({ links })
     }
-
-    if (
-      (links && links.length > 0 && links.length > prevLinks.length && links.length < linksAmount) ||
-      (version != null && !prevVersion && prevVersion !== version)
-    ) {
+    if (links && links.length > 0 && links.length > prevLinks.length && links.length < linksAmount) {
       if (tokenType === 'eth') {
         this.actions().tokens.generateETHLink({ chainId, currentAddress })
       } else if (tokenType === 'erc20') {
@@ -73,4 +70,4 @@ class Step5 extends React.Component {
   }
 }
 
-export default Step5
+export default Step4

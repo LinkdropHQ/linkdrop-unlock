@@ -12,7 +12,7 @@ const LinkdropSDK = ({
   jsonRpcUrl = `https://${chain}.infura.io`,
   apiHost = `https://${chain}.linkdrop.io`,
   claimHost = 'https://claim.linkdrop.io',
-  factory = '0x01e7F4C72182Eb4421AFB1Ec99cee9Ef5B83EE18'
+  factory = '0x2882D3a779aEFA7Be092331B088AE06F6A7198D6'
 }) => {
   if (linkdropMasterAddress == null || linkdropMasterAddress === '') {
     throw new Error('Please provide linkdrop master address')

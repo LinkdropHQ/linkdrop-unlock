@@ -1,16 +1,13 @@
-import { put } from 'redux-saga/effects'
-import LinkdropSDK from 'sdk/src/index'
-import configs from 'config-dashboard'
-import { factory } from 'app.config.js'
-const ls = (typeof window === 'undefined' ? {} : window).localStorage
+import { put, select } from 'redux-saga/effects'
 
 const generator = function * ({ payload }) {
   try {
-    const { address } = payload
+    const sdk = yield select(generator.selectors.sdk)
+    const { campaignId = 0 } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    const proxyAddr = yield LinkdropSDK.computeProxyAddress(factory, address, configs.initcode)
+    const proxyAddr = yield sdk.getProxyAddress(campaignId)
+    yield put({ type: 'CAMPAIGNS.SET_ID', payload: { id: campaignId } })
     yield put({ type: 'CAMPAIGNS.SET_PROXY_ADDRESS', payload: { proxyAddress: proxyAddr } })
-    ls && ls.setItem && ls.setItem('proxyAddr', proxyAddr)
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
   } catch (e) {
     console.error(e)
@@ -19,5 +16,6 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
-  step: ({ user: { step } }) => step
+  step: ({ user: { step } }) => step,
+  sdk: ({ user: { sdk } }) => sdk
 }

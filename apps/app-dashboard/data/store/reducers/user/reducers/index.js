@@ -5,8 +5,8 @@ import setChainId from './set-chain-id'
 import setPrivateKey from './set-private-key'
 import setTxHash from './set-tx-hash'
 import setTransactionStatus from './set-transaction-status'
-import setProxyAddress from './set-proxy-address'
 import setVersionVar from './set-version-var'
+import setSdk from './set-sdk'
 
 export default {
   setLoading,
@@ -16,6 +16,6 @@ export default {
   setPrivateKey,
   setTxHash,
   setTransactionStatus,
-  setProxyAddress,
-  setVersionVar
+  setVersionVar,
+  setSdk
 }

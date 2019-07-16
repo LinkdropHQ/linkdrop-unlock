@@ -14,9 +14,9 @@ import EthTexts from './eth-texts'
 import config from 'config-dashboard'
 import Immutable from 'immutable'
 
-@actions(({ user: { chainId, currentAddress, loading, proxyAddress }, tokens: { assets, symbol } }) => ({ assets, chainId, symbol, loading, proxyAddress, currentAddress }))
+@actions(({ user: { chainId, currentAddress, loading }, campaigns: { items, proxyAddress }, tokens: { assets, symbol } }) => ({ assets, chainId, symbol, loading, proxyAddress, currentAddress, items }))
 @translate('pages.campaignCreate')
-class Step2 extends React.Component {
+class Step1 extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -32,7 +32,10 @@ class Step2 extends React.Component {
   }
 
   componentDidMount () {
-    const { currentAddress, chainId } = this.props
+    const { currentAddress, chainId, proxyAddress, items } = this.props
+    if (!proxyAddress) {
+      this.actions().campaigns.createProxyAddress({ campaignId: items.length })
+    }
     if (Number(chainId) === 1) {
       this.actions().tokens.getAssets({ currentAddress })
     }
@@ -155,7 +158,6 @@ class Step2 extends React.Component {
 
   renderTexts ({ ethAmount, tokenAddress, linksAmount, tokenAmount, tokenSymbol, addEth, tokenType }) {
     const value = tokenType === 'erc20' ? tokenAmount : ethAmount
-    console.log({ tokenSymbol, tokenType })
     if (tokenType === 'erc20') {
       if (tokenSymbol === 'ERC20') {
         if (!linksAmount || !value || !tokenAddress) {
@@ -218,7 +220,7 @@ class Step2 extends React.Component {
   }
 }
 
-export default Step2
+export default Step1
 
 const TOKENS = [
   {

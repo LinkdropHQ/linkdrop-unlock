@@ -28,8 +28,8 @@ class Campaign {
     })
   }
 
-  createProxyAddress ({ currentAddress }) {
-    this.actions.dispatch({ type: '*CAMPAIGNS.CREATE_PROXY_ADDRESS', payload: { address: currentAddress } })
+  createProxyAddress ({ campaignId }) {
+    this.actions.dispatch({ type: '*CAMPAIGNS.CREATE_PROXY_ADDRESS', payload: { campaignId } })
   }
 
   proceedPayment ({ cardNumber }) {
@@ -50,11 +50,12 @@ class Campaign {
     })
   }
 
-  getCSV ({ links }) {
+  getCSV ({ links, id }) {
     this.actions.dispatch({
       type: '*CAMPAIGNS.GET_CSV',
       payload: {
-        links
+        links,
+        id
       }
     })
   }

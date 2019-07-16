@@ -11,10 +11,6 @@ class NextButton extends React.Component {
     const ethAmountFinal = numeral(ethAmount).add(serviceFee).multiply(linksAmount).value()
     return <Button onClick={_ => {
       if (tokenType === 'eth') {
-        return console.log({
-          ethAmount: ethAmountFinal,
-          account: currentAddress
-        })
         this.actions().metamask.sendEth({
           ethAmount: ethAmountFinal,
           account: currentAddress,

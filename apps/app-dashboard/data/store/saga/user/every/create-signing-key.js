@@ -44,5 +44,5 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
-  proxyAddress: ({ user: { proxyAddress } }) => proxyAddress
+  proxyAddress: ({ campaigns: { proxyAddress } }) => proxyAddress
 }
