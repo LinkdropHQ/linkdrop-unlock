@@ -124,7 +124,7 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     * @param _linkdropSigner Address corresponding to signing key
     * @return True if success
     */
-    function addSigner(address _linkdropSigner) external onlyLinkdropMasterOrOwner returns (bool) {
+    function addSigner(address _linkdropSigner) external payable onlyLinkdropMasterOrOwner returns (bool) {
         require(_linkdropSigner != address(0), "Invalid address");
         isLinkdropSigner[_linkdropSigner] = true;
         return true;
