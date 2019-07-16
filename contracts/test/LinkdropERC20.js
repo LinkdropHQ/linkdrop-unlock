@@ -176,7 +176,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       version,
-      chainId
+      chainId,
+      proxyAddress
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -222,7 +223,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       version,
-      chainId
+      chainId,
+      proxyAddress
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -271,7 +273,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       version,
-      chainId
+      chainId,
+      proxyAddress
     )
     await expect(proxy.cancel(link.linkId, { gasLimit: 200000 })).to.emit(
       proxy,
@@ -289,7 +292,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       version,
-      chainId
+      chainId,
+      proxyAddress
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -328,7 +332,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       version,
-      chainId
+      chainId,
+      proxyAddress
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -361,7 +366,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       0,
       version,
-      chainId
+      chainId,
+      proxyAddress
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -396,7 +402,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       invalidVersion,
-      chainId
+      chainId,
+      proxyAddress
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -430,7 +437,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       version,
-      invalidChainId
+      invalidChainId,
+      proxyAddress
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -463,7 +471,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       version,
-      chainId
+      chainId,
+      proxyAddress
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -559,7 +568,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       version,
-      chainId
+      chainId,
+      proxyAddress
     )
 
     let fakeLink = await createLink(
@@ -569,7 +579,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       version,
-      chainId
+      chainId,
+      proxyAddress
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(
@@ -601,7 +612,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       version,
-      chainId
+      chainId,
+      proxyAddress
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -650,7 +662,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       version,
-      chainId
+      chainId,
+      proxyAddress
     )
     receiverAddress = ethers.Wallet.createRandom().address
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
@@ -713,7 +726,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       version,
-      chainId
+      chainId,
+      proxyAddress
     )
 
     receiverAddress = ethers.Wallet.createRandom().address
@@ -768,7 +782,8 @@ describe('ETH/ERC20 linkdrop tests', () => {
       tokenAmount,
       expirationTime,
       version,
-      chainId
+      chainId,
+      proxyAddress
     )
 
     receiverAddress = ethers.Wallet.createRandom().address

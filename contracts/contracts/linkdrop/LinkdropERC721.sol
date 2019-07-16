@@ -40,7 +40,8 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
                     _expiration,
                     version,
                     chainId,
-                    _linkId
+                    _linkId,
+                    address(this)
                 )
             )
         );
