@@ -12,7 +12,7 @@ class TokenAddressInput extends React.Component {
     return <div className={styles.tokenAddress}>
       <h3 className={styles.subtitle}>{this.t('titles.tokenAddress')}</h3>
       <div className={styles.tokensAddressContainer}>
-        <Input className={styles.inputFullSize} value={tokenAddress || ''} onChange={({ value }) => setField({ field: 'tokenAddress', value })} />
+        <Input extraInfo placeholder={this.t('titles.tokenAddressPlaceholder')} className={styles.inputFullSize} value={tokenAddress || ''} onChange={({ value }) => setField({ field: 'tokenAddress', value })} />
       </div>
     </div>
   }

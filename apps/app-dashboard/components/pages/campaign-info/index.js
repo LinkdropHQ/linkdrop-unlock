@@ -1,7 +1,7 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import Info from '../campaign-create/step-6'
+import Info from '../campaign-create/step-5'
 
 @actions(({ campaigns: { items } }) => ({ items }))
 @translate('pages.campaignInfo')

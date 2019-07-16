@@ -1,125 +1,76 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import classNames from 'classnames'
-import { Button, PageHeader } from 'components/common'
-import { RetinaImage, Loading } from 'linkdrop-ui-kit'
-import { getImages } from 'helpers'
-import config from 'config-dashboard'
+import { ProgressBar } from 'components/common'
 
 @actions(({
   user: {
-    loading,
     currentAddress,
-    errors,
     chainId,
-    proxyAddress
-  },
-  tokens: {
-    ethBalanceFormatted,
-    erc20BalanceFormatted,
-    address
-  },
-  metamask: {
-    status: metamaskStatus
+    version
   },
   campaigns: {
     ethAmount,
     tokenAmount,
     linksAmount,
+    tokenSymbol,
     tokenType,
-    tokenSymbol
-  } }) => ({
+    links
+  }
+}) => ({
   ethAmount,
-  tokenAmount,
-  metamaskStatus,
-  linksAmount,
-  errors,
-  tokenSymbol,
-  loading,
   currentAddress,
+  tokenAmount,
+  linksAmount,
+  links,
+  tokenSymbol,
   chainId,
-  address,
-  proxyAddress,
-  tokenType,
-  ethBalanceFormatted,
-  erc20BalanceFormatted
-})
-)
+  version,
+  tokenType
+}))
 @translate('pages.campaignCreate')
-class Step4 extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      loading: false
-    }
+class Step5 extends React.Component {
+  componentDidMount () {
+    const { chainId, currentAddress } = this.props
+    this.actions().user.prepareVersionVar({ chainId, currentAddress })
   }
 
-  componentWillReceiveProps ({ metamaskStatus, errors, ethBalanceFormatted, erc20BalanceFormatted }) {
+  componentWillReceiveProps ({ links, version }) {
     const {
-      metamaskStatus: prevMetamaskStatus,
-      errors: prevErrors,
-      proxyAddress,
-      ethBalanceFormatted: prevEthBalanceFormatted,
-      chainId
+      linksAmount,
+      links: prevLinks,
+      chainId,
+      currentAddress,
+      version: prevVersion,
+      tokenType
     } = this.props
-
-    if (metamaskStatus && metamaskStatus === 'finished' && metamaskStatus !== prevMetamaskStatus) {
-      return this.setState({
-        loading: true
-      }, _ => {
-        this.intervalEthCheck = window.setInterval(_ => this.actions().tokens.getEthBalance({ account: proxyAddress, chainId }), config.balanceCheckInterval)
-      })
-    }
-    if (errors && errors[0] && prevErrors.length === 0 && errors[0] !== prevErrors[0]) {
-      window.alert(this.t(`errors.${errors[0]}`))
-      this.setState({
-        loading: false
-      }, _ => {
-        this.intervalEthCheck && window.clearInterval(this.intervalEthCheck)
-      })
+    // save campaign when links ready
+    if (links.length === linksAmount) {
+      return this.actions().campaigns.save({ links })
     }
 
-    if (ethBalanceFormatted && Number(ethBalanceFormatted) > 0 && ethBalanceFormatted !== prevEthBalanceFormatted) {
-      this.setState({
-        loading: false
-      }, _ => {
-        this.intervalEthCheck && window.clearInterval(this.intervalEthCheck)
-        window.alert('found ETH!')
-        window.setTimeout(_ => this.actions().user.setStep({ step: 5 }), config.nextStepTimeout)
-      })
+    if (
+      (links && links.length > 0 && links.length > prevLinks.length && links.length < linksAmount) ||
+      (version != null && !prevVersion && prevVersion !== version)
+    ) {
+      if (tokenType === 'eth') {
+        this.actions().tokens.generateETHLink({ chainId, currentAddress })
+      } else if (tokenType === 'erc20') {
+        this.actions().tokens.generateERC20Link({ chainId, currentAddress })
+      }
     }
   }
 
   render () {
-    const { loading: stateLoading } = this.state
-    const { linksAmount, ethAmount, currentAddress, tokenType, loading } = this.props
+    const { linksAmount, links } = this.props
     return <div className={styles.container}>
-      {(loading || stateLoading) && <Loading withOverlay />}
-      <PageHeader title={this.t('titles.sendEth', { ethAmount: ethAmount * linksAmount })} />
-      <div className={styles.main}>
-        <div className={styles.description}>
-          {tokenType === 'erc20' && <p className={classNames(styles.text, styles.textMain)}>{this.t('texts._9')}</p>}
-          <p className={styles.text}>{this.t('texts._10')}</p>
-          <p className={styles.text}>{this.t('texts._11', { ethAmount: ethAmount * linksAmount })}</p>
-        </div>
-        <div className={styles.scheme}>
-          <p className={classNames(styles.text, styles.centered)}>{this.t('texts._12')}</p>
-          <RetinaImage width={255} {...getImages({ src: 'key-preview' })} />
-        </div>
-      </div>
-      <div className={styles.controls}>
-        <Button
-          disabled={loading || stateLoading}
-          onClick={_ => {
-            this.actions().metamask.sendEth({ ethAmount: ethAmount * linksAmount, account: currentAddress })
-          }}
-        >
-          {this.t('buttons.send')}
-        </Button>
+      <div className={styles.content}>
+        <div className={styles.title}>{this.t('titles.generatingLinks')}</div>
+        <div className={styles.subtitle} dangerouslySetInnerHTML={{ __html: this.t('titles.loadingProcess') }} />
+        <ProgressBar current={links.length} max={linksAmount} />
       </div>
     </div>
   }
 }
 
-export default Step4
+export default Step5

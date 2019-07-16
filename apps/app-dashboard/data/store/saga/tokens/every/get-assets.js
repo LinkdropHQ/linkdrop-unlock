@@ -3,8 +3,9 @@ import { getTokensTrustwallet } from 'data/api/tokens'
 
 const generator = function * ({ payload }) {
   try {
-    const { account } = payload
-    const { total, docs } = yield call(getTokensTrustwallet, { wallet: account })
+    const { currentAddress } = payload
+    console.log({ currentAddress })
+    const { total, docs } = yield call(getTokensTrustwallet, { account: currentAddress })
     if (total && total > 0) {
       yield put({ type: 'TOKENS.SET_ASSETS', payload: { assets: docs } })
     }

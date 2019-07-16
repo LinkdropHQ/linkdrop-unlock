@@ -1,28 +1,43 @@
 /* global web3 */
-
 import { put, select } from 'redux-saga/effects'
-import { utils } from 'ethers'
-import { mocks } from 'linkdrop-commons'
+import { ethers, utils } from 'ethers'
+import { factory } from 'app.config.js'
+import { defineNetworkName } from 'linkdrop-commons'
+import LinkdropFactory from 'contracts/LinkdropFactory.json'
+import LinkdropMastercopy from 'contracts/LinkdropMastercopy.json'
 
-let web3Obj
-try {
-  web3Obj = web3
-} catch (e) {
-  web3Obj = new mocks.Web3Mock()
-}
 const generator = function * ({ payload }) {
   try {
-    yield put({ type: 'METAMASK.SET_STATUS', payload: { status: 'initial' } })
-    const { ethAmount, account: fromWallet } = payload
-    const proxyAddress = yield select(generator.selectors.proxyAddress)
+    yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
+    const { chainId, ethAmount, account: fromWallet } = payload
+    const newWallet = ethers.Wallet.createRandom()
+    const { address: wallet, privateKey } = newWallet
+    const networkName = defineNetworkName({ chainId })
+    const provider = yield ethers.getDefaultProvider(networkName)
     const ethValueWei = utils.parseEther(String(ethAmount))
-    const promise = new Promise((resolve, reject) => {
-      web3Obj.eth.sendTransaction({ to: proxyAddress, gas: 73000, from: fromWallet, value: ethValueWei }, result => resolve({ result }))
-    })
-    const { result } = yield promise
-    if (String(result) === 'null') {
-      yield put({ type: 'METAMASK.SET_STATUS', payload: { status: 'finished' } })
+    const factoryContract = yield new ethers.Contract(factory, LinkdropFactory.abi, provider)
+    const isDeployed = yield factoryContract.isDeployed(fromWallet)
+    let data
+    let to
+    if (!isDeployed) {
+      data = yield factoryContract.interface.functions.deployProxyWithSigner.encode([wallet])
+      to = factory
+    } else {
+      const proxyAddress = yield select(generator.selectors.proxyAddress)
+      const proxyContract = yield new ethers.Contract(proxyAddress, LinkdropMastercopy.abi, provider)
+      data = yield proxyContract.interface.functions.addSigner.encode([wallet])
+      to = proxyAddress
     }
+    const promise = new Promise((resolve, reject) => {
+      web3.eth.sendTransaction({ to, from: fromWallet, value: ethValueWei, data }, (err, txHash) => {
+        if (err) { console.error(err); reject(err) }
+        return resolve({ txHash })
+      })
+    })
+    const { txHash } = yield promise
+    yield put({ type: 'USER.SET_TX_HASH', payload: { txHash } })
+    yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
+    yield put({ type: 'USER.SET_PRIVATE_KEY', payload: { privateKey } })
   } catch (e) {
     console.error(e)
   }

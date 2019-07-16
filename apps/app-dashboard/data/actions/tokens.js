@@ -3,8 +3,8 @@ class Tokens {
     this.actions = actions
   }
 
-  getAssets ({ account }) {
-    this.actions.dispatch({ type: '*TOKENS.GET_ASSETS', payload: { account } })
+  getAssets ({ currentAddress }) {
+    this.actions.dispatch({ type: '*TOKENS.GET_ASSETS', payload: { currentAddress } })
   }
 
   getTokenERC20Data ({ tokenAddress, chainId }) {
@@ -33,6 +33,14 @@ class Tokens {
 
   generateETHLink ({ chainId, currentAddress }) {
     this.actions.dispatch({ type: '*TOKENS.GENERATE_ETH_LINK', payload: { chainId, currentAddress } })
+  }
+
+  setTokenERC20Data ({ tokenSymbol }) {
+    this.actions.dispatch({ type: '*TOKENS.SET_ERC20_DATA', payload: { tokenSymbol } })
+  }
+
+  emptyTokenERC20Data () {
+    this.actions.dispatch({ type: '*TOKENS.EMPTY_ERC20_DATA' })
   }
 }
 

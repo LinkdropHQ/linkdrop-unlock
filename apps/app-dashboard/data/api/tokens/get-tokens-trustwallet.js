@@ -2,9 +2,9 @@ import fetch from '../fetch'
 import { prepareGetParams } from 'data/api/helpers'
 import configs from 'config-dashboard'
 
-export default ({ wallet }) => {
+export default ({ account }) => {
   const getParams = prepareGetParams({
-    address: wallet
+    address: account
   })
   return fetch(`${configs.trustWallet}/tokens${getParams}`)
 }

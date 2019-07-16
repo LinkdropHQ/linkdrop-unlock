@@ -7,6 +7,7 @@
   padding: 40px;
   border-radius: 5px;
   width: 100%;
+  position: relative;
 }
 
 .title {
@@ -19,96 +20,71 @@
   margin-bottom: 20px;
 }
 
-.form {
+.summary {
   flex: 1 0 550px;
   padding-right: 50px;
   border-right: 1px solid $greyStrokeColor;
 }
 
-.summary {
+.description {
   padding-left: 50px;
   width: 100%;
 }
 
-.subtitle {
-  margin: 0 0 14px;
-  font-size: 16px;
-}
-
-.input {
-  max-width: 150px;
-}
-
-.inputFullSize {
-  max-width: none;
-  width: 100%;
-}
-
-.chooseTokens, .tokensAmount, , .tokenAddress {
-  margin-bottom: 20px;
-}
-
-.tokensAmountContainer {
+.summaryBox {
   display: flex;
-  align-items: center;
+  margin-bottom: 80px;
+
+  div:first-child {
+    margin-right: 50px;
+  }
+
+  p {
+    margin: 0;
+  }
 }
 
-.extraButton {
-  padding: 0px 25px;
+.data {
+  margin-bottom: 40px;
+
+  &:last-child {
+    margin-bottom: 0px;
+  }
 }
 
-.ethInput {
-  width: 150px;
+.dataTitle {
+  font-weight: normal;
+  font-size: 16px;
+  margin: 0 0 10px;
+  font-family: 'Inter-Regular'
+}
+
+.dataContent {
+  font-family: 'Inter-Bold';
+  margin-bottom: 6px;
+}
+
+.extraDataContent {
+  color: $dbGrey;
 }
 
 .text {
   font-size: 16px;
-  margin: 0px;
-
-  &.textMargin15 {
-    margin-bottom: 15px;
-  }
-
-  &.textMargin30 {
-    margin-bottom: 30px;
-  }
-
-  &.textGrey {
-    color: $dbGrey;
-  }
+  margin-bottom: 20px;
 }
 
-.ethAddButton, .ethAddInput, .iconInfoButton, .iconInfoText {
-  padding-left: 40px;
-  position: relative;
+
+.price {
+
 }
 
-.iconInfoText {
-  display: flex;
-  align-items: center;
+.input {
+  min-width: 450px;
 }
 
-.linksAmountContainer {
-  display: flex;
-  align-items: center;
-
-  span {
-    margin-right: 15px;
-  }
-}
-
-.ethAddInput {
-  & > svg {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 10px;
-    cursor: pointer;
-  }
-  span {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
+.priceSummary {
+  margin-bottom: 25px;
+  strong {
+    font-family: 'Inter-Bold';
   }
 }

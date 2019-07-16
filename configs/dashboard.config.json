@@ -6,5 +6,5 @@
   "trustWallet": "https://api.trustwalletapp.com",
   "expirationTime": 1900000000000,
   "initcode": "0x6352c7420d6000526103ff60206004601c335afa6040516060f3",
-  "linkPrice": 0.2
+  "linkPrice": 0.002
 }

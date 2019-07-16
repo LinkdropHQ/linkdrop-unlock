@@ -17,7 +17,7 @@ class Header extends React.Component {
         <div className={styles.title}>
           {currentPage}
         </div>
-        {step && <ProgressBar stepsCount={4} currentStep={step} />}
+        {step && <ProgressBar stepsCount={3} currentStep={step} />}
       </div>
       <div className={styles.helpDesk}>
         {this.t('help')}<Icons.ExternalLink />

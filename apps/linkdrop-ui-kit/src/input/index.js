@@ -3,6 +3,7 @@ import styles from './styles.module'
 import classNames from 'classnames'
 import InputMask from 'react-input-mask'
 import PropTypes from 'prop-types'
+import Icons from '../icons'
 import NumberFormat from 'react-number-format'
 
 class Input extends React.Component {
@@ -23,11 +24,16 @@ class Input extends React.Component {
   }
 
   render () {
-    const { mask, className, disabled, placeholder, centered, numberInput } = this.props
+    const { mask, className, disabled, placeholder, centered, numberInput, extraInfo } = this.props
     const { value } = this.state
     if (numberInput) return this.renderNumberInput()
     if (mask) return this.renderMaskInput()
-    return <input placeholder={placeholder} disabled={disabled} value={value} className={this.defineClassNames({ className, disabled, centered })} onChange={e => this.changeValue(e)} />
+    return <div className={styles.wrapper}>
+      {extraInfo && <div className={styles.extraInfo}>
+        <Icons.InformationIcon />
+      </div>}
+      <input placeholder={placeholder} disabled={disabled} value={value} className={this.defineClassNames({ className, disabled, centered })} onChange={e => this.changeValue(e)} />
+    </div>
   }
 
   changeValue (e) {
@@ -45,15 +51,19 @@ class Input extends React.Component {
   renderMaskInput () {
     const { value } = this.state
     const { onChange, className, disabled } = this.props
-    return <InputMask {...this.props} value={value} className={this.defineClassNames({ className, disabled })} onChange={e => onChange && onChange({ value: e.target.value })}>
-      {(inputProps) => <input {...inputProps} />}
-    </InputMask>
+    return <div className={styles.wrapper}>
+      <InputMask {...this.props} value={value} className={this.defineClassNames({ className, disabled })} onChange={e => onChange && onChange({ value: e.target.value })}>
+        {(inputProps) => <input {...inputProps} />}
+      </InputMask>
+    </div>
   }
 
   renderNumberInput () {
     const { value } = this.state
     const { className, suffix, disabled, centered, format } = this.props
-    return <NumberFormat format={format} disabled={disabled} renderText={value => !disabled && <div>{value}</div>} value={value || 0} suffix={` ${suffix || ''}`} className={this.defineClassNames({ className, disabled, centered })} onChange={e => this.changeValue(e)} />
+    return <div className={styles.wrapper}>
+      <NumberFormat format={format} disabled={disabled} renderText={value => !disabled && <div>{value}</div>} value={value || 0} suffix={` ${suffix || ''}`} className={this.defineClassNames({ className, disabled, centered })} onChange={e => this.changeValue(e)} />
+    </div>
   }
 }
 

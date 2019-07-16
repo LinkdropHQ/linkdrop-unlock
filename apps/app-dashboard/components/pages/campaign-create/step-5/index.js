@@ -1,76 +1,51 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import { ProgressBar } from 'components/common'
+import classNames from 'classnames'
+import { Button, PageHeader } from 'components/common'
 
-@actions(({
-  user: {
-    currentAddress,
-    chainId,
-    version
-  },
-  campaigns: {
-    ethAmount,
-    tokenAmount,
-    linksAmount,
-    tokenSymbol,
-    tokenType,
-    links
-  }
-}) => ({
-  ethAmount,
-  currentAddress,
-  tokenAmount,
-  linksAmount,
-  links,
-  tokenSymbol,
-  chainId,
-  version,
-  tokenType
-}))
+@actions(({ campaigns: { items, current } }) => ({ items, current }))
 @translate('pages.campaignCreate')
-class Step5 extends React.Component {
-  componentDidMount () {
-    const { chainId, currentAddress } = this.props
-    this.actions().user.prepareVersionVar({ chainId, currentAddress })
-  }
-
-  componentWillReceiveProps ({ links, version }) {
-    const {
-      linksAmount,
-      links: prevLinks,
-      chainId,
-      currentAddress,
-      version: prevVersion,
-      tokenType
-    } = this.props
-    // save campaign when links ready
-    if (links.length === linksAmount) {
-      return this.actions().campaigns.save({ links })
-    }
-
-    if (
-      (links && links.length > 0 && links.length > prevLinks.length && links.length < linksAmount) ||
-      (version != null && !prevVersion && prevVersion !== version)
-    ) {
-      if (tokenType === 'eth') {
-        this.actions().tokens.generateETHLink({ chainId, currentAddress })
-      } else if (tokenType === 'erc20') {
-        this.actions().tokens.generateERC20Link({ chainId, currentAddress })
-      }
-    }
-  }
-
+class Step6 extends React.Component {
   render () {
-    const { linksAmount, links } = this.props
+    const { items, current, campaignToCheck } = this.props
+    const currentCampaign = items.find(item => item.id === Number(campaignToCheck || current))
+    const links = (currentCampaign || {}).links
     return <div className={styles.container}>
       <div className={styles.content}>
-        <div className={styles.title}>{this.t('titles.generatingLinks')}</div>
-        <div className={styles.subtitle} dangerouslySetInnerHTML={{ __html: this.t('titles.loadingProcess') }} />
-        <ProgressBar current={links.length} max={linksAmount} />
+        <div className={styles.automatic}>
+          <PageHeader title={this.t('titles.getTheLinks')} />
+          <p className={styles.text}>{this.t('titles.linkdropSdk')}</p>
+          <p className={classNames(styles.text, styles.textGrey, styles.textMargin40)}>{this.t('titles.automaticDistribution')}</p>
+          <p className={styles.text}>{this.t('titles.nodeJsSupport')}</p>
+          <p className={styles.text}>{this.t('titles.otherPlatforms')}</p>
+          <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.contactUs')}</p>
+          <Button className={classNames(styles.button, styles.buttonMargin60)}>{this.t('buttons.useLinkdropSdk')}</Button>
+          <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.codeDetails')}</p>
+          <textarea disabled className={styles.codeBlock}>
+            {this.t('texts.codeBlock')}
+          </textarea>
+          <p className={classNames(styles.text, styles.textMargin10)}>{this.t('titles.contractParams')}</p>
+          <p className={classNames(styles.text, styles.textMargin10)}>{this.t('titles.address', { address: 'asdasdasd' })}</p>
+          <p className={classNames(styles.text, styles.textMargin10)}>{this.t('titles.verificationKey', { verificationKey: 'asdasdasd' })}</p>
+        </div>
+        <div className={styles.manual}>
+          <p className={styles.text}>{this.t('titles.downloadFile')}</p>
+          <p className={classNames(styles.text, styles.textGrey, styles.textMargin40)}>{this.t('titles.manual')}</p>
+          <div className={styles.buttonsContainer}>
+            <Button onClick={_ => links && this.actions().campaigns.getCSV({ links })} className={styles.button}>{this.t('buttons.downloadCsv')}</Button>
+            <Button transparent className={styles.button}>{this.t('buttons.qr')}</Button>
+          </div>
+          <p className={classNames(styles.text, styles.textMargin60)} dangerouslySetInnerHTML={{ __html: this.t('titles.howToClaimPreview') }} />
+          <p className={classNames(styles.text, styles.textBold)}>{this.t('titles.faq')}</p>
+          <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.visitHelpCenter')}</p>
+          <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.customizations')}</p>
+          <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.pauseOrStop')}</p>
+          <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.analytics')}</p>
+        </div>
       </div>
     </div>
   }
 }
 
-export default Step5
+export default Step6

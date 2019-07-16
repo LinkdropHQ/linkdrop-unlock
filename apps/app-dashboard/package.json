@@ -43,6 +43,7 @@
     "linkdrop-ui-kit": "^1.0.0",
     "moment": "^2.24.0",
     "node-sass": "^4.7.2",
+    "numeral": "^2.0.6",
     "qrcode.react": "^0.9.3",
     "react": "^16.8.6",
     "react-addons-css-transition-group": "^15.5.2",

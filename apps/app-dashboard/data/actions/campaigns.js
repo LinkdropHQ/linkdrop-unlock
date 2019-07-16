@@ -28,6 +28,10 @@ class Campaign {
     })
   }
 
+  createProxyAddress ({ currentAddress }) {
+    this.actions.dispatch({ type: '*CAMPAIGNS.CREATE_PROXY_ADDRESS', payload: { address: currentAddress } })
+  }
+
   proceedPayment ({ cardNumber }) {
     this.actions.dispatch({
       type: '*CAMPAIGNS.PROCEED_PAYMENT',

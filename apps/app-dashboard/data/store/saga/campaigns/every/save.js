@@ -31,7 +31,7 @@ const generator = function * ({ payload }) {
     ls && ls.setItem && ls.setItem('campaigns', window.btoa(campaignsStringified))
     yield put({ type: 'CAMPAIGNS.RESET_DATA' })
     yield put({ type: 'CAMPAIGNS.SET_CURRENT', payload: { current: newCampaignId } })
-    yield put({ type: 'USER.SET_STEP', payload: { step: 6 } })
+    yield put({ type: 'USER.SET_STEP', payload: { step: 5 } })
   } catch (e) {
     console.error(e)
   }

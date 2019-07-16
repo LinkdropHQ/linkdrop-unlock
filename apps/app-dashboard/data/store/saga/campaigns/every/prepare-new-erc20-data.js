@@ -10,7 +10,7 @@ const generator = function * ({ payload }) {
     yield put({ type: 'CAMPAIGNS.SET_ETH_AMOUNT', payload: { ethAmount } })
     yield put({ type: 'CAMPAIGNS.SET_LINKS_AMOUNT', payload: { linksAmount } })
     yield put({ type: 'CAMPAIGNS.SET_TOKEN_TYPE', payload: { tokenType: 'erc20' } })
-    yield put({ type: 'USER.SET_STEP', payload: { step: 3 } })
+    yield put({ type: 'USER.SET_STEP', payload: { step: 2 } })
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
   } catch (e) {
     console.error(e)

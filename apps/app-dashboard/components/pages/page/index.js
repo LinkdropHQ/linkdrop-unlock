@@ -36,7 +36,10 @@ class Page extends React.Component {
       <div className={styles.easterEgg} onClick={_ => this.emptyLs()} />
       <Aside />
       <div className={styles.mainWrapper}>
-        <Scrollbars style={{ heigth: '100%', width: '100%' }}>
+        <Scrollbars style={{
+          heigth: '100%',
+          width: '100%'
+        }}>
           <div className={styles.main}>
             <Header />
             {content}

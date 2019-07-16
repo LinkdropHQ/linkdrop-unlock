@@ -1,22 +1,34 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
-import styles from '../styles.module'
 import { Button } from 'components/common'
+import numeral from 'numeral'
 
-@actions(_ => ({}))
+@actions(({ user: { chainId } }) => ({ chainId }))
 @translate('pages.campaignCreate')
 class NextButton extends React.Component {
   render () {
-    const { ethAmount = 0, tokenSymbol, tokenAmount = 0, linksAmount = 0, tokenType } = this.props
-    let action
-    if (tokenType === 'eth') {
-      action = _ => this.actions().campaigns.prepareNewEthData({ ethAmount, linksAmount, tokenSymbol, tokenType })
-    } else if (tokenType === 'erc20') {
-      action = _ => this.actions().campaigns.prepareNewERC20Data({ tokenAmount, ethAmount, linksAmount, tokenSymbol, tokenType })
-    }
-    return <div className={styles.controls}>
-      <Button onClick={action}>{this.t('buttons.next')}</Button>
-    </div>
+    const { tokenType, chainId, tokenAmount, currentAddress, linksAmount, ethAmount, serviceFee } = this.props
+    const ethAmountFinal = numeral(ethAmount).add(serviceFee).multiply(linksAmount).value()
+    return <Button onClick={_ => {
+      if (tokenType === 'eth') {
+        return console.log({
+          ethAmount: ethAmountFinal,
+          account: currentAddress
+        })
+        this.actions().metamask.sendEth({
+          ethAmount: ethAmountFinal,
+          account: currentAddress,
+          chainId
+        })
+      } else {
+        this.actions().metamask.sendErc20({
+          tokenAmount: tokenAmount * linksAmount,
+          account: currentAddress
+        })
+      }
+    }}>
+      {this.t(`buttons.${tokenType === 'eth' ? 'sendAndContinue' : 'approve'}`)}
+    </Button>
   }
 }
 
