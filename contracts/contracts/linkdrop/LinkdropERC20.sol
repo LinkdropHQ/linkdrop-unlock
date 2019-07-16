@@ -5,7 +5,7 @@ import "../interfaces/ILinkdropERC20.sol";
 import "./LinkdropCommon.sol";
 
 contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
-
+    using SafeMath for uint;
     /**
     * @dev Function to verify linkdrop signer's signature
     * @param _weiAmount Amount of wei to be claimed
