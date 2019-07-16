@@ -20,7 +20,7 @@ interface ILinkdropCommon {
     function withdraw() external returns (bool);
     function pause() external returns (bool);
     function unpause() external returns (bool);
-    function addSigner(address _linkdropSigner) external returns (bool);
+    function addSigner(address _linkdropSigner) external payable returns (bool);
     function removeSigner(address _linkdropSigner) external returns (bool);
     function destroy() external;
     function getMasterCopyVersion() external view returns (uint);
