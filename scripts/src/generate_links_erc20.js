@@ -27,9 +27,12 @@ const TOKEN_AMOUNT = getInt('tokenAmount')
 const PROVIDER = getProvider()
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 const CAMPAIGN_ID = getInt('CAMPAIGN_ID')
+const FACTORY_ADDRESS = getString('FACTORY_ADDRESS')
 
+// Initialize linkdrop SDK
 const linkdropSDK = LinkdropSDK({
   linkdropMasterAddress: new ethers.Wallet(LINKDROP_MASTER_PRIVATE_KEY).address,
+  factoryAddress: FACTORY_ADDRESS,
   chain: CHAIN,
   jsonRpcUrl: JSON_RPC_URL
 })

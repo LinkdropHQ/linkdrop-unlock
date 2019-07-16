@@ -1,24 +1,8 @@
 import ClaimTx from '../models/claimTx'
 import ClaimTxERC721 from '../models/claimTxERC721'
 import { newError } from '../../../scripts/src/utils'
-import configs from '../../../configs'
 const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
-const config = configs.get('server')
-
-const { jsonRpcUrl, factory, relayerPrivateKey } = config
-
-if (jsonRpcUrl == null || jsonRpcUrl === '') {
-  throw newError('Please provide json rpc url')
-}
-
-if (factory == null || factory === '') {
-  throw newError('Please provide proxy factory address')
-}
-
-if (relayerPrivateKey == null || relayerPrivateKey === '') {
-  throw newError('Please provide relayer private key')
-}
 
 export const getLastTxHash = async (req, res) => {
   const paramsHash = req.params.paramsHash

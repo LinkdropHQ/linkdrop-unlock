@@ -7,15 +7,19 @@ import { ethers } from 'ethers'
 
 const LinkdropSDK = ({
   linkdropMasterAddress,
+  factoryAddress,
   chain = 'rinkeby',
   chainId = getChainId(chain),
   jsonRpcUrl = `https://${chain}.infura.io`,
   apiHost = `https://${chain}.linkdrop.io`,
-  claimHost = 'https://claim.linkdrop.io',
-  factory = '0x8474b1c7C3E0381Cb03544B9163C82739d8DA764'
+  claimHost = 'https://claim.linkdrop.io'
 }) => {
   if (linkdropMasterAddress == null || linkdropMasterAddress === '') {
     throw new Error('Please provide linkdrop master address')
+  }
+
+  if (factoryAddress == null || factoryAddress === '') {
+    throw new Error('Please provide factory address')
   }
 
   if (chainId == null) {
@@ -27,7 +31,7 @@ const LinkdropSDK = ({
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
   const factoryContract = new ethers.Contract(
-    factory,
+    factoryAddress,
     LinkdropFactory.abi,
     provider
   )
@@ -51,7 +55,7 @@ const LinkdropSDK = ({
     campaignId = 0
   }) => {
     return generateLinkUtils.generateLink({
-      factoryAddress: factory,
+      factoryAddress,
       chainId,
       claimHost,
       linkdropMasterAddress,
@@ -74,7 +78,7 @@ const LinkdropSDK = ({
     campaignId = 0
   }) => {
     return generateLinkUtils.generateLinkERC721({
-      factoryAddress: factory,
+      factoryAddress,
       chainId,
       claimHost,
       linkdropMasterAddress,
@@ -89,7 +93,11 @@ const LinkdropSDK = ({
   }
 
   const getProxyAddress = (campaingId = 0) => {
-    return computeProxyAddress(factory, linkdropMasterAddress, campaingId)
+    return computeProxyAddress(
+      factoryAddress,
+      linkdropMasterAddress,
+      campaingId
+    )
   }
 
   const claim = async ({

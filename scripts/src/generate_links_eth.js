@@ -25,13 +25,13 @@ const EXPIRATION_TIME = getExpirationTime()
 const PROVIDER = getProvider()
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 const CAMPAIGN_ID = getInt('CAMPAIGN_ID')
-const FACTORY_ADDRESS = getString('factory')
+const FACTORY_ADDRESS = getString('FACTORY_ADDRESS')
 
 const linkdropSDK = LinkdropSDK({
   linkdropMasterAddress: new ethers.Wallet(LINKDROP_MASTER_PRIVATE_KEY).address,
   chain: CHAIN,
   jsonRpcUrl: JSON_RPC_URL,
-  factory: FACTORY_ADDRESS
+  factoryAddress: FACTORY_ADDRESS
 })
 
 export const generate = async () => {

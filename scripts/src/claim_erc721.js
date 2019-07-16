@@ -10,6 +10,7 @@ const JSON_RPC_URL = getString('jsonRpcUrl')
 const CHAIN = getString('CHAIN')
 const API_HOST = getString('API_HOST')
 const RECEIVER_ADDRESS = getString('receiverAddress')
+const FACTORY_ADDRESS = getString('FACTORY_ADDRESS')
 
 const claimERC721 = async () => {
   let spinner
@@ -37,6 +38,7 @@ const claimERC721 = async () => {
 
     const linkdropSDK = LinkdropSDK({
       linkdropMasterAddress,
+      factoryAddress: FACTORY_ADDRESS,
       chain: CHAIN,
       jsonRpcUrl: JSON_RPC_URL,
       apiHost: API_HOST

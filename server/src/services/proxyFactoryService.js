@@ -10,7 +10,7 @@ class ProxyFactoryService {
   constructor() {
     // initialize proxy factory
     this.contract = new ethers.Contract(
-      config.factory,
+      config.FACTORY_ADDRESS,
       LinkdropFactory.abi,
       relayerWalletService.relayerWallet
     )

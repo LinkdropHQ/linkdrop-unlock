@@ -10,6 +10,7 @@ const JSON_RPC_URL = getString('jsonRpcUrl')
 const CHAIN = getString('CHAIN')
 const API_HOST = getString('API_HOST')
 const RECEIVER_ADDRESS = getString('receiverAddress')
+const FACTORY_ADDRESS = getString('FACTORY_ADDRESS')
 
 const claim = async () => {
   let spinner
@@ -39,7 +40,8 @@ const claim = async () => {
       linkdropMasterAddress,
       chain: CHAIN,
       jsonRpcUrl: JSON_RPC_URL,
-      apiHost: API_HOST
+      apiHost: API_HOST,
+      factoryAddress: FACTORY_ADDRESS
     })
 
     const { error, success, txHash } = await linkdropSDK.claim({

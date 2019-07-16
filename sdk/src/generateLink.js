@@ -14,6 +14,10 @@ export const generateLink = async ({
   version,
   campaignId
 }) => {
+  if (factoryAddress === null || factoryAddress === '') {
+    throw new Error('Please provide factory address')
+  }
+
   if (chainId === null || chainId === '') {
     throw new Error('Please provide chainId')
   }
@@ -97,6 +101,10 @@ export const generateLinkERC721 = async ({
   version,
   campaignId
 }) => {
+  if (factoryAddress === null || factoryAddress === '') {
+    throw new Error('Please provide factory address')
+  }
+
   if (chainId === null || chainId === '') {
     throw new Error('Please provide chain id')
   }

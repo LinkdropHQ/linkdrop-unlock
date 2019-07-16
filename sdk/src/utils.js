@@ -91,17 +91,6 @@ export const signLink = async ({
   linkId,
   proxyAddress
 }) => {
-  console.log({
-    weiAmount,
-    tokenAddress,
-    tokenAmount,
-    expirationTime,
-    version,
-    chainId,
-    linkId,
-    proxyAddress
-  })
-
   let messageHash = ethers.utils.solidityKeccak256(
     ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address', 'address'],
     [

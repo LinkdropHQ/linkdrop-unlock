@@ -53,8 +53,6 @@ export const deploy = async () => {
     )
 
     await proxyFactory.deployed()
-
-    await proxyFactory.deployProxy(5)
   } catch (err) {
     spinner.fail(term.bold.red.str('Failed to deploy contract'))
     throw newError(err)
@@ -68,22 +66,21 @@ export const deploy = async () => {
   term.bold(`Tx Hash: ^g${txHash}\n`)
 
   // Save to scripts config
-  scriptsConfig.factory = proxyFactory.address
-
+  scriptsConfig.FACTORY_ADDRESS = proxyFactory.address
   fs.writeFile(scriptsConfigPath, JSON.stringify(scriptsConfig), err => {
     if (err) throw newError(err)
     term.bold(`Updated ^_${scriptsConfigPath}\n`)
   })
 
   // Save to server config
-  serverConfig.factory = proxyFactory.address
+  serverConfig.FACTORY_ADDRESS = proxyFactory.address
   fs.writeFile(serverConfigPath, JSON.stringify(serverConfig), err => {
     if (err) throw newError(err)
     term.bold(`Updated ^_${serverConfigPath}\n`)
   })
 
   // Save to app config
-  appConfig.factory = proxyFactory.address
+  appConfig.FACTORY_ADDRESS = proxyFactory.address
   fs.writeFile(appConfigPath, JSON.stringify(appConfig), err => {
     if (err) throw newError(err)
     term.bold(`Updated ^_${appConfigPath}\n`)
