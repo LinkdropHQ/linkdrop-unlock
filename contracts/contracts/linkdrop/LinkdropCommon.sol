@@ -3,6 +3,7 @@ pragma solidity ^0.5.6;
 import "../interfaces/ILinkdropCommon.sol";
 import "../storage/LinkdropStorage.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
 

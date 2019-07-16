@@ -5,7 +5,7 @@ import "../../interfaces/ILinkdropERC721.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 
 contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
-
+    using SafeMath for uint;
     /**
     * @dev Function to verify linkdrop signer's signature
     * @param _weiAmount Amount of wei to be claimed
