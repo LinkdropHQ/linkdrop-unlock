@@ -24,7 +24,7 @@ contract LinkdropFactoryStorage {
     mapping (bytes32 => address) public deployed;
 
     // Events
-    event Deployed(address payable owner, address payable proxy, bytes32 salt, uint timestamp);
+    event Deployed(address payable indexed owner, uint campaignId, address payable proxy, bytes32 salt, uint timestamp);
     event Destroyed(address payable owner, address payable proxy, uint timestamp);
     event SetMasterCopy(address masterCopy, uint version, uint timestamp);
 

@@ -106,7 +106,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
         // Send funds attached to proxy contract
         proxy.transfer(msg.value);
 
-        emit Deployed(_linkdropMaster, proxy, salt, now);
+        emit Deployed(_linkdropMaster, _campaignId, proxy, salt, now);
         return proxy;
     }
 
