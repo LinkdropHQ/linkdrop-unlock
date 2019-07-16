@@ -31,7 +31,7 @@ const linkdropSDK = LinkdropSDK({
   apiHost = <API_HOST>, // `https://${chain}.linkdrop.io` by default
   claimHost = <CLAIM_HOST>, // 'https://claim.linkdrop.io' by default
   factory = <LINKDROP_FACTORY_ADDRESS>, // '0x01e7F4C72182Eb4421AFB1Ec99cee9Ef5B83EE18' by default
-}) )
+}))
 ```
 
 ### Get proxy address
