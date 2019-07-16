@@ -1,10 +1,10 @@
 import { signReceiverAddress } from './utils'
-
 const ethers = require('ethers')
 const axios = require('axios')
+
 export const claim = async ({
   jsonRpcUrl,
-  host,
+  apiHost,
   weiAmount,
   tokenAddress,
   tokenAmount,
@@ -15,14 +15,14 @@ export const claim = async ({
   linkdropMasterAddress,
   linkdropSignerSignature,
   receiverAddress,
-  isApprove
+  campaignId
 }) => {
   if (jsonRpcUrl === null || jsonRpcUrl === '') {
     throw new Error('Please provide json rpc url')
   }
 
-  if (host === null || host === '') {
-    throw new Error('Please provide host')
+  if (apiHost === null || apiHost === '') {
+    throw new Error('Please provide api host')
   }
 
   if (weiAmount === null || weiAmount === '') {
@@ -65,10 +65,8 @@ export const claim = async ({
     throw new Error('Please provide receiver address')
   }
 
-  if (isApprove) {
-    if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
-      throw new Error('Please provide valid isApprove argument')
-    }
+  if (campaignId === null || campaignId === '') {
+    throw new Error('Please provide campaign id')
   }
 
   // Get provider
@@ -92,11 +90,11 @@ export const claim = async ({
     linkdropSignerSignature,
     receiverAddress,
     receiverSignature,
-    isApprove
+    campaignId
   }
   try {
     const response = await axios.post(
-      `${host}/api/v1/linkdrops/claim`,
+      `${apiHost}/api/v1/linkdrops/claim`,
       claimParams
     )
 
@@ -113,7 +111,7 @@ export const claim = async ({
 
 export const claimERC721 = async ({
   jsonRpcUrl,
-  host,
+  apiHost,
   weiAmount,
   nftAddress,
   tokenId,
@@ -124,14 +122,14 @@ export const claimERC721 = async ({
   linkdropMasterAddress,
   linkdropSignerSignature,
   receiverAddress,
-  isApprove
+  campaignId
 }) => {
   if (jsonRpcUrl === null || jsonRpcUrl === '') {
     throw new Error('Please provide json rpc url')
   }
 
-  if (host === null || host === '') {
-    throw new Error('Please provide host')
+  if (apiHost === null || apiHost === '') {
+    throw new Error('Please provide api host')
   }
 
   if (weiAmount === null || weiAmount === '') {
@@ -178,10 +176,8 @@ export const claimERC721 = async ({
     throw new Error('Please provide receiver address')
   }
 
-  if (isApprove) {
-    if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
-      throw new Error('Please provide valid isApprove argument')
-    }
+  if (campaignId === null || campaignId === '') {
+    throw new Error('Please provide campaign id')
   }
 
   // Get provider
@@ -205,11 +201,11 @@ export const claimERC721 = async ({
     linkdropSignerSignature,
     receiverAddress,
     receiverSignature,
-    isApprove
+    campaignId
   }
   try {
     const response = await axios.post(
-      `${host}/api/v1/linkdrops/claim-erc721`,
+      `${apiHost}/api/v1/linkdrops/claim-erc721`,
       claimParams
     )
     if (response.status !== 200) {

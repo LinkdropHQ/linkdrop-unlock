@@ -1,17 +1,18 @@
-import { createLink, createLinkERC721 } from './utils'
+import { createLink, createLinkERC721, computeProxyAddress } from './utils'
 const ethers = require('ethers')
 
 export const generateLink = async ({
+  factoryAddress,
   chainId,
   host,
   linkdropMasterAddress,
-  linkdropSignerPrivateKey,
+  signingKeyOrWallet,
   weiAmount,
   tokenAddress,
   tokenAmount,
   expirationTime,
   version,
-  isApprove
+  campaignId
 }) => {
   if (chainId === null || chainId === '') {
     throw new Error('Please provide chainId')
@@ -25,8 +26,8 @@ export const generateLink = async ({
     throw new Error(`Please provide linkdrop master's address`)
   }
 
-  if (linkdropSignerPrivateKey === null || linkdropSignerPrivateKey === '') {
-    throw new Error(`Please provide linkdrop signer's private key`)
+  if (signingKeyOrWallet === null || signingKeyOrWallet === '') {
+    throw new Error(`Please provide signing key or wallet`)
   }
 
   if (weiAmount === null || weiAmount === '') {
@@ -49,13 +50,22 @@ export const generateLink = async ({
     throw new Error('Please provide contract version')
   }
 
-  if (isApprove) {
-    if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
-      throw new Error('Please provide valid isApprove argument')
-    }
+  if (campaignId === null || campaignId === '') {
+    throw new Error('Please provide campaign id')
   }
 
-  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey)
+  let linkdropSigner
+  if (typeof signingKeyOrWallet === 'string') {
+    linkdropSigner = new ethers.Wallet(signingKeyOrWallet)
+  } else if (typeof signingKeyOrWallet === 'object') {
+    linkdropSigner = signingKeyOrWallet
+  }
+
+  const proxyAddress = computeProxyAddress(
+    factoryAddress,
+    linkdropMasterAddress,
+    campaignId
+  )
 
   const { linkKey, linkId, linkdropSignerSignature } = await createLink({
     linkdropSigner,
@@ -64,31 +74,28 @@ export const generateLink = async ({
     tokenAmount,
     expirationTime,
     version,
-    chainId
+    chainId,
+    proxyAddress
   })
 
   // Construct link
   let url = `${host}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&linkKey=${linkKey}&linkdropMasterAddress=${linkdropMasterAddress}&linkdropSignerSignature=${linkdropSignerSignature}`
 
-  // Add isApprove param to url
-  if (String(isApprove) === 'true') {
-    url = `${url}&isApprove=${isApprove}`
-  }
-
   return { url, linkId, linkKey, linkdropSignerSignature }
 }
 
 export const generateLinkERC721 = async ({
+  factoryAddress,
   chainId,
   host,
   linkdropMasterAddress,
-  linkdropSignerPrivateKey,
+  signingKeyOrWallet,
   weiAmount,
   nftAddress,
   tokenId,
   expirationTime,
   version,
-  isApprove
+  campaignId
 }) => {
   if (chainId === null || chainId === '') {
     throw new Error('Please provide chain id')
@@ -102,8 +109,8 @@ export const generateLinkERC721 = async ({
     throw new Error(`Please provide linkdrop master's address`)
   }
 
-  if (linkdropSignerPrivateKey === null || linkdropSignerPrivateKey === '') {
-    throw new Error(`Please provide linkdrop signer's private key`)
+  if (signingKeyOrWallet === null || signingKeyOrWallet === '') {
+    throw new Error(`Please provide signing key or wallet`)
   }
 
   if (weiAmount === null || weiAmount === '') {
@@ -130,13 +137,22 @@ export const generateLinkERC721 = async ({
     throw new Error('Please provide contract version')
   }
 
-  if (isApprove) {
-    if (String(isApprove) !== 'true' && String(isApprove) !== 'false') {
-      throw new Error('Please provide valid isApprove argument')
-    }
+  if (campaignId === null || campaignId === '') {
+    throw new Error('Please provide campaign id')
   }
 
-  const linkdropSigner = new ethers.Wallet(linkdropSignerPrivateKey)
+  let linkdropSigner
+  if (typeof signingKeyOrWallet === 'string') {
+    linkdropSigner = new ethers.Wallet(signingKeyOrWallet)
+  } else if (typeof signingKeyOrWallet === 'object') {
+    linkdropSigner = signingKeyOrWallet
+  }
+
+  const proxyAddress = computeProxyAddress(
+    factoryAddress,
+    linkdropMasterAddress,
+    campaignId
+  )
 
   const { linkKey, linkId, linkdropSignerSignature } = await createLinkERC721({
     linkdropSigner,
@@ -145,16 +161,12 @@ export const generateLinkERC721 = async ({
     tokenId,
     expirationTime,
     version,
-    chainId
+    chainId,
+    proxyAddress
   })
 
   // Construct link
   let url = `${host}/#/receive?weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&linkKey=${linkKey}&linkdropMasterAddress=${linkdropMasterAddress}&linkdropSignerSignature=${linkdropSignerSignature}`
-
-  // Add isApprove param to url
-  if (String(isApprove) === 'true') {
-    url = `${url}&isApprove=${isApprove}`
-  }
 
   return { url, linkId, linkKey, linkdropSignerSignature }
 }

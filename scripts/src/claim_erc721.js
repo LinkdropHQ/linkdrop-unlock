@@ -7,7 +7,8 @@ import { newError, getString, getUrlParams } from './utils'
 ethers.errors.setLogLevel('error')
 
 const JSON_RPC_URL = getString('jsonRpcUrl')
-const HOST = getString('host')
+const CHAIN = getString('CHAIN')
+const API_HOST = getString('API_HOST')
 const RECEIVER_ADDRESS = getString('receiverAddress')
 
 const claimERC721 = async () => {
@@ -34,9 +35,16 @@ const claimERC721 = async () => {
       isApprove
     } = await getUrlParams('erc721', 0)
 
-    const { error, success, txHash } = await LinkdropSDK.claimERC721({
+    const linkdropSDK = LinkdropSDK({
+      linkdropMasterAddress,
+      chain: CHAIN,
       jsonRpcUrl: JSON_RPC_URL,
-      host: HOST,
+      apiHost: API_HOST
+    })
+
+    const { error, success, txHash } = await linkdropSDK.claimERC721({
+      jsonRpcUrl: JSON_RPC_URL,
+      apiHost: API_HOST,
       weiAmount,
       nftAddress,
       tokenId,

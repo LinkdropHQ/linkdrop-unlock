@@ -1,5 +1,6 @@
 const ethers = require('ethers')
 const Wallet = require('ethereumjs-wallet')
+
 export const buildCreate2Address = (creatorAddress, saltHex, byteCode) => {
   const byteCodeHash = ethers.utils.keccak256(byteCode)
   return `0x${ethers.utils
@@ -18,28 +19,29 @@ export const computeBytecode = masterCopyAddress => {
   return bytecode
 }
 
-// const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 export const computeProxyAddress = (
   factoryAddress,
-  linkdropSignerAddress,
-  initcode
+  linkdropMasterAddress,
+  campaignId
 ) => {
   if (factoryAddress == null || factoryAddress === '') {
     throw new Error('Please provide factory address')
   }
 
-  if (linkdropSignerAddress == null || linkdropSignerAddress === '') {
-    throw new Error('Please provide linkdropSigner address')
+  if (linkdropMasterAddress == null || linkdropMasterAddress === '') {
+    throw new Error('Please provide linkdrop master address')
   }
 
-  if (initcode == null || initcode === '') {
-    throw new Error('Please provide initcode')
+  if (campaignId == null || campaignId === '') {
+    throw new Error('Please provide campaign id')
   }
 
   const salt = ethers.utils.solidityKeccak256(
-    ['address'],
-    [linkdropSignerAddress]
+    ['address', 'uint256'],
+    [linkdropMasterAddress, campaignId]
   )
+
+  const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 
   const proxyAddress = buildCreate2Address(factoryAddress, salt, initcode)
   return proxyAddress
@@ -53,7 +55,9 @@ export const createLink = async ({
   tokenAmount,
   expirationTime,
   version,
-  chainId
+  chainId,
+  campaignId,
+  proxyAddress
 }) => {
   let { address: linkId, privateKey: linkKey } = generateAccount()
 
@@ -65,7 +69,8 @@ export const createLink = async ({
     expirationTime,
     version,
     chainId,
-    linkId
+    linkId,
+    proxyAddress
   })
 
   return {
@@ -84,10 +89,11 @@ export const signLink = async ({
   expirationTime,
   version,
   chainId,
-  linkId
+  linkId,
+  proxyAddress
 }) => {
   let messageHash = ethers.utils.solidityKeccak256(
-    ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address'],
+    ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address', 'address'],
     [
       weiAmount,
       tokenAddress,
@@ -95,7 +101,8 @@ export const signLink = async ({
       expirationTime,
       version,
       chainId,
-      linkId
+      linkId,
+      proxyAddress
     ]
   )
   let messageHashToSign = ethers.utils.arrayify(messageHash)
@@ -111,7 +118,8 @@ export const createLinkERC721 = async ({
   tokenId,
   expirationTime,
   version,
-  chainId
+  chainId,
+  proxyAddress
 }) => {
   let { address: linkId, privateKey: linkKey } = generateAccount()
 
@@ -123,7 +131,8 @@ export const createLinkERC721 = async ({
     expirationTime,
     version,
     chainId,
-    linkId
+    linkId,
+    proxyAddress
   })
   return {
     linkKey, // link's ephemeral private key
@@ -141,11 +150,21 @@ export const signLinkERC721 = async ({
   expirationTime,
   version,
   chainId,
-  linkId
+  linkId,
+  proxyAddress
 }) => {
   let messageHash = ethers.utils.solidityKeccak256(
-    ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address'],
-    [weiAmount, nftAddress, tokenId, expirationTime, version, chainId, linkId]
+    ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address', 'address'],
+    [
+      weiAmount,
+      nftAddress,
+      tokenId,
+      expirationTime,
+      version,
+      chainId,
+      linkId,
+      proxyAddress
+    ]
   )
   let messageHashToSign = ethers.utils.arrayify(messageHash)
   let signature = await linkdropSigner.signMessage(messageHashToSign)
@@ -162,11 +181,6 @@ export const signReceiverAddress = async (linkKey, receiverAddress) => {
   let signature = await wallet.signMessage(messageHashToSign)
   return signature
 }
-
-/**
- * @desc Generate Ethereum Account
- * @return {'address': String, 'privateKey': String}
- */
 
 /**
  * Function to generate new account

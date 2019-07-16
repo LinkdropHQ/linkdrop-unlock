@@ -40,7 +40,8 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                     _expiration,
                     version,
                     chainId,
-                    _linkId
+                    _linkId,
+                    address(this)
                 )
             )
         );
