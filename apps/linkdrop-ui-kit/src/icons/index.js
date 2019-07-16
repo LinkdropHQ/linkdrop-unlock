@@ -15,6 +15,9 @@ import Close from './close'
 import ExternalLink from './external-link'
 import CloseButton from './close-button'
 import Lock from './lock'
+import InformationIcon from './information-icon'
+import Cursor from './cursor'
+import Ethereum from './ethereum'
 
 export default {
   LinkdropLogo,
@@ -33,5 +36,8 @@ export default {
   Close,
   ExternalLink,
   CloseButton,
-  Lock
+  Lock,
+  InformationIcon,
+  Cursor,
+  Ethereum
 }

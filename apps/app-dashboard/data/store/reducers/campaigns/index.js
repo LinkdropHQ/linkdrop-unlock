@@ -11,7 +11,9 @@ const initialState = {
   date: null,
   links: [],
   items: campaignsDecoded,
-  current: null
+  current: null,
+  proxyAddress: null,
+  id: null
 }
 
 export default (state = initialState, action = {}) => {
@@ -31,5 +33,7 @@ const ACTIONS = {
   'CAMPAIGNS.SET_TOKEN_TYPE': reducers.setTokenType,
   'CAMPAIGNS.SET_DATE': reducers.setDate,
   'CAMPAIGNS.SET_ITEMS': reducers.setItems,
-  'CAMPAIGNS.SET_CURRENT': reducers.setCurrent
+  'CAMPAIGNS.SET_CURRENT': reducers.setCurrent,
+  'CAMPAIGNS.SET_PROXY_ADDRESS': reducers.setProxyAddress,
+  'CAMPAIGNS.SET_ID': reducers.setId
 }

@@ -7,6 +7,8 @@ import setTokenType from './set-token-type'
 import setDate from './set-date'
 import setItems from './set-items'
 import setCurrent from './set-current'
+import setProxyAddress from './set-proxy-address'
+import setId from './set-id'
 
 export default {
   setTokenAmount,
@@ -17,5 +19,7 @@ export default {
   setTokenType,
   setDate,
   setItems,
-  setCurrent
+  setCurrent,
+  setId,
+  setProxyAddress
 }

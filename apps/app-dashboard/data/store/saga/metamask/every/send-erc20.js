@@ -1,9 +1,10 @@
 /* global web3 */
 
 import { put, select } from 'redux-saga/effects'
-import { utils } from 'ethers'
 import { mocks } from 'linkdrop-commons'
+import { utils, ethers } from 'ethers'
 import TokenMock from 'contracts/TokenMock.json'
+import { defineNetworkName } from 'linkdrop-commons'
 
 let web3Obj
 try {
@@ -15,15 +16,20 @@ const generator = function * ({ payload }) {
   try {
     yield put({ type: 'METAMASK.SET_STATUS', payload: { status: 'initial' } })
     const { tokenAmount, account: fromWallet } = payload
+    const chainId = yield select(generator.selectors.chainId)
+    const decimals = yield select(generator.selectors.decimals)
     const tokenAddress = yield select(generator.selectors.address)
-    const tokenContract = yield web3Obj.eth.contract(TokenMock.abi).at(tokenAddress)
-    const tokenDecimals = yield select(generator.selectors.decimals)
-    const proxyAddress = yield select(generator.selectors.proxyAddress)
-    const balanceFormatted = utils.formatUnits(String(tokenAmount), tokenDecimals)
+    const networkName = defineNetworkName({ chainId })
 
-    const approveData = yield tokenContract.approve.getData(proxyAddress, balanceFormatted, { from: fromWallet })
+    const provider = yield ethers.getDefaultProvider(networkName)
+    const gasPrice = yield provider.getGasPrice()
+    const oneGwei = ethers.utils.parseUnits('1', 'gwei')
+    const tokenContract = yield web3Obj.eth.contract(TokenMock.abi).at(tokenAddress)
+    const proxyAddress = yield select(generator.selectors.proxyAddress)
+    const amountFormatted = utils.parseUnits(String(tokenAmount), decimals)
+    const approveData = yield tokenContract.approve.getData(proxyAddress, String(amountFormatted), { from: fromWallet })
     const promise = new Promise((resolve, reject) => {
-      web3Obj.eth.sendTransaction({ to: tokenAddress, from: fromWallet, value: 0, data: approveData }, result => resolve({ result }))
+      web3Obj.eth.sendTransaction({ to: tokenAddress, gasPrice: gasPrice.add(oneGwei), from: fromWallet, value: 0, data: approveData }, result => resolve({ result }))
     })
     const { result } = yield promise
     if (String(result) === 'null') {
@@ -36,7 +42,8 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
-  proxyAddress: ({ user: { proxyAddress } }) => proxyAddress,
+  proxyAddress: ({ campaigns: { proxyAddress } }) => proxyAddress,
   address: ({ tokens: { address } }) => address,
-  decimals: ({ tokens: { decimals } }) => decimals
+  decimals: ({ tokens: { decimals } }) => decimals,
+  chainId: ({ user: { chainId } }) => chainId
 }

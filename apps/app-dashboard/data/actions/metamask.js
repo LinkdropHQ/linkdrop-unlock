@@ -3,8 +3,8 @@ class Metamask {
     this.actions = actions
   }
 
-  sendEth ({ ethAmount, account }) {
-    this.actions.dispatch({ type: '*METAMASK.SEND_ETH', payload: { ethAmount, account } })
+  sendEth ({ chainId, ethAmount, account }) {
+    this.actions.dispatch({ type: '*METAMASK.SEND_ETH', payload: { ethAmount, account, chainId } })
   }
 
   sendErc20 ({ tokenAmount, account }) {

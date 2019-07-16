@@ -9,8 +9,8 @@ const initialState = {
   privateKey: ls && ls.getItem && ls.getItem('privateKey'),
   txHash: null,
   transactionStatus: null,
-  proxyAddress: ls && ls.getItem && ls.getItem('proxyAddr'),
-  version: null
+  version: null,
+  sdk: null
 }
 
 export default (state = initialState, action = {}) => {
@@ -29,6 +29,6 @@ const ACTIONS = {
   'USER.SET_PRIVATE_KEY': reducers.setPrivateKey,
   'USER.SET_TX_HASH': reducers.setTxHash,
   'USER.SET_TRANSACTION_STATUS': reducers.setTransactionStatus,
-  'USER.SET_PROXY_ADDRESS': reducers.setProxyAddress,
-  'USER.SET_VERSION_VAR': reducers.setVersionVar
+  'USER.SET_VERSION_VAR': reducers.setVersionVar,
+  'USER.SET_SDK': reducers.setSdk
 }

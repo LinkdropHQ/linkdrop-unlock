@@ -14,10 +14,10 @@ class Aside extends React.Component {
     return <aside className={styles.container}>
       <div className={styles.mainBlock}>
         <div className={styles.logo}>
-          <a href='/#/'><RetinaImage width={118} {...getImages({ src: 'hole' })} /></a>
+          <a href='/#/'><RetinaImage alwaysHighRes width={118} {...getImages({ src: 'hole' })} /></a>
         </div>
         {this.renderCampaignsButton({ currentAddress })}
-        {this.renderCreateButton({ currentAddress, items })}
+        {this.renderCreateButton({ currentAddress })}
       </div>
       <div className={styles.footer}>
         <div className={styles.menu}>
@@ -34,7 +34,7 @@ class Aside extends React.Component {
     </aside>
   }
 
-  renderCreateButton ({ currentAddress, items }) {
+  renderCreateButton ({ currentAddress }) {
     return <Button
       className={styles.button}
       onClick={_ => {
@@ -47,7 +47,7 @@ class Aside extends React.Component {
         }
         window.location.href = '/#/campaigns/create'
       }}
-      disabled={!currentAddress || items.length > 0}
+      disabled={!currentAddress}
     >
       {this.t('create')}
     </Button>

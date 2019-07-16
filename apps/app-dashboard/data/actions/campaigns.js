@@ -28,6 +28,10 @@ class Campaign {
     })
   }
 
+  createProxyAddress ({ campaignId }) {
+    this.actions.dispatch({ type: '*CAMPAIGNS.CREATE_PROXY_ADDRESS', payload: { campaignId } })
+  }
+
   proceedPayment ({ cardNumber }) {
     this.actions.dispatch({
       type: '*CAMPAIGNS.PROCEED_PAYMENT',
@@ -46,11 +50,12 @@ class Campaign {
     })
   }
 
-  getCSV ({ links }) {
+  getCSV ({ links, id }) {
     this.actions.dispatch({
       type: '*CAMPAIGNS.GET_CSV',
       payload: {
-        links
+        links,
+        id
       }
     })
   }

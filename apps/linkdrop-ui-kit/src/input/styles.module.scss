@@ -25,3 +25,14 @@
   color: $blackColor;
   opacity: 1;
 }
+
+.wrapper {
+  position: relative;
+}
+
+.extraInfo {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
