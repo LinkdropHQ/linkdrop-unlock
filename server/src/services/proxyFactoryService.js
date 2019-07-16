@@ -29,21 +29,6 @@ class ProxyFactoryService {
     receiverSignature,
     proxyAddress
   }) {
-    logger.debug('CHECK CLAIM PARAMS')
-    logger.json({
-      weiAmount,
-      tokenAddress,
-      tokenAmount,
-      expirationTime,
-      linkId,
-      linkdropMasterAddress,
-      campaignId,
-      linkdropSignerSignature,
-      receiverAddress,
-      receiverSignature,
-      proxyAddress
-    })
-
     return this.contract.checkClaimParams(
       weiAmount,
       tokenAddress,
@@ -72,21 +57,7 @@ class ProxyFactoryService {
     receiverSignature,
     proxyAddress
   }) {
-    logger.debug('CLAIM PARAMS')
-    logger.json({
-      weiAmount,
-      tokenAddress,
-      tokenAmount,
-      expirationTime,
-      linkId,
-      linkdropMasterAddress,
-      campaignId,
-      linkdropSignerSignature,
-      receiverAddress,
-      receiverSignature,
-      proxyAddress
-    })
-    const gasPrice = ethers.utils.parseUnits('5', 'gwei')
+    const gasPrice = ethers.utils.parseUnits('0.005', 'gwei')
     return this.contract.claim(
       weiAmount,
       tokenAddress,
