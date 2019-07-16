@@ -4,7 +4,7 @@ const ethers = require('ethers')
 export const generateLink = async ({
   factoryAddress,
   chainId,
-  host,
+  claimHost,
   linkdropMasterAddress,
   signingKeyOrWallet,
   weiAmount,
@@ -18,8 +18,8 @@ export const generateLink = async ({
     throw new Error('Please provide chainId')
   }
 
-  if (host === null || host === '') {
-    throw new Error('Please provide host')
+  if (claimHost === null || claimHost === '') {
+    throw new Error('Please provide claim host')
   }
 
   if (linkdropMasterAddress === null || linkdropMasterAddress === '') {
@@ -79,7 +79,7 @@ export const generateLink = async ({
   })
 
   // Construct link
-  let url = `${host}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&linkKey=${linkKey}&linkdropMasterAddress=${linkdropMasterAddress}&linkdropSignerSignature=${linkdropSignerSignature}`
+  let url = `${claimHost}/#/receive?weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&linkKey=${linkKey}&linkdropMasterAddress=${linkdropMasterAddress}&linkdropSignerSignature=${linkdropSignerSignature}&campaignId=${campaignId}`
 
   return { url, linkId, linkKey, linkdropSignerSignature }
 }
@@ -87,7 +87,7 @@ export const generateLink = async ({
 export const generateLinkERC721 = async ({
   factoryAddress,
   chainId,
-  host,
+  claimHost,
   linkdropMasterAddress,
   signingKeyOrWallet,
   weiAmount,
@@ -101,8 +101,8 @@ export const generateLinkERC721 = async ({
     throw new Error('Please provide chain id')
   }
 
-  if (host === null || host === '') {
-    throw new Error('Please provide host')
+  if (claimHost === null || claimHost === '') {
+    throw new Error('Please provide claim host')
   }
 
   if (linkdropMasterAddress === null || linkdropMasterAddress === '') {
@@ -166,7 +166,7 @@ export const generateLinkERC721 = async ({
   })
 
   // Construct link
-  let url = `${host}/#/receive?weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&linkKey=${linkKey}&linkdropMasterAddress=${linkdropMasterAddress}&linkdropSignerSignature=${linkdropSignerSignature}`
+  let url = `${claimHost}/#/receive?weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&version=${version}&chainId=${chainId}&linkKey=${linkKey}&linkdropMasterAddress=${linkdropMasterAddress}&linkdropSignerSignature=${linkdropSignerSignature}&campaignId=${campaignId}`
 
   return { url, linkId, linkKey, linkdropSignerSignature }
 }

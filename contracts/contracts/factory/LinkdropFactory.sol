@@ -14,8 +14,8 @@ contract LinkdropFactory is LinkdropFactoryERC20, LinkdropFactoryERC721 {
         _initcode = (hex"6352c7420d6000526103ff60206004601c335afa6040516060f3");
         owner = msg.sender;
         chainId = _chainId;
-        setMasterCopy(_masterCopy);
         registry = _registry;
+        setMasterCopy(_masterCopy);
     }
 
 }

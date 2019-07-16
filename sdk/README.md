@@ -25,19 +25,21 @@ import LinkdropSDK from '@linkdrop/sdk'
 ```js
 const linkdropSDK = LinkdropSDK({
   linkdropMasterAddress: <LINKDROP_MASTER_ADDRESS>,
-  chain = <CHAIN>, // 'mainnet' by default
-  chainId = <CHAIN_ID>, // getChainId(chain) by default
-  jsonRpcUrl = <JSON_RPC_URL>, // `https://${chain}.infura.io` by default,
-  apiHost = <API_HOST>, // `https://${chain}.linkdrop.io` by default
-  claimHost = <CLAIM_HOST>, // 'https://claim.linkdrop.io' by default
-  factory = <LINKDROP_FACTORY_ADDRESS>, // '0xDEF008f43a36ba4D3523d2e26eF1A6d4C83b4df8' by default
-}) )
+  // optional params:
+  // chain = <CHAIN>, // 'mainnet' by default
+  // chainId = <CHAIN_ID>, // getChainId(chain) by default
+  // jsonRpcUrl = <JSON_RPC_URL>, // `https://${chain}.infura.io` by default,
+  // apiHost = <API_HOST>, // `https://${chain}.linkdrop.io` by default
+  // claimHost = <CLAIM_HOST>, // 'https://claim.linkdrop.io' by default
+  // factory = <LINKDROP_FACTORY_ADDRESS>, // '0x01e7F4C72182Eb4421AFB1Ec99cee9Ef5B83EE18' by default
+}))
 ```
 
 ### Get proxy address
 
 ```js
-const proxyAddress = linkdropSDK.getProxyAddress()
+const campaignId = 1
+const proxyAddress = linkdropSDK.getProxyAddress(campaignId)
 ```
 
 ### Generate link for ETH or ERC20
@@ -54,7 +56,7 @@ const {
     tokenAddress, // ERC20 token address
     tokenAmount, // Amount of ERC20 tokens per claim
     expirationTime = 12345678910, // Link expiration time
-    isApprove = true
+    campaignId = 0, // Campaign id
   })
 ```
 
@@ -74,7 +76,7 @@ const {
     nftAddress, // ERC721 token address
     tokenId, // Token id
     expirationTime = 12345678910, // Link expiration time
-    isApprove = true
+    campaignId = 0, // Campaign id
   })
 ```
 
@@ -91,7 +93,7 @@ const txHash = await linkdropSDK.claim({
     linkKey, // Link ephemeral key
     linkdropSignerSignature, // Signature of linkdrop signer
     receiverAddress, // Address of receiver
-    isApprove = true
+    campaignId = 0, // Campaign id
 }
 ```
 
@@ -108,7 +110,7 @@ const txHash = await linkdropSDK.claim({
     linkKey, // Link ephemeral key
     linkdropSignerSignature, // Signature of linkdrop signer
     receiverAddress, // Address of receiver
-    isApprove = true
+    campaignId = 0, // Campaign id
 }
 ```
 

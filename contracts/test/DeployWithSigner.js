@@ -81,6 +81,7 @@ describe('Deploy with signer tests', () => {
         gasLimit: 6000000
       }
     )
+
     expect(factory.address).to.not.eq(ethers.constants.AddressZero)
     let version = await factory.masterCopyVersion()
     expect(version).to.eq(1)
