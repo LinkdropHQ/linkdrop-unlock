@@ -11,6 +11,7 @@ const claimTxSchema = new mongoose.Schema({
   linkdropMasterAddress: { type: String, required: true },
   receiverAddress: { type: String, required: true },
   proxyAddress: { type: String, required: true },
+  paramsHash: { type: String, required: true },
   txHash: { type: String, required: true, unique: true }
 })
 

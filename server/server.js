@@ -1,55 +1,44 @@
-import { terminal as term } from 'terminal-kit'
-import configs from '../configs'
-
-const asyncHandler = require('express-async-handler')
-const mongoose = require('mongoose')
+import connectDB from './src/models/connectDB'
+import logger from './src/utils/logger'
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const claimController = require('./controllers/claimController')
-
-const config = configs.get('server')
-
-const { mongoURI } = config
+const buildRouter = require('./src/routes')
 
 // Apply middlewares
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(cors())
 
-// Set up default mongoose connection
-mongoose
-  .connect(mongoURI || 'mongodb://localhost:27017/linkdrop_db', {
-    useNewUrlParser: true,
-    useCreateIndex: true
-  })
+// connect to database
+connectDB()
   .then(() => {
     // Run server
-
-    const PORT = process.env.PORT || process.env.CUSTOM_PORT || 5000
-
+    const PORT = process.env.PORT || 5000
     app.listen(PORT, () => {
-      term.green.bold(`Server is up on port ${PORT}\n`)
+      logger.info(`Server is up on port ${PORT}\n`)
     })
-  })
-  .catch(err => {
-    term.red.bold(`${err}\n`)
+  }).catch(err => {
+    logger.error(`${err}\n`)
     process.exit(1)
   })
 
 // Define routes
 app.get('/', (req, res) => res.send('👋  Hello from linkdrop server'))
-app.post('/api/v1/linkdrops/claim', asyncHandler(claimController.claim))
-app.post(
-  '/api/v1/linkdrops/claim-erc721',
-  asyncHandler(claimController.claimERC721)
-)
+app.use('/api/v1/', buildRouter('routes'))
 
-// Error handling
-app.use((err, req, res, next) => {
-  console.error(err)
-  res.status(err.status || 500)
-  let error = err.message || 'Server error!'
-  res.send({ success: false, error })
+// Error handling middleware
+app.use((error, req, res, next) => {
+  logger.error(error.message)
+  if (error.isOperational) {
+    res.status(error.statusCode)
+    res.send({ success: false, error: error.message })
+  } else {
+    // don't send error details to the scary external world
+    logger.error(error.stack)
+    let errorMsg = 'Server error occured!'
+    res.status(500)
+    res.send({ success: false, error: errorMsg })
+  }
   return null
 })
