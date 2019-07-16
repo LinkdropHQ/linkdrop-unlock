@@ -1,6 +1,10 @@
 pragma solidity ^0.5.6;
+import "../registry/Registry.sol";
 
 contract LinkdropStorage {
+
+    // Constant address of deployed registry
+    Registry public registry;
 
     // Address of owner deploying this contract (usually factory)
     address public owner;
