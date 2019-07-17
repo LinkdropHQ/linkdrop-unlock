@@ -2,7 +2,7 @@ import LinkdropSDK from '../../sdk/src/index'
 import ora from 'ora'
 import { ethers } from 'ethers'
 import { terminal as term } from 'terminal-kit'
-import { newError, getString, getUrlParams } from './utils'
+import { newError, getString, getUrlParams, getLinkNumber } from './utils'
 
 ethers.errors.setLogLevel('error')
 
@@ -11,18 +11,19 @@ const CHAIN = getString('CHAIN')
 const API_HOST = getString('API_HOST')
 const RECEIVER_ADDRESS = getString('receiverAddress')
 const FACTORY_ADDRESS = getString('FACTORY_ADDRESS')
+const NFT_IDS = getString('nftIds')
 
 const claimERC721 = async () => {
   let spinner
-
   try {
+    let LINKS_NUMBER = JSON.parse(NFT_IDS).length - 1
+    const linkNumber = getLinkNumber(LINKS_NUMBER)
+    term.bold(`Claiming link #${linkNumber}:\n`)
     spinner = ora({
       text: term.bold.green.str('Claiming\n'),
       color: 'green'
     })
-
     spinner.start()
-
     const {
       weiAmount,
       nftAddress,
@@ -34,8 +35,8 @@ const claimERC721 = async () => {
       linkdropMasterAddress,
       linkdropSignerSignature,
       campaignId
-    } = await getUrlParams('erc721', 1)
-
+    } = await getUrlParams('erc721', linkNumber)
+   
     const linkdropSDK = LinkdropSDK({
       linkdropMasterAddress,
       factoryAddress: FACTORY_ADDRESS,
