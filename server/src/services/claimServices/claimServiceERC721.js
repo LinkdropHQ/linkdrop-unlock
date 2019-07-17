@@ -9,7 +9,7 @@ class ClaimServiceERC721 extends ClaimServiceBase {
     // check basic linkdrop params
     super._checkClaimParamsBase(params)
 
-    // make erc20 specific checks
+    // make erc721 specific checks
     if (!params.nftAddress) {
       throw new BadRequestError('Please provide nftAddress argument')
     }
