@@ -109,10 +109,13 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         require(_expiration >= now, "Expired link");
 
         // Make sure eth amount is available for this contract
-        require(address(this).balance >= _weiAmount.add(registry.getFee(address(this))), "Insufficient funds");
+        require(address(this).balance >= _weiAmount.add(registry.getFee(address(this))), "Insufficient ethers");
+
+        // Make sure linkdrop master is owner of token
+        require(IERC721(_nftAddress).ownerOf(_tokenId) == linkdropMaster, "Unavailable token");
 
         // Make sure nft is available for this contract
-        require(IERC721(_nftAddress).isApprovedForAll(linkdropMaster, address(this)), "Unavailable token");
+        require(IERC721(_nftAddress).isApprovedForAll(linkdropMaster, address(this)), "Insufficient allowance");
 
         // Verify that link key is legit and signed by linkdrop signer's private key
         require

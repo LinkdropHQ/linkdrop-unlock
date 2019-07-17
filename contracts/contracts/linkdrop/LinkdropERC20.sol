@@ -112,13 +112,19 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         require(_expiration >= now, "Expired link");
 
         // Make sure eth amount is available for this contract
-        require(address(this).balance >= _weiAmount.add(registry.getFee(address(this))), "Insufficient funds");
+        require(address(this).balance >= _weiAmount.add(registry.getFee(address(this))), "Insufficient ethers");
 
         // Make sure tokens are available for this contract
         if (_tokenAddress != address(0)) {
             require
             (
-                IERC20(_tokenAddress).allowance(linkdropMaster, address(this)) >= _tokenAmount, "Insufficient amount of tokens"
+                IERC20(_tokenAddress).balanceOf(linkdropMaster) >= _tokenAmount,
+                "Insufficient tokens"
+            );
+
+            require
+            (
+                IERC20(_tokenAddress).allowance(linkdropMaster, address(this)) >= _tokenAmount, "Insufficient allowance"
             );
         }
 

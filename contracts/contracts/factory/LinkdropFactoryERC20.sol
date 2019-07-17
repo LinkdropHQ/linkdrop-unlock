@@ -128,13 +128,19 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
             // Make sure claim amount is available for proxy contract
             require
             (
-                _proxy.balance >= _weiAmount.add(registry.getFee(_proxy)), "Insufficient funds"
+                _proxy.balance >= _weiAmount.add(registry.getFee(_proxy)), "Insufficient ethers"
             );
 
             if (_tokenAddress != address(0)) {
                 require
                 (
-                    IERC20(_tokenAddress).allowance(_linkdropMaster, _proxy) >= _tokenAmount, "Insufficient amount of tokens"
+                    IERC20(_tokenAddress).balanceOf(_linkdropMaster) >= _tokenAmount,
+                    "Insufficient tokens"
+                );
+                require
+                (
+                    IERC20(_tokenAddress).allowance(_linkdropMaster, _proxy) >= _tokenAmount,
+                    "Insufficient allowance"
                 );
             }
 
