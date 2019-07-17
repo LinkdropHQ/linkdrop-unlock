@@ -13,6 +13,11 @@ contract NFTMock is ERC721Metadata {
             super._mint(msg.sender, i);
             super._setTokenURI(i, "https://api.myjson.com/bins/1dhwd6");
         }
+
+        for (uint i = 11; i < 15; i++) {
+            super._mint(address(this), i);
+            super._setTokenURI(i, "https://api.myjson.com/bins/1dhwd6");
+        }
     }
 
 }

@@ -157,7 +157,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
     expect(isSigner).to.eq(false)
   })
 
-  it('should revert while checking claim params with unavailable token', async () => {
+  it('should revert while checking claim params with insufficient allowance', async () => {
     await linkdropMaster.sendTransaction({
       to: proxy.address,
       value: ethers.utils.parseEther('2')
@@ -198,7 +198,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverSignature,
         proxyAddress
       )
-    ).to.be.revertedWith('Unavailable token')
+    ).to.be.revertedWith('Insufficient allowance')
   })
 
   it('creates new link key and verifies its signature', async () => {
@@ -368,7 +368,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
     ).to.be.reverted
   })
 
-  it('should fail to claim unavailable token', async () => {
+  it('should fail to claim with insufficient allowance', async () => {
     link = await createLink(
       linkdropSigner,
       weiAmount,
@@ -396,7 +396,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.revertedWith('Unavailable token')
+    ).to.be.revertedWith('Insufficient allowance')
   })
 
   it('should fail to claim nft by expired link', async () => {
@@ -495,6 +495,39 @@ describe('ETH/ERC721 linkdrop tests', () => {
         { gasLimit: 500000 }
       )
     ).to.be.revertedWith('Invalid linkdrop signer signature')
+  })
+
+  it('should fail to claim nft which does not belong to linkdrop master', async () => {
+    const unavailableTokenId = 13
+
+    link = await createLink(
+      linkdropSigner,
+      weiAmount,
+      nftAddress,
+      unavailableTokenId,
+      expirationTime,
+      version,
+      chainId,
+      proxyAddress
+    )
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      factory.claimERC721(
+        weiAmount,
+        nftAddress,
+        unavailableTokenId,
+        expirationTime,
+        link.linkId,
+        linkdropMaster.address,
+        campaignId,
+        link.linkdropSignerSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 500000 }
+      )
+    ).to.be.revertedWith('Unavailable token')
   })
 
   it('should succesfully claim nft with valid claim params', async () => {
