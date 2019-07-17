@@ -18,6 +18,7 @@ class MetamaskInjector extends React.Component {
           onConnect={provider => {
             if (provider.selectedAddress) {
               this.actions().user.setCurrentAddress({ currentAddress: provider.selectedAddress })
+              this.actions().user.setChainId({ chainId: provider.networkVersion })
             }
           }}
           onClose={_ => {

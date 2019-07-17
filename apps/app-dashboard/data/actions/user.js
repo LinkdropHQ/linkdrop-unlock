@@ -26,6 +26,10 @@ class User {
   prepareVersionVar ({ chainId, currentAddress }) {
     this.actions.dispatch({ type: '*USER.PREPARE_VERSION_VAR', payload: { chainId, currentAddress } })
   }
+
+  setChainId ({ chainId }) {
+    this.actions.dispatch({ type: 'USER.SET_CHAIN_ID', payload: { chainId } })
+  }
 }
 
 export default User
