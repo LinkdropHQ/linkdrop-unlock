@@ -11,7 +11,6 @@ const CHAIN = getString('CHAIN')
 const API_HOST = getString('API_HOST')
 const RECEIVER_ADDRESS = getString('receiverAddress')
 const FACTORY_ADDRESS = getString('FACTORY_ADDRESS')
-//const LINKS_NUMBER = getString('linksNumber')
 const NFT_IDS = getString('nftIds')
 
 const claimERC721 = async () => {
