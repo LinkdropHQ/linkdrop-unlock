@@ -7,22 +7,21 @@ import { ActionBlock } from 'components/common'
 @translate('pages.main')
 class Main extends React.Component {
   render () {
-    const { items } = this.props
     return <div className={styles.container}>
-      {items.length === 0 && <ActionBlock
-        title='Create a Linkdrop'
-        description='List of links with encoded tokens prepared to distribute'
-        extraContent='ERC20 + ETH'
+      <ActionBlock
+        title={this.t('titles.createALinkdrop')}
+        description={this.t('texts.listOfLinks')}
+        extraContent={this.t('titles.erc20Eth')}
         href='/#/campaigns/create'
-        buttonTitle='Create'
-      />}
+        buttonTitle={this.t('buttons.create')}
+      />
       <ActionBlock
         transparent
-        title='Referral Marketing'
-        description='Incentivize customer acquisition via referral links'
-        extraContent='ERC721 / ERC20 + ETH'
+        title={this.t('titles.referralMarketing')}
+        description={this.t('texts.incentivizeCustomer')}
+        extraContent={this.t('titles.allAssets')}
         onClick
-        buttonTitle='Conact Us'
+        buttonTitle={this.t('buttons.contactUs')}
       />
     </div>
   }
