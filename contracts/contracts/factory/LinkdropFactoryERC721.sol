@@ -129,10 +129,13 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
             require(_nftAddress != address(0), "Invalid nft address");
 
             // Make sure claim amount is available for proxy contract
-            require(_proxy.balance >= _weiAmount.add(registry.getFee(_proxy)), "Insufficient funds");
+            require(_proxy.balance >= _weiAmount.add(registry.getFee(_proxy)), "Insufficient ethers");
+
+            // Make sure linkdrop master is owner of token
+            require(IERC721(_nftAddress).ownerOf(_tokenId) == _linkdropMaster, "Unavailable token");
 
             // Make sure token is available for proxy contract
-            require(IERC721(_nftAddress).isApprovedForAll(_linkdropMaster, _proxy), "Unavailable token");
+            require(IERC721(_nftAddress).isApprovedForAll(_linkdropMaster, _proxy), "Insufficient allowance");
 
             // Verify that link key is legit and signed by linkdrop signer's private key
             require

@@ -163,7 +163,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     expect(isSigner).to.eq(false)
   })
 
-  it('should revert while checking claim params with unsufficient funds', async () => {
+  it('should revert while checking claim params with insifficient allowance', async () => {
     weiAmount = 0
     tokenAddress = tokenInstance.address
     tokenAmount = 100
@@ -196,7 +196,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
         receiverSignature,
         proxyAddress
       )
-    ).to.be.revertedWith('Insufficient amount of tokens')
+    ).to.be.revertedWith('Insufficient allowance')
   })
 
   it('creates new link key and verifies its signature', async () => {
@@ -319,7 +319,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     ).to.be.reverted
   })
 
-  it('should fail to claim insufficient funds', async () => {
+  it('should fail to claim with insufficient allowance', async () => {
     factory = factory.connect(relayer)
 
     // Unpause
@@ -352,7 +352,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.revertedWith('Insufficient amount of tokens')
+    ).to.be.revertedWith('Insufficient allowance')
   })
 
   it('should fail to claim tokens by expired link', async () => {
@@ -530,6 +530,43 @@ describe('ETH/ERC20 linkdrop tests', () => {
         { gasLimit: 500000 }
       )
     ).to.be.revertedWith('Claimed link')
+  })
+
+  it('should fail to claim unavailable amount of tokens', async () => {
+    const unavailableAmountOfTokens = 1000000000000
+
+    // Approving tokens from linkdropMaster to Linkdrop Contract
+    await tokenInstance.approve(proxy.address, tokenAmount)
+
+    link = await createLink(
+      linkdropSigner,
+      weiAmount,
+      tokenAddress,
+      unavailableAmountOfTokens,
+      expirationTime,
+      version,
+      chainId,
+      proxyAddress
+    )
+
+    receiverAddress = ethers.Wallet.createRandom().address
+    receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
+
+    await expect(
+      factory.claim(
+        weiAmount,
+        tokenAddress,
+        unavailableAmountOfTokens,
+        expirationTime,
+        link.linkId,
+        linkdropMaster.address,
+        campaignId,
+        link.linkdropSignerSignature,
+        receiverAddress,
+        receiverSignature,
+        { gasLimit: 800000 }
+      )
+    ).to.be.revertedWith('Insufficient tokens')
   })
 
   it('should fail to claim tokens with fake linkdropMaster signature', async () => {
