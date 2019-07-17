@@ -7,15 +7,19 @@ import { ethers } from 'ethers'
 
 const LinkdropSDK = ({
   linkdropMasterAddress,
-  chain = 'mainnet',
+  factoryAddress,
+  chain = 'rinkeby',
   chainId = getChainId(chain),
   jsonRpcUrl = `https://${chain}.infura.io`,
   apiHost = `https://${chain}.linkdrop.io`,
-  claimHost = 'https://claim.linkdrop.io',
-  factory = '0x2882D3a779aEFA7Be092331B088AE06F6A7198D6'
+  claimHost = 'https://claim.linkdrop.io'
 }) => {
   if (linkdropMasterAddress == null || linkdropMasterAddress === '') {
     throw new Error('Please provide linkdrop master address')
+  }
+
+  if (factoryAddress == null || factoryAddress === '') {
+    throw new Error('Please provide factory address')
   }
 
   if (chainId == null) {
@@ -27,7 +31,7 @@ const LinkdropSDK = ({
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
   const factoryContract = new ethers.Contract(
-    factory,
+    factoryAddress,
     LinkdropFactory.abi,
     provider
   )
@@ -48,11 +52,10 @@ const LinkdropSDK = ({
     tokenAddress,
     tokenAmount,
     expirationTime = 12345678910,
-    campaignId = 0
+    campaignId
   }) => {
-    console.log('\n Generating link')
     return generateLinkUtils.generateLink({
-      factoryAddress: factory,
+      factoryAddress,
       chainId,
       claimHost,
       linkdropMasterAddress,
@@ -72,10 +75,10 @@ const LinkdropSDK = ({
     nftAddress,
     tokenId,
     expirationTime = 12345678910,
-    campaignId = 0
+    campaignId
   }) => {
     return generateLinkUtils.generateLinkERC721({
-      factoryAddress: factory,
+      factoryAddress,
       chainId,
       claimHost,
       linkdropMasterAddress,
@@ -89,8 +92,12 @@ const LinkdropSDK = ({
     })
   }
 
-  const getProxyAddress = (campaingId = 0) => {
-    return computeProxyAddress(factory, linkdropMasterAddress, campaingId)
+  const getProxyAddress = campaingId => {
+    return computeProxyAddress(
+      factoryAddress,
+      linkdropMasterAddress,
+      campaingId
+    )
   }
 
   const claim = async ({
@@ -101,7 +108,7 @@ const LinkdropSDK = ({
     linkKey,
     linkdropSignerSignature,
     receiverAddress,
-    campaignId = 0
+    campaignId
   }) => {
     return claimUtils.claim({
       jsonRpcUrl,
@@ -128,7 +135,7 @@ const LinkdropSDK = ({
     linkKey,
     linkdropSignerSignature,
     receiverAddress,
-    campaignId = 0
+    campaignId
   }) => {
     return claimUtils.claimERC721({
       jsonRpcUrl,

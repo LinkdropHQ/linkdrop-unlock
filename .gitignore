@@ -25,3 +25,8 @@ apps/app-demo/node_modules/
 apps/app-demo/assets/scripts/
 
 linkdrop-ui-kit/dist/
+
+# emacs
+*#
+.*#
+*~

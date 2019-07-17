@@ -31,6 +31,7 @@
     "claim-erc20": "npx babel-node scripts/src/claim_erc20.js",
     "claim-erc721": "npx babel-node scripts/src/claim_erc721.js",
     "server": "npx babel-node server/server.js",
+    "dev:server": "nodemon --exec npx babel-node server/server.js",    
     "setup-linkdrop": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links",
     "setup-linkdrop-erc721": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links-erc721",
     "test:demo": "NODE_ENV=test-demo NODE_PATH=./apps/app-demo mocha apps/app-demo/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",

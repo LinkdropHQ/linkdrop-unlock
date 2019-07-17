@@ -34,14 +34,13 @@ export const deploy = async () => {
     )
 
     registry = await factory.deploy({
-      gasLimit: 6000000
+      gasLimit: 6000000,
+      gasPrice: ethers.utils.parseUnits('10', 'gwei')
     })
 
     await registry.deployed()
 
-    spinner.info(
-      term.bold.green.str(`Adding ${RELAYER_ADDRESS} to whitelisted relayers`)
-    )
+    spinner.info(term.bold.green.str(`Whitelisting relayer ${RELAYER_ADDRESS}`))
     await registry.addRelayer(RELAYER_ADDRESS)
   } catch (err) {
     spinner.fail(term.bold.red.str('Failed to deploy contract'))

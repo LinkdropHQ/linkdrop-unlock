@@ -45,10 +45,11 @@ export const signLink = async (
   expirationTime,
   version,
   chainId,
-  linkId
+  linkId,
+  proxyAddress
 ) => {
   let messageHash = ethers.utils.solidityKeccak256(
-    ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address'],
+    ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address', 'address'],
     [
       ethAmount,
       tokenAddress,
@@ -56,7 +57,8 @@ export const signLink = async (
       expirationTime,
       version,
       chainId,
-      linkId
+      linkId,
+      proxyAddress
     ]
   )
   let messageHashToSign = ethers.utils.arrayify(messageHash)
@@ -72,7 +74,8 @@ export const createLink = async (
   tokenAmount,
   expirationTime,
   version,
-  chainId
+  chainId,
+  proxyAddress
 ) => {
   let linkWallet = ethers.Wallet.createRandom()
   let linkKey = linkWallet.privateKey
@@ -85,7 +88,8 @@ export const createLink = async (
     expirationTime,
     version,
     chainId,
-    linkId
+    linkId,
+    proxyAddress
   )
   return {
     linkKey, // link's ephemeral private key
