@@ -15,7 +15,7 @@ import {
   getExpirationTime,
   getProvider
 } from './utils'
-
+import deployProxyIfNeeded from './deploy_proxy'
 const JSON_RPC_URL = getString('jsonRpcUrl')
 const CHAIN = getString('CHAIN')
 const LINKDROP_MASTER_PRIVATE_KEY = getString('linkdropMasterPrivateKey')
@@ -28,7 +28,6 @@ const PROVIDER = getProvider()
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 const CAMPAIGN_ID = getInt('CAMPAIGN_ID')
 const FACTORY_ADDRESS = getString('FACTORY_ADDRESS')
-
 const GAS_FEE = ethers.utils.parseUnits('0.0002')
 
 // Initialize linkdrop SDK
@@ -50,6 +49,9 @@ export const generate = async () => {
 
     const proxyAddress = linkdropSDK.getProxyAddress(CAMPAIGN_ID)
 
+    // check that proxy address is deployed
+    await deployProxyIfNeeded(spinner)
+    
     // Send tokens to proxy
     if (TOKEN_AMOUNT > 0 && TOKEN_ADDRESS !== ethers.constants.AddressZero) {
       const cost = TOKEN_AMOUNT * LINKS_NUMBER
@@ -103,7 +105,8 @@ export const generate = async () => {
 
         tx = await LINKDROP_MASTER_WALLET.sendTransaction({
           to: proxyAddress,
-          value: amountToSend
+          value: amountToSend,
+          gasLimit: 23000
         })
 
         term.bold(`Tx Hash: ^g${tx.hash}\n`)
@@ -116,7 +119,8 @@ export const generate = async () => {
 
     tx = await LINKDROP_MASTER_WALLET.sendTransaction({
       to: proxyAddress,
-      value: FEE_COSTS
+      value: FEE_COSTS,
+      gasLimit: 23000
     })
 
     term.bold(`Tx Hash: ^g${tx.hash}\n`)

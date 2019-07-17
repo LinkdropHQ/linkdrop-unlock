@@ -26,8 +26,7 @@ class ProxyFactoryService {
     campaignId,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature,
-    proxyAddress
+    receiverSignature
   }) {
     return this.contract.checkClaimParams(
       weiAmount,
@@ -39,8 +38,7 @@ class ProxyFactoryService {
       campaignId,
       linkdropSignerSignature,
       receiverAddress,
-      receiverSignature,
-      proxyAddress
+      receiverSignature
     )
   }
 
@@ -54,8 +52,7 @@ class ProxyFactoryService {
     campaignId,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature,
-    proxyAddress
+    receiverSignature
   }) {
     const gasPrice = ethers.utils.parseUnits('0.005', 'gwei')
     return this.contract.claim(
@@ -96,8 +93,7 @@ class ProxyFactoryService {
       campaignId,
       linkdropSignerSignature,
       receiverAddress,
-      receiverSignature,
-      proxyAddress
+      receiverSignature
     )
   }
 
@@ -111,8 +107,7 @@ class ProxyFactoryService {
     campaignId,
     linkdropSignerSignature,
     receiverAddress,
-    receiverSignature,
-    proxyAddress
+    receiverSignature
   }) {
     const gasPrice = ethers.utils.parseUnits('0.005', 'gwei')
     return this.contract.claimERC721(

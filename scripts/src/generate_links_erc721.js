@@ -15,7 +15,7 @@ import {
   getExpirationTime,
   getLinkdropMasterWallet
 } from './utils'
-
+import deployProxyIfNeeded from './deploy_proxy'
 ethers.errors.setLogLevel('error')
 
 const JSON_RPC_URL = getString('jsonRpcUrl')
@@ -52,6 +52,9 @@ export const generate = async () => {
 
     const proxyAddress = linkdropSDK.getProxyAddress(CAMPAIGN_ID)
 
+    // check that proxy address is deployed
+    await deployProxyIfNeeded(spinner)
+    
     const nftContract = await new ethers.Contract(
       NFT_ADDRESS,
       NFTMock.abi,
@@ -99,7 +102,8 @@ export const generate = async () => {
 
         tx = await LINKDROP_MASTER_WALLET.sendTransaction({
           to: proxyAddress,
-          value: amountToSend
+          value: amountToSend,
+          gasLimit: 23000
         })
 
         term.bold(`Tx Hash: ^g${tx.hash}\n`)
@@ -112,7 +116,8 @@ export const generate = async () => {
 
     tx = await LINKDROP_MASTER_WALLET.sendTransaction({
       to: proxyAddress,
-      value: FEE_COSTS
+      value: FEE_COSTS,
+      gasLimit: 23000
     })
 
     term.bold(`Tx Hash: ^g${tx.hash}\n`)

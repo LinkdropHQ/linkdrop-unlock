@@ -8,13 +8,13 @@ import {
 } from './utils'
 
 import LinkdropSDK from '../../sdk/src/index'
-
 import ora from 'ora'
 import { terminal as term } from 'terminal-kit'
 import { ethers } from 'ethers'
 import path from 'path'
 import fastcsv from 'fast-csv'
 import fs from 'fs'
+import deployProxyIfNeeded from './deploy_proxy'
 
 const JSON_RPC_URL = getString('jsonRpcUrl')
 const CHAIN = getString('CHAIN')
@@ -26,7 +26,6 @@ const PROVIDER = getProvider()
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 const CAMPAIGN_ID = getInt('CAMPAIGN_ID')
 const FACTORY_ADDRESS = getString('FACTORY_ADDRESS')
-
 const GAS_FEE = ethers.utils.parseUnits('0.0002')
 
 const linkdropSDK = LinkdropSDK({
@@ -55,6 +54,9 @@ export const generate = async () => {
     const tokenDecimals = 18
     const proxyBalance = await PROVIDER.getBalance(proxyAddress)
 
+    // check that proxy address is deployed
+    await deployProxyIfNeeded(spinner)
+    
     if (proxyBalance < cost) {
       // Transfer ethers
       amountToSend = cost - proxyBalance
@@ -68,7 +70,8 @@ export const generate = async () => {
 
       tx = await LINKDROP_MASTER_WALLET.sendTransaction({
         to: proxyAddress,
-        value: amountToSend
+        value: amountToSend,
+        gasLimit: 23000
       })
 
       term.bold(`Tx Hash: ^g${tx.hash}\n`)
@@ -80,7 +83,8 @@ export const generate = async () => {
 
     tx = await LINKDROP_MASTER_WALLET.sendTransaction({
       to: proxyAddress,
-      value: FEE_COSTS
+      value: FEE_COSTS,
+      gasLimit: 23000
     })
 
     term.bold(`Tx Hash: ^g${tx.hash}\n`)
