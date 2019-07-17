@@ -1,7 +1,7 @@
 import claimService from './claimService'
 
 class LastTxHashService {
-  async getLastTxHash({ linkdropMasterAddress, linkId }) {
+  async getLastTxHash ({ linkdropMasterAddress, linkId }) {
     const claim = await claimService.findClaimInDB({
       linkId,
       linkdropMasterAddress
@@ -11,7 +11,7 @@ class LastTxHashService {
     return txHash
   }
 
-  async getLastTxHashById(id) {
+  async getLastTxHashById (id) {
     const claim = await claimService.findClaimById(id)
     const transactions = claim.transactions
     const txHash = transactions[transactions.length - 1].hash
