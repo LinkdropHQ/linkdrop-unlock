@@ -15,14 +15,14 @@ class Campaigns extends React.Component {
         {...linkdrop}
         chainId={chainId}
       />)}
-      {items.length === 0 && <ActionBlock
+      <ActionBlock
         transparent
         title={this.t('createLinkdrop')}
         description={this.t('createLinkdropDescription')}
         extraContent={this.t('ercAndEth')}
         href='/#/campaigns/create'
         buttonTitle={this.t('create')}
-      />}
+      />
     </div>
   }
 }
