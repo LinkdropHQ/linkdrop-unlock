@@ -10,7 +10,7 @@ const util = require('util')
  * @private
  */
 function _createError (name, statusCode) {
-    /**
+  /**
    * The error constructor
    * @param {String} message the error message
    * @param {String} [cause] the error cause

@@ -4,7 +4,7 @@ const config = configs.get('server')
 const { FACTORY_ADDRESS, CHAIN } = config
 
 class LinkdropService {
-  async getProxyAddress(linkdropMasterAddress, campaignId) {
+  async getProxyAddress (linkdropMasterAddress, campaignId) {
     const linkdropSDK = LinkdropSDK({
       linkdropMasterAddress,
       factoryAddress: FACTORY_ADDRESS,

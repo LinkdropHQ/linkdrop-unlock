@@ -7,7 +7,7 @@ const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
 
 class ProxyFactoryService {
-  constructor() {
+  constructor () {
     // initialize proxy factory
     this.contract = new ethers.Contract(
       config.FACTORY_ADDRESS,
@@ -16,7 +16,7 @@ class ProxyFactoryService {
     )
   }
 
-  checkClaimParams({
+  checkClaimParams ({
     weiAmount,
     tokenAddress,
     tokenAmount,
@@ -44,7 +44,7 @@ class ProxyFactoryService {
     )
   }
 
-  claim({
+  claim ({
     weiAmount,
     tokenAddress,
     tokenAmount,
@@ -73,7 +73,7 @@ class ProxyFactoryService {
     )
   }
 
-  checkClaimParamsERC721({
+  checkClaimParamsERC721 ({
     weiAmount,
     nftAddress,
     tokenId,
@@ -101,7 +101,7 @@ class ProxyFactoryService {
     )
   }
 
-  claimERC721({
+  claimERC721 ({
     weiAmount,
     nftAddress,
     tokenId,

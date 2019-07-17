@@ -5,21 +5,21 @@ import operationService from './operationService'
 import linkdropService from './linkdropService'
 
 class ClaimService {
-  _computeId({ linkId, linkdropMasterAddress }) {
+  _computeId ({ linkId, linkdropMasterAddress }) {
     return `claim-${linkdropMasterAddress.toLowerCase()}-${linkId.toLowerCase()}`
   }
 
   // Check whether a claim tx exists in database
-  findClaimInDB({ linkId, linkdropMasterAddress }) {
+  findClaimInDB ({ linkId, linkdropMasterAddress }) {
     const id = this._computeId({ linkId, linkdropMasterAddress })
     return operationService.findById(id)
   }
 
-  findClaimById(id) {
+  findClaimById (id) {
     return operationService.findById(id)
   }
 
-  _checkClaimParams(params) {
+  _checkClaimParams (params) {
     if (!params.weiAmount) {
       throw new BadRequestError('Please provide weiAmount argument')
     }
@@ -63,7 +63,7 @@ class ClaimService {
     logger.debug('Valid claim params: ' + JSON.stringify(params))
   }
 
-  async claim(params) {
+  async claim (params) {
     // Make sure all arguments are passed
     this._checkClaimParams(params)
 
@@ -106,7 +106,7 @@ class ClaimService {
     return tx.hash
   }
 
-  _checkClaimParamsERC721(params) {
+  _checkClaimParamsERC721 (params) {
     if (!params.weiAmount) {
       throw new BadRequestError('Please provide weiAmount argument')
     }
@@ -150,7 +150,7 @@ class ClaimService {
     logger.debug('Valid claim params: ' + JSON.stringify(params))
   }
 
-  async claimERC721(params) {
+  async claimERC721 (params) {
     // Make sure all arguments are passed
     this._checkClaimParamsERC721(params)
 

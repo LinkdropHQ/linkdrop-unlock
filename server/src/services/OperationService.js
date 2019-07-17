@@ -5,11 +5,11 @@ const ethers = require('ethers')
 const ONE_GWEI = ethers.utils.parseUnits('1', 'gwei')
 
 class OperationService {
-  findById(id) {
+  findById (id) {
     return Operation.findOne({ id })
   }
 
-  async create(id, type, data, tx = null) {
+  async create (id, type, data, tx = null) {
     const operation = new Operation({
       id,
       type,
@@ -31,7 +31,7 @@ class OperationService {
     return operation
   }
 
-  async updateOnTransactionMined(id, txHash, receipt) {
+  async updateOnTransactionMined (id, txHash, receipt) {
     logger.debug(`Updating operation (${id}) on tx mined (${txHash})`)
     const operation = await this.findById(id)
     const status = receipt.status === 1 ? 'completed' : 'error'
@@ -50,7 +50,7 @@ class OperationService {
     logger.json(operation)
   }
 
-  async retryTransaction(id, txHash) {
+  async retryTransaction (id, txHash) {
     logger.info(`Retrying operation (${id}) with new tx...`)
     const operation = await this.findById(id)
     const transaction = operation.transactions
@@ -80,7 +80,7 @@ class OperationService {
     this.addTransaction(id, newTx)
   }
 
-  async trackTransaction(id, txHash) {
+  async trackTransaction (id, txHash) {
     logger.debug(`Listening for mined tx ${txHash}...`)
     // time for loop
     const LOOP_TIME = 1000
@@ -128,7 +128,7 @@ class OperationService {
     _tick()
   }
 
-  async addTransaction(id, tx) {
+  async addTransaction (id, tx) {
     const operation = await this.findById(id)
 
     const transaction = {

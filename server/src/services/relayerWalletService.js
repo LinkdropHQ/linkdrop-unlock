@@ -14,7 +14,7 @@ if (relayerPrivateKey == null || relayerPrivateKey === '') {
 }
 
 class RelayerWalletService {
-  constructor() {
+  constructor () {
     this.provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
     this.relayerWallet = new ethers.Wallet(relayerPrivateKey, this.provider)
   }

@@ -1,10 +1,7 @@
 import Table from 'cli-table'
 const { createLogger, format, transports } = require('winston')
 
-const loggerFormat = format.combine(
-  format.colorize(),
-  format.simple()
-)
+const loggerFormat = format.combine(format.colorize(), format.simple())
 
 const logger = createLogger({
   level: process.env.LOG_LEVEL || 'debug',
