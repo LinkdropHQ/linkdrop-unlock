@@ -50,7 +50,7 @@ export const generate = async () => {
     })
     spinner.start()
 
-    const proxyAddress = linkdropSDK.getProxyAddress()
+    const proxyAddress = linkdropSDK.getProxyAddress(CAMPAIGN_ID)
 
     const nftContract = await new ethers.Contract(
       NFT_ADDRESS,
@@ -106,7 +106,7 @@ export const generate = async () => {
       }
     }
 
-    const FEE_COSTS = LINKS_NUMBER * GAS_FEE
+    const FEE_COSTS = tokenIds.length * GAS_FEE
     // Transfer fee coverage
     spinner.info(term.bold.str(`Sending fee costs to ^g${proxyAddress}`))
 

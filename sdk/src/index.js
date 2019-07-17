@@ -52,7 +52,7 @@ const LinkdropSDK = ({
     tokenAddress,
     tokenAmount,
     expirationTime = 12345678910,
-    campaignId = 0
+    campaignId
   }) => {
     return generateLinkUtils.generateLink({
       factoryAddress,
@@ -75,7 +75,7 @@ const LinkdropSDK = ({
     nftAddress,
     tokenId,
     expirationTime = 12345678910,
-    campaignId = 0
+    campaignId
   }) => {
     return generateLinkUtils.generateLinkERC721({
       factoryAddress,
@@ -92,7 +92,7 @@ const LinkdropSDK = ({
     })
   }
 
-  const getProxyAddress = (campaingId = 0) => {
+  const getProxyAddress = campaingId => {
     return computeProxyAddress(
       factoryAddress,
       linkdropMasterAddress,
@@ -108,7 +108,7 @@ const LinkdropSDK = ({
     linkKey,
     linkdropSignerSignature,
     receiverAddress,
-    campaignId = 0
+    campaignId
   }) => {
     return claimUtils.claim({
       jsonRpcUrl,
@@ -135,7 +135,7 @@ const LinkdropSDK = ({
     linkKey,
     linkdropSignerSignature,
     receiverAddress,
-    campaignId = 0
+    campaignId
   }) => {
     return claimUtils.claimERC721({
       jsonRpcUrl,

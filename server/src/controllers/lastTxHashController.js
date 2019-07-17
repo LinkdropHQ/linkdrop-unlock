@@ -15,3 +15,14 @@ export const getLastTxHash = async (req, res) => {
     txHash: txHash
   })
 }
+
+export const getLastTxHashById = async (req, res) => {
+  const id = req.params.id
+  const txHash = await lastTxHashService.getLastTxHashById(id)
+
+  // return tx hash in successful response
+  res.json({
+    success: true,
+    txHash: txHash
+  })
+}

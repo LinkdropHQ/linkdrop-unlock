@@ -34,7 +34,7 @@ const claimERC721 = async () => {
       linkdropMasterAddress,
       linkdropSignerSignature,
       campaignId
-    } = await getUrlParams('erc721', 0)
+    } = await getUrlParams('erc721', 1)
 
     const linkdropSDK = LinkdropSDK({
       linkdropMasterAddress,

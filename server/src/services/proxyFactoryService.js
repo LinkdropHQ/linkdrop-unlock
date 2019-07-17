@@ -72,6 +72,63 @@ class ProxyFactoryService {
       { gasLimit: 500000, gasPrice }
     )
   }
+
+  checkClaimParamsERC721({
+    weiAmount,
+    nftAddress,
+    tokenId,
+    expirationTime,
+    linkId,
+    linkdropMasterAddress,
+    campaignId,
+    linkdropSignerSignature,
+    receiverAddress,
+    receiverSignature,
+    proxyAddress
+  }) {
+    return this.contract.checkClaimParamsERC721(
+      weiAmount,
+      nftAddress,
+      tokenId,
+      expirationTime,
+      linkId,
+      linkdropMasterAddress,
+      campaignId,
+      linkdropSignerSignature,
+      receiverAddress,
+      receiverSignature,
+      proxyAddress
+    )
+  }
+
+  claimERC721({
+    weiAmount,
+    nftAddress,
+    tokenId,
+    expirationTime,
+    linkId,
+    linkdropMasterAddress,
+    campaignId,
+    linkdropSignerSignature,
+    receiverAddress,
+    receiverSignature,
+    proxyAddress
+  }) {
+    const gasPrice = ethers.utils.parseUnits('0.005', 'gwei')
+    return this.contract.claimERC721(
+      weiAmount,
+      nftAddress,
+      tokenId,
+      expirationTime,
+      linkId,
+      linkdropMasterAddress,
+      campaignId,
+      linkdropSignerSignature,
+      receiverAddress,
+      receiverSignature,
+      { gasLimit: 500000, gasPrice }
+    )
+  }
 }
 
 export default new ProxyFactoryService()
