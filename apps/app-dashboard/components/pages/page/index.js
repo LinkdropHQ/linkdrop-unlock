@@ -8,7 +8,7 @@ import { Loading } from 'linkdrop-ui-kit'
 import NetworkNotSupported from './network-not-supported'
 const ls = window.localStorage
 
-@actions(({ user: { currentAddress, chainId } }) => ({ currentAddress, chainId }))
+@actions(({ user: { currentAddress, chainId, loading } }) => ({ loading, currentAddress, chainId }))
 @translate('pages.page')
 class Page extends React.Component {
   componentDidMount () {
@@ -16,8 +16,8 @@ class Page extends React.Component {
   }
 
   defineContent ({ currentAddress }) {
-    const { chainId } = this.props
-    if (currentAddress === null) {
+    const { chainId, loading } = this.props
+    if (currentAddress === null && loading) {
       return <Loading />
     }
     if (!currentAddress) {

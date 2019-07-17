@@ -7,16 +7,22 @@ import { defineNetworkName } from 'linkdrop-commons'
 
 const generator = function * ({ payload }) {
   try {
+    yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     yield delay(3000)
     const currentProvider = (web3 || {}).currentProvider
-    if (!currentProvider) { return }
+    if (!currentProvider) {
+      return yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
+    }
     const { selectedAddress, networkVersion } = currentProvider
-    if (!selectedAddress || !networkVersion) { return }
+    if (!selectedAddress || !networkVersion) {
+      return yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
+    }
     const networkName = defineNetworkName({ chainId: networkVersion })
     const sdk = initializeSdk({ chainId: networkName, linkdropMasterAddress: selectedAddress, jsonRpcUrl, apiHost })
     yield put({ type: 'USER.SET_SDK', payload: { sdk } })
     yield put({ type: 'USER.SET_CURRENT_ADDRESS', payload: { currentAddress: selectedAddress } })
     yield put({ type: 'USER.SET_CHAIN_ID', payload: { chainId: networkVersion } })
+    yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
   } catch (e) {
     console.error(e)
   }
