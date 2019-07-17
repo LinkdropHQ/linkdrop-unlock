@@ -14,7 +14,6 @@ const RECEIVER_ADDRESS = getString('receiverAddress')
 const FACTORY_ADDRESS = getString('FACTORY_ADDRESS')
 const LINKS_NUMBER = getString('linksNumber')
 
-
 const claim = async () => {
   let spinner
 
