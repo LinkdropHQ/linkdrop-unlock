@@ -70,7 +70,8 @@ export const generate = async () => {
 
       tx = await LINKDROP_MASTER_WALLET.sendTransaction({
         to: proxyAddress,
-        value: amountToSend
+        value: amountToSend,
+        gasLimit: 23000
       })
 
       term.bold(`Tx Hash: ^g${tx.hash}\n`)
@@ -82,7 +83,8 @@ export const generate = async () => {
 
     tx = await LINKDROP_MASTER_WALLET.sendTransaction({
       to: proxyAddress,
-      value: FEE_COSTS
+      value: FEE_COSTS,
+      gasLimit: 23000
     })
 
     term.bold(`Tx Hash: ^g${tx.hash}\n`)

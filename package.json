@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "test": "mocha --require @babel/polyfill --require @babel/register",
-    "compile-contracts": "cd contracts && npx waffle",
+    "compile-contracts": "cd contracts && npx waffle && cd ..",
     "deploy-registry": "npx babel-node scripts/src/deploy_registry.js",
     "deploy-mastercopy": "npx babel-node scripts/src/deploy_mastercopy.js",
     "deploy-factory": "npx babel-node scripts/src/deploy_factory.js",
@@ -32,7 +32,7 @@
     "claim-erc721": "npx babel-node scripts/src/claim_erc721.js",
     "server": "npx babel-node server/server.js",
     "dev:server": "nodemon --exec npx babel-node server/server.js",
-    "setup-linkdrop": "yarn deploy-mastercopy && yarn deploy-factory",
+    "setup-linkdrop": "yarn compile-contracts && yarn deploy-mastercopy && yarn deploy-factory",
     "setup-tokens": "yarn deploy-erc20 && yarn deploy-erc721",
     "setup-linkdrop-erc721": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links-erc721",
     "test:demo": "NODE_ENV=test-demo NODE_PATH=./apps/app-demo mocha apps/app-demo/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",
