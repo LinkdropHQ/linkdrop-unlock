@@ -1,5 +1,5 @@
 import { BadRequestError, NotImplementedError } from '../../utils/errors'
-import logger from '../utils/logger'
+import logger from '../../utils/logger'
 import operationService from '../operationService'
 import linkdropService from '../linkdropService'
 
@@ -18,7 +18,7 @@ class ClaimService {
     return operationService.findById(id)
   }
 
-  _checkClaimParams (params) {
+  _checkClaimParamsBase (params) {
     if (!params.weiAmount) {
       throw new BadRequestError('Please provide weiAmount argument')
     }
@@ -108,4 +108,4 @@ class ClaimService {
   }
 }
 
-export default new ClaimService()
+export default ClaimService

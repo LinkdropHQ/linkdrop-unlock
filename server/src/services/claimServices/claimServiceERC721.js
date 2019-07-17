@@ -1,15 +1,15 @@
 import { BadRequestError } from '../../utils/errors'
-import logger from '../utils/logger'
+import logger from '../../utils/logger'
 import proxyFactoryService from '../proxyFactoryService'
 import ClaimServiceBase from './claimServiceBase'
 
 
 class ClaimServiceERC721 extends ClaimServiceBase {
-  _checkClaimParamsERC721 (params) {
+  _checkClaimParams (params) {
     // check basic linkdrop params
-    super._checkClaimParams(params)
+    super._checkClaimParamsBase(params)
 
-    // make erc20 specific checks    
+    // make erc20 specific checks
     if (!params.nftAddress) {
       throw new BadRequestError('Please provide nftAddress argument')
     }
@@ -20,11 +20,11 @@ class ClaimServiceERC721 extends ClaimServiceBase {
   }
 
   _checkParamsWithBlockchainCall (params) {
-    return proxyFactoryService.checkClaimParams(params)
+    return proxyFactoryService.checkClaimParamsERC721(params)
   }
 
   _sendClaimTx (params) {
-    return proxyFactoryService.claim(params)
+    return proxyFactoryService.claimERC721(params)
   }
 }
 
