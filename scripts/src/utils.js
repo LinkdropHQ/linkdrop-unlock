@@ -75,6 +75,19 @@ export const getUrlParams = async (type, i) => {
   return parsed
 }
 
+export const getLinkNumber = (maxNumber) => {
+  const args = process.argv.slice(2)
+  if (args.length < 1) {
+    return Math.floor((Math.random() * maxNumber) + 1)
+  }
+  const n = args[0]
+  const number = Number(n)
+  if (isNaN(number)) {
+    throw new Error(`Wrong link number argument provided ${n}`)
+  }
+  return number
+}
+
 // const JSON_RPC_URL = getString('jsonRpcUrl')
 // const HOST = getString('host')
 // const LINKDROP_MASTER_PRIVATE_KEY = getString('linkdropMasterPrivateKey')
