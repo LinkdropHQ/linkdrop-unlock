@@ -41,8 +41,13 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
         _;
     }
 
-    modifier onlyLinkdropMasterOrOwner() {
-        require (msg.sender == linkdropMaster || msg.sender == owner, "Only linkdrop master or owner");
+    modifier onlyLinkdropMasterOrFactory() {
+        require (msg.sender == linkdropMaster || msg.sender == owner, "Only linkdrop master or factory");
+        _;
+    }
+
+    modifier onlyFactory() {
+        require(msg.sender == owner, "Only factory");
         _;
     }
 
@@ -124,7 +129,7 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     * @param _linkdropSigner Address corresponding to signing key
     * @return True if success
     */
-    function addSigner(address _linkdropSigner) external payable onlyLinkdropMasterOrOwner returns (bool) {
+    function addSigner(address _linkdropSigner) external payable onlyLinkdropMasterOrFactory returns (bool) {
         require(_linkdropSigner != address(0), "Invalid address");
         isLinkdropSigner[_linkdropSigner] = true;
         return true;
@@ -145,7 +150,7 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     * @dev Function to destroy this contract, can only be called by owner (factory) or linkdrop master
     * Withdraws all the remaining ETH to linkdrop master
     */
-    function destroy() external onlyLinkdropMasterOrOwner {
+    function destroy() external onlyLinkdropMasterOrFactory {
         selfdestruct(linkdropMaster);
     }
 

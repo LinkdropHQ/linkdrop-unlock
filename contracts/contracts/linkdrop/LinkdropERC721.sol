@@ -168,7 +168,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         address payable _feeReceiver
     )
     external
-    onlyLinkdropMasterOrOwner
+    onlyFactory
     whenNotPaused
     returns (bool)
     {
