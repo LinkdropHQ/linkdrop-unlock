@@ -55,7 +55,7 @@ const campaignId = 0
 const initcode = '0x6352c7420d6000526103ff60206004601c335afa6040516060f3'
 const chainId = 4 // Rinkeby
 
-describe('Deploy with signer tests', () => {
+describe('Factory tests', () => {
   before(async () => {
     tokenInstance = await deployContract(linkdropMaster, TokenMock)
     registry = await deployContract(linkdropMaster, Registry)
@@ -125,5 +125,12 @@ describe('Deploy with signer tests', () => {
 
     const balance = await provider.getBalance(proxy.address)
     expect(balance).to.eq(value)
+  })
+
+  it('should change registry adress from factory owner account', async () => {
+    const newRegistryAddress = ethers.Wallet.createRandom().address
+    await factory.setRegistry(newRegistryAddress)
+    const registryAddress = await factory.registry()
+    expect(registryAddress).to.eq(newRegistryAddress)
   })
 })

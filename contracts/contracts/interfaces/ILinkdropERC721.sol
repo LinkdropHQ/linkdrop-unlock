@@ -30,7 +30,8 @@ interface ILinkdropERC721 {
         address _linkId,
         bytes calldata _linkdropSignerSignature,
         address _receiver,
-        bytes calldata _receiverSignature
+        bytes calldata _receiverSignature,
+        uint _fee
     )
     external view returns (bool);
 
@@ -44,7 +45,8 @@ interface ILinkdropERC721 {
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature,
-        address payable _feeReceiver
+        address payable _feeReceiver,
+        uint _fee
     )
     external returns (bool);
 

@@ -97,8 +97,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
                 address(this), // Owner address
                 _linkdropMaster, // Linkdrop master address
                 masterCopyVersion,
-                chainId,
-                registry
+                chainId
             ),
             "Failed to initialize"
         );
@@ -168,8 +167,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
                 address(0), // Owner address
                 address(0), // Linkdrop master address
                 masterCopyVersion,
-                chainId,
-                registry
+                chainId
             ),
             "Failed to initialize"
         );
@@ -214,4 +212,14 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
         return keccak256(abi.encodePacked(_linkdropMaster, _campaignId));
     }
 
+    /**
+     * @dev Function to set the registry address
+     * @param _registry Registry contract address
+     */
+    function setRegistry(Registry _registry) external returns (bool) {
+        require(msg.sender == owner, "Only owner");
+        require(address(_registry) != address(0), "Invalid address");
+        registry = _registry;
+        return true;
+    }
 }

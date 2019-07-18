@@ -19,8 +19,7 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
         address _owner,
         address payable _linkdropMaster,
         uint _version,
-        uint _chainId,
-        Registry _registry
+        uint _chainId
     )
     public
     returns (bool)
@@ -31,7 +30,6 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
         isLinkdropSigner[linkdropMaster] = true;
         version = _version;
         chainId = _chainId;
-        registry = _registry;
         _initialized = true;
         return true;
     }

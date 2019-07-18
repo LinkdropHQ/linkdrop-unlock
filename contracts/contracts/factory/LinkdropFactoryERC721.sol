@@ -40,6 +40,8 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
         // Make sure proxy contract is deployed
         require(isDeployed(_linkdropMaster, _campaignId), "Not deployed");
 
+        uint fee = registry.getFee(deployed[salt(_linkdropMaster, _campaignId)]);
+
         return ILinkdropERC721(deployed[salt(_linkdropMaster, _campaignId)]).checkClaimParamsERC721
         (
             _weiAmount,
@@ -49,7 +51,8 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
             _linkId,
             _linkdropSignerSignature,
             _receiver,
-            _receiverSignature
+            _receiverSignature,
+            fee
         );
     }
 
@@ -89,6 +92,8 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
         // Make sure only whitelisted relayer calls this function
         require(registry.isWhitelistedRelayer(msg.sender), "Only whitelisted relayer");
 
+        uint fee = registry.getFee(deployed[salt(_linkdropMaster, _campaignId)]);
+
         // Call claim function in the context of proxy contract
         ILinkdropERC721(deployed[salt(_linkdropMaster, _campaignId)]).claimERC721
         (
@@ -100,7 +105,8 @@ contract LinkdropFactoryERC721 is ILinkdropFactoryERC721, LinkdropFactoryCommon 
             _linkdropSignerSignature,
             _receiver,
             _receiverSignature,
-            msg.sender // Fee receiver
+            msg.sender, // Fee receiver
+            fee
         );
 
         return true;
