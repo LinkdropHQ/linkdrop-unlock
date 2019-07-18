@@ -1,8 +1,8 @@
-import claimService from './claimServices/ClaimServiceERC20'
+import claimServiceERC20 from './claimServices'
 
 class LastTxHashService {
   async getLastTxHash ({ linkdropMasterAddress, linkId }) {
-    const claim = await claimService.findClaimInDB({
+    const claim = await claimServiceERC20.findClaimInDB({
       linkId,
       linkdropMasterAddress
     })
@@ -12,7 +12,7 @@ class LastTxHashService {
   }
 
   async getLastTxHashById (id) {
-    const claim = await claimService.findClaimById(id)
+    const claim = await claimServiceERC20.findClaimById(id)
     const transactions = claim.transactions
     const txHash = transactions[transactions.length - 1].hash
     return txHash

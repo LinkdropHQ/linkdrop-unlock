@@ -3,7 +3,6 @@ import logger from '../../utils/logger'
 import proxyFactoryService from '../proxyFactoryService'
 import ClaimServiceBase from './claimServiceBase'
 
-
 class ClaimServiceERC721 extends ClaimServiceBase {
   _checkClaimParams (params) {
     // check basic linkdrop params
