@@ -12,7 +12,6 @@ import {
 import LinkdropFactory from '../build/LinkdropFactory'
 import LinkdropMastercopy from '../build/LinkdropMastercopy'
 import TokenMock from '../build/TokenMock'
-import Registry from '../build/Registry'
 
 import { computeProxyAddress, computeBytecode } from '../scripts/utils'
 
@@ -33,7 +32,6 @@ let factory
 let proxy
 let proxyAddress
 let tokenInstance
-let registry
 
 let link
 let receiverAddress
@@ -54,11 +52,6 @@ const chainId = 4 // Rinkeby
 describe('Campaigns tests', () => {
   before(async () => {
     tokenInstance = await deployContract(linkdropMaster, TokenMock)
-    registry = await deployContract(deployer, Registry)
-    await registry.addRelayer(relayer.address)
-    const isWhitelisted = await registry.isWhitelistedRelayer(relayer.address)
-    expect(isWhitelisted).to.be.true
-    standardFee = await registry.standardFee()
   })
 
   it('should deploy master copy of linkdrop implementation', async () => {
@@ -73,7 +66,7 @@ describe('Campaigns tests', () => {
     factory = await deployContract(
       deployer,
       LinkdropFactory,
-      [masterCopy.address, chainId, registry.address],
+      [masterCopy.address, chainId],
       {
         gasLimit: 6000000
       }
