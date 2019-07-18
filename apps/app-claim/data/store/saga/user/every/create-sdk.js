@@ -8,6 +8,7 @@ const generator = function * ({ payload }) {
     const { linkdropMasterAddress, chainId } = payload
     const networkName = defineNetworkName({ chainId })
     const sdk = initializeSdk({ factoryAddress: factory, chain: networkName, linkdropMasterAddress, jsonRpcUrl, apiHost })
+    console.log({ sdk })
     yield put({ type: 'USER.SET_SDK', payload: { sdk } })
   } catch (e) {
     console.error(e)
