@@ -29,9 +29,11 @@ class Claim extends React.Component {
     const {
       linkKey,
       chainId,
-      linkdropMasterAddress
+      linkdropMasterAddress,
+      campaignId
     } = getHashVariables()
-    this.actions().tokens.checkIfClaimed({ linkKey, chainId, linkdropMasterAddress })
+    this.actions().tokens.checkIfClaimed({ linkKey, chainId, linkdropMasterAddress, campaignId })
+    this.actions().user.createSdk({ chainId, linkdropMasterAddress })
   }
 
   componentWillReceiveProps ({ readyToClaim, alreadyClaimed }) {
@@ -101,9 +103,10 @@ class Claim extends React.Component {
       networkId
     } = context
     const {
-      chainId
+      chainId,
+      linkdropMasterAddress
     } = getHashVariables()
-    const commonData = { decimals, amount, symbol, icon, wallet: account, loading: userLoading }
+    const commonData = { linkdropMasterAddress, chainId, decimals, amount, symbol, icon, wallet: account, loading: userLoading }
     if (this.platform === 'desktop' && !account) {
       return <div>
         <ErrorPage

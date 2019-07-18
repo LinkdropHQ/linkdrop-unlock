@@ -8,7 +8,8 @@ const initialState = {
   errors: [],
   walletType: null,
   readyToClaim: false,
-  alreadyClaimed: false
+  alreadyClaimed: false,
+  sdk: null
 }
 
 export default (state = initialState, action = {}) => {
@@ -27,5 +28,7 @@ const ACTIONS = {
   'USER.SET_ERRORS': reducers.setErrors,
   'USER.SET_WALLET_TYPE': reducers.setWalletType,
   'USER.SET_READY_TO_CLAIM': reducers.setReadyToClaim,
-  'USER.SET_ALREADY_CLAIMED': reducers.setAlreadyClaimed
+  'USER.SET_ALREADY_CLAIMED': reducers.setAlreadyClaimed,
+  'USER.SET_SDK': reducers.setSdk
+
 }

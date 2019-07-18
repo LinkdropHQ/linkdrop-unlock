@@ -1,7 +1,7 @@
 import { takeEvery } from 'redux-saga/effects'
 
-import signIn from './every/sign-in'
+import createSdk from './every/create-sdk'
 
 export default function * () {
-  yield takeEvery('*USER.SIGN_IN', signIn)
+  yield takeEvery('*USER.CREATE_SDK', createSdk)
 }
