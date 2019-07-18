@@ -3,6 +3,10 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract Registry is Ownable {
 
+    event SetFee(address indexed target, uint fee);
+    event AddedRelayer(address indexed relayer);
+    event RemovedRelayer(address indexed relayer);
+
     mapping (address => bool) whitelisted;
     mapping (address => uint) fees;
 
@@ -15,6 +19,7 @@ contract Registry is Ownable {
     function setFee(address _proxy, uint _fee) external onlyOwner returns (bool) {
         require(_fee > 0, "Invalid fee");
         fees[_proxy] = _fee;
+        emit SetFee(_proxy, _fee);
         return true;
     }
 
@@ -25,7 +30,9 @@ contract Registry is Ownable {
     function addRelayer(address _relayer) external onlyOwner returns (bool) {
         require(_relayer != address(0), "Invalid address");
         require(!isWhitelistedRelayer(_relayer), "Whitelisted address");
+        emit AddedRelayer(_relayer);
         whitelisted[_relayer] = true;
+
         return true;
     }
 
@@ -33,6 +40,7 @@ contract Registry is Ownable {
         require(_relayer != address(0), "Invalid address");
         require(isWhitelistedRelayer(_relayer), "Non whitelisted address");
         whitelisted[_relayer] = false;
+        emit RemovedRelayer(_relayer);
         return true;
     }
 
