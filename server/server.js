@@ -14,11 +14,12 @@ app.use(cors())
 connectDB()
   .then(() => {
     // Run server
-    const PORT = process.env.PORT || 5000
+    const PORT = process.env.PORT || process.env.CUSTOM_PORT || 5000
     app.listen(PORT, () => {
       logger.info(`Server is up on port ${PORT}\n`)
     })
-  }).catch(err => {
+  })
+  .catch(err => {
     logger.error(`${err}\n`)
     process.exit(1)
   })
