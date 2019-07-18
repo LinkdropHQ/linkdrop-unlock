@@ -28,7 +28,8 @@ const PROVIDER = getProvider()
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 const CAMPAIGN_ID = getInt('CAMPAIGN_ID')
 const FACTORY_ADDRESS = getString('FACTORY_ADDRESS')
-const GAS_FEE = ethers.utils.parseUnits('0.0002')
+
+const GAS_FEE = ethers.utils.parseUnits('0.002')
 
 // Initialize linkdrop SDK
 const linkdropSDK = LinkdropSDK({
@@ -51,7 +52,7 @@ export const generate = async () => {
 
     // check that proxy address is deployed
     await deployProxyIfNeeded(spinner)
-    
+
     // Send tokens to proxy
     if (TOKEN_AMOUNT > 0 && TOKEN_ADDRESS !== ethers.constants.AddressZero) {
       const cost = TOKEN_AMOUNT * LINKS_NUMBER
@@ -113,7 +114,7 @@ export const generate = async () => {
       }
     }
 
-    const FEE_COSTS = LINKS_NUMBER * GAS_FEE
+    const FEE_COSTS = GAS_FEE.mul(LINKS_NUMBER)
     // Transfer fee coverage
     spinner.info(term.bold.str(`Sending fee costs to ^g${proxyAddress}`))
 

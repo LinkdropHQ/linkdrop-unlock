@@ -32,7 +32,8 @@ export const deploy = async () => {
     )
 
     nftMock = await factory.deploy({
-      gasLimit: 6000000
+      gasLimit: 4500000,
+      gasPrice: ethers.utils.parseUnits('5', 'gwei')
     })
 
     await nftMock.deployed()
