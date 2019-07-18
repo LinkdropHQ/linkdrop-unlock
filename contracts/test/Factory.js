@@ -12,7 +12,6 @@ import {
 import LinkdropFactory from '../build/LinkdropFactory'
 import LinkdropMastercopy from '../build/LinkdropMastercopy'
 import TokenMock from '../build/TokenMock'
-import Registry from '../build/Registry'
 
 import {
   computeProxyAddress,
@@ -38,7 +37,6 @@ let factory
 let proxy
 let proxyAddress
 let tokenInstance
-let registry
 
 let link
 let receiverAddress
@@ -58,10 +56,6 @@ const chainId = 4 // Rinkeby
 describe('Factory tests', () => {
   before(async () => {
     tokenInstance = await deployContract(linkdropMaster, TokenMock)
-    registry = await deployContract(linkdropMaster, Registry)
-    await registry.addRelayer(relayer.address)
-    const isWhitelisted = await registry.isWhitelistedRelayer(relayer.address)
-    expect(isWhitelisted).to.be.true
   })
 
   it('should deploy master copy of linkdrop implementation', async () => {
@@ -76,7 +70,7 @@ describe('Factory tests', () => {
     factory = await deployContract(
       linkdropMaster,
       LinkdropFactory,
-      [masterCopy.address, chainId, registry.address],
+      [masterCopy.address, chainId],
       {
         gasLimit: 6000000
       }
@@ -125,12 +119,5 @@ describe('Factory tests', () => {
 
     const balance = await provider.getBalance(proxy.address)
     expect(balance).to.eq(value)
-  })
-
-  it('should change registry adress from factory owner account', async () => {
-    const newRegistryAddress = ethers.Wallet.createRandom().address
-    await factory.setRegistry(newRegistryAddress)
-    const registryAddress = await factory.registry()
-    expect(registryAddress).to.eq(newRegistryAddress)
   })
 })

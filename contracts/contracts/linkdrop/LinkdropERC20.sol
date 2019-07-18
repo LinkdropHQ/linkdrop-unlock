@@ -213,7 +213,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         require(_transferFunds(_weiAmount, _tokenAddress, _tokenAmount, _receiver, _feeReceiver, _fee), "Transfer failed");
 
         // Emit claim event
-        emit Claimed(_linkId, _weiAmount, _tokenAddress, _tokenAmount, _receiver, now);
+        emit Claimed(_linkId, _weiAmount, _tokenAddress, _tokenAmount, _receiver);
 
         return true;
     }

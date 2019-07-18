@@ -202,7 +202,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         require(_transferFundsERC721(_weiAmount, _nftAddress, _tokenId, _receiver, _feeReceiver, _fee), "Transfer failed");
 
         // Log claim
-        emit ClaimedERC721(_linkId, _weiAmount, _nftAddress, _tokenId, _receiver, now);
+        emit ClaimedERC721(_linkId, _weiAmount, _nftAddress, _tokenId, _receiver);
 
         return true;
     }

@@ -1,5 +1,4 @@
 pragma solidity ^0.5.6;
-import "../registry/Registry.sol";
 
 contract LinkdropStorage {
 
@@ -31,12 +30,12 @@ contract LinkdropStorage {
     bool internal _paused;
 
     // Events
-    event Canceled(address linkId, uint timestamp);
-    event Claimed(address indexed linkId, uint ethAmount, address indexed token, uint tokenAmount, address receiver, uint timestamp);
-    event ClaimedERC721(address indexed linkId, uint ethAmount, address indexed nft, uint tokenId, address receiver, uint timestamp);
-    event Paused(uint timestamp);
-    event Unpaused(uint timestamp);
-    event AddedSigningKey(address linkdropSigner, uint timestamp);
-    event RemovedSigningKey(address linkdropSigner, uint timestamp);
+    event Canceled(address linkId);
+    event Claimed(address indexed linkId, uint ethAmount, address indexed token, uint tokenAmount, address receiver);
+    event ClaimedERC721(address indexed linkId, uint ethAmount, address indexed nft, uint tokenId, address receiver);
+    event Paused();
+    event Unpaused();
+    event AddedSigningKey(address linkdropSigner);
+    event RemovedSigningKey(address linkdropSigner);
 
 }

@@ -88,7 +88,7 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     function cancel(address _linkId) external onlyLinkdropMaster returns (bool) {
         require(!isClaimedLink(_linkId), "Claimed link");
         _canceled[_linkId] = true;
-        emit Canceled(_linkId, now);
+        emit Canceled(_linkId);
         return true;
     }
 
@@ -107,7 +107,7 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     */
     function pause() external onlyLinkdropMaster whenNotPaused returns (bool) {
         _paused = true;
-        emit Paused(now);
+        emit Paused();
         return true;
     }
 
@@ -118,7 +118,7 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     function unpause() external onlyLinkdropMaster returns (bool) {
         require(paused(), "Unpaused");
         _paused = false;
-        emit Unpaused(now);
+        emit Unpaused();
         return true;
     }
 
