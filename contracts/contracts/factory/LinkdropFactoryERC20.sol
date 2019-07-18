@@ -40,6 +40,8 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         // Make sure proxy contract is deployed
         require(isDeployed(_linkdropMaster, _campaignId), "Not deployed");
 
+        uint fee = fees[deployed[salt(_linkdropMaster, _campaignId)]];
+
         return ILinkdropERC20(deployed[salt(_linkdropMaster, _campaignId)]).checkClaimParams
         (
             _weiAmount,
@@ -49,7 +51,8 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
             _linkId,
             _linkdropSignerSignature,
             _receiver,
-            _receiverSignature
+            _receiverSignature,
+            fee
         );
     }
 
@@ -87,7 +90,9 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         require(isDeployed(_linkdropMaster, _campaignId), "Not deployed");
 
         // Make sure only whitelisted relayer calls this function
-        require(registry.isWhitelistedRelayer(msg.sender), "Only whitelisted relayer");
+        require(isRelayer[msg.sender], "Only relayer");
+
+        uint fee = fees[deployed[salt(_linkdropMaster, _campaignId)]];
 
         // Call claim function in the context of proxy contract
         ILinkdropERC20(deployed[salt(_linkdropMaster, _campaignId)]).claim
@@ -100,7 +105,8 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
             _linkdropSignerSignature,
             _receiver,
             _receiverSignature,
-            msg.sender // Fee receiver
+            msg.sender, // Fee receiver
+            fee
         );
 
         return true;

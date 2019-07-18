@@ -80,6 +80,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     * @param _linkdropSignerSignature ECDSA signature of linkdrop signer
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
+    * @param _fee Amount of fee to send to fee receiver
     * @return True if success
     */
     function checkClaimParamsERC721
@@ -91,7 +92,8 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         address _linkId,
         bytes memory _linkdropSignerSignature,
         address _receiver,
-        bytes memory _receiverSignature
+        bytes memory _receiverSignature,
+        uint _fee
     )
     public view
     returns (bool)
@@ -109,7 +111,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         require(_expiration >= now, "Expired link");
 
         // Make sure eth amount is available for this contract
-        require(address(this).balance >= _weiAmount.add(registry.getFee(address(this))), "Insufficient ethers");
+        require(address(this).balance >= _weiAmount.add(_fee), "Insufficient ethers");
 
         // Make sure linkdrop master is owner of token
         require(IERC721(_nftAddress).ownerOf(_tokenId) == linkdropMaster, "Unavailable token");
@@ -153,6 +155,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     * @param _receiver Address of linkdrop receiver
     * @param _receiverSignature ECDSA signature of linkdrop receiver
     * @param _feeReceiver Address to transfer fees to
+    * @param _fee Amount of fee to send to _feeReceiver
     * @return True if success
     */
     function claimERC721
@@ -165,7 +168,8 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature,
-        address payable _feeReceiver
+        address payable _feeReceiver,
+        uint _fee
     )
     external
     onlyFactory
@@ -185,7 +189,8 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
                 _linkId,
                 _linkdropSignerSignature,
                 _receiver,
-                _receiverSignature
+                _receiverSignature,
+                _fee
             ),
             "Invalid claim params"
         );
@@ -194,10 +199,10 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         claimedTo[_linkId] = _receiver;
 
         // Make sure transfer succeeds
-        require(_transferFundsERC721(_weiAmount, _nftAddress, _tokenId, _receiver, _feeReceiver), "Transfer failed");
+        require(_transferFundsERC721(_weiAmount, _nftAddress, _tokenId, _receiver, _feeReceiver, _fee), "Transfer failed");
 
         // Log claim
-        emit ClaimedERC721(_linkId, _weiAmount, _nftAddress, _tokenId, _receiver, now);
+        emit ClaimedERC721(_linkId, _weiAmount, _nftAddress, _tokenId, _receiver);
 
         return true;
     }
@@ -209,6 +214,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     * @param _tokenId Amount of tokens to be claimed (in atomic value)
     * @param _receiver Address to transfer funds to
     * @param _feeReceiver Address to transfer fees to
+    * @param _fee Amount of fee to send to _feeReceiver
     * @return True if success
     */
     function _transferFundsERC721
@@ -217,12 +223,13 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
         address _nftAddress,
         uint _tokenId,
         address payable _receiver,
-        address payable _feeReceiver
+        address payable _feeReceiver,
+        uint _fee
     )
     internal returns (bool)
     {
         // Transfer fees
-        _feeReceiver.transfer(registry.getFee(address(this)));
+        _feeReceiver.transfer(_fee);
 
         // Transfer ethers
         if (_weiAmount > 0) {
