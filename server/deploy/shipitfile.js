@@ -17,12 +17,12 @@ module.exports = shipit => {
     rinkeby: {
       deployTo: 'linkdrop/rinkeby',
       servers: 'root@rinkeby.linkdrop.io',
-      branch: 'staging'
+      branch: 'dev'
     },
     ropsten: {
       deployTo: 'linkdrop/ropsten',
       servers: 'root@rinkeby.linkdrop.io',
-      branch: 'staging'
+      branch: 'dev'
     },
     mainnet: {
       deployTo: 'linkdrop/mainnet',
