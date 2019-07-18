@@ -45,8 +45,8 @@ export const deploy = async () => {
       LINKDROP_MASTER_COPY_ADDRESS,
       CHAIN_ID,
       {
-        gasLimit: 5000000,
-        gasPrice: ethers.utils.parseUnits('10', 'gwei')
+        gasLimit: 4500000,
+        gasPrice: ethers.utils.parseUnits('5', 'gwei')
       }
     )
 
