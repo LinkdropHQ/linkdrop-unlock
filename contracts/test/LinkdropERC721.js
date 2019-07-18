@@ -12,7 +12,6 @@ import {
 import LinkdropFactory from '../build/LinkdropFactory'
 import LinkdropMastercopy from '../build/LinkdropMastercopy'
 import NFTMock from '../build/NFTMock'
-import Registry from '../build/Registry'
 
 import {
   computeProxyAddress,
@@ -40,7 +39,6 @@ let factory
 let proxy
 let proxyAddress
 let nftInstance
-let registry
 
 let link
 let receiverAddress
@@ -60,11 +58,6 @@ const campaignId = 0
 describe('ETH/ERC721 linkdrop tests', () => {
   before(async () => {
     nftInstance = await deployContract(linkdropMaster, NFTMock)
-    registry = await deployContract(linkdropMaster, Registry)
-    await registry.addRelayer(relayer.address)
-    const isWhitelisted = await registry.isWhitelistedRelayer(relayer.address)
-    expect(isWhitelisted).to.be.true
-    standardFee = await registry.standardFee()
   })
 
   it('should deploy master copy of linkdrop implementation', async () => {
@@ -79,7 +72,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
     factory = await deployContract(
       linkdropMaster,
       LinkdropFactory,
-      [masterCopy.address, chainId, registry.address],
+      [masterCopy.address, chainId],
       {
         gasLimit: 6000000
       }
@@ -87,6 +80,11 @@ describe('ETH/ERC721 linkdrop tests', () => {
     expect(factory.address).to.not.eq(ethers.constants.AddressZero)
     let version = await factory.masterCopyVersion()
     expect(version).to.eq(1)
+
+    await factory.addRelayer(relayer.address)
+    const isWhitelisted = await factory.isRelayer(relayer.address)
+    expect(isWhitelisted).to.be.true
+    standardFee = await factory.standardFee()
   })
 
   it('should deploy proxy and delegate to implementation', async () => {

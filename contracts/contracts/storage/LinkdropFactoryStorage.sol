@@ -1,12 +1,7 @@
 pragma solidity ^0.5.6;
-import "../registry/Registry.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
-contract LinkdropFactoryStorage {
-
-    Registry public registry;
-
-    // Address of factory owner
-    address payable public owner;
+contract LinkdropFactoryStorage is Ownable {
 
     // Current version of mastercopy contract
     uint public masterCopyVersion;
@@ -24,8 +19,8 @@ contract LinkdropFactoryStorage {
     mapping (bytes32 => address) public deployed;
 
     // Events
-    event Deployed(address payable indexed owner, uint campaignId, address payable proxy, bytes32 salt, uint timestamp);
-    event Destroyed(address payable owner, address payable proxy, uint timestamp);
-    event SetMasterCopy(address masterCopy, uint version, uint timestamp);
+    event Deployed(address payable indexed owner, uint campaignId, address payable proxy, bytes32 salt);
+    event Destroyed(address payable owner, address payable proxy);
+    event SetMasterCopy(address masterCopy, uint version);
 
 }

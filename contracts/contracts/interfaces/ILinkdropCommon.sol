@@ -1,5 +1,4 @@
 pragma solidity ^0.5.6;
-import "../registry/Registry.sol";
 
 interface ILinkdropCommon {
 
@@ -8,8 +7,7 @@ interface ILinkdropCommon {
         address _owner,
         address payable _linkdropMaster,
         uint _version,
-        uint _chainId,
-        Registry _registry
+        uint _chainId
     )
     external returns (bool);
 

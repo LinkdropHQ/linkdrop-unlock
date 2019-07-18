@@ -2,10 +2,12 @@ pragma solidity ^0.5.6;
 
 import "../storage/LinkdropFactoryStorage.sol";
 import "../interfaces/ILinkdropCommon.sol";
+import "./FeeManager.sol";
+import "./RelayerManager.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
-contract LinkdropFactoryCommon is LinkdropFactoryStorage {
+contract LinkdropFactoryCommon is LinkdropFactoryStorage, FeeManager, RelayerManager {
     using SafeMath for uint;
 
     /**
@@ -89,7 +91,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
 
         deployed[salt] = proxy;
 
-        // Initialize owner address, linkdrop master address master copy version and registry address in proxy contract
+        // Initialize owner address, linkdrop master address master copy version in proxy contract
         require
         (
             ILinkdropCommon(proxy).initialize
@@ -97,8 +99,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
                 address(this), // Owner address
                 _linkdropMaster, // Linkdrop master address
                 masterCopyVersion,
-                chainId,
-                registry
+                chainId
             ),
             "Failed to initialize"
         );
@@ -106,7 +107,10 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
         // Send funds attached to proxy contract
         proxy.transfer(msg.value);
 
-        emit Deployed(_linkdropMaster, _campaignId, proxy, salt, now);
+        // Set standard fee for the proxy
+        _setFee(proxy, standardFee);
+
+        emit Deployed(_linkdropMaster, _campaignId, proxy, salt);
         return proxy;
     }
 
@@ -123,7 +127,8 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
         address payable proxy = address(uint160(deployed[salt(msg.sender, _campaignId)]));
         ILinkdropCommon(proxy).destroy();
         delete deployed[salt(msg.sender, _campaignId)];
-        emit Destroyed(msg.sender, proxy, now);
+        delete fees[proxy];
+        emit Destroyed(msg.sender, proxy);
         return true;
     }
 
@@ -155,9 +160,9 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
     * @return True if updated successfully
     */
     function setMasterCopy(address payable _masterCopy)
-    public returns (bool)
+    public onlyOwner
+    returns (bool)
     {
-        require(msg.sender == owner, "Only factory owner");
         require(_masterCopy != address(0), "Invalid master copy address");
         masterCopyVersion = masterCopyVersion.add(1);
 
@@ -168,8 +173,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
                 address(0), // Owner address
                 address(0), // Linkdrop master address
                 masterCopyVersion,
-                chainId,
-                registry
+                chainId
             ),
             "Failed to initialize"
         );
@@ -183,7 +187,7 @@ contract LinkdropFactoryCommon is LinkdropFactoryStorage {
 
         _bytecode = bytecode;
 
-        emit SetMasterCopy(_masterCopy, masterCopyVersion, now);
+        emit SetMasterCopy(_masterCopy, masterCopyVersion);
         return true;
     }
 

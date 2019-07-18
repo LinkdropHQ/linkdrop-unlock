@@ -12,7 +12,6 @@ import {
 import LinkdropFactory from '../build/LinkdropFactory'
 import LinkdropMastercopy from '../build/LinkdropMastercopy'
 import TokenMock from '../build/TokenMock'
-import Registry from '../build/Registry'
 
 import {
   computeProxyAddress,
@@ -40,7 +39,6 @@ let factory
 let proxy
 let proxyAddress
 let tokenInstance
-let registry
 
 let link
 let receiverAddress
@@ -51,6 +49,7 @@ let tokenAmount
 let expirationTime
 let version
 let bytecode
+
 const campaignId = 0
 let standardFee
 
@@ -60,11 +59,6 @@ const chainId = 4 // Rinkeby
 describe('ETH/ERC20 linkdrop tests', () => {
   before(async () => {
     tokenInstance = await deployContract(linkdropMaster, TokenMock)
-    registry = await deployContract(linkdropMaster, Registry)
-    await registry.addRelayer(relayer.address)
-    const isWhitelisted = await registry.isWhitelistedRelayer(relayer.address)
-    expect(isWhitelisted).to.be.true
-    standardFee = await registry.standardFee()
   })
 
   it('should deploy master copy of linkdrop implementation', async () => {
@@ -79,7 +73,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     factory = await deployContract(
       linkdropMaster,
       LinkdropFactory,
-      [masterCopy.address, chainId, registry.address],
+      [masterCopy.address, chainId],
       {
         gasLimit: 6000000
       }
@@ -88,6 +82,11 @@ describe('ETH/ERC20 linkdrop tests', () => {
     expect(factory.address).to.not.eq(ethers.constants.AddressZero)
     let version = await factory.masterCopyVersion()
     expect(version).to.eq(1)
+
+    await factory.addRelayer(relayer.address)
+    const isWhitelisted = await factory.isRelayer(relayer.address)
+    expect(isWhitelisted).to.be.true
+    standardFee = await factory.standardFee()
   })
 
   it('should deploy proxy and delegate to implementation', async () => {

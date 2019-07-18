@@ -20,9 +20,8 @@ const appConfigPath = configs.getPath('app')
 const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 const LINKDROP_MASTER_COPY_ADDRESS = getString('masterCopy')
 
-const REGISTRY_ADDRESS = getString('REGISTRY_ADDRESS')
-
 const CHAIN_ID = getInt('chainId')
+const RELAYER_ADDRESS = getString('RELAYER_ADDRESS')
 
 export const deploy = async () => {
   let spinner, factory, proxyFactory, txHash
@@ -45,7 +44,6 @@ export const deploy = async () => {
     proxyFactory = await factory.deploy(
       LINKDROP_MASTER_COPY_ADDRESS,
       CHAIN_ID,
-      REGISTRY_ADDRESS,
       {
         gasLimit: 5000000,
         gasPrice: ethers.utils.parseUnits('10', 'gwei')
@@ -53,6 +51,12 @@ export const deploy = async () => {
     )
 
     await proxyFactory.deployed()
+
+    spinner.info(
+      term.bold.green.str(`Adding ${RELAYER_ADDRESS} to whitelisted relayers`)
+    )
+    const tx = await proxyFactory.addRelayer(RELAYER_ADDRESS)
+    term.bold(`Tx Hash: ^g${tx.hash}\n`)
   } catch (err) {
     spinner.fail(term.bold.red.str('Failed to deploy contract'))
     throw newError(err)
