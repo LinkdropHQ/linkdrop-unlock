@@ -105,6 +105,8 @@ module.exports = {
       FACTORY: JSON.stringify(process.env.FACTORY),
       API_HOST: JSON.stringify(process.env.API_HOST),
       CLAIM_HOST: JSON.stringify(process.env.CLAIM_HOST),
+      INITIAL_BLOCK_RINKEBY: JSON.stringify(process.env.INITIAL_BLOCK_RINKEBY),
+      INITIAL_BLOCK_MAINNET: JSON.stringify(process.env.INITIAL_BLOCK_MAINNET),
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
       }

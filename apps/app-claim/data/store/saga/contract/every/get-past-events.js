@@ -2,13 +2,13 @@ import { put } from 'redux-saga/effects'
 
 const generator = function * ({ payload }) {
   try {
-    const { linkId, contract } = payload
+    const { linkId, contract, initialBlock } = payload
     const eventPromise = new Promise((resolve, reject) => {
       contract.getPastEvents(
         'Claimed',
         {
           filter: { linkId },
-          fromBlock: 0,
+          fromBlock: initialBlock,
           toBlock: 'latest'
         },
         (err, events) => {

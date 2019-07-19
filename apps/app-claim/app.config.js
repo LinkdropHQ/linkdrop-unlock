@@ -2,13 +2,14 @@
 let jsonRpcUrl, masterCopy, factory, claimHost, apiHost, initialBlockRinkeby, initialBlockMainnet
 try {
   const config = require('../../configs/app.config.json')
+  console.log({ config })
   jsonRpcUrl = String(config.jsonRpcUrl)
   masterCopy = String(config.masterCopy)
   factory = String(config.factory)
   claimHost = String(config.claimHost)
   apiHost = String(config.apiHost)
-  initialBlockMainnet = String(config.initialBlock)
-  initialBlockRinkeby = String(config.initialBlock)
+  initialBlockMainnet = config.initialBlockMainnet
+  initialBlockRinkeby = config.initialBlockRinkeby
 } catch (e) {
   jsonRpcUrl = JSON_RPC_URL
   masterCopy = MASTER_COPY

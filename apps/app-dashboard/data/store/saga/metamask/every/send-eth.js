@@ -23,13 +23,10 @@ const generator = function * ({ payload }) {
     const isDeployed = yield factoryContract.isDeployed(fromWallet, campaignId)
     let data
     let to
-    console.log({ isDeployed })
     if (!isDeployed) {
-      console.log('here to deploy')
       data = yield factoryContract.interface.functions.deployProxyWithSigner.encode([campaignId, wallet])
       to = factory
     } else {
-      console.log('here to add signer')
       const proxyAddress = yield select(generator.selectors.proxyAddress)
       const proxyContract = yield new ethers.Contract(proxyAddress, LinkdropMastercopy.abi, provider)
       data = yield proxyContract.interface.functions.addSigner.encode([wallet])
@@ -42,7 +39,6 @@ const generator = function * ({ payload }) {
       })
     })
     const { txHash } = yield promise
-    console.log({ txHash })
     if (txHash) {
       yield put({ type: 'USER.SET_TX_HASH', payload: { txHash } })
       yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
