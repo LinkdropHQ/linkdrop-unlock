@@ -1,21 +1,11 @@
-import { put } from 'redux-saga/effects'
-import { factory, apiHost, jsonRpcUrl } from 'app.config.js'
-import LinkdropSDK from 'sdk/src/index'
-import { ethers } from 'ethers'
-import { defineNetworkName } from 'linkdrop-commons'
-import LinkdropFactory from 'contracts/LinkdropFactory.json'
+import { put, select } from 'redux-saga/effects'
 
 const generator = function * ({ payload }) {
   try {
-    const { isApprove = 'false', wallet, tokenAddress, chainId, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
+    const { campaignId, wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    const networkName = defineNetworkName({ chainId })
-    const provider = yield ethers.getDefaultProvider(networkName)
-    const factoryContract = yield new ethers.Contract(factory, LinkdropFactory.abi, provider)
-    const version = yield factoryContract.getProxyMasterCopyVersion(linkdropMasterAddress)
-    const { success, txHash, error: { reason = [] } = {} } = yield LinkdropSDK.claim({
-      jsonRpcUrl,
-      host: apiHost,
+    const sdk = yield select(generator.selectors.sdk)
+    const { success, txHash, error: { reason = [] } = {} } = yield sdk.claim({
       weiAmount: weiAmount || '0',
       tokenAddress,
       tokenAmount: tokenAmount || '0',
@@ -24,9 +14,7 @@ const generator = function * ({ payload }) {
       linkdropMasterAddress,
       linkdropSignerSignature,
       receiverAddress: wallet,
-      isApprove,
-      chainId,
-      version: String(version.toNumber())
+      campaignId
     })
 
     if (success) {
@@ -47,5 +35,5 @@ const generator = function * ({ payload }) {
 export default generator
 
 generator.selectors = {
-  wallet: ({ user: { wallet } }) => wallet
+  sdk: ({ user: { sdk } }) => sdk
 }

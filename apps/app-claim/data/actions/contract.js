@@ -10,6 +10,10 @@ class Contract {
   getTokenERC721Data ({ nftAddress, tokenId, chainId }) {
     this.actions.dispatch({ type: '*CONTRACT.GET_TOKEN_ERC721_DATA', payload: { nftAddress, tokenId, chainId } })
   }
+
+  getPastEvents ({ linkKey, chainId, campaignId }) {
+    this.actions.dispatch({ type: '*CONTRACT.GET_PAST_EVENTS', payload: { linkKey, chainId, campaignId } })
+  }
 }
 
 export default Contract
