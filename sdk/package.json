@@ -1,7 +1,7 @@
 {
   "name": "sdk",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "babel": {
     "extends": "../babel.config.js"
