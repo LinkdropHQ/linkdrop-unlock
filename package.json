@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "test": "mocha --require @babel/polyfill --require @babel/register",
-    "compile-contracts": "cd contracts && npx waffle && cd ..",
+    "compile-contracts": "cd contracts && npx waffle .waffle && cd ..",
     "deploy-registry": "npx babel-node scripts/src/deploy_registry.js",
     "deploy-mastercopy": "npx babel-node scripts/src/deploy_mastercopy.js",
     "deploy-factory": "npx babel-node scripts/src/deploy_factory.js",
