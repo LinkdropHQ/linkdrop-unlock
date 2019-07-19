@@ -1,7 +1,10 @@
 {
   "jsonRpcUrl": "",
-  "apiHost": "",
+  "apiHostRinkeby":"",
+  "apiHostMainnet":"",
   "claimHost": "",
   "masterCopy": "",
-  "factory": ""
+  "factory": "",
+  "initialBlockMainnet": 0,
+  "initialBlockRinkeby": 0
 }
