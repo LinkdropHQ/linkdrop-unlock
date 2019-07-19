@@ -6,7 +6,6 @@ const generator = function * ({ payload }) {
     const { campaignId = 0 } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const proxyAddr = yield sdk.getProxyAddress(campaignId)
-    console.log({ proxyAddr })
     yield put({ type: 'CAMPAIGNS.SET_ID', payload: { id: campaignId } })
     yield put({ type: 'CAMPAIGNS.SET_PROXY_ADDRESS', payload: { proxyAddress: proxyAddr } })
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })

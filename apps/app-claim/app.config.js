@@ -1,5 +1,5 @@
-/* global JSON_RPC_URL, MASTER_COPY, FACTORY, CLAIM_HOST, API_HOST */
-let jsonRpcUrl, masterCopy, factory, claimHost, apiHost
+/* global JSON_RPC_URL, MASTER_COPY, FACTORY, CLAIM_HOST, API_HOST, INITIAL_BLOCK_MAINNET, INITIAL_BLOCK_RINKEBY */
+let jsonRpcUrl, masterCopy, factory, claimHost, apiHost, initialBlockRinkeby, initialBlockMainnet
 try {
   const config = require('../../configs/app.config.json')
   jsonRpcUrl = String(config.jsonRpcUrl)
@@ -7,12 +7,16 @@ try {
   factory = String(config.factory)
   claimHost = String(config.claimHost)
   apiHost = String(config.apiHost)
+  initialBlockMainnet = String(config.initialBlock)
+  initialBlockRinkeby = String(config.initialBlock)
 } catch (e) {
   jsonRpcUrl = JSON_RPC_URL
   masterCopy = MASTER_COPY
   factory = FACTORY
   claimHost = CLAIM_HOST
   apiHost = API_HOST
+  initialBlockMainnet = INITIAL_BLOCK_MAINNET
+  initialBlockRinkeby = INITIAL_BLOCK_RINKEBY
 }
 
 module.exports = {
@@ -20,5 +24,7 @@ module.exports = {
   claimHost,
   apiHost,
   masterCopy,
-  factory
+  factory,
+  initialBlockMainnet,
+  initialBlockRinkeby
 }

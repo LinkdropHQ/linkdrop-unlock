@@ -1,11 +1,29 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
+import { Button } from 'components/common'
 import styles from './styles.module'
 import Web3Connect from 'web3connect'
+
+const web3Connect = new Web3Connect.Core({
+  providerOptions: {
+    disableWalletConnect: true
+  }
+})
+
+web3Connect.on('connect', provider => {
+  MetamaskInjector.applyProvider(provider)
+})
 
 @actions(_ => ({}))
 @translate('pages.main')
 class MetamaskInjector extends React.Component {
+  static applyProvider (provider) {
+    if (provider.selectedAddress) {
+      this.actions().user.setCurrentAddress({ currentAddress: provider.selectedAddress })
+      this.actions().user.setChainId({ chainId: provider.networkVersion })
+    }
+  }
+
   render () {
     return <div className={styles.container}>
       <h2 className={styles.title}>{this.t('titles.metamaskSignIn')}</h2>
@@ -14,17 +32,8 @@ class MetamaskInjector extends React.Component {
         dangerouslySetInnerHTML={{ __html: this.t('titles.metamaksInstruction') }}
       />
       <div className={styles.button}>
-        <Web3Connect.Button
-          onConnect={provider => {
-            if (provider.selectedAddress) {
-              this.actions().user.setCurrentAddress({ currentAddress: provider.selectedAddress })
-              this.actions().user.setChainId({ chainId: provider.networkVersion })
-            }
-          }}
-          onClose={_ => {
-            console.log('Web3Connect Modal Closed') // modal has closed
-            // window.location.reload(true)
-          }}
+        <Button
+          onClick={_ => web3Connect.toggleModal()}
         />
       </div>
     </div>

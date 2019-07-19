@@ -33,7 +33,7 @@ class Claim extends React.Component {
       campaignId
     } = getHashVariables()
     this.actions().tokens.checkIfClaimed({ linkKey, chainId, linkdropMasterAddress, campaignId })
-    this.actions().user.createSdk({ chainId, linkdropMasterAddress })
+    this.actions().user.createSdk({ linkdropMasterAddress, chainId, linkKey, campaignId })
   }
 
   componentWillReceiveProps ({ readyToClaim, alreadyClaimed }) {

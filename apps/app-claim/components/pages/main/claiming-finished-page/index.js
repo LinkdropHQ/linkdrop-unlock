@@ -13,6 +13,7 @@ class ClaimingFinishedPage extends React.Component {
   render () {
     const { chainId } = getHashVariables()
     const { transactionId, amount, symbol } = this.props
+    console.log({ transactionId })
     return <div className={commonStyles.container}>
       <Alert icon={<Icons.Check />} className={styles.alert} />
       <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.tokensClaimed', { tokens: `${amount || ''} ${symbol || ''}` }) }} />
