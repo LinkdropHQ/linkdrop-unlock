@@ -3,7 +3,6 @@ import { put } from 'redux-saga/effects'
 const generator = function * ({ payload }) {
   try {
     const { linkId, contract, initialBlock } = payload
-    console.log({ initialBlock })
     const eventPromise = new Promise((resolve, reject) => {
       contract.events.Claimed(
         {
@@ -11,14 +10,15 @@ const generator = function * ({ payload }) {
           fromBlock: initialBlock,
           toBlock: 'latest'
         },
-        (err, events) => {
+        (err, event) => {
           if (err) { console.error(err); return reject(err) }
-          return resolve({ events })
+          return resolve({ event })
         })
     })
-    const { events } = yield eventPromise
-    if (events && events[0] && events[0].transactionHash) {
-      return yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: events[0].transactionHash } })
+    const { event } = yield eventPromise
+    if (event && event.transactionHash) {
+      yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: event.transactionHash } })
+      return yield put({ type: 'TOKENS.SET_TRANSACTION_STATUS', payload: { transactionStatus: 'claimed' } })
     }
   } catch (e) {
     console.error(e)
