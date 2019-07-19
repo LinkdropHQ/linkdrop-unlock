@@ -1,6 +1,12 @@
 {
-    "mongoURI": "",
-    "jsonRpcUrl": "https://rinkeby.infura.io",
-    "factory": "",
-    "relayerPrivateKey": ""
+  "chain":"rinkeby",
+  "mongoURI":"",
+  "jsonRpcUrl":"https://rinkeby.infura.io",
+  "INFURA_PROJECT_ID":"",
+  "FACTORY_ADDRESS":"0x79b26a14d99DB8511a650af4ada03a1C7578FC13",
+  "relayerPrivateKey":"",
+  "defaultGasPrice": "auto",
+  "TRANSACTION_LOOP_TIME": 10000,
+  "TRANSACTION_RETRY_TIMEOUT": 60000,
+  "GWEI_ADDED_ON_RETRY": "1"
 }

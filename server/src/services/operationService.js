@@ -3,9 +3,9 @@ import Operation from '../models/Operation'
 import relayerWalletService from './relayerWalletService'
 import configs from '../../../configs'
 const ethers = require('ethers')
-const ONE_GWEI = ethers.utils.parseUnits('1', 'gwei')
 const config = configs.get('server')
-const { TRANSACTION_LOOP_TIME, TRANSACTION_RETRY_TIMEOUT } = config
+const { TRANSACTION_LOOP_TIME, TRANSACTION_RETRY_TIMEOUT, GWEI_ADDED_ON_RETRY } = config
+const GWEI_TO_ADD = ethers.utils.parseUnits(GWEI_ADDED_ON_RETRY || '1', 'gwei')
 
 class OperationService {
   findById (id) {
@@ -62,8 +62,14 @@ class OperationService {
 
     let { nonce, gasPrice, gasLimit, value, data, to } = transaction.params
     // increase gas price
+    // get current gas price from infura api
+    const currentGasPrice = await relayerWalletService.getGasPrice()
     
-    gasPrice = ONE_GWEI.add(gasPrice)
+    // use the maximum
+    gasPrice = Math.max(currentGasPrice.toNumber(), Number(gasPrice))
+
+    // add aditional gweis
+    gasPrice = GWEI_TO_ADD.add(gasPrice)
 
     const params = {
       nonce,
