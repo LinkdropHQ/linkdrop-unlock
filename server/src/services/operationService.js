@@ -1,8 +1,11 @@
 import logger from '../utils/logger'
 import Operation from '../models/Operation'
 import relayerWalletService from './relayerWalletService'
+import configs from '../../../configs'
 const ethers = require('ethers')
 const ONE_GWEI = ethers.utils.parseUnits('1', 'gwei')
+const config = configs.get('server')
+const { TRANSACTION_LOOP_TIME, TRANSACTION_RETRY_TIMEOUT } = config
 
 class OperationService {
   findById (id) {
@@ -59,6 +62,7 @@ class OperationService {
 
     let { nonce, gasPrice, gasLimit, value, data, to } = transaction.params
     // increase gas price
+    
     gasPrice = ONE_GWEI.add(gasPrice)
 
     const params = {
@@ -83,9 +87,9 @@ class OperationService {
   async trackTransaction (id, txHash) {
     logger.debug(`Listening for mined tx ${txHash}...`)
     // time for loop
-    const LOOP_TIME = 1000
+    const LOOP_TIME = TRANSACTION_LOOP_TIME || 10000 // 10 secs
     // maximum time to wait before retrying tx with more gas
-    const WAIT_TIME_BEFORE_RETRY = 5000
+    const WAIT_TIME_BEFORE_RETRY = TRANSACTION_RETRY_TIMEOUT || 60 * 1000 * 3 // 3 mins
     let waitTime = 0
     let retried = false
 
