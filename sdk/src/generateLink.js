@@ -1,5 +1,7 @@
 import { createLink, createLinkERC721, computeProxyAddress } from './utils'
 const ethers = require('ethers')
+// Turn off annoying warnings
+ethers.errors.setLogLevel('error')
 
 export const generateLink = async ({
   factoryAddress,

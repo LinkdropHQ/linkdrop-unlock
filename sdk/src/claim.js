@@ -1,6 +1,8 @@
 import { signReceiverAddress } from './utils'
 const ethers = require('ethers')
 const axios = require('axios')
+// Turn off annoying warnings
+ethers.errors.setLogLevel('error')
 
 export const claim = async ({
   jsonRpcUrl,

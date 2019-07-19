@@ -4,6 +4,8 @@ import * as claimUtils from './claim'
 
 import LinkdropFactory from '../../contracts/build/LinkdropFactory'
 import { ethers } from 'ethers'
+// Turn off annoying warnings
+ethers.errors.setLogLevel('error')
 
 const LinkdropSDK = ({
   linkdropMasterAddress,

@@ -1,5 +1,7 @@
 const ethers = require('ethers')
 const Wallet = require('ethereumjs-wallet')
+// Turn off annoying warnings
+ethers.errors.setLogLevel('error')
 
 export const buildCreate2Address = (creatorAddress, saltHex, byteCode) => {
   const byteCodeHash = ethers.utils.keccak256(byteCode)
