@@ -19,7 +19,7 @@ class OperationService {
     })
 
     logger.debug('Saving operation to database:')
-    logger.debug(JSON.stringify(operation.toObject(), null, 2))
+    logger.json(operation)
 
     await operation.save()
 

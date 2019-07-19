@@ -1,6 +1,6 @@
 import configs from '../../../configs'
 const config = configs.get('server')
-const { jsonRpcUrl, relayerPrivateKey } = config
+const { jsonRpcUrl, relayerPrivateKey, defaultGasPrice } = config
 const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
 
@@ -17,6 +17,16 @@ class RelayerWalletService {
   constructor () {
     this.provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
     this.relayerWallet = new ethers.Wallet(relayerPrivateKey, this.provider)
+  }
+
+  async getGasPrice () {
+    let gasPrice
+    if (!defaultGasPrice || defaultGasPrice === 'auto') {
+      gasPrice = await this.provider.getGasPrice()
+    } else {
+      gasPrice = ethers.utils.parseUnits(defaultGasPrice, 'gwei')
+    }
+    return gasPrice
   }
 }
 

@@ -54,7 +54,7 @@ class ProxyFactoryService {
     receiverAddress,
     receiverSignature
   }) {
-    const gasPrice = ethers.utils.parseUnits('0.005', 'gwei')
+    const gasPrice = relayerWalletService.getGasPrice()
     return this.contract.claim(
       weiAmount,
       tokenAddress,
@@ -109,7 +109,7 @@ class ProxyFactoryService {
     receiverAddress,
     receiverSignature
   }) {
-    const gasPrice = ethers.utils.parseUnits('0.005', 'gwei')
+    const gasPrice = relayerWalletService.getGasPrice()
     return this.contract.claimERC721(
       weiAmount,
       nftAddress,
