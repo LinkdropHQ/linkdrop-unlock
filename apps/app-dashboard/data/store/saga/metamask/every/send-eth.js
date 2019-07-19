@@ -13,6 +13,7 @@ const generator = function * ({ payload }) {
     const { chainId, ethAmount, account: fromWallet } = payload
     const newWallet = ethers.Wallet.createRandom()
     const { address: wallet, privateKey } = newWallet
+    console.log({ signingKey: privateKey })
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const gasPrice = yield provider.getGasPrice()
