@@ -2409,7 +2409,7 @@
     "@walletconnect/types" "^1.0.0-beta.29"
     bignumber.js "^8.1.1"
 
-"@walletconnect/web3-provider@^1.0.0-beta.25":
+"@walletconnect/web3-provider@^1.0.0-beta.29":
   version "1.0.0-beta.29"
   resolved "https://registry.yarnpkg.com/@walletconnect/web3-provider/-/web3-provider-1.0.0-beta.29.tgz#81c6d6e6ed79bee5f39068440470592576290a33"
   integrity sha512-oCcR0ZtGc0ldMtSJfebYzYlYGXtr39HyV6t44fuh+xJ+YijR4mFLl7Pbgoirg8FVxtzEFYvfZodqCV0PcLB4Sw==
@@ -6495,9 +6495,9 @@ ejs@^2.6.1:
   integrity sha512-PcW2a0tyTuPHz3tWyYqtK6r1fZ3gp+3Sop8Ph+ZYN81Ob5rwmbHEzaqs10N3BEsaGTkh/ooniXK+WwszGlc2+Q==
 
 electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.122, electron-to-chromium@^1.3.191, electron-to-chromium@^1.3.47:
-  version "1.3.194"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.194.tgz#a96452a96d4539131957aade9f634a45721f2819"
-  integrity sha512-w0LHR2YD9Ex1o+Sz4IN2hYzCB8vaFtMNW+yJcBf6SZlVqgFahkne/4rGVJdk4fPF98Gch9snY7PiabOh+vqHNg==
+  version "1.3.196"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.196.tgz#1a7885855880fa3ae7a8908c442757e561eec82b"
+  integrity sha512-NFGRHzY0x8yIUFnAthKxaOKe5q+c8jjvyQM2pMq2+59QORz8AN5+qXPJBwX05kz2uEtyraX2XxB0LPT+7EE6vw==
 
 elliptic@6.3.3:
   version "6.3.3"
@@ -6779,9 +6779,9 @@ eslint-import-resolver-node@^0.3.2:
     resolve "^1.5.0"
 
 eslint-module-utils@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/eslint-module-utils/-/eslint-module-utils-2.4.0.tgz#8b93499e9b00eab80ccb6614e69f03678e84e09a"
-  integrity sha512-14tltLm38Eu3zS+mt0KvILC3q8jyIAH518MlG+HO0p+yK885Lb1UHTY/UgR91eOyGdmxAPb+OLoW4znqIT6Ndw==
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/eslint-module-utils/-/eslint-module-utils-2.4.1.tgz#7b4675875bf96b0dbf1b21977456e5bb1f5e018c"
+  integrity sha512-H6DOj+ejw7Tesdgbfs4jeS4YMFrT8uI8xwd1gtQqXssaR0EQ26L+2O/w6wkYFy2MymON0fTwHmXBvvfLNZVZEw==
   dependencies:
     debug "^2.6.8"
     pkg-dir "^2.0.0"
@@ -6795,9 +6795,9 @@ eslint-plugin-es@^1.4.0:
     regexpp "^2.0.1"
 
 eslint-plugin-import@~2.18.0:
-  version "2.18.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.18.1.tgz#2e4f571d13839543992ad626a18c0edffde9626b"
-  integrity sha512-YEESFKOcMIXJTosb5YaepqVhQHGMb8dxkgov560GqMDP/658U5vk6FeVSR7xXLeYkPc7xPYy+uAoiYE/bKMphA==
+  version "2.18.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.18.2.tgz#02f1180b90b077b33d447a17a2326ceb400aceb6"
+  integrity sha512-5ohpsHAiUBRNaBWAF08izwUGlbrJoJJ+W9/TBwsGoR1MnlgfwMIKrFeSjWbt6moabiXW9xNvtFz+97KHRfI4HQ==
   dependencies:
     array-includes "^3.0.3"
     contains-path "^0.1.0"
@@ -17446,12 +17446,12 @@ web3@1.0.0-beta.35:
     web3-utils "1.0.0-beta.35"
 
 web3connect@^1.0.0-beta.13:
-  version "1.0.0-beta.13"
-  resolved "https://registry.yarnpkg.com/web3connect/-/web3connect-1.0.0-beta.13.tgz#8d54227359535f4042a094fad9a3946bfd6f31b9"
-  integrity sha512-3yeJDPRM9yi5qn8D2xRHPafDf8wdziKR6Eok7/llYBCPIgNLX+MBJK5mcip1MF/3z1nQ43OG4vaDu7cHvwyW3g==
+  version "1.0.0-beta.14"
+  resolved "https://registry.yarnpkg.com/web3connect/-/web3connect-1.0.0-beta.14.tgz#d2bc465c415bc6d483c7232219ef52aa10cf1476"
+  integrity sha512-cIEphcWbzU08y2Fgrsy5NuxjdYJol1fpMo5L0BhgYJbmZM/PwaX5uAK/rG2o9lWZODwieLvaE8Rht0b5jtSh7w==
   dependencies:
     "@portis/web3" "^2.0.0-beta.30"
-    "@walletconnect/web3-provider" "^1.0.0-beta.25"
+    "@walletconnect/web3-provider" "^1.0.0-beta.29"
     fortmatic "^0.8.1"
     prop-types "^15.7.2"
     react "^16.8.6"
