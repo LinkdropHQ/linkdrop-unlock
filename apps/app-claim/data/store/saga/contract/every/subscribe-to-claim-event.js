@@ -2,18 +2,13 @@ import { put } from 'redux-saga/effects'
 
 const generator = function * ({ payload }) {
   try {
-    const { linkId, contract, initialBlock } = payload
+    const { linkId, contract } = payload
     const eventPromise = new Promise((resolve, reject) => {
-      contract.events.Claimed(
-        {
-          filter: { linkId },
-          fromBlock: initialBlock,
-          toBlock: 'latest'
-        },
-        (err, event) => {
-          if (err) { console.error(err); return reject(err) }
-          return resolve({ event })
-        })
+      let filter = contract.filters.Claimed(linkId)
+      contract.on(filter, (linkId, ethAmount, token, tokenAmount, receiver, event) => {
+        console.log({ linkId, ethAmount, token, tokenAmount, receiver, event })
+        return resolve({ event })
+      })
     })
     const { event } = yield eventPromise
     if (event && event.transactionHash) {
