@@ -4,12 +4,17 @@ import relayerWalletService from './relayerWalletService'
 import configs from '../../../configs'
 const ethers = require('ethers')
 const config = configs.get('server')
-const { TRANSACTION_LOOP_TIME, TRANSACTION_RETRY_TIMEOUT, GWEI_ADDED_ON_RETRY } = config
+const {
+  TRANSACTION_LOOP_TIME,
+  TRANSACTION_RETRY_TIMEOUT,
+  GWEI_ADDED_ON_RETRY
+} = config
 const GWEI_TO_ADD = ethers.utils.parseUnits(GWEI_ADDED_ON_RETRY || '1', 'gwei')
 
 class OperationService {
-  findById (id) {
-    return Operation.findOne({ id })
+  async findById (id) {
+    const operation = await Operation.findOne({ id })
+    return operation
   }
 
   async create (id, type, data, tx = null) {
@@ -53,7 +58,7 @@ class OperationService {
     logger.json(operation)
   }
 
-  async retryTransaction (id, txHash) {
+  async retryTransaction (id, txHash, customGasPrice) {
     logger.info(`Retrying operation (${id}) with new tx...`)
     const operation = await this.findById(id)
     const transaction = operation.transactions
@@ -64,7 +69,7 @@ class OperationService {
     // increase gas price
     // get current gas price from infura api
     const currentGasPrice = await relayerWalletService.getGasPrice()
-    
+
     // use the maximum
     gasPrice = Math.max(currentGasPrice.toNumber(), Number(gasPrice))
 

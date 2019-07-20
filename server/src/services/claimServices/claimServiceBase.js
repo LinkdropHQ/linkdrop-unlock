@@ -57,13 +57,17 @@ class ClaimService {
   }
 
   _checkParamsWithBlockchainCall (params) {
-    throw new NotImplementedError('This method should be implemented in subclass')
+    throw new NotImplementedError(
+      'This method should be implemented in subclass'
+    )
   }
 
   _sendClaimTx (params) {
-    throw new NotImplementedError('This method should be implemented in subclass')
+    throw new NotImplementedError(
+      'This method should be implemented in subclass'
+    )
   }
-  
+
   async claim (params) {
     // Make sure all arguments are passed
     this._checkClaimParams(params)
