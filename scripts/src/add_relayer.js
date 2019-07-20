@@ -13,7 +13,7 @@ const RELAYER_ADDRESS = null
 const FACTORY_ADDRESS = getString('FACTORY_ADDRESS')
 
 export const deploy = async () => {
-  if (RELAYER_ADDRESS === null) {
+  if (RELAYER_ADDRESS == null || RELAYER_ADDRESS === '') {
     throw new Error('Please provide relayer address')
   }
 

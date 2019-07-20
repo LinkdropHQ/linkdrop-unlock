@@ -15,6 +15,7 @@ import {
   getExpirationTime,
   getProvider
 } from './utils'
+
 import deployProxyIfNeeded from './deploy_proxy'
 const JSON_RPC_URL = getString('jsonRpcUrl')
 const CHAIN = getString('CHAIN')
