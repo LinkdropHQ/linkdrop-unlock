@@ -30,6 +30,7 @@
     "claim-eth": "npx babel-node scripts/src/claim_eth.js",
     "claim-erc20": "npx babel-node scripts/src/claim_erc20.js",
     "claim-erc721": "npx babel-node scripts/src/claim_erc721.js",
+    "add-relayer": "npx babel-node scripts/src/add_relayer.js",
     "server": "npx babel-node server/server.js",
     "dev:server": "nodemon --exec npx babel-node server/server.js",
     "setup-linkdrop": "yarn compile-contracts && yarn deploy-mastercopy && yarn deploy-factory",
