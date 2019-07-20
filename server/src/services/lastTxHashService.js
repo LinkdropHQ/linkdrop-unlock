@@ -1,4 +1,4 @@
-import claimServiceERC20 from './claimServices'
+import claimServiceERC20 from './claimServices/claimServiceERC20'
 
 class LastTxHashService {
   async getLastTxHash ({ linkdropMasterAddress, linkId }) {

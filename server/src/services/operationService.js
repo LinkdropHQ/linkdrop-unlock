@@ -14,8 +14,14 @@ const {
 const GWEI_TO_ADD = ethers.utils.parseUnits(GWEI_ADDED_ON_RETRY || '1', 'gwei')
 
 class OperationService {
-  findById (id) {
-    return Operation.findOne({ id })
+  async findById (id) {
+    const operation = await Operation.findOne({ id })
+    return operation
+  }
+
+  async findByTxHash (txHash) {
+    const operation = await Operation.findOne({ 'transactions.hash': txHash })
+    return operation
   }
 
   async create (id, type, data, tx = null) {
@@ -59,45 +65,32 @@ class OperationService {
     logger.json(operation)
   }
 
-  async retryTransaction (id, txHash) {
+  async retryTransaction (id, txHash, gasPrice) {
     logger.info(`Retrying operation (${id}) with new tx...`)
     const operation = await this.findById(id)
     const transaction = operation.transactions
       .filter(tx => tx.hash === txHash)[0]
       .toObject()
 
-    let { nonce, gasPrice, gasLimit, value, data, to } = transaction.params
+    const { nonce, gasLimit, value, data, to } = transaction.params
 
-    // require gasPrice sent is less than max gas price
-    if (gasPrice < ethers.utils.parseUnits(MAX_GAS_PRICE, 'gwei').toNumber()) {
-      // increase gas price
-      // get current gas price from infura api
-      const currentGasPrice = await relayerWalletService.getGasPrice()
-
-      // add aditional gweis
-      gasPrice = Math.min(
-        GWEI_TO_ADD.add(Math.max(currentGasPrice, Number(gasPrice))),
-        ethers.utils.parseUnits(MAX_GAS_PRICE, 'gwei')
-      )
-
-      const params = {
-        nonce,
-        gasPrice,
-        gasLimit,
-        value: ethers.utils.parseUnits(value),
-        data,
-        to
-      }
-      logger.json(params)
-      const newTx = await relayerWalletService.relayerWallet.sendTransaction(
-        params
-      )
-      logger.info(`Submitted new tx ${newTx.hash}`)
-      logger.json(newTx)
-
-      // add new tx to database
-      this.addTransaction(id, newTx)
+    const params = {
+      nonce,
+      gasPrice,
+      gasLimit,
+      value: ethers.utils.parseUnits(value),
+      data,
+      to
     }
+    logger.json(params)
+    const newTx = await relayerWalletService.relayerWallet.sendTransaction(
+      params
+    )
+    logger.info(`Submitted new tx ${newTx.hash}`)
+    logger.json(newTx)
+
+    // add new tx to database
+    this.addTransaction(id, newTx)
   }
 
   async trackTransaction (id, txHash) {
@@ -137,8 +130,29 @@ class OperationService {
       // and wasn't retried before
       // retry the tx again with more gas
       if (!retried && waitTime > WAIT_TIME_BEFORE_RETRY) {
-        this.retryTransaction(id, txHash)
-        retried = true
+        const operation = await this.findById(id)
+        const transaction = operation.transactions
+          .filter(tx => tx.hash === txHash)[0]
+          .toObject()
+
+        let { gasPrice } = transaction.params
+
+        // require gasPrice sent is less than max gas price
+        if (
+          gasPrice < ethers.utils.parseUnits(MAX_GAS_PRICE, 'gwei').toNumber()
+        ) {
+          // increase gas price
+          // get current gas price from infura api
+          const currentGasPrice = await relayerWalletService.getGasPrice()
+
+          // add aditional gweis
+          gasPrice = Math.min(
+            GWEI_TO_ADD.add(Math.max(currentGasPrice, Number(gasPrice))),
+            ethers.utils.parseUnits(MAX_GAS_PRICE, 'gwei')
+          )
+          this.retryTransaction(id, txHash, gasPrice)
+          retried = true
+        }
       }
 
       waitTime += LOOP_TIME

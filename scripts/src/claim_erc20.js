@@ -19,7 +19,7 @@ const claim = async () => {
   try {
     const linkNumber = getLinkNumber(LINKS_NUMBER - 1)
     term.bold(`Claiming link #${linkNumber}:\n`)
-    
+
     spinner = ora({
       text: term.bold.green.str('Claiming\n'),
       color: 'green'
