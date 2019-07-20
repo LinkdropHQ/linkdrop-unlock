@@ -18,6 +18,11 @@ const generator = function * ({ payload }) {
       decimals = 18
       symbol = 'ETH'
       icon = getImages({ src: 'ether' }).imageRetina
+    } else if (tokenAddress.toLowerCase() === '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359') {
+      // DAI token has problem with fetching decimals
+      decimals = 18
+      symbol = 'DAI'
+      icon = `https://trustwalletapp.com/images/tokens/${tokenAddress.toLowerCase()}.png`
     } else {
       const contract = yield new ethers.Contract(tokenAddress, TokenMock.abi, provider)
       decimals = yield contract.decimals()

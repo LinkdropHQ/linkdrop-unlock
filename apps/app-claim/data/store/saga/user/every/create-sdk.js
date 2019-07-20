@@ -19,11 +19,12 @@ const generator = function * ({ payload }) {
     const provider = yield ethers.getDefaultProvider(networkName)
     const linkWallet = yield new ethers.Wallet(linkKey, provider)
     const linkId = yield linkWallet.address
-    const contract = yield new web3.eth.Contract(LinkdropMastercopy.abi, address)
+    const contractWeb3 = yield new web3.eth.Contract(LinkdropMastercopy.abi, address)
+    const contractEthers = new ethers.Contract(address, LinkdropMastercopy.abi, provider)
     const initialBlock = Number(chainId) === 4 ? initialBlockRinkeby : initialBlockMainnet
 
-    yield put({ type: '*CONTRACT.GET_PAST_EVENTS', payload: { networkName, linkId, contract, initialBlock } })
-    yield put({ type: '*CONTRACT.SUBSCRIBE_TO_CLAIM_EVENT', payload: { networkName, linkId, contract, initialBlock } })
+    yield put({ type: '*CONTRACT.GET_PAST_EVENTS', payload: { networkName, linkId, contract: contractWeb3 } })
+    yield put({ type: '*CONTRACT.SUBSCRIBE_TO_CLAIM_EVENT', payload: { networkName, linkId, contract: contractEthers, initialBlock } })
   } catch (e) {
     console.error(e)
   }
