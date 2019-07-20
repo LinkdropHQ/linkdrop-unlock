@@ -58,22 +58,10 @@ class Step1 extends React.Component {
     }
   }
 
-  // mainnet
-  // defineCurrentAsset (assets) {
-  //   let allAssets = assets || this.props.assets
-  //   return ((allAssets[0] || {}).contract || {}).symbol
-  // }
-
   render () {
     const { tokenSymbol, ethAmount, linksAmount, tokenAmount, addEth, tokenAddress, addIconInfo, options } = this.state
-    const { symbol, loading, links } = this.props
+    const { symbol, loading } = this.props
     const tokenType = this.defineTokenType({ tokenSymbol })
-    console.log({ links })
-    // mainnet
-    // const { assets } = this.props
-    // const tokens = assets.map(({ contract }) => {
-    //   return { label: `${contract.symbol} - ${contract.address}`, value: contract.symbol }
-    // })
     return <div className={styles.container}>
       {loading && <Loading withOverlay />}
       <PageHeader title={this.t('titles.setupCampaign')} />
