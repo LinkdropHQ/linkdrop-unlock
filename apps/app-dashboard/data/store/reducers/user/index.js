@@ -1,12 +1,11 @@
 import reducers from './reducers'
-const ls = window.localStorage
 
 const initialState = {
   loading: false,
   step: null,
   currentAddress: null,
   chainId: null,
-  privateKey: ls && ls.getItem && ls.getItem('privateKey'),
+  privateKey: null,
   txHash: null,
   transactionStatus: null,
   version: null,

@@ -14,7 +14,7 @@ import EthTexts from './eth-texts'
 import config from 'config-dashboard'
 import Immutable from 'immutable'
 
-@actions(({ user: { chainId, currentAddress, loading }, campaigns: { items, proxyAddress }, tokens: { assets, symbol } }) => ({ assets, chainId, symbol, loading, proxyAddress, currentAddress, items }))
+@actions(({ user: { chainId, currentAddress, loading }, campaigns: { items, proxyAddress, links }, tokens: { assets, symbol } }) => ({ assets, chainId, symbol, loading, proxyAddress, currentAddress, items, links }))
 @translate('pages.campaignCreate')
 class Step1 extends React.Component {
   constructor (props) {
@@ -58,21 +58,10 @@ class Step1 extends React.Component {
     }
   }
 
-  // mainnet
-  // defineCurrentAsset (assets) {
-  //   let allAssets = assets || this.props.assets
-  //   return ((allAssets[0] || {}).contract || {}).symbol
-  // }
-
   render () {
     const { tokenSymbol, ethAmount, linksAmount, tokenAmount, addEth, tokenAddress, addIconInfo, options } = this.state
     const { symbol, loading } = this.props
     const tokenType = this.defineTokenType({ tokenSymbol })
-    // mainnet
-    // const { assets } = this.props
-    // const tokens = assets.map(({ contract }) => {
-    //   return { label: `${contract.symbol} - ${contract.address}`, value: contract.symbol }
-    // })
     return <div className={styles.container}>
       {loading && <Loading withOverlay />}
       <PageHeader title={this.t('titles.setupCampaign')} />

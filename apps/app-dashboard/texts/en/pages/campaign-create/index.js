@@ -52,8 +52,8 @@ export default {
     contactUs: ' Contact us for more details.',
     codeDetails: 'See the code and deatails',
     contractParams: 'Linkdrop Contract parameters',
-    address: 'Address: {{address}}',
-    verificationKey: 'Verification Key: {{verificationKey}}',
+    masterAddress: 'Master Address: <span>{{address}}</span>',
+    signingKey: 'Signing Key: <span>{{signingKey}}</span>',
     downloadFile: 'Download CSV file',
     manual: 'Manual distribution',
     howToClaimPreview: 'How claim page will look like for receivers — <a href={{url}}>Preview<a/>',
@@ -61,7 +61,8 @@ export default {
     visitHelpCenter: 'Visit Help Center',
     customizations: 'Customization of Claim page',
     pauseOrStop: 'Pause / Stop Linkdrop campaign',
-    analytics: 'Analytics of Linkdrop campaign'
+    analytics: 'Analytics of Linkdrop campaign',
+    campaignId: 'Campaign ID: <span>{{campaignId}}</span>'
   },
   texts: {
     _1: 'Before setup Linkdrop campaign you need to create a key',
