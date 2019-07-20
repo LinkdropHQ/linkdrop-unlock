@@ -14,7 +14,7 @@ import EthTexts from './eth-texts'
 import config from 'config-dashboard'
 import Immutable from 'immutable'
 
-@actions(({ user: { chainId, currentAddress, loading }, campaigns: { items, proxyAddress }, tokens: { assets, symbol } }) => ({ assets, chainId, symbol, loading, proxyAddress, currentAddress, items }))
+@actions(({ user: { chainId, currentAddress, loading }, campaigns: { items, proxyAddress, links }, tokens: { assets, symbol } }) => ({ assets, chainId, symbol, loading, proxyAddress, currentAddress, items, links }))
 @translate('pages.campaignCreate')
 class Step1 extends React.Component {
   constructor (props) {
@@ -66,8 +66,9 @@ class Step1 extends React.Component {
 
   render () {
     const { tokenSymbol, ethAmount, linksAmount, tokenAmount, addEth, tokenAddress, addIconInfo, options } = this.state
-    const { symbol, loading } = this.props
+    const { symbol, loading, links } = this.props
     const tokenType = this.defineTokenType({ tokenSymbol })
+    console.log({ links })
     // mainnet
     // const { assets } = this.props
     // const tokens = assets.map(({ contract }) => {

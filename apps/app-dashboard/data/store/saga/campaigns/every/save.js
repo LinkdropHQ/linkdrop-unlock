@@ -31,7 +31,7 @@ const generator = function * ({ payload }) {
       links,
       chainId,
       id: proxyAddress,
-      syntheticId: id,
+      campaignId: id,
       proxyAddress,
       currentAddress,
       privateKey

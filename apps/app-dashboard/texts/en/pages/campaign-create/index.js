@@ -61,7 +61,8 @@ export default {
     visitHelpCenter: 'Visit Help Center',
     customizations: 'Customization of Claim page',
     pauseOrStop: 'Pause / Stop Linkdrop campaign',
-    analytics: 'Analytics of Linkdrop campaign'
+    analytics: 'Analytics of Linkdrop campaign',
+    campaignId: 'Campaign ID: <span>{{campaignId}}</span>'
   },
   texts: {
     _1: 'Before setup Linkdrop campaign you need to create a key',

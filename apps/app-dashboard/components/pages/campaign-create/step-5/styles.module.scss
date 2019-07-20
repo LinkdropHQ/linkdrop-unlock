@@ -22,14 +22,14 @@
 }
 
 .automatic {
-  flex: 1 0 550px;
+  flex: 1 1;
   padding-right: 110px;
+  max-width: 550px;
   border-right: 1px solid $greyStrokeColor;
 }
 
 .manual {
   padding-left: 50px;
-  width: 100%;
 }
 
 .text {
@@ -66,6 +66,18 @@
 
   &.textMargin60 {
     margin-bottom: 60px;
+  }
+
+  &.ellipsis {
+    span {
+      overflow: hidden;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 550px;
+      display: inline-block;
+      font-size: 12px;
+    }
   }
 }
 

@@ -10,6 +10,7 @@ class CampaignInfo extends React.Component {
     const campaignToCheck = ((this.props.match || {}).params || {}).id
     const { items } = this.props
     const itemFind = items.find(item => Number(item.id) === Number(campaignToCheck))
+
     if (!items || !itemFind) {
       window.location.href = '/#/campaigns'
     }
