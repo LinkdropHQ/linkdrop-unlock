@@ -66,7 +66,7 @@ class ProxyFactoryService {
       linkdropSignerSignature,
       receiverAddress,
       receiverSignature,
-      { gasLimit: 500000, gasPrice }
+      { gasPrice }
     )
   }
 
@@ -121,7 +121,7 @@ class ProxyFactoryService {
       linkdropSignerSignature,
       receiverAddress,
       receiverSignature,
-      { gasLimit: 500000, gasPrice }
+      { gasPrice }
     )
   }
 }
