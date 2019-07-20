@@ -4,9 +4,9 @@ import connectDB from '../src/models/connectDB'
 import logger from '../src/utils/logger'
 import { ethers } from 'ethers'
 
-const getOperationId = () => {
+const getTxHash = () => {
   const args = process.argv.slice(2)
-  if (args.length < 1) throw new Error('Please provide operation id')
+  if (args.length < 1) throw new Error('Please provide tx hash')
   return args[0]
 }
 
@@ -19,12 +19,12 @@ const getGasPrice = () => {
   return ethers.utils.parseUnits(gasPrice, 'gwei')
 }
 
-export const retryTransactionByOperationId = async (operationId, gasPrice) => {
+export const retryTransactionByTxHash = async (txHash, gasPrice) => {
   await connectDB()
-  const operation = await operationService.findById(operationId)
+  const operation = await operationService.findByTxHash(txHash)
   logger.json(operation)
-  const lastTxHash = await lastTxHashService.getLastTxHashById(operationId)
-  operationService.retryTransaction(operationId, lastTxHash, gasPrice)
+  const lastTxHash = await lastTxHashService.getLastTxHashById(operation.id)
+  operationService.retryTransaction(operation.id, lastTxHash, gasPrice)
 }
 
-retryTransactionByOperationId(getOperationId(), getGasPrice())
+retryTransactionByTxHash(getTxHash(), getGasPrice())
