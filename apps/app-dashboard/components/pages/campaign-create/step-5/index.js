@@ -12,6 +12,7 @@ class Step5 extends React.Component {
     const { items, current, campaignToCheck, loading } = this.props
     const currentCampaign = items.find(item => item.id === campaignToCheck || current)
     const links = (currentCampaign || {}).links
+    console.log({ currentCampaign })
     return <div className={styles.container}>
       {loading && <Loading withOverlay />}
       <div className={styles.content}>
@@ -23,13 +24,12 @@ class Step5 extends React.Component {
           <p className={styles.text}>{this.t('titles.otherPlatforms')}</p>
           <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.contactUs')}</p>
           <Button className={classNames(styles.button, styles.buttonMargin60)}>{this.t('buttons.useLinkdropSdk')}</Button>
-          <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.codeDetails')}</p>
-          <textarea disabled className={styles.codeBlock}>
-            {this.t('texts.codeBlock')}
-          </textarea>
-          <p className={classNames(styles.text, styles.textMargin10)}>{this.t('titles.contractParams')}</p>
-          <p className={classNames(styles.text, styles.textMargin10)}>{this.t('titles.address', { address: 'asdasdasd' })}</p>
-          <p className={classNames(styles.text, styles.textMargin10)}>{this.t('titles.verificationKey', { verificationKey: 'asdasdasd' })}</p>
+          {false && <div>
+            <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.codeDetails')}</p>
+            <textarea disabled className={styles.codeBlock}>
+              {this.t('texts.codeBlock')}
+            </textarea>
+          </div>}
         </div>
         <div className={styles.manual}>
           <p className={styles.text}>{this.t('titles.downloadFile')}</p>
@@ -46,6 +46,9 @@ class Step5 extends React.Component {
           <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.analytics')}</p>
         </div>
       </div>
+      <p className={classNames(styles.text, styles.textMargin15)}>{this.t('titles.contractParams')}</p>
+      <p className={classNames(styles.text, styles.textMargin10)} dangerouslySetInnerHTML={{ __html: this.t('titles.masterAddress', { address: currentCampaign.currentAddress }) }} />
+      <p className={classNames(styles.text, styles.textMargin10)} dangerouslySetInnerHTML={{ __html: this.t('titles.signingKey', { signingKey: currentCampaign.privateKey }) }} />
     </div>
   }
 }

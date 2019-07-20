@@ -7,10 +7,13 @@ const generator = function * ({ payload }) {
     yield put({ type: 'USER.SET_STEP', payload: { step: 5 } })
     const { links } = payload
     const chainId = yield select(generator.selectors.chainId)
+    const currentAddress = yield select(generator.selectors.currentAddress)
+    const privateKey = yield select(generator.selectors.privateKey)
     const {
       tokenAmount,
       tokenSymbol,
       ethAmount,
+      id,
       linksAmount,
       tokenType,
       date,
@@ -28,7 +31,10 @@ const generator = function * ({ payload }) {
       links,
       chainId,
       id: proxyAddress,
-      proxyAddress
+      syntheticId: id,
+      proxyAddress,
+      currentAddress,
+      privateKey
     }
     const campaigns = yield select(generator.selectors.campaigns)
     const campaignsUpdated = campaigns.concat(newCampaign)
@@ -45,6 +51,8 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
+  currentAddress: ({ user: { currentAddress } }) => currentAddress,
+  privateKey: ({ user: { privateKey } }) => privateKey,
   campaigns: ({ campaigns: { items: campaigns } }) => campaigns,
   chainId: ({ user: { chainId } }) => chainId,
   campaignData: ({

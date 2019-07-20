@@ -18,6 +18,7 @@
 
 .content {
   display: flex;
+  margin-bottom: 30px;
 }
 
 .automatic {
@@ -59,7 +60,7 @@
     color: $dbGrey;
   }
 
-  &.textBold {
+  &.textBold, span {
     font-family: 'Inter-Bold';
   }
 
