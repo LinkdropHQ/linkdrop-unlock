@@ -23,30 +23,24 @@ const linkdropSDK = LinkdropSDK({
   factoryAddress: FACTORY_ADDRESS
 })
 
-const deployProxyIfNeeded = async (spinner) => {
+const deployProxyIfNeeded = async spinner => {
   const proxyAddress = linkdropSDK.getProxyAddress(CAMPAIGN_ID)
+
   // check that proxy address is deployed
-  let code = await PROVIDER.getCode(proxyAddress)
+  const code = await PROVIDER.getCode(proxyAddress)
+
   if (code === '0x') {
     if (spinner) {
-      spinner.info(
-        term.bold.str(
-          `Deploying proxy: ^g${proxyAddress}`
-        )
-      )
+      spinner.info(term.bold.str(`Deploying proxy: ^g${proxyAddress}`))
     }
     const factoryContract = new ethers.Contract(
       FACTORY_ADDRESS,
       LinkdropFactory.abi,
       LINKDROP_MASTER_WALLET
     )
-    await factoryContract.deployProxy(CAMPAIGN_ID)
+    const tx = await factoryContract.deployProxy(CAMPAIGN_ID)
     if (spinner) {
-      spinner.info(
-        term.bold.str(
-          `Proxy deployed: ^g${proxyAddress}`
-        )
-      )
+      spinner.info(term.bold.str(`Tx hash: ^g${tx.hash}`))
     }
   }
 }

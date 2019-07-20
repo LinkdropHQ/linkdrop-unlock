@@ -1,6 +1,11 @@
 import configs from '../../../configs'
 const config = configs.get('server')
-const { jsonRpcUrl, relayerPrivateKey, DEFAULT_GAS_PRICE } = config
+const {
+  jsonRpcUrl,
+  relayerPrivateKey,
+  DEFAULT_GAS_PRICE,
+  MAX_GAS_PRICE
+} = config
 const ethers = require('ethers')
 ethers.errors.setLogLevel('error')
 
@@ -21,10 +26,17 @@ class RelayerWalletService {
 
   async getGasPrice () {
     let gasPrice
+
     if (!DEFAULT_GAS_PRICE || DEFAULT_GAS_PRICE === 'auto') {
-      gasPrice = await this.provider.getGasPrice()
+      gasPrice = Math.min(
+        await this.provider.getGasPrice(),
+        ethers.utils.parseUnits(MAX_GAS_PRICE, 'gwei')
+      )
     } else {
-      gasPrice = ethers.utils.parseUnits(DEFAULT_GAS_PRICE, 'gwei')
+      gasPrice = Math.min(
+        ethers.utils.parseUnits(DEFAULT_GAS_PRICE, 'gwei'),
+        ethers.utils.parseUnits(MAX_GAS_PRICE, 'gwei')
+      )
     }
     return gasPrice
   }

@@ -7,8 +7,10 @@ const config = configs.get('server')
 const {
   TRANSACTION_LOOP_TIME,
   TRANSACTION_RETRY_TIMEOUT,
-  GWEI_ADDED_ON_RETRY
+  GWEI_ADDED_ON_RETRY,
+  MAX_GAS_PRICE
 } = config
+
 const GWEI_TO_ADD = ethers.utils.parseUnits(GWEI_ADDED_ON_RETRY || '1', 'gwei')
 
 class OperationService {
@@ -66,33 +68,37 @@ class OperationService {
       .toObject()
 
     let { nonce, gasPrice, gasLimit, value, data, to } = transaction.params
-    // increase gas price
-    // get current gas price from infura api
-    const currentGasPrice = await relayerWalletService.getGasPrice()
 
-    // use the maximum
-    gasPrice = Math.max(currentGasPrice.toNumber(), Number(gasPrice))
+    // require gasPrice sent is less than max gas price
+    if (gasPrice < ethers.utils.parseUnits(MAX_GAS_PRICE, 'gwei').toNumber()) {
+      // increase gas price
+      // get current gas price from infura api
+      const currentGasPrice = await relayerWalletService.getGasPrice()
 
-    // add aditional gweis
-    gasPrice = GWEI_TO_ADD.add(gasPrice)
+      // add aditional gweis
+      gasPrice = Math.min(
+        GWEI_TO_ADD.add(Math.max(currentGasPrice, Number(gasPrice))),
+        ethers.utils.parseUnits(MAX_GAS_PRICE, 'gwei')
+      )
 
-    const params = {
-      nonce,
-      gasPrice,
-      gasLimit,
-      value: ethers.utils.parseUnits(value),
-      data,
-      to
+      const params = {
+        nonce,
+        gasPrice,
+        gasLimit,
+        value: ethers.utils.parseUnits(value),
+        data,
+        to
+      }
+      logger.json(params)
+      const newTx = await relayerWalletService.relayerWallet.sendTransaction(
+        params
+      )
+      logger.info(`Submitted new tx ${newTx.hash}`)
+      logger.json(newTx)
+
+      // add new tx to database
+      this.addTransaction(id, newTx)
     }
-    logger.json(params)
-    const newTx = await relayerWalletService.relayerWallet.sendTransaction(
-      params
-    )
-    logger.info(`Submitted new tx ${newTx.hash}`)
-    logger.json(newTx)
-
-    // add new tx to database
-    this.addTransaction(id, newTx)
   }
 
   async trackTransaction (id, txHash) {
