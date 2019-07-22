@@ -17,8 +17,8 @@ class Campaigns extends React.Component {
       />)}
       <ActionBlock
         transparent
-        title={this.t('createLinkdrop')}
-        description={this.t('createLinkdropDescription')}
+        title={this.t('createCampaign')}
+        description={this.t('createCampaignDescription')}
         extraContent={this.t('ercAndEth')}
         href='/#/campaigns/create'
         buttonTitle={this.t('create')}
