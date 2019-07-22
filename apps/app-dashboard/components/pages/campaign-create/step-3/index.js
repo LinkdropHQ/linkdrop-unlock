@@ -6,6 +6,7 @@ import { Button, PageHeader, MetamaskPopup } from 'components/common'
 import { Loading } from 'linkdrop-ui-kit'
 import config from 'config-dashboard'
 import numeral from 'numeral'
+import EthSummaryBlock from './eth-summary-block'
 
 @actions(({
   user: {
@@ -93,18 +94,17 @@ class Step3 extends React.Component {
 
   render () {
     const { loading: stateLoading } = this.state
-    const { linksAmount, ethAmount, chainId, currentAddress, tokenType, loading } = this.props
+    const { linksAmount, ethAmount, chainId, currentAddress, loading } = this.props
     const ethAmountFinal = numeral(ethAmount).add(config.linkPrice).multiply(linksAmount).value()
+    const serviceFee = numeral(config.linkPrice).multiply(linksAmount).value()
     return <div className={styles.container}>
       {(loading || stateLoading) && <Loading withOverlay />}
       <PageHeader title={this.t('titles.sendEth', { ethAmount: ethAmountFinal })} />
       <div className={styles.main}>
         <div className={styles.description}>
-          {tokenType === 'erc20' && <p className={classNames(styles.text, styles.textMain)}>{this.t('texts._9')}</p>}
           <p className={styles.text}>
             {this.t('texts._10')}
           </p>
-          <p className={styles.text}>{this.t('texts._11', { ethAmount: ethAmount * linksAmount })}</p>
         </div>
         <div className={styles.scheme}>
           <p
@@ -114,6 +114,7 @@ class Step3 extends React.Component {
           <MetamaskPopup amount={ethAmountFinal} />
         </div>
       </div>
+      <EthSummaryBlock ethTotal={ethAmountFinal} ethToDistribute={ethAmountFinal - serviceFee} serviceFee={serviceFee} text={this.t} />
       <div className={styles.controls}>
         <Button
           disabled={loading || stateLoading}

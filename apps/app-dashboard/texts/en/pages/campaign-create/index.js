@@ -1,7 +1,7 @@
 export default {
   titles: {
     createLinkKey: 'Create Link Key',
-    setupCampaign: 'Setup Campaign',
+    setupCampaign: 'Setup',
     chooseToken: 'Choose token',
     total: 'Total:',
     fillTheField: 'Fill all fields to see the details',
@@ -11,8 +11,8 @@ export default {
     addIcon: 'Check your icon, if not<br>—submit or send to us',
     eth: 'ETH',
     ethInLinks: '{{ethAmount}} ETH in {{linksAmount}} links',
-    holdEth: 'Ether will be hold in Linkdrop Contract',
-    oneLinkContains: 'One link contains: ',
+    holdEth: 'Ether will be stored in Linkdrop Contract',
+    oneLinkContains: 'Each link contains: ',
     oneLinkContentsWithEth: '{{tokenAmount}} {{tokenSymbol}} + {{ethAmount}} ETH',
     oneLinkContents: '{{tokenAmount}} {{tokenSymbol}}',
     // step1
@@ -21,13 +21,13 @@ export default {
     tokenAddressPlaceholder: '0x Token Address',
 
     // step2
-    summaryPay: 'Summary & Pay',
+    summaryPay: 'Summary',
     linksToGenerate: 'Links to generate',
-    oneLinkContainsTitle: 'One link contains',
+    oneLinkContainsTitle: 'Each link contains',
     serviceFeeTitle: 'Service fee',
     totalEthInLinks: 'Total ETH in links',
     ethPerLink: '{{eth}} ETH per link',
-    ethHold: 'Will be hold in Linkdrop Contract',
+    ethHold: 'Will be stored in Linkdrop Contract',
     charge: 'We charge you <strong>{{price}} ETH</strong> to start generate links',
     approveTokens: 'Approve permission to spend <span>{{tokenAmount}} {{tokenSymbol}}</span> for generating links',
     sendEthToGenerate: 'You wil send <span>{{ethAmount}} ETH</span> to start generate links',
@@ -76,15 +76,13 @@ export default {
     _8: 'We use Stripe to process payments so we don’t know and don’t store your bank card details.',
 
     // step3
-    _9: 'One more thing, to complete generating links you need to send Ether for links and fees to Linkdrop Contract',
     _10: 'Ether will be stored in Linkdrop Contract. You can stop campaign anytime and get back your Ether.',
-    _11: 'To send {{ethAmount}} ETH to Linkdrop Contract simply click on “Send” button and confirm transaction.',
     _12: 'MetaMask will show you <span>Transaction<br/>pop-up that you need to confirm',
-    _13: 'We plan to charge in USD and add monthly plans soon. For Enterprise customers, we offer custom solutions. Contact us for more details.',
+    _13: 'For Enterprise customers, we offer custom solutions. Contact us for more details.',
     _14: 'Approve permission to spend {{amount}} {{tokenSymbol}} for generating links',
     _15: 'You wil send {{eth}} ETH to start generate links',
-    _16: '{{eth}} ETH — Ether to distribute',
-    _17: '{{eth}} ETH — Service fee',
+    _16: '<span>{{eth}} ETH</span> — Ether to distribute',
+    _17: '<span>{{eth}} ETH</span> — Service fee',
     codeBlock: `// import library
 const linkGenerator = require(‘volca-link-generator’);
 

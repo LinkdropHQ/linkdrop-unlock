@@ -8,7 +8,6 @@ import { Select, Input, PageHeader } from 'components/common'
 import TokenAddressInput from './token-address-input'
 import LinksContent from './links-content'
 import NextButton from './next-button'
-import AddIconInfo from './add-icon-info'
 import AddEthField from './add-eth-field'
 import EthTexts from './eth-texts'
 import config from 'config-dashboard'
@@ -26,7 +25,6 @@ class Step1 extends React.Component {
       ethAmount: '0',
       linksAmount: '0',
       addEth: false,
-      addIconInfo: false,
       tokenAddress: null
     }
   }
@@ -59,7 +57,7 @@ class Step1 extends React.Component {
   }
 
   render () {
-    const { tokenSymbol, ethAmount, linksAmount, tokenAmount, addEth, tokenAddress, addIconInfo, options } = this.state
+    const { tokenSymbol, ethAmount, linksAmount, tokenAmount, addEth, tokenAddress, options } = this.state
     const { symbol, loading } = this.props
     const tokenType = this.defineTokenType({ tokenSymbol })
     return <div className={styles.container}>
@@ -91,7 +89,6 @@ class Step1 extends React.Component {
             <h3 className={styles.subtitle}>{this.t('titles.totalLinks')}</h3>
             <div className={styles.linksAmountContainer}>
               <Input numberInput className={styles.input} value={linksAmount} onChange={({ value }) => this.setField({ field: 'linksAmount', value: parseFloat(value) })} />
-              <AddIconInfo addIconInfo={addIconInfo} />
             </div>
           </div>
         </div>

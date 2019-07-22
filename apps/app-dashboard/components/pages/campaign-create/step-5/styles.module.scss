@@ -84,8 +84,17 @@
 .button {
   padding: 4px 16px;
 
+
   &.buttonMargin60 {
     margin-bottom: 60px;
+  }
+
+  &.buttonMargin40 {
+    margin-bottom: 40px;
+  }
+
+  span {
+    margin-right: 14px;
   }
 }
 

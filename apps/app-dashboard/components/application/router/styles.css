@@ -15,24 +15,3 @@
   src: url('~assets/fonts/Inter-Medium.woff2') format('woff2'), /* Super Modern Browsers */
        url('~assets/fonts/Inter-Medium.woff') format('woff');
 }
-
-html, body {
-  font-family: 'Inter-Regular', Helvetica, Arial, sans-serif;
-  margin: 0px;
-  padding: 0px;
-  min-height: 100vh;
-}
-
-body, html {
-  overflow: hidden;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-input[type='text'],
-input[type='number'],
-textarea {
-  font-size: 16px;
-}

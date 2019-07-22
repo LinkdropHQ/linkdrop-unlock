@@ -3,7 +3,7 @@ import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import classNames from 'classnames'
 import { Button, PageHeader } from 'components/common'
-import { Loading } from 'linkdrop-ui-kit'
+import { Loading, Icons } from 'linkdrop-ui-kit'
 
 @actions(({ user: { loading }, campaigns: { items, current } }) => ({ items, current, loading }))
 @translate('pages.campaignCreate')
@@ -14,17 +14,23 @@ class Step5 extends React.Component {
     const links = (currentCampaign || {}).links
     if (!currentCampaign) { return null }
     return <div className={styles.container}>
+      <PageHeader title={this.t('titles.getTheLinks')} />
       {loading && <Loading withOverlay />}
       <div className={styles.content}>
         <div className={styles.automatic}>
+
+          <p className={styles.text}>{this.t('titles.linkdropSdk')}</p>
+          <p className={classNames(styles.text, styles.textGrey, styles.textMargin40)}>{this.t('titles.automaticDistribution')}</p>
+
+          <Button className={classNames(styles.button, styles.buttonMargin40)}>
+            {this.t('buttons.useLinkdropSdk')}<Icons.ExternalLink fill='#FFF' />
+          </Button>
+          <p className={styles.text}>{this.t('titles.nodeJsSupport')}</p>
           <p className={classNames(styles.text, styles.textMargin15)}>{this.t('titles.contractParams')}</p>
           <p className={classNames(styles.text, styles.textMargin10, styles.ellipsis)} dangerouslySetInnerHTML={{ __html: this.t('titles.masterAddress', { address: currentCampaign.currentAddress }) }} />
           <p className={classNames(styles.text, styles.textMargin10, styles.ellipsis)} dangerouslySetInnerHTML={{ __html: this.t('titles.signingKey', { signingKey: currentCampaign.privateKey }) }} />
           <p className={classNames(styles.text, styles.ellipsis)} dangerouslySetInnerHTML={{ __html: this.t('titles.campaignId', { campaignId: currentCampaign.campaignId }) }} />
-          {false && <div><PageHeader title={this.t('titles.getTheLinks')} />
-            <p className={styles.text}>{this.t('titles.linkdropSdk')}</p>
-            <p className={classNames(styles.text, styles.textGrey, styles.textMargin40)}>{this.t('titles.automaticDistribution')}</p>
-            <p className={styles.text}>{this.t('titles.nodeJsSupport')}</p>
+          {false && <div>
             <p className={styles.text}>{this.t('titles.otherPlatforms')}</p>
             <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.contactUs')}</p>
             <Button className={classNames(styles.button, styles.buttonMargin60)}>{this.t('buttons.useLinkdropSdk')}</Button>

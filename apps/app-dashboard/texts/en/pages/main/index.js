@@ -7,7 +7,7 @@ export default {
     networkNotSupported: 'Network is not supported',
     createALinkdrop: 'Create a Linkdrop',
     erc20Eth: 'ERC20 + ETH',
-    referralMarketing: 'Referral Marketing',
+    customSolutions: 'Custom Solutions',
     allAssets: 'ERC721 / ERC20 + ETH'
   },
   texts: {
