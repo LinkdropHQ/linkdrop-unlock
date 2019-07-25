@@ -21,7 +21,6 @@ class MetamaskInjector extends React.Component {
   }
 
   applyProvider (provider) {
-    console.log(this, this.actions)
     if (provider.selectedAddress) {
       this.actions().user.setCurrentAddress({ currentAddress: provider.selectedAddress })
       this.actions().user.setChainId({ chainId: provider.networkVersion })
@@ -29,6 +28,7 @@ class MetamaskInjector extends React.Component {
   }
 
   render () {
+    const { disabled } = this.props
     return <div className={styles.container}>
       <h2 className={styles.title}>{this.t('titles.metamaskSignIn')}</h2>
       <h3
@@ -37,6 +37,7 @@ class MetamaskInjector extends React.Component {
       />
       <div className={styles.button}>
         <Button
+          disabled={disabled}
           onClick={_ => this.web3Connect.toggleModal()}
         >
           {this.t('buttons.signIn')}

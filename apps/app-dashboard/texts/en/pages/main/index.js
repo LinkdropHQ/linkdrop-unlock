@@ -1,6 +1,6 @@
 export default {
   titles: {
-    metamaskSignIn: 'Sin-In in MetaMask',
+    metamaskSignIn: 'Sign in with MetaMask',
     metamaksInstruction: 'Simply open MetaMask to unlock<br>or click on the button below',
     metamaskSupports: 'MetaMask supports:',
     howToConnectWallets: 'How to connect Trezor or Ledger?',

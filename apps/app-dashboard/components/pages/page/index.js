@@ -1,3 +1,4 @@
+/* global web3 */
 import React from 'react'
 import styles from './styles.module'
 import { Aside, Header } from 'components/common'
@@ -6,17 +7,29 @@ import { Scrollbars } from 'react-custom-scrollbars'
 import MetamaskInjector from './metamask-injector'
 import { Loading } from 'linkdrop-ui-kit'
 import NetworkNotSupported from './network-not-supported'
+let web3Obj
 const ls = window.localStorage
+try {
+  console.log({ web3 })
+  web3Obj = web3
+} catch (e) {
+  web3Obj = null
+}
 
 @actions(({ user: { currentAddress, chainId, loading } }) => ({ loading, currentAddress, chainId }))
 @translate('pages.page')
 class Page extends React.Component {
   componentDidMount () {
-    this.actions().user.checkCurrentProvider()
+    if (web3Obj) {
+      this.actions().user.checkCurrentProvider()
+    }
   }
 
   defineContent ({ currentAddress }) {
     const { chainId, loading } = this.props
+    if (!web3Obj) {
+      return <MetamaskInjector disabled />
+    }
     if (currentAddress === null && loading) {
       return <Loading />
     }

@@ -16,19 +16,16 @@ class Aside extends React.Component {
         <div className={styles.logo}>
           <a href='/#/'><RetinaImage alwaysHighRes width={118} {...getImages({ src: 'hole' })} /></a>
         </div>
-        {this.renderCampaignsButton({ currentAddress })}
+        {this.renderCampaignsButton({ currentAddress, items })}
         {this.renderCreateButton({ currentAddress })}
       </div>
       <div className={styles.footer}>
         <div className={styles.menu}>
-          <a href={styles.link}>{this.t('legal')}</a>
-          <a href={styles.link}>{this.t('contactUs')}</a>
+          <a target='_blank' href='https://www.notion.so/Terms-and-Privacy-dfa7d9b85698491d9926cbfe3c9a0a58' className={styles.link}>{this.t('legal')}</a>
+          <a target='_blank' href='mailto:hi@linkdrop.io' className={styles.link}>{this.t('contactUs')}</a>
         </div>
         <div className={styles.copyright}>
           {this.t('copyright')}
-        </div>
-        <div className={styles.dashboard}>
-          {this.t('dashboard')}
         </div>
       </div>
     </aside>
@@ -53,9 +50,9 @@ class Aside extends React.Component {
     </Button>
   }
 
-  renderCampaignsButton ({ currentAddress }) {
+  renderCampaignsButton ({ currentAddress, items }) {
     return <div className={classNames(styles.campaigns, {
-      [styles.disabled]: !currentAddress
+      [styles.disabled]: !currentAddress || !items || items.length === 0
     })}>
       <a onClick={e => {
         if (!currentAddress) { e.preventDefault() }

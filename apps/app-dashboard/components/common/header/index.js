@@ -20,7 +20,9 @@ class Header extends React.Component {
         {step && <ProgressBar stepsCount={3} currentStep={step} />}
       </div>
       <div className={styles.helpDesk}>
-        {this.t('help')}<Icons.ExternalLink />
+        <a target='_blank' href='https://www.notion.so/Help-Center-9cf549af5f614e1caee6a660a93c489b'>
+          {this.t('help')}<Icons.ExternalLink />
+        </a>
       </div>
     </header>
   }

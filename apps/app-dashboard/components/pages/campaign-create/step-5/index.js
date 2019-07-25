@@ -23,7 +23,7 @@ class Step5 extends React.Component {
           <p className={classNames(styles.text, styles.textGrey, styles.textMargin40)}>{this.t('titles.automaticDistribution')}</p>
 
           <Button className={classNames(styles.button, styles.buttonMargin40)}>
-            {this.t('buttons.useLinkdropSdk')}<Icons.ExternalLink fill='#FFF' />
+            <span>{this.t('buttons.useLinkdropSdk')}</span><Icons.ExternalLink fill='#FFF' />
           </Button>
           <p className={styles.text}>{this.t('titles.nodeJsSupport')}</p>
           <p className={classNames(styles.text, styles.textMargin15)}>{this.t('titles.contractParams')}</p>

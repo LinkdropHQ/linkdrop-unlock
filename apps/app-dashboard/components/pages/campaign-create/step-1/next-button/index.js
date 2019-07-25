@@ -15,7 +15,7 @@ class NextButton extends React.Component {
       action = _ => this.actions().campaigns.prepareNewERC20Data({ tokenAmount, ethAmount, linksAmount, tokenSymbol, tokenType })
     }
     return <div className={styles.controls}>
-      <Button disabled={this.defineIfButtonDisabled({ tokenType, ethAmount, tokenAmount, linksAmount })} onClick={action}>{this.t('buttons.next')}</Button>
+      <Button className={styles.button} disabled={this.defineIfButtonDisabled({ tokenType, ethAmount, tokenAmount, linksAmount })} onClick={action}>{this.t('buttons.next')}</Button>
     </div>
   }
 

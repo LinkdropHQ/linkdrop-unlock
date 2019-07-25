@@ -16,7 +16,6 @@
 
 .main {
   display: flex;
-  margin-bottom: 20px;
 }
 
 .form {
@@ -37,6 +36,10 @@
 
 .input {
   max-width: 150px;
+}
+
+.button {
+  margin-top: 80px;
 }
 
 .inputFullSize {
