@@ -18,7 +18,7 @@ export default {
     // step1
 
     tokenAddress: 'Token Address',
-    tokenAddressPlaceholder: '0x Token Address',
+    tokenAddressPlaceholder: '0x Address',
 
     // step2
     summaryPay: 'Summary',
@@ -56,12 +56,12 @@ export default {
     signingKey: 'Signing Key: <span>{{signingKey}}</span>',
     downloadFile: 'Download CSV file',
     manual: 'Manual distribution',
-    howToClaimPreview: 'How claim page will look like for receivers — <a href={{url}}>Preview<a/>',
+    howToClaimPreview: 'How claim page will look like<br>for receivers — <a href={{url}}>Preview<a/>',
     faq: 'FAQ',
-    visitHelpCenter: 'Visit Help Center',
-    customizations: 'Customization of Claim page',
-    pauseOrStop: 'Pause / Stop Linkdrop campaign',
-    analytics: 'Analytics of Linkdrop campaign',
+    visitHelpCenter: 'Visit <a href={{href}}>Help Center<a>',
+    customizations: '<a href={{href}}>Customization of claim page</a>',
+    pauseOrStop: '<a href={{href}}>Pause / Stop campaign</a>',
+    analytics: '<a href={{href}}>Analytics of campaign</a>',
     campaignId: 'Campaign ID: <span>{{campaignId}}</span>'
   },
   texts: {

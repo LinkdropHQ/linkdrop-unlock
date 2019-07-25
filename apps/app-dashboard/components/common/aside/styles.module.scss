@@ -1,10 +1,10 @@
 @import "variables";
 
 .container {
-  width: 257px;
+  min-width: 257px;
   height: 100vh;
   position: relative;
-  padding: 25px 50px 40px;
+  padding: 25px 0px 40px;
   background: $blackColor;
   display: flex;
   flex-direction: column;
@@ -12,7 +12,9 @@
 
 .logo {
   cursor: pointer;
-  margin-bottom: 60px;
+  display: block;
+  margin: 0 auto 60px;
+  width: 118px;
 }
 
 .link {
@@ -25,15 +27,23 @@
   }
 }
 
-.campaigns {
+.menuItem {
   color: $whiteColor;
   font-size: 20px;
-  margin-bottom: 40px;
+  margin-bottom: 26px;
+  height: 40px;
+  line-height: 40px;
+  border-left: 10px solid transparent;
+  transition: border-color .3s;
+
+  &.active {
+    border-color: $dbBlue;
+    font-family: 'Inter-Medium';
+  }
 
   &.disabled {
     color: $textGreyColor;
     font-size: 20px;
-    margin-bottom: 40px;
     a {
       cursor: not-allowed;
       color: $textGreyColor;
@@ -43,15 +53,25 @@
   a {
     text-decoration: none;
     color: $whiteColor;
+    padding-left: 40px;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
   }
+}
+
+.buttonContainer {
+  padding: 10px 50px 0px;
 }
 
 .button {
   border: 1px solid $whiteColor;
 }
 
-.menu {
+.footerMenu {
   display: flex;
+  margin-bottom: 20px;
+  padding: 0px 50px;
   justify-content: space-between;
 }
 
@@ -59,8 +79,8 @@
   flex: 1 0;
 }
 
-.menu {
-  margin-bottom: 20px;
+.copyright {
+  padding: 0px 50px;
 }
 
 .copyright, .menu, .dashboard {

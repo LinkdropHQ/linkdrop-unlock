@@ -6,8 +6,7 @@ import styles from '../styles.module'
 @translate('pages.campaignCreate')
 class EthAmountData extends React.Component {
   render () {
-    const { ethAmount, linksAmount, tokenAmount } = this.props
-    if (!tokenAmount) { return null }
+    const { ethAmount, linksAmount } = this.props
     if (!ethAmount || Number(ethAmount) === 0) { return null }
     return <div className={styles.data}>
       <h3 className={styles.dataTitle}>

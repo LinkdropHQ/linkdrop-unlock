@@ -5,6 +5,7 @@ import styles from './styles.module'
 import { RetinaImage } from 'linkdrop-ui-kit'
 import { getImages } from 'helpers'
 import classNames from 'classnames'
+import { withRouter } from 'react-router'
 
 @actions(({ user: { currentAddress }, campaigns: { items } }) => ({ currentAddress, items }))
 @translate('common.aside')
@@ -16,11 +17,12 @@ class Aside extends React.Component {
         <div className={styles.logo}>
           <a href='/#/'><RetinaImage alwaysHighRes width={118} {...getImages({ src: 'hole' })} /></a>
         </div>
+        {this.renderDashboardButton()}
         {this.renderCampaignsButton({ currentAddress, items })}
         {this.renderCreateButton({ currentAddress })}
       </div>
       <div className={styles.footer}>
-        <div className={styles.menu}>
+        <div className={styles.footerMenu}>
           <a target='_blank' href='https://www.notion.so/Terms-and-Privacy-dfa7d9b85698491d9926cbfe3c9a0a58' className={styles.link}>{this.t('legal')}</a>
           <a target='_blank' href='mailto:hi@linkdrop.io' className={styles.link}>{this.t('contactUs')}</a>
         </div>
@@ -32,33 +34,50 @@ class Aside extends React.Component {
   }
 
   renderCreateButton ({ currentAddress }) {
-    return <Button
-      className={styles.button}
-      onClick={_ => {
-        if (!currentAddress) { return }
-        const { privateKey } = this.props
-        if (privateKey) {
-          this.actions().user.setStep({ step: 2 })
-        } else {
-          this.actions().user.setStep({ step: 1 })
-        }
-        window.location.href = '/#/campaigns/create'
-      }}
-      disabled={!currentAddress}
-    >
-      {this.t('create')}
-    </Button>
+    return <div className={styles.buttonContainer}>
+      <Button
+        className={styles.button}
+        onClick={_ => {
+          if (!currentAddress) { return }
+          const { privateKey } = this.props
+          if (privateKey) {
+            this.actions().user.setStep({ step: 2 })
+          } else {
+            this.actions().user.setStep({ step: 1 })
+          }
+          window.location.href = '/#/campaigns/create'
+        }}
+        disabled={!currentAddress}
+      >
+        {this.t('create')}
+      </Button>
+    </div>
+  }
+
+  renderDashboardButton () {
+    console.log(this.defineCurrentPage())
+    return <div className={classNames(styles.menuItem, { [styles.active]: this.defineCurrentPage() === 'dashboard' })}>
+      <a href='/#/'>{this.t('dashboard')}</a>
+    </div>
   }
 
   renderCampaignsButton ({ currentAddress, items }) {
-    return <div className={classNames(styles.campaigns, {
-      [styles.disabled]: !currentAddress || !items || items.length === 0
+    return <div className={classNames(styles.menuItem, {
+      [styles.disabled]: !currentAddress || !items || items.length === 0,
+      [styles.active]: this.defineCurrentPage() === 'campaigns'
     })}>
       <a onClick={e => {
         if (!currentAddress) { e.preventDefault() }
       }} href='/#/campaigns'>{this.t('campaigns')}</a>
     </div>
   }
+
+  defineCurrentPage () {
+    const { location: { pathname } } = this.props
+    if (pathname === '/campaigns') { return 'campaigns' }
+    if (pathname === '/') { return 'dashboard' }
+    return null
+  }
 }
 
-export default Aside
+export default withRouter(Aside)

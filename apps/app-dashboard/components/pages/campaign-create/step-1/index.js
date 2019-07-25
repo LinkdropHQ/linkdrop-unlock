@@ -228,7 +228,7 @@ const TOKENS = [
     label: `ETH — ${(ethers.constants.AddressZero).slice(0, 35)}...`,
     value: 'ETH'
   }, {
-    label: 'Custom Token ERC20',
+    label: 'ERC20 Token Address',
     value: 'ERC20'
   }
 ]

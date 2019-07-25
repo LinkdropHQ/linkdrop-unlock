@@ -10,7 +10,6 @@ import NetworkNotSupported from './network-not-supported'
 let web3Obj
 const ls = window.localStorage
 try {
-  console.log({ web3 })
   web3Obj = web3
 } catch (e) {
   web3Obj = null
