@@ -59,6 +59,47 @@ class Campaign {
       }
     })
   }
+
+  pause ({ id, chainId, account }) {
+    this.actions.dispatch({
+      type: '*CAMPAIGNS.PAUSE',
+      payload: {
+        id,
+        chainId,
+        account
+      }
+    })
+  }
+
+  unpause ({ id, chainId, account }) {
+    this.actions.dispatch({
+      type: '*CAMPAIGNS.UNPAUSE',
+      payload: {
+        id, chainId, account
+      }
+    })
+  }
+
+  withdraw ({ id, chainId, account }) {
+    this.actions.dispatch({
+      type: '*CAMPAIGNS.WITHDRAW',
+      payload: {
+        id, chainId, account
+      }
+    })
+  }
+
+  checkStatusTxHash ({ txHash, chainId, id, newStatus }) {
+    this.actions.dispatch({
+      type: '*CAMPAIGNS.CHECK_STATUS_TX_HASH',
+      payload: {
+        txHash,
+        chainId,
+        id,
+        newStatus
+      }
+    })
+  }
 }
 
 export default Campaign

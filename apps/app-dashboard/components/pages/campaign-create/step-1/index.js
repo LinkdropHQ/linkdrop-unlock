@@ -190,7 +190,7 @@ class Step1 extends React.Component {
     if (field === 'tokenAddress' && value.length > 42) { return }
     if (field === 'ethAmount' || field === 'tokenAmount') {
       return this.setState({
-        [field]: value && String(value).replace(',', '.')
+        [field]: value
       })
     }
     this.setState({

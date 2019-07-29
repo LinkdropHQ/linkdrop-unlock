@@ -19,10 +19,6 @@ class User {
     this.actions.dispatch({ type: '*USER.CHECK_CURRENT_PROVIDER' })
   }
 
-  checkTxHash ({ txHash, chainId }) {
-    this.actions.dispatch({ type: '*USER.CHECK_TX_HASH', payload: { txHash, chainId } })
-  }
-
   prepareVersionVar ({ chainId, currentAddress }) {
     this.actions.dispatch({ type: '*USER.PREPARE_VERSION_VAR', payload: { chainId, currentAddress } })
   }

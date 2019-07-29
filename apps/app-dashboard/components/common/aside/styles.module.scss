@@ -66,6 +66,12 @@
 
 .button {
   border: 1px solid $whiteColor;
+
+  &.buttonDisabled {
+    background: transparent!important;
+    border: 1px solid $dbGrey!important;
+    color: $dbGrey!important;
+  }
 }
 
 .footerMenu {

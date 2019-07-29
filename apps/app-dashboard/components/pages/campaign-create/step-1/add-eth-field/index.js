@@ -28,7 +28,7 @@ class AddEthField extends React.Component {
         suffix='ETH'
         className={styles.ethInput}
         value={ethAmount || 0}
-        onChange={({ value }) => setField({ field: 'ethAmount', value: parseFloat(value) })}
+        onChange={({ value }) => setField({ field: 'ethAmount', value: convertFromExponents(value) })}
       />
       <Icons.CloseButton
         onClick={_ => setField({ field: 'addEth', value: false })}

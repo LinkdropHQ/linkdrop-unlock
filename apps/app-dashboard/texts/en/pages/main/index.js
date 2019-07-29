@@ -5,7 +5,7 @@ export default {
     metamaskSupports: 'MetaMask supports:',
     howToConnectWallets: 'How to connect Trezor or Ledger?',
     networkNotSupported: 'Network is not supported',
-    createALinkdrop: 'Create a Linkdrop',
+    createALinkdrop: 'Create a Campaign',
     erc20Eth: 'ERC20 + ETH',
     customSolutions: 'Custom Solutions',
     allAssets: 'ERC721 / ERC20 + ETH'

@@ -84,13 +84,13 @@ export default {
     _16: '<span>{{eth}} ETH</span> — Ether to distribute',
     _17: '<span>{{eth}} ETH</span> — Service fee',
     codeBlock: `// import library
-const linkGenerator = require(‘volca-link-generator’);
+const linkGenerator = require('volca-link-generator');
 
 // init link generator
 const linkGenerator = LinkGenerator({
-       verificationPK: ‘32ebc000000000000000000000000000000000000000
-       contractAddress: ‘0xa712700000000000000000000000000000000000’
-       networkId: ‘3’
+       verificationPK: '32ebc000000000000000000000000000000000000000'
+       contractAddress: '0xa712700000000000000000000000000000000000'
+       networkId: '3'
 });
 
 //Usage example:

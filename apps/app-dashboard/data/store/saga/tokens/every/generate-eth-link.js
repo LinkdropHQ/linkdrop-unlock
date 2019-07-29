@@ -2,13 +2,14 @@ import { put, select } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 import { ethers, utils } from 'ethers'
 import configs from 'config-dashboard'
+import { convertFromExponents } from 'linkdrop-commons'
 
 const generator = function * ({ payload }) {
   try {
     const sdk = yield select(generator.selectors.sdk)
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const balance = yield select(generator.selectors.ethAmount)
-    const weiAmount = utils.parseEther(String(Number(balance)))
+    const weiAmount = utils.parseEther(convertFromExponents(balance))
     const privateKey = yield select(generator.selectors.privateKey)
     const ethersContractZeroAddress = ethers.constants.AddressZero
     const campaignId = yield select(generator.selectors.campaignId)

@@ -36,7 +36,7 @@ class Aside extends React.Component {
   renderCreateButton ({ currentAddress }) {
     return <div className={styles.buttonContainer}>
       <Button
-        className={styles.button}
+        className={classNames(styles.button, { [styles.buttonDisabled]: !currentAddress })}
         onClick={_ => {
           if (!currentAddress) { return }
           const { privateKey } = this.props
@@ -55,7 +55,6 @@ class Aside extends React.Component {
   }
 
   renderDashboardButton () {
-    console.log(this.defineCurrentPage())
     return <div className={classNames(styles.menuItem, { [styles.active]: this.defineCurrentPage() === 'dashboard' })}>
       <a href='/#/'>{this.t('dashboard')}</a>
     </div>

@@ -22,21 +22,21 @@ class Step5 extends React.Component {
           <p className={styles.text}>{this.t('titles.linkdropSdk')}</p>
           <p className={classNames(styles.text, styles.textGrey, styles.textMargin40)}>{this.t('titles.automaticDistribution')}</p>
 
-          <Button className={classNames(styles.button, styles.buttonMargin40)}>
+          <Button className={classNames(styles.button, styles.buttonMargin40, styles.buttonWithImg)}>
             <span>{this.t('buttons.useLinkdropSdk')}</span><Icons.ExternalLink fill='#FFF' />
           </Button>
           <p className={classNames(styles.text, styles.textMargin80)}>{this.t('titles.nodeJsSupport')}</p>
           <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.codeDetails')}</p>
-          <textarea disabled className={styles.codeBlock}>
+          <xmp className={styles.codeBlock}>
             {this.t('texts.codeBlock')}
-          </textarea>
+          </xmp>
         </div>
         <div className={styles.manual}>
           <p className={styles.text}>{this.t('titles.downloadFile')}</p>
           <p className={classNames(styles.text, styles.textGrey, styles.textMargin40)}>{this.t('titles.manual')}</p>
           <div className={styles.buttonsContainer}>
             <Button onClick={_ => links && this.actions().campaigns.getCSV({ links, id: campaignToCheck || current })} className={styles.button}>{this.t('buttons.downloadCsv')}</Button>
-            <Button transparent className={styles.button}>{this.t('buttons.qr')}</Button>
+            <Button transparent className={classNames(styles.button, styles.buttonWithImg)}><span>{this.t('buttons.qr')}</span><Icons.ExternalLink /></Button>
           </div>
           <p className={classNames(styles.text, styles.textMargin60)} dangerouslySetInnerHTML={{ __html: this.t('titles.howToClaimPreview') }} />
           <p className={classNames(styles.text, styles.textBold)}>{this.t('titles.faq')}</p>

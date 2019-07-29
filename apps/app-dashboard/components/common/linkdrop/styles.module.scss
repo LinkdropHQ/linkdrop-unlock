@@ -9,7 +9,14 @@
   margin-right: 50px;
   max-width: 400px;
   width: 100%;
+  position: relative;
   margin-bottom: 50px;
+
+  &.containerDisabled {
+    .title, .link, .date, .statusField, .links {
+      color: $textGreyColor;
+    }
+  }
 }
 
 .title {
@@ -18,19 +25,24 @@
   margin-top: 0;
 }
 
-.link, .date, .status {
+.link, .date, .statusField {
   font-size: 16px;
   margin-bottom: 20px;
 }
 
 .status {
-  span {
-    color: $dbGrey;
+  color: $blackColor;
+  text-decoration: underline;
+  cursor: pointer;
+  &.statusActive, &.statusPaused, &.statusCanceled {
+    text-decoration: none;
+    cursor: default;
   }
-  &.active {
-    span {
-      color: $dbBlue;
-    }
+  &.statusActive {
+    color: $dbBlue;
+  }
+  &.statusPaused {
+    color: $orangeColor;
   }
 }
 
@@ -45,11 +57,22 @@
 }
 
 .buttons {
-  justify-content: space-between;
   display: flex;
 }
 
 .button {
   padding: 4px 30px;
+
+  &:first-child {
+    margin-right: 20px;
+  }
+}
+
+.buttonWithIcon {
+  padding: 4px 10px 4px 20px;
+
+  svg {
+    margin: 0px 0px 0px 15px;
+  }
 }
 

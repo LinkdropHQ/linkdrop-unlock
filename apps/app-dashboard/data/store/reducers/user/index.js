@@ -7,7 +7,6 @@ const initialState = {
   chainId: null,
   privateKey: null,
   txHash: null,
-  transactionStatus: null,
   version: null,
   sdk: null
 }
@@ -27,7 +26,6 @@ const ACTIONS = {
   'USER.SET_CHAIN_ID': reducers.setChainId,
   'USER.SET_PRIVATE_KEY': reducers.setPrivateKey,
   'USER.SET_TX_HASH': reducers.setTxHash,
-  'USER.SET_TRANSACTION_STATUS': reducers.setTransactionStatus,
   'USER.SET_VERSION_VAR': reducers.setVersionVar,
   'USER.SET_SDK': reducers.setSdk
 }

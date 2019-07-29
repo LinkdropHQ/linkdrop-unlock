@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { Button, PageHeader, MetamaskPopup } from 'components/common'
 import { Loading } from 'linkdrop-ui-kit'
 import config from 'config-dashboard'
-import numeral from 'numeral'
+import { multiply, add } from 'mathjs'
 import EthSummaryBlock from './eth-summary-block'
 
 @actions(({
@@ -86,7 +86,6 @@ class Step3 extends React.Component {
         loading: false
       }, _ => {
         this.intervalEthCheck && window.clearInterval(this.intervalEthCheck)
-        window.alert('found ETH!')
         window.setTimeout(_ => this.actions().user.setStep({ step: 4 }), config.nextStepTimeout)
       })
     }
@@ -95,8 +94,8 @@ class Step3 extends React.Component {
   render () {
     const { loading: stateLoading } = this.state
     const { linksAmount, ethAmount, chainId, currentAddress, loading } = this.props
-    const ethAmountFinal = numeral(ethAmount).add(config.linkPrice).multiply(linksAmount).value()
-    const serviceFee = numeral(config.linkPrice).multiply(linksAmount).value()
+    const ethAmountFinal = multiply(add(ethAmount, config.linkPrice), linksAmount)
+    const serviceFee = multiply(config.linkPrice, linksAmount)
     return <div className={styles.container}>
       {(loading || stateLoading) && <Loading withOverlay />}
       <PageHeader title={this.t('titles.sendEth', { ethAmount: ethAmountFinal })} />

@@ -1,26 +1,27 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import numeral from 'numeral'
+import { multiply, add } from 'mathjs'
+import { convertFromExponents } from 'linkdrop-commons'
 
 @actions(_ => ({}))
 @translate('pages.campaignCreate')
 class ApproveSummary extends React.Component {
   render () {
     const { serviceFee, linksAmount, ethAmount, tokenAmount, tokenSymbol, tokenType } = this.props
-    const ethAmountFinal = numeral(ethAmount).add(serviceFee).multiply(linksAmount).value()
-    const onlyServiceFee = numeral(serviceFee).multiply(linksAmount).value()
-    const onlyEthForLinks = numeral(ethAmount).multiply(linksAmount).value()
+    const ethAmountFinal = multiply(add(ethAmount, serviceFee), linksAmount)
+    const onlyServiceFee = multiply(serviceFee, linksAmount)
+    const onlyEthForLinks = multiply(ethAmount, linksAmount)
     if (tokenType === 'erc20') {
       return <div className={styles.container}>
-        <div dangerouslySetInnerHTML={{ __html: this.t('titles.approveTokens', { tokenAmount: Number(tokenAmount) * Number(linksAmount), tokenSymbol }) }} />
+        <div dangerouslySetInnerHTML={{ __html: this.t('titles.approveTokens', { tokenAmount: convertFromExponents(multiply(tokenAmount, linksAmount)), tokenSymbol }) }} />
       </div>
     }
     return <div className={styles.container}>
-      <div dangerouslySetInnerHTML={{ __html: this.t('titles.sendEthToGenerate', { ethAmount: ethAmountFinal }) }} />
+      <div dangerouslySetInnerHTML={{ __html: this.t('titles.sendEthToGenerate', { ethAmount: convertFromExponents(ethAmountFinal) }) }} />
       <div className={styles.contents}>
-        <div className={styles.contentsItem} dangerouslySetInnerHTML={{ __html: this.t('titles.etherToDistribute', { ethAmount: onlyEthForLinks }) }} />
-        <div className={styles.contentsItem} dangerouslySetInnerHTML={{ __html: this.t('titles.serviceFeeToDistribute', { ethAmount: onlyServiceFee }) }} />
+        <div className={styles.contentsItem} dangerouslySetInnerHTML={{ __html: this.t('titles.etherToDistribute', { ethAmount: convertFromExponents(onlyEthForLinks) }) }} />
+        <div className={styles.contentsItem} dangerouslySetInnerHTML={{ __html: this.t('titles.serviceFeeToDistribute', { ethAmount: convertFromExponents(onlyServiceFee) }) }} />
       </div>
     </div>
   }
