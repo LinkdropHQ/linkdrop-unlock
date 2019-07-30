@@ -11,16 +11,16 @@ class LinksContent extends React.Component {
     const { tokenType, ethAmount, tokenSymbol, tokenAmount } = this.props
     if (tokenType === 'eth') {
       return <p className={classNames(styles.text, styles.textMargin30)}>
-        {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContents', { tokenAmount: ethAmount, tokenSymbol: 'ETH' })}`}
+        {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContents', { tokenAmount: convertFromExponents(ethAmount), tokenSymbol: 'ETH' })}`}
       </p>
     }
     if (tokenType === 'erc20' && ethAmount) {
       return <p className={classNames(styles.text, styles.textMargin30)}>
-        {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContentsWithEth', { tokenAmount, tokenSymbol, ethAmount: convertFromExponents(ethAmount) })}`}
+        {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContentsWithEth', { tokenAmount: convertFromExponents(tokenAmount), tokenSymbol, ethAmount: convertFromExponents(ethAmount) })}`}
       </p>
     }
     return <p className={classNames(styles.text, styles.textMargin30)}>
-      {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContents', { tokenAmount, tokenSymbol })}`}
+      {`${this.t('titles.oneLinkContains')} ${this.t('titles.oneLinkContents', { tokenAmount: convertFromExponents(tokenAmount), tokenSymbol })}`}
     </p>
   }
 }

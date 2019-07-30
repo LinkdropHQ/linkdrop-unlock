@@ -8,7 +8,6 @@ import { Select, Input, PageHeader } from 'components/common'
 import TokenAddressInput from './token-address-input'
 import LinksContent from './links-content'
 import NextButton from './next-button'
-import AddIconInfo from './add-icon-info'
 import AddEthField from './add-eth-field'
 import EthTexts from './eth-texts'
 import config from 'config-dashboard'
@@ -26,7 +25,6 @@ class Step1 extends React.Component {
       ethAmount: '0',
       linksAmount: '0',
       addEth: false,
-      addIconInfo: false,
       tokenAddress: null
     }
   }
@@ -59,7 +57,7 @@ class Step1 extends React.Component {
   }
 
   render () {
-    const { tokenSymbol, ethAmount, linksAmount, tokenAmount, addEth, tokenAddress, addIconInfo, options } = this.state
+    const { tokenSymbol, ethAmount, linksAmount, tokenAmount, addEth, tokenAddress, options } = this.state
     const { symbol, loading } = this.props
     const tokenType = this.defineTokenType({ tokenSymbol })
     return <div className={styles.container}>
@@ -69,14 +67,28 @@ class Step1 extends React.Component {
         <div className={styles.form}>
           <div className={styles.chooseTokens}>
             <h3 className={styles.subtitle}>{this.t('titles.chooseToken')}</h3>
-            <Select options={options} value={tokenSymbol} onChange={({ value }) => this.setField({ field: 'tokenSymbol', value })} />
+            <Select options={options} value={tokenSymbol} onChange={({ value }) => {
+              if (value !== 'ETH' && value !== 'ERC20') {
+                const currentAddress = options.find(option => option.value === value).address
+                this.setState({
+                  tokenAddress: currentAddress
+                }, _ => {
+                  this.setField({ field: 'tokenSymbol', value })
+                })
+              } else {
+                this.setState({
+                  tokenAddress: null
+                }, _ => {
+                  this.setField({ field: 'tokenSymbol', value })
+                })
+              }
+            }} />
           </div>
           {this.renderTokenInputs({ ethAmount, tokenType, tokenAddress, symbol, tokenSymbol, tokenAmount, addEth })}
           <div className={styles.linksAmount}>
             <h3 className={styles.subtitle}>{this.t('titles.totalLinks')}</h3>
             <div className={styles.linksAmountContainer}>
               <Input numberInput className={styles.input} value={linksAmount} onChange={({ value }) => this.setField({ field: 'linksAmount', value: parseFloat(value) })} />
-              <AddIconInfo addIconInfo={addIconInfo} />
             </div>
           </div>
         </div>
@@ -178,7 +190,7 @@ class Step1 extends React.Component {
     if (field === 'tokenAddress' && value.length > 42) { return }
     if (field === 'ethAmount' || field === 'tokenAmount') {
       return this.setState({
-        [field]: value && String(value).replace(',', '.')
+        [field]: value
       })
     }
     this.setState({
@@ -216,7 +228,7 @@ const TOKENS = [
     label: `ETH — ${(ethers.constants.AddressZero).slice(0, 35)}...`,
     value: 'ETH'
   }, {
-    label: 'Custom Token ERC20',
+    label: 'ERC20 Token Address',
     value: 'ERC20'
   }
 ]

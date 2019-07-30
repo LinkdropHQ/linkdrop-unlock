@@ -17,7 +17,7 @@ class Main extends React.Component {
       />
       <ActionBlock
         transparent
-        title={this.t('titles.referralMarketing')}
+        title={this.t('titles.customSolutions')}
         description={this.t('texts.incentivizeCustomer')}
         extraContent={this.t('titles.allAssets')}
         onClick

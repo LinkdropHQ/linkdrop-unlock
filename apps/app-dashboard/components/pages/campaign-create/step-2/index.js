@@ -96,7 +96,6 @@ class Step2 extends React.Component {
           loading: false
         }, _ => {
           this.intervalCheck && window.clearInterval(this.intervalCheck)
-          window.alert('found ETH!')
           window.setTimeout(_ => this.actions().user.setStep({ step: 4 }), config.nextStepTimeout)
         })
       }
@@ -106,7 +105,6 @@ class Step2 extends React.Component {
           loading: false
         }, _ => {
           this.intervalCheck && window.clearInterval(this.intervalCheck)
-          window.alert('found ERC20!')
           window.setTimeout(_ => this.actions().user.setStep({ step: 3 }), config.nextStepTimeout)
         })
       }

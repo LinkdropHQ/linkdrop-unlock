@@ -11,7 +11,7 @@ class MetamaskPopup extends React.Component {
     const { amount } = this.props
     return <div className={styles.container}>
       <div className={styles.amount}>
-        <Icons.Ethereum />{amount}
+        <Icons.Ethereum />{Number(amount)}
       </div>
       <RetinaImage
         className={styles.img}

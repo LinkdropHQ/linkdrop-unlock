@@ -1,20 +1,20 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from '../styles.module'
+import { convertFromExponents } from 'linkdrop-commons'
 
 @actions(_ => ({}))
 @translate('pages.campaignCreate')
 class EthAmountData extends React.Component {
   render () {
-    const { ethAmount, linksAmount, tokenAmount } = this.props
-    if (!tokenAmount) { return null }
+    const { ethAmount, linksAmount } = this.props
     if (!ethAmount || Number(ethAmount) === 0) { return null }
     return <div className={styles.data}>
       <h3 className={styles.dataTitle}>
         {this.t('titles.totalEthInLinks')}
       </h3>
       <div className={styles.dataContent}>
-        {ethAmount * linksAmount} ETH
+        {convertFromExponents(ethAmount * linksAmount)} ETH
       </div>
       <div className={styles.extraDataContent}>
         {this.t('titles.ethHold')}

@@ -9,6 +9,14 @@
   position: relative;
   width: 100%;
   margin-bottom: 40px;
+
+  a {
+    color: $blackColor;
+    transition: color .3s;
+    &:hover {
+      color: $dbBlue;
+    }
+  }
 }
 
 .title {
@@ -18,12 +26,11 @@
 
 .content {
   display: flex;
-  margin-bottom: 30px;
 }
 
 .automatic {
   flex: 1 1;
-  padding-right: 110px;
+  padding-right: 40px;
   max-width: 550px;
   border-right: 1px solid $greyStrokeColor;
 }
@@ -56,6 +63,10 @@
     margin-bottom: 10px;
   }
 
+  &.textMargin80 {
+    margin-bottom: 80px;
+  }
+
   &.textGrey {
     color: $dbGrey;
   }
@@ -74,9 +85,6 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      width: 550px;
-      display: inline-block;
-      font-size: 12px;
     }
   }
 }
@@ -84,8 +92,25 @@
 .button {
   padding: 4px 16px;
 
+
   &.buttonMargin60 {
     margin-bottom: 60px;
+  }
+
+  &.buttonMargin40 {
+    margin-bottom: 40px;
+  }
+
+  span {
+    margin-right: 14px;
+  }
+
+  &.buttonWithImg {
+    padding: 4px 10px 4px 20px;
+  }
+
+  svg {
+    margin-right: 0px;
   }
 }
 
@@ -96,9 +121,10 @@
   line-height: 1.4;
   border: 1px solid $greyStrokeColor;
   width: 510px;
-  font-size: 12px;
+  font-size: 10px;
   font-family: Courier New, monospace, serif;
   margin-bottom: 40px;
+  overflow-y: scroll;
 }
 
 .buttonsContainer {

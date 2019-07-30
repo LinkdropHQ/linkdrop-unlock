@@ -1,13 +1,13 @@
 export default {
   titles: {
-    metamaskSignIn: 'Sin-In in MetaMask',
-    metamaksInstruction: 'Simply open MetaMask to unlock<br>and click on the button below',
+    metamaskSignIn: 'Sign in with MetaMask',
+    metamaksInstruction: 'Simply open MetaMask to unlock<br>or click on the button below',
     metamaskSupports: 'MetaMask supports:',
     howToConnectWallets: 'How to connect Trezor or Ledger?',
     networkNotSupported: 'Network is not supported',
-    createALinkdrop: 'Create a Linkdrop',
+    createALinkdrop: 'Create a Campaign',
     erc20Eth: 'ERC20 + ETH',
-    referralMarketing: 'Referral Marketing',
+    customSolutions: 'Custom Solutions',
     allAssets: 'ERC721 / ERC20 + ETH'
   },
   texts: {

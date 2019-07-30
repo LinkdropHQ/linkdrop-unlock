@@ -5,6 +5,8 @@ import InputMask from 'react-input-mask'
 import PropTypes from 'prop-types'
 import Icons from '../icons'
 import NumberFormat from 'react-number-format'
+import numeral from 'numeral'
+import { convertFromExponents } from 'linkdrop-commons'
 
 class Input extends React.Component {
   constructor (props) {
@@ -19,7 +21,7 @@ class Input extends React.Component {
     const { numberInput } = this.props
     if (value == null || value === prevValue || (numberInput && Number(value) === Number(prevValue))) { return }
     this.setState({
-      value
+      value: numberInput ? convertFromExponents(value) : value
     })
   }
 
@@ -62,7 +64,7 @@ class Input extends React.Component {
     const { value } = this.state
     const { className, suffix, disabled, centered, format } = this.props
     return <div className={styles.wrapper}>
-      <NumberFormat format={format} disabled={disabled} renderText={value => !disabled && <div>{value}</div>} value={value || 0} suffix={` ${suffix || ''}`} className={this.defineClassNames({ className, disabled, centered })} onChange={e => this.changeValue(e)} />
+      <NumberFormat decimalScale={8} format={format} disabled={disabled} renderText={value => !disabled && <div>{value}</div>} value={value || 0} suffix={` ${suffix || ''}`} className={this.defineClassNames({ className, disabled, centered })} onChange={e => this.changeValue(e)} />
     </div>
   }
 }

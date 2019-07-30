@@ -1,7 +1,7 @@
 export default {
   titles: {
     createLinkKey: 'Create Link Key',
-    setupCampaign: 'Setup Campaign',
+    setupCampaign: 'Setup',
     chooseToken: 'Choose token',
     total: 'Total:',
     fillTheField: 'Fill all fields to see the details',
@@ -11,23 +11,23 @@ export default {
     addIcon: 'Check your icon, if not<br>—submit or send to us',
     eth: 'ETH',
     ethInLinks: '{{ethAmount}} ETH in {{linksAmount}} links',
-    holdEth: 'Ether will be hold in Linkdrop Contract',
-    oneLinkContains: 'One link contains: ',
+    holdEth: 'Ether will be stored in Linkdrop Contract',
+    oneLinkContains: 'Each link contains: ',
     oneLinkContentsWithEth: '{{tokenAmount}} {{tokenSymbol}} + {{ethAmount}} ETH',
     oneLinkContents: '{{tokenAmount}} {{tokenSymbol}}',
     // step1
 
     tokenAddress: 'Token Address',
-    tokenAddressPlaceholder: '0x Token Address',
+    tokenAddressPlaceholder: '0x Address',
 
     // step2
-    summaryPay: 'Summary & Pay',
+    summaryPay: 'Summary',
     linksToGenerate: 'Links to generate',
-    oneLinkContainsTitle: 'One link contains',
+    oneLinkContainsTitle: 'Each link contains',
     serviceFeeTitle: 'Service fee',
     totalEthInLinks: 'Total ETH in links',
     ethPerLink: '{{eth}} ETH per link',
-    ethHold: 'Will be hold in Linkdrop Contract',
+    ethHold: 'Will be stored in Linkdrop Contract',
     charge: 'We charge you <strong>{{price}} ETH</strong> to start generate links',
     approveTokens: 'Approve permission to spend <span>{{tokenAmount}} {{tokenSymbol}}</span> for generating links',
     sendEthToGenerate: 'You wil send <span>{{ethAmount}} ETH</span> to start generate links',
@@ -56,12 +56,12 @@ export default {
     signingKey: 'Signing Key: <span>{{signingKey}}</span>',
     downloadFile: 'Download CSV file',
     manual: 'Manual distribution',
-    howToClaimPreview: 'How claim page will look like for receivers — <a href={{url}}>Preview<a/>',
+    howToClaimPreview: 'How claim page will look like<br>for receivers — <a href={{url}}>Preview<a/>',
     faq: 'FAQ',
-    visitHelpCenter: 'Visit Help Center',
-    customizations: 'Customization of Claim page',
-    pauseOrStop: 'Pause / Stop Linkdrop campaign',
-    analytics: 'Analytics of Linkdrop campaign',
+    visitHelpCenter: 'Visit <a href={{href}}>Help Center<a>',
+    customizations: '<a href={{href}}>Customization of claim page</a>',
+    pauseOrStop: '<a href={{href}}>Pause / Stop campaign</a>',
+    analytics: '<a href={{href}}>Analytics of campaign</a>',
     campaignId: 'Campaign ID: <span>{{campaignId}}</span>'
   },
   texts: {
@@ -76,29 +76,49 @@ export default {
     _8: 'We use Stripe to process payments so we don’t know and don’t store your bank card details.',
 
     // step3
-    _9: 'One more thing, to complete generating links you need to send Ether for links and fees to Linkdrop Contract',
     _10: 'Ether will be stored in Linkdrop Contract. You can stop campaign anytime and get back your Ether.',
-    _11: 'To send {{ethAmount}} ETH to Linkdrop Contract simply click on “Send” button and confirm transaction.',
     _12: 'MetaMask will show you <span>Transaction<br/>pop-up that you need to confirm',
-    _13: 'We plan to charge in USD and add monthly plans soon. For Enterprise customers, we offer custom solutions. Contact us for more details.',
+    _13: 'For Enterprise customers, we offer custom solutions. Contact us for more details.',
     _14: 'Approve permission to spend {{amount}} {{tokenSymbol}} for generating links',
     _15: 'You wil send {{eth}} ETH to start generate links',
-    _16: '{{eth}} ETH — Ether to distribute',
-    _17: '{{eth}} ETH — Service fee',
+    _16: '<span>{{eth}} ETH</span> — Ether to distribute',
+    _17: '<span>{{eth}} ETH</span> — Service fee',
     codeBlock: `// import library
-const linkGenerator = require(‘volca-link-generator’);
+const LinkdropSDK = require('@linkdrop/sdk')
+// OR
+import LinkdropSDK from '@linkdrop/sdk'
 
-// init link generator
-const linkGenerator = LinkGenerator({
-       verificationPK: ‘32ebc000000000000000000000000000000000000000
-       contractAddress: ‘0xa712700000000000000000000000000000000000’
-       networkId: ‘3’
-});
+// initialization
+const linkdropSDK = LinkdropSDK({
+  linkdropMasterAddress: {{masterAddress}},
+  // optional params:
+  // chain = <CHAIN>, // 'mainnet' by default
+  // chainId = <CHAIN_ID>, // getChainId(chain) by default
+  // jsonRpcUrl = <JSON_RPC_URL>, // 'https://{{chain}}.infura.io' by default,
+  // apiHost = <API_HOST>, // 'https://{{chain}}.linkdrop.io' by default
+  // claimHost = <CLAIM_HOST>, // 'https://claim.linkdrop.io' by default
+  // factory = <LINKDROP_FACTORY_ADDRESS>, // '0x01e7F4C72182Eb4421AFB1Ec99cee9Ef5B83EE18' by default
+})
 
-//Usage example:
-// Generating claim link for tokenId #1
-const tokenId = 1;
-const claimLink = linkGenerator.generatorNFT(tokenId);`
+// get proxy address
+const campaignId = {{campaignId}}
+const proxyAddress = linkdropSDK.getProxyAddress(campaignId)
+
+// generate links for ETH and ERC20
+const {
+  url,
+  linkId,
+  linkKey,
+  linkdropSignerSignature
+} = await linkdropSDK.generateLink({
+  signingKeyOrWallet, // Signing private key or ethers.js Wallet instance
+  weiAmount, // Amount of wei per claim
+  tokenAddress, // ERC20 token address
+  tokenAmount, // Amount of ERC20 tokens per claim
+  expirationTime = 12345678910, // Link expiration time
+  campaignId = {{campaignId}}, // Campaign id
+})
+`
   },
   buttons: {
     create: 'Create',

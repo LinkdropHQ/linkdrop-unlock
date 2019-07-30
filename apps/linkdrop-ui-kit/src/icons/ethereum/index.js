@@ -1,6 +1,6 @@
 import React from 'react'
 
-const SvgEthAmount = props => (
+const Ethereum = props => (
   <svg width={19} height={30} fill='none' {...props}>
     <path
       d='M9.208 0l-.201.684V20.52l.201.201 9.208-5.443L9.208 0z'
@@ -17,4 +17,4 @@ const SvgEthAmount = props => (
   </svg>
 )
 
-export default SvgEthAmount
+export default Ethereum

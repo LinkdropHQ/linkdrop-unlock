@@ -46,6 +46,7 @@ const generator = function * ({ payload }) {
       yield put({ type: 'METAMASK.SET_STATUS', payload: { status: 'finished' } })
     }
   } catch (e) {
+    yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
     console.error(e)
   }
 }
