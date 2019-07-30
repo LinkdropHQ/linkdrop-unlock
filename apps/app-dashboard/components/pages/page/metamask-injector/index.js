@@ -22,8 +22,7 @@ class MetamaskInjector extends React.Component {
 
   applyProvider (provider) {
     if (provider.selectedAddress) {
-      this.actions().user.setCurrentAddress({ currentAddress: provider.selectedAddress })
-      this.actions().user.setChainId({ chainId: provider.networkVersion })
+      this.actions().user.checkCurrentProvider()
     }
   }
 

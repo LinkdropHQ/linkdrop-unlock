@@ -1,7 +1,7 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import { multiply, add } from 'mathjs'
+import { multiply, add, bignumber } from 'mathjs'
 import { convertFromExponents } from 'linkdrop-commons'
 
 @actions(_ => ({}))
@@ -14,7 +14,7 @@ class ApproveSummary extends React.Component {
     const onlyEthForLinks = multiply(ethAmount, linksAmount)
     if (tokenType === 'erc20') {
       return <div className={styles.container}>
-        <div dangerouslySetInnerHTML={{ __html: this.t('titles.approveTokens', { tokenAmount: convertFromExponents(multiply(tokenAmount, linksAmount)), tokenSymbol }) }} />
+        <div dangerouslySetInnerHTML={{ __html: this.t('titles.approveTokens', { tokenAmount: convertFromExponents(multiply(bignumber(tokenAmount), bignumber(linksAmount))), tokenSymbol }) }} />
       </div>
     }
     return <div className={styles.container}>

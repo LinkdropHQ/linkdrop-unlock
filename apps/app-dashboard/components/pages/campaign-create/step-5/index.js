@@ -4,12 +4,13 @@ import styles from './styles.module'
 import classNames from 'classnames'
 import { Button, PageHeader } from 'components/common'
 import { Loading, Icons } from 'linkdrop-ui-kit'
+import { defineNetworkName } from 'linkdrop-commons'
 
-@actions(({ user: { loading }, campaigns: { items, current } }) => ({ items, current, loading }))
+@actions(({ user: { loading, chainId }, campaigns: { items, current } }) => ({ chainId, items, current, loading }))
 @translate('pages.campaignCreate')
 class Step5 extends React.Component {
   render () {
-    const { items, current, campaignToCheck, loading } = this.props
+    const { items, current, campaignToCheck, loading, chainId } = this.props
     const currentCampaign = items.find(item => item.id === (campaignToCheck || current))
     const links = (currentCampaign || {}).links
     if (!currentCampaign) { return null }
@@ -22,13 +23,17 @@ class Step5 extends React.Component {
           <p className={styles.text}>{this.t('titles.linkdropSdk')}</p>
           <p className={classNames(styles.text, styles.textGrey, styles.textMargin40)}>{this.t('titles.automaticDistribution')}</p>
 
-          <Button className={classNames(styles.button, styles.buttonMargin40, styles.buttonWithImg)}>
+          <Button onClick={_ => window.open('https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/master/sdk', '_blank')} className={classNames(styles.button, styles.buttonMargin40, styles.buttonWithImg)}>
             <span>{this.t('buttons.useLinkdropSdk')}</span><Icons.ExternalLink fill='#FFF' />
           </Button>
           <p className={classNames(styles.text, styles.textMargin80)}>{this.t('titles.nodeJsSupport')}</p>
           <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.codeDetails')}</p>
           <xmp className={styles.codeBlock}>
-            {this.t('texts.codeBlock')}
+            {this.t('texts.codeBlock', {
+              chain: defineNetworkName({ chainId: 1 }),
+              masterAddress: currentCampaign.currentAddress,
+              campaignId: currentCampaign.campaignId
+            })}
           </xmp>
         </div>
         <div className={styles.manual}>

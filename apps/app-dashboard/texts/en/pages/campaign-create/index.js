@@ -84,19 +84,41 @@ export default {
     _16: '<span>{{eth}} ETH</span> — Ether to distribute',
     _17: '<span>{{eth}} ETH</span> — Service fee',
     codeBlock: `// import library
-const linkGenerator = require('volca-link-generator');
+const LinkdropSDK = require('@linkdrop/sdk')
+// OR
+import LinkdropSDK from '@linkdrop/sdk'
 
-// init link generator
-const linkGenerator = LinkGenerator({
-       verificationPK: '32ebc000000000000000000000000000000000000000'
-       contractAddress: '0xa712700000000000000000000000000000000000'
-       networkId: '3'
-});
+// initialization
+const linkdropSDK = LinkdropSDK({
+  linkdropMasterAddress: {{masterAddress}},
+  // optional params:
+  // chain = <CHAIN>, // 'mainnet' by default
+  // chainId = <CHAIN_ID>, // getChainId(chain) by default
+  // jsonRpcUrl = <JSON_RPC_URL>, // 'https://{{chain}}.infura.io' by default,
+  // apiHost = <API_HOST>, // 'https://{{chain}}.linkdrop.io' by default
+  // claimHost = <CLAIM_HOST>, // 'https://claim.linkdrop.io' by default
+  // factory = <LINKDROP_FACTORY_ADDRESS>, // '0x01e7F4C72182Eb4421AFB1Ec99cee9Ef5B83EE18' by default
+})
 
-//Usage example:
-// Generating claim link for tokenId #1
-const tokenId = 1;
-const claimLink = linkGenerator.generatorNFT(tokenId);`
+// get proxy address
+const campaignId = {{campaignId}}
+const proxyAddress = linkdropSDK.getProxyAddress(campaignId)
+
+// generate links for ETH and ERC20
+const {
+  url,
+  linkId,
+  linkKey,
+  linkdropSignerSignature
+} = await linkdropSDK.generateLink({
+  signingKeyOrWallet, // Signing private key or ethers.js Wallet instance
+  weiAmount, // Amount of wei per claim
+  tokenAddress, // ERC20 token address
+  tokenAmount, // Amount of ERC20 tokens per claim
+  expirationTime = 12345678910, // Link expiration time
+  campaignId = {{campaignId}}, // Campaign id
+})
+`
   },
   buttons: {
     create: 'Create',

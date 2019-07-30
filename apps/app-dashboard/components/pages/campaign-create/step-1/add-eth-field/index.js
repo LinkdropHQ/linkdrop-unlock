@@ -3,6 +3,7 @@ import { actions, translate } from 'decorators'
 import styles from '../styles.module'
 import { Button, Input } from 'components/common'
 import { Icons } from 'linkdrop-ui-kit'
+import { convertFromExponents } from 'linkdrop-commons'
 
 @actions(_ => ({}))
 @translate('pages.campaignCreate')
@@ -28,7 +29,7 @@ class AddEthField extends React.Component {
         suffix='ETH'
         className={styles.ethInput}
         value={ethAmount || 0}
-        onChange={({ value }) => setField({ field: 'ethAmount', value: convertFromExponents(value) })}
+        onChange={({ value }) => setField({ field: 'ethAmount', value: parseFloat(value) })}
       />
       <Icons.CloseButton
         onClick={_ => setField({ field: 'addEth', value: false })}

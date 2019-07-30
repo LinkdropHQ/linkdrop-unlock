@@ -50,7 +50,6 @@ class Linkdrop extends React.Component {
       tokenType,
       id
     } = this.props
-    console.log({ status })
     const checkAddressUrl = `${Number(chainId) === 1 ? config.etherscanMainnet : config.etherscanRinkeby}/${id}`
     return <div className={classNames(styles.container, { [styles.containerDisabled]: status === 'canceled' })}>
       {loading && <Loading withOverlay />}
@@ -70,7 +69,7 @@ class Linkdrop extends React.Component {
       return <div className={styles.title}>{convertFromExponents(multiply(tokenAmount, linksAmount))} {tokenSymbol}</div>
     }
     if (tokenType === 'erc20' && ethAmount) {
-      return <div className={styles.title}>{convertFromExponents(multiply(tokenAmount, linksAmount))} {tokenSymbol} + ${this.t('eth')}</div>
+      return <div className={styles.title}>{convertFromExponents(multiply(tokenAmount, linksAmount))} {tokenSymbol} + {this.t('eth')}</div>
     }
     if (tokenType === 'eth' && ethAmount) {
       return <div className={styles.title}>{convertFromExponents(multiply(ethAmount, linksAmount))} ETH</div>

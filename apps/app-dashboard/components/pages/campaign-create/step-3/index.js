@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { Button, PageHeader, MetamaskPopup } from 'components/common'
 import { Loading } from 'linkdrop-ui-kit'
 import config from 'config-dashboard'
-import { multiply, add } from 'mathjs'
+import { multiply, add, bignumber, subtract } from 'mathjs'
 import EthSummaryBlock from './eth-summary-block'
 
 @actions(({
@@ -94,8 +94,8 @@ class Step3 extends React.Component {
   render () {
     const { loading: stateLoading } = this.state
     const { linksAmount, ethAmount, chainId, currentAddress, loading } = this.props
-    const ethAmountFinal = multiply(add(ethAmount, config.linkPrice), linksAmount)
-    const serviceFee = multiply(config.linkPrice, linksAmount)
+    const ethAmountFinal = multiply(add(bignumber(ethAmount), bignumber(config.linkPrice)), linksAmount)
+    const serviceFee = multiply(bignumber(config.linkPrice), bignumber(linksAmount))
     return <div className={styles.container}>
       {(loading || stateLoading) && <Loading withOverlay />}
       <PageHeader title={this.t('titles.sendEth', { ethAmount: ethAmountFinal })} />
@@ -113,7 +113,7 @@ class Step3 extends React.Component {
           <MetamaskPopup amount={ethAmountFinal} />
         </div>
       </div>
-      <EthSummaryBlock ethTotal={ethAmountFinal} ethToDistribute={ethAmountFinal - serviceFee} serviceFee={serviceFee} text={this.t} />
+      <EthSummaryBlock ethTotal={ethAmountFinal} ethToDistribute={subtract(bignumber(ethAmountFinal), bignumber(serviceFee))} serviceFee={serviceFee} text={this.t} />
       <div className={styles.controls}>
         <Button
           disabled={loading || stateLoading}
