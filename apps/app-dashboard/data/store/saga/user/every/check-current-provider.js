@@ -20,7 +20,6 @@ const generator = function * ({ payload }) {
     const networkName = defineNetworkName({ chainId: networkVersion })
 
     const sdk = initializeSdk({ factoryAddress: factory, chainId: networkName, linkdropMasterAddress: selectedAddress, jsonRpcUrl, apiHost })
-    console.log({ sdk })
     yield put({ type: 'USER.SET_SDK', payload: { sdk } })
     yield put({ type: 'USER.SET_CURRENT_ADDRESS', payload: { currentAddress: selectedAddress } })
     yield put({ type: 'USER.SET_CHAIN_ID', payload: { chainId: networkVersion } })

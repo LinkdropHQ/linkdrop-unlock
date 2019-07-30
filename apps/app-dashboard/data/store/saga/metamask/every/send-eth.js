@@ -17,7 +17,6 @@ const generator = function * ({ payload }) {
     const provider = yield ethers.getDefaultProvider(networkName)
     const gasPrice = yield provider.getGasPrice()
     const oneGwei = ethers.utils.parseUnits('1', 'gwei')
-    console.log({ ethAmount, utils })
     const ethValueWei = utils.parseEther(String(ethAmount))
     const campaignId = yield select(generator.selectors.campaignId)
     const factoryContract = yield new ethers.Contract(factory, LinkdropFactory.abi, provider)
