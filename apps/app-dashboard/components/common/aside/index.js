@@ -66,7 +66,7 @@ class Aside extends React.Component {
       [styles.active]: this.defineCurrentPage() === 'campaigns'
     })}>
       <a onClick={e => {
-        if (!currentAddress) { e.preventDefault() }
+        if (!currentAddress || items.length === 0) { e.preventDefault() }
       }} href='/#/campaigns'>{this.t('campaigns')}</a>
     </div>
   }
