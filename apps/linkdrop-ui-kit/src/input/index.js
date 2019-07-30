@@ -5,7 +5,6 @@ import InputMask from 'react-input-mask'
 import PropTypes from 'prop-types'
 import Icons from '../icons'
 import NumberFormat from 'react-number-format'
-import numeral from 'numeral'
 import { convertFromExponents } from 'linkdrop-commons'
 
 class Input extends React.Component {
