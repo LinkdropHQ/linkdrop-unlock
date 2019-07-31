@@ -1,0 +1,20 @@
+@import "variables";
+
+.title {
+  font-size: 24px;
+}
+
+.container {
+  display: flex;
+  margin: 0 0 40px;
+  align-items: center;
+}
+
+.chain {
+  padding: 10px 15px;
+  color: $darkOrangeColor;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid $darkOrangeColor;
+  margin-left: 20px;
+}

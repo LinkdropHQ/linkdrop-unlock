@@ -1,0 +1,43 @@
+@import "variables";
+
+.container {
+  font-size: 16px;
+  height: 40px;
+  width: auto;
+  min-width: auto;
+  padding: 4px 50px;
+  transition: background-color .3s, border-color .3s;
+  border: 1px solid $whiteColor;
+
+  &:not(.disabled):not(.transparent):hover {
+    background-color: $dbBlue;
+    border-color: $dbBlue;
+  }
+}
+
+.disabled:not(.transparent) {
+  color: $dbGrey;
+  border-color: $dbGrey;
+  cursor: not-allowed;
+  opacity: 1;
+  background: $dbGrey;
+  color: $whiteColor;
+}
+
+.transparent {
+  background: transparent;
+  color: $blackColor;
+  border-color: $blackColor;
+
+  &:hover:not(.disabled) {
+    color: $dbBlue;
+    border-color: $dbBlue;
+
+    svg {
+      path {
+        transition: fill .3s;
+        fill: $dbBlue;
+      }
+    }
+  }
+}
