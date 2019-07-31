@@ -15,7 +15,7 @@ try {
   web3Obj = null
 }
 
-@actions(({ user: { currentAddress, chainId, loading } }) => ({ loading, currentAddress, chainId }))
+@actions(({ user: { currentAddress, chainId, loading, step } }) => ({ loading, currentAddress, chainId, step }))
 @translate('pages.page')
 class Page extends React.Component {
   componentDidMount () {
@@ -42,7 +42,7 @@ class Page extends React.Component {
   }
 
   render () {
-    const { currentAddress } = this.props
+    const { currentAddress, step } = this.props
     const content = this.defineContent({ currentAddress })
     return <div className={styles.container}>
       <div className={styles.easterEgg} onClick={_ => this.emptyLs()} />
@@ -53,7 +53,7 @@ class Page extends React.Component {
           width: '100%'
         }}>
           <div className={styles.main}>
-            <Header />
+            <Header step={step} />
             {content}
           </div>
         </Scrollbars>

@@ -29,9 +29,14 @@ class Header extends React.Component {
   }
 
   defineCurrentPage () {
-    const { location: { pathname } } = this.props
+    const { location: { pathname }, step } = this.props
     if (pathname === '/campaigns') { return text('common.paths.campaigns') }
-    if (pathname === '/campaigns/create') { return text('common.paths.campaignsCreate') }
+    if (pathname === '/campaigns/create') {
+      if (step === 5) {
+        return text('common.paths.campaignCreated')
+      }
+      return text('common.paths.campaignsCreate')
+    }
     if (pathname.indexOf('/campaigns/') > -1) { return text('common.paths.campaignsId') }
     if (pathname === '/') { return text('common.paths.dashboard') }
     return text(`common.paths.notFound`)
