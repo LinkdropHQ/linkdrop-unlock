@@ -1,20 +1,13 @@
 {
-  "name": "linkdrop-monorepo",
+  "name": "root",
   "version": "0.1.0",
   "private": false,
   "main": "index.js",
   "repository": "https://github.com/LinkdropProtocol/linkdrop-monorepo.git",
   "license": "MIT",
   "workspaces": [
-    "apps/app-demo",
-    "apps/app-dashboard",
-    "apps/app-claim",
-    "contracts",
-    "apps/linkdrop-ui-kit",
-    "scripts",
-    "server",
-    "sdk",
-    "apps/linkdrop-commons"
+    "packages/*",
+    "packages/apps/*"
   ],
   "scripts": {
     "test": "mocha --require @babel/polyfill --require @babel/register",

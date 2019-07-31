@@ -4,7 +4,7 @@ import { getLinkdropMasterWallet, newError, getInt, getString } from './utils'
 import { ethers } from 'ethers'
 import fs from 'fs'
 import ora from 'ora'
-import configs from '../../configs'
+import configs from '../../../configs'
 
 ethers.errors.setLogLevel('error')
 

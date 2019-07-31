@@ -1,11 +1,14 @@
 {
-  "name": "contracts",
+  "name": "@linkdrop/contracts",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "test": "mocha --require @babel/polyfill --require @babel/register",
     "compile": "npx waffle .waffle"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "ethereum-waffle": "^2.0.14",

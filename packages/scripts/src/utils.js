@@ -4,7 +4,7 @@ import path from 'path'
 const csvToJson = require('csvtojson')
 const queryString = require('query-string')
 
-const config = require('../../configs').get('scripts')
+const config = require('../../../configs').get('scripts')
 
 export const newError = message => {
   const error = new Error(term.red.bold.str(message))
@@ -75,10 +75,10 @@ export const getUrlParams = async (type, i) => {
   return parsed
 }
 
-export const getLinkNumber = (maxNumber) => {
+export const getLinkNumber = maxNumber => {
   const args = process.argv.slice(2)
   if (args.length < 1) {
-    return Math.floor((Math.random() * maxNumber) + 1)
+    return Math.floor(Math.random() * maxNumber + 1)
   }
   const n = args[0]
   const number = Number(n)
