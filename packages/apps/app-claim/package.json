@@ -4,6 +4,7 @@
   "description": "Front end part for linkdrop app to claim tokens",
   "main": "index.js",
   "author": "",
+  "private": true,
   "license": "ISC",
   "scripts": {
     "dev": "webpack --watch --config webpack.dev.js",

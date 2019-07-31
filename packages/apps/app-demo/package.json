@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Front end part for linkdrop app landing",
   "main": "index.js",
+  "private": true,
   "author": "",
   "license": "ISC",
   "scripts": {
