@@ -26,6 +26,10 @@ class MetamaskInjector extends React.Component {
     }
   }
 
+  componentDidMount () {
+    window.location.href = '/#/'
+  }
+
   render () {
     const { disabled } = this.props
     return <div className={styles.container}>

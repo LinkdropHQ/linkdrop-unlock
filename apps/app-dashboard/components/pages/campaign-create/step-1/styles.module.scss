@@ -6,7 +6,14 @@
   color: $blackColor;
   padding: 40px;
   border-radius: 5px;
+  position: relative;
   width: 100%;
+}
+
+.customTokenEnabled {
+  .chooseTokens {
+    margin-bottom: 20px!important;
+  }
 }
 
 .title {
@@ -30,7 +37,7 @@
 }
 
 .subtitle {
-  margin: 0 0 14px;
+  margin: 0 0 20px;
   font-size: 16px;
 }
 
@@ -48,7 +55,7 @@
 }
 
 .chooseTokens, .tokensAmount, , .tokenAddress {
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .tokensAmountContainer {

@@ -4,6 +4,11 @@
   max-width: none;
   outline: none;
   box-shadow: none;
+  &:hover {
+    & > div {
+      border-color: $dbBlue;
+    }
+  }
 
   > div:first-child, > div:nth-child(2) {
     height: 40px;
@@ -16,5 +21,18 @@
   > [class*="-menu"] {
     bottom: auto;
     top: 100%;
+    border: 1px solid $dbBlue;
+    box-shadow: none;
+
+    > div {
+      > div {
+        background: transparent!important;
+        color: $blackColor!important;
+        &:hover {
+          background: transparent!important;
+          color: $dbBlue!important;
+        }
+      }
+    }
   }
 }
