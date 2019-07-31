@@ -1,6 +1,6 @@
 {
   "name": "@linkdrop/server",
-  "version": "1.0.6",
+  "version": "1.0.1",
   "main": "server.js",
   "author": "Linkdrop <linkdrop.org>",
   "private": true,
