@@ -1,7 +1,7 @@
 import React from 'react'
 import { translate } from 'decorators'
 import styles from './styles.module'
-import { Button } from 'linkdrop-ui-kit'
+import { Button } from '@linkdrop/ui-kit'
 
 @translate('pages.main')
 class LearnMore extends React.Component {

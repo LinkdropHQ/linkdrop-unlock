@@ -1,7 +1,7 @@
 import React from 'react'
 import { translate, actions } from 'decorators'
 import styles from './styles.module'
-import { Input } from 'linkdrop-ui-kit'
+import { Input } from '@linkdrop/ui-kit'
 
 @actions(() => ({}))
 @translate('pages.main')

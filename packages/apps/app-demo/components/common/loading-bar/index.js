@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './styles.module'
-import { Icons } from 'linkdrop-ui-kit'
+import { Icons } from '@linkdrop/ui-kit'
 import { translate } from 'decorators'
 import classNames from 'classnames'
 import variables from 'variables'

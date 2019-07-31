@@ -1,7 +1,7 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from '../styles.module'
-import { convertFromExponents } from 'linkdrop-commons'
+import { convertFromExponents } from '@linkdrop/commons'
 
 @actions(_ => ({}))
 @translate('pages.campaignCreate')

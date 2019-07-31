@@ -11,7 +11,7 @@ class TokenAddressInput extends React.Component {
     if (tokenType === 'eth') { return null }
     return <div className={styles.tokenAddress}>
       <div className={styles.tokensAddressContainer}>
-        <Input extraInfo placeholder={this.t('titles.tokenAddressPlaceholder')} className={styles.inputFullSize} value={tokenAddress || ''} onChange={({ value }) => setField({ field: 'tokenAddress', value })} />
+        <Input placeholder={this.t('titles.tokenAddressPlaceholder')} className={styles.inputFullSize} value={tokenAddress || ''} onChange={({ value }) => setField({ field: 'tokenAddress', value })} />
       </div>
     </div>
   }

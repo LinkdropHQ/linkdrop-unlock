@@ -1,6 +1,6 @@
 import { put, select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
-import LinkdropSDK from 'sdk/src/index'
+import LinkdropSDK from '@linkdrop/sdk/src/index'
 import configs from 'config-demo'
 import LinkdropFactory from 'contracts/LinkdropFactory.json'
 import { factory, claimHost } from 'app.config.js'

@@ -1,5 +1,5 @@
 {
-  "name": "Linkdrop-Dashboard",
+  "name": "@linkdrop/app-dashboard",
   "version": "1.0.8",
   "description": "Front end part for Linkdrop Dashboard",
   "main": "index.js",
@@ -41,8 +41,8 @@
     "i18next": "^8.4.3",
     "immutable": "^4.0.0-rc.12",
     "jest-css-modules": "^2.0.0",
-    "linkdrop-commons": "^1.0.8",
-    "linkdrop-ui-kit": "^1.0.8",
+    "@linkdrop/commons": "^1.0.8",
+    "@linkdrop/ui-kit": "^1.0.8",
     "mathjs": "^6.0.3",
     "moment": "^2.24.0",
     "node-sass": "^4.7.2",
@@ -107,6 +107,6 @@
     "parser": "babel-eslint"
   },
   "babel": {
-    "extends": "../../babel.config.js"
+    "extends": "../../../babel.config.js"
   }
 }

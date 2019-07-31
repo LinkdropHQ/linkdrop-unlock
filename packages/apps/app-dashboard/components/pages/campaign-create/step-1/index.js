@@ -3,8 +3,8 @@ import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import { ethers } from 'ethers'
 import classNames from 'classnames'
-import { Loading } from 'linkdrop-ui-kit'
-import { Select, Input, PageHeader } from 'components/common'
+import { Loading } from '@linkdrop/ui-kit'
+import { Select, Input, PageHeader, PageLoader } from 'components/common'
 import TokenAddressInput from './token-address-input'
 import LinksContent from './links-content'
 import NextButton from './next-button'
@@ -60,7 +60,7 @@ class Step1 extends React.Component {
     const { tokenSymbol, ethAmount, linksAmount, tokenAmount, addEth, tokenAddress, options } = this.state
     const { symbol, loading } = this.props
     const tokenType = this.defineTokenType({ tokenSymbol })
-    return <div className={styles.container}>
+    return <div className={classNames(styles.container, { [styles.customTokenEnabled]: tokenSymbol === 'ERC20' })}>
       {loading && <Loading withOverlay />}
       <PageHeader title={this.t('titles.setupCampaign')} />
       <div className={styles.main}>

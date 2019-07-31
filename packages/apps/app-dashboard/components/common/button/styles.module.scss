@@ -29,9 +29,15 @@
   color: $blackColor;
   border-color: $blackColor;
 
-  &:hover {
-
+  &:hover:not(.disabled) {
     color: $dbBlue;
     border-color: $dbBlue;
+
+    svg {
+      path {
+        transition: fill .3s;
+        fill: $dbBlue;
+      }
+    }
   }
 }

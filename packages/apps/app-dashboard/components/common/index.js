@@ -8,6 +8,7 @@ import Select from './select'
 import ProgressBar from './progress-bar'
 import PageHeader from './page-header'
 import MetamaskPopup from './metamask-popup'
+import PageLoader from './page-loader'
 
 export {
   Aside,
@@ -19,5 +20,6 @@ export {
   Select,
   ProgressBar,
   PageHeader,
-  MetamaskPopup
+  MetamaskPopup,
+  PageLoader
 }

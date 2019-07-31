@@ -29,8 +29,8 @@
     "setup-linkdrop": "yarn compile-contracts && yarn deploy-mastercopy && yarn deploy-factory",
     "setup-tokens": "yarn deploy-erc20 && yarn deploy-erc721",
     "setup-linkdrop-erc721": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links-erc721",
-    "test:demo": "NODE_ENV=test-demo NODE_PATH=./packages/apps/app-demo mocha apps/app-demo/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",
-    "test:claim": "NODE_ENV=test-claim NODE_PATH=./packages/apps/app-claim mocha apps/app-claim/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",
+    "test:demo": "NODE_ENV=test-demo NODE_PATH=./packages/apps/app-demo mocha packages/apps/app-demo/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",
+    "test:claim": "NODE_ENV=test-claim NODE_PATH=./packages/apps/app-claim mocha packages/apps/app-claim/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",
     "build:sdk": "babel packages/sdk/src -d sdk/dist",
     "retry-transaction": "npx babel-node packages/server/tasks/retry_transaction.js",
     "retry-operation": "npx babel-node packages/server/tasks/retry_operation.js"

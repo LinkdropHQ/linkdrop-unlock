@@ -1,6 +1,6 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
-import { Button, Icons, ModalWindow } from 'linkdrop-ui-kit'
+import { Button, Icons, ModalWindow } from '@linkdrop/ui-kit'
 import styles from './styles.module'
 import TokensSend from './tokens-send'
 import LinkShare from './link-share'

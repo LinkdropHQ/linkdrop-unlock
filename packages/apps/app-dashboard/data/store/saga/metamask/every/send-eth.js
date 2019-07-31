@@ -2,7 +2,7 @@
 import { put, select } from 'redux-saga/effects'
 import { ethers, utils } from 'ethers'
 import { factory } from 'app.config.js'
-import { defineNetworkName } from 'linkdrop-commons'
+import { defineNetworkName } from '@linkdrop/commons'
 import LinkdropFactory from 'contracts/LinkdropFactory.json'
 import LinkdropMastercopy from 'contracts/LinkdropMastercopy.json'
 

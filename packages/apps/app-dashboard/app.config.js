@@ -1,7 +1,7 @@
 /* global JSON_RPC_URL, MASTER_COPY, FACTORY, CLAIM_HOST, API_HOST */
 let jsonRpcUrl, masterCopy, factory, claimHost, apiHost
 try {
-  const config = require('../../configs/app.config.json')
+  const config = require('../../../configs/app.config.json')
   jsonRpcUrl = String(config.jsonRpcUrl)
   masterCopy = String(config.masterCopy)
   factory = String(config.factory)

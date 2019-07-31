@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import styles from './styles.module'
-import { Select } from 'linkdrop-ui-kit'
+import { Select } from '@linkdrop/ui-kit'
 
 class SelectNew extends React.Component {
   render () {

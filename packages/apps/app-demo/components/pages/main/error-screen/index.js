@@ -1,7 +1,7 @@
 import React from 'react'
 import { translate } from 'decorators'
 import styles from './styles.module'
-import { Icons, Alert } from 'linkdrop-ui-kit'
+import { Icons, Alert } from '@linkdrop/ui-kit'
 import { LinkBlock } from 'components/pages/common'
 
 @translate('pages.main')

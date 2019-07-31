@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from '../styles.module'
 import classNames from 'classnames'
-import { Slider, RetinaImage } from 'linkdrop-ui-kit'
+import { Slider, RetinaImage } from '@linkdrop/ui-kit'
 import { getImages } from 'helpers'
 
 export default ({ t, walletType, selectWallet, showSlider, platform }) => {

@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './styles.module'
 import classNames from 'classnames'
-import { Button } from 'linkdrop-ui-kit'
+import { Button } from '@linkdrop/ui-kit'
 
 class ButtonNew extends React.Component {
   render () {

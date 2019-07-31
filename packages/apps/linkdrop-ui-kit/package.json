@@ -1,5 +1,5 @@
 {
-  "name": "linkdrop-ui-kit",
+  "name": "@linkdrop/ui-kit",
   "version": "1.0.8",
   "private": true,
   "description": "Kit for UI components",
@@ -91,6 +91,6 @@
     "parser": "babel-eslint"
   },
   "babel": {
-    "extends": "../../babel.config.js"
+    "extends": "../../../babel.config.js"
   }
 }

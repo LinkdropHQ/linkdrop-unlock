@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import styles from './styles.module'
-import { Input } from 'linkdrop-ui-kit'
+import { Input } from '@linkdrop/ui-kit'
 
 class InputNew extends React.Component {
   render () {

@@ -1,10 +1,10 @@
 import React from 'react'
 import { translate, actions } from 'decorators'
 import styles from './styles.module'
-import { Icons, Button, TextControlBlock } from 'linkdrop-ui-kit'
+import { Icons, Button, TextControlBlock } from '@linkdrop/ui-kit'
 import { LinkBlock, QrShare } from 'components/pages/common'
 import classNames from 'classnames'
-import { copyToClipboard } from 'linkdrop-commons'
+import { copyToClipboard } from '@linkdrop/commons'
 
 @actions(({ user: { link, claimed, wallet } }) => ({ link, claimed, wallet }))
 @translate('pages.main')

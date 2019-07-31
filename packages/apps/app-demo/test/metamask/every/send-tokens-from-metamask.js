@@ -5,7 +5,7 @@ import { createMockProvider } from 'ethereum-waffle'
 import { put, select } from 'redux-saga/effects'
 import { ethers, utils } from 'ethers'
 import TokenMock from 'contracts/TokenMock.json'
-import { mocks } from 'linkdrop-commons'
+import { mocks } from '@linkdrop/commons'
 const provider = createMockProvider()
 const web3Obj = new mocks.Web3Mock(provider)
 

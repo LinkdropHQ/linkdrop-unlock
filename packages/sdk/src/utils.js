@@ -60,9 +60,9 @@ export const createLink = async ({
   chainId,
   proxyAddress
 }) => {
-  let { address: linkId, privateKey: linkKey } = generateAccount()
+  const { address: linkId, privateKey: linkKey } = generateAccount()
 
-  let linkdropSignerSignature = await signLink({
+  const linkdropSignerSignature = await signLink({
     linkdropSigner,
     weiAmount,
     tokenAddress,
@@ -93,7 +93,7 @@ export const signLink = async ({
   linkId,
   proxyAddress
 }) => {
-  let messageHash = ethers.utils.solidityKeccak256(
+  const messageHash = ethers.utils.solidityKeccak256(
     ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address', 'address'],
     [
       weiAmount,
@@ -106,8 +106,8 @@ export const signLink = async ({
       proxyAddress
     ]
   )
-  let messageHashToSign = ethers.utils.arrayify(messageHash)
-  let signature = await linkdropSigner.signMessage(messageHashToSign)
+  const messageHashToSign = ethers.utils.arrayify(messageHash)
+  const signature = await linkdropSigner.signMessage(messageHashToSign)
   return signature
 }
 
@@ -122,9 +122,9 @@ export const createLinkERC721 = async ({
   chainId,
   proxyAddress
 }) => {
-  let { address: linkId, privateKey: linkKey } = generateAccount()
+  const { address: linkId, privateKey: linkKey } = generateAccount()
 
-  let linkdropSignerSignature = await signLinkERC721({
+  const linkdropSignerSignature = await signLinkERC721({
     linkdropSigner,
     weiAmount,
     nftAddress,
@@ -154,7 +154,7 @@ export const signLinkERC721 = async ({
   linkId,
   proxyAddress
 }) => {
-  let messageHash = ethers.utils.solidityKeccak256(
+  const messageHash = ethers.utils.solidityKeccak256(
     ['uint', 'address', 'uint', 'uint', 'uint', 'uint', 'address', 'address'],
     [
       weiAmount,
@@ -167,19 +167,19 @@ export const signLinkERC721 = async ({
       proxyAddress
     ]
   )
-  let messageHashToSign = ethers.utils.arrayify(messageHash)
-  let signature = await linkdropSigner.signMessage(messageHashToSign)
+  const messageHashToSign = ethers.utils.arrayify(messageHash)
+  const signature = await linkdropSigner.signMessage(messageHashToSign)
   return signature
 }
 
 export const signReceiverAddress = async (linkKey, receiverAddress) => {
-  let wallet = new ethers.Wallet(linkKey)
-  let messageHash = ethers.utils.solidityKeccak256(
+  const wallet = new ethers.Wallet(linkKey)
+  const messageHash = ethers.utils.solidityKeccak256(
     ['address'],
     [receiverAddress]
   )
-  let messageHashToSign = ethers.utils.arrayify(messageHash)
-  let signature = await wallet.signMessage(messageHashToSign)
+  const messageHashToSign = ethers.utils.arrayify(messageHash)
+  const signature = await wallet.signMessage(messageHashToSign)
   return signature
 }
 

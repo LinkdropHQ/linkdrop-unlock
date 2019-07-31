@@ -3,8 +3,8 @@ import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import classNames from 'classnames'
 import { Button, PageHeader } from 'components/common'
-import { Loading, Icons } from 'linkdrop-ui-kit'
-import { defineNetworkName } from 'linkdrop-commons'
+import { Loading, Icons } from '@linkdrop/ui-kit'
+import { defineNetworkName } from '@linkdrop/commons'
 
 @actions(({ user: { loading, chainId }, campaigns: { items, current } }) => ({ chainId, items, current, loading }))
 @translate('pages.campaignCreate')

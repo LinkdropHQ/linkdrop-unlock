@@ -2,14 +2,19 @@
 
 .container {
   height: 130px;
+  position: relative;
+  z-index: 2;
   width: 100%;
 }
 
 .title {
   font-size: 24px;
-  margin-right: 40px;
   line-height: 1;
   color: $blackColor;
+}
+
+.icon {
+  margin-left: 10px;
 }
 
 .helpDesk, .main, .container {

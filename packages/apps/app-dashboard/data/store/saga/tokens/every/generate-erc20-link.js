@@ -2,7 +2,7 @@ import { put, select } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 import { utils } from 'ethers'
 import configs from 'config-dashboard'
-import { convertFromExponents } from 'linkdrop-commons'
+import { convertFromExponents } from '@linkdrop/commons'
 
 const generator = function * ({ payload }) {
   try {

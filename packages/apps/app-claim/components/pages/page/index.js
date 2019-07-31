@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, Footer } from 'linkdrop-ui-kit'
+import { Header, Footer } from '@linkdrop/ui-kit'
 import styles from './styles.module'
 import { translate } from 'decorators'
 import text from 'texts'

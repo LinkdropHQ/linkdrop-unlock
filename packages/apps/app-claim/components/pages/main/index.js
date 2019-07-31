@@ -1,12 +1,12 @@
 import React from 'react'
-import { Loading } from 'linkdrop-ui-kit'
+import { Loading } from '@linkdrop/ui-kit'
 import { actions, translate, platform } from 'decorators'
 import InitialPage from './initial-page'
 import WalletChoosePage from './wallet-choose-page'
 import ClaimingProcessPage from './claiming-process-page'
 import ErrorPage from './error-page'
 import ClaimingFinishedPage from './claiming-finished-page'
-import { getHashVariables, defineNetworkName, capitalize } from 'linkdrop-commons'
+import { getHashVariables, defineNetworkName, capitalize } from '@linkdrop/commons'
 import { Web3Consumer } from 'web3-react'
 
 @actions(({ user: { errors, step, loading: userLoading, readyToClaim, alreadyClaimed }, tokens: { transactionId }, contract: { loading, decimals, amount, symbol, icon } }) => ({

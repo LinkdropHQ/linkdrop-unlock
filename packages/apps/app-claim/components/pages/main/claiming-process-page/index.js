@@ -1,9 +1,9 @@
 import React from 'react'
-import { Loading } from 'linkdrop-ui-kit'
+import { Loading } from '@linkdrop/ui-kit'
 import { translate, actions } from 'decorators'
 import styles from './styles.module'
 import commonStyles from '../styles.module'
-import { getHashVariables } from 'linkdrop-commons'
+import { getHashVariables } from '@linkdrop/commons'
 import config from 'config-claim'
 import classNames from 'classnames'
 

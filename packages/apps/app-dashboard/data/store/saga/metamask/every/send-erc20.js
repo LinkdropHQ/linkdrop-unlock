@@ -1,10 +1,8 @@
 /* global web3 */
-
 import { put, select } from 'redux-saga/effects'
-import { mocks } from 'linkdrop-commons'
+import { mocks, defineNetworkName } from '@linkdrop/commons'
 import { utils, ethers } from 'ethers'
 import TokenMock from 'contracts/TokenMock.json'
-import { defineNetworkName } from 'linkdrop-commons'
 
 let web3Obj
 try {

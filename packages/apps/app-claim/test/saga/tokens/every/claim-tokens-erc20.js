@@ -2,10 +2,10 @@
 import { expect } from 'chai'
 import generateLinkERC20Generator from 'data/store/saga/tokens/every/claim-tokens-erc20.js'
 import { put } from 'redux-saga/effects'
-import LinkdropSDK from 'sdk/src/index'
+import LinkdropSDK from '@linkdrop/sdk/src/index'
 import { jsonRpcUrl, apiHost, factory } from 'config'
 import { ethers } from 'ethers'
-import { defineNetworkName, mocks } from 'linkdrop-commons'
+import { defineNetworkName, mocks } from '@linkdrop/commons'
 import { createMockProvider } from 'ethereum-waffle'
 import LinkdropFactory from 'contracts/LinkdropFactory.json'
 const provider = createMockProvider()

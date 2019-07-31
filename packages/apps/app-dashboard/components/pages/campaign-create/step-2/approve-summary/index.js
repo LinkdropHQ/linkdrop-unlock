@@ -2,16 +2,16 @@ import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import { multiply, add, bignumber } from 'mathjs'
-import { convertFromExponents } from 'linkdrop-commons'
+import { convertFromExponents } from '@linkdrop/commons'
 
 @actions(_ => ({}))
 @translate('pages.campaignCreate')
 class ApproveSummary extends React.Component {
   render () {
     const { serviceFee, linksAmount, ethAmount, tokenAmount, tokenSymbol, tokenType } = this.props
-    const ethAmountFinal = multiply(add(ethAmount, serviceFee), linksAmount)
-    const onlyServiceFee = multiply(serviceFee, linksAmount)
-    const onlyEthForLinks = multiply(ethAmount, linksAmount)
+    const ethAmountFinal = multiply(add(bignumber(ethAmount), bignumber(serviceFee)), bignumber(linksAmount))
+    const onlyServiceFee = multiply(bignumber(serviceFee), bignumber(linksAmount))
+    const onlyEthForLinks = multiply(bignumber(ethAmount), bignumber(linksAmount))
     if (tokenType === 'erc20') {
       return <div className={styles.container}>
         <div dangerouslySetInnerHTML={{ __html: this.t('titles.approveTokens', { tokenAmount: convertFromExponents(multiply(bignumber(tokenAmount), bignumber(linksAmount))), tokenSymbol }) }} />
