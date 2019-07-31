@@ -2,7 +2,7 @@ import { put, call } from 'redux-saga/effects'
 import { getERC721TokenData } from 'data/api/tokens'
 import { ethers } from 'ethers'
 import NFTMock from 'contracts/NFTMock.json'
-import { defineNetworkName } from 'linkdrop-commons'
+import { defineNetworkName } from '@linkdrop/commons'
 
 const generator = function * ({ payload }) {
   let image = +(new Date())

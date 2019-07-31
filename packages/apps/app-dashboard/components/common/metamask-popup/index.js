@@ -1,7 +1,7 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import { RetinaImage, Icons } from 'linkdrop-ui-kit'
+import { RetinaImage, Icons } from '@linkdrop/ui-kit'
 import { getImages } from 'helpers'
 
 @actions(({ user: { chainId } }) => ({ chainId }))

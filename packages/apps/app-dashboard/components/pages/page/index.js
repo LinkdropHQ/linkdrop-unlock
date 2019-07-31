@@ -5,7 +5,7 @@ import { Aside, Header } from 'components/common'
 import { translate, actions } from 'decorators'
 import { Scrollbars } from 'react-custom-scrollbars'
 import MetamaskInjector from './metamask-injector'
-import { Loading } from 'linkdrop-ui-kit'
+import { Loading } from '@linkdrop/ui-kit'
 import NetworkNotSupported from './network-not-supported'
 let web3Obj
 const ls = window.localStorage

@@ -2,7 +2,7 @@
 import { expect } from 'chai'
 import createWalletGenerator from 'data/store/saga/user/every/create-wallet.js'
 import { put } from 'redux-saga/effects'
-import LinkdropSDK from 'sdk/src/index'
+import LinkdropSDK from '@linkdrop/sdk/src/index'
 import { factory } from 'config'
 import configs from 'config-demo'
 

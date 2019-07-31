@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './styles.module'
 import QRCode from 'qrcode.react'
-import { Button } from 'linkdrop-ui-kit'
+import { Button } from '@linkdrop/ui-kit'
 
 export default ({ onClose, value = '', t }) => <div className={styles.container}>
   <div className={styles.mainTitle}>

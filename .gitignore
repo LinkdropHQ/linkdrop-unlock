@@ -19,13 +19,13 @@ app.config.json
 server.config.json
 scripts.config.json
 
-apps/app-claim/node_modules/
-apps/app-claim/assets/scripts/
+packages/apps/app-claim/node_modules/
+packages/apps/app-claim/assets/scripts/
 
-apps/app-demo/node_modules/
-apps/app-demo/assets/scripts/
+packages/apps/app-demo/node_modules/
+packages/apps/app-demo/assets/scripts/
 
-linkdrop-ui-kit/dist/
+packages/apps/linkdrop-ui-kit/dist/
 
 # emacs
 *#

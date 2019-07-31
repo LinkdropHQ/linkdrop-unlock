@@ -1,7 +1,7 @@
 import { put, select } from 'redux-saga/effects'
 import { ethers, utils } from 'ethers'
 import TokenMock from 'contracts/TokenMock.json'
-import { defineNetworkName } from 'linkdrop-commons'
+import { defineNetworkName } from '@linkdrop/commons'
 
 const generator = function * ({ payload }) {
   try {

@@ -4,7 +4,7 @@ import { jsonRpcUrl, apiHostRinkeby, apiHostMainnet, factory, initialBlockRinkeb
 import { ethers } from 'ethers'
 import Web3 from 'web3'
 import LinkdropMastercopy from 'contracts/LinkdropMastercopy.json'
-import { defineNetworkName } from 'linkdrop-commons'
+import { defineNetworkName } from '@linkdrop/commons'
 
 const web3 = new Web3(Web3.givenProvider)
 

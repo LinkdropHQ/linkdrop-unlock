@@ -1,7 +1,7 @@
 import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import NFTMock from 'contracts/NFTMock.json'
-import { defineNetworkName } from 'linkdrop-commons'
+import { defineNetworkName } from '@linkdrop/commons'
 
 const generator = function * ({ payload }) {
   try {

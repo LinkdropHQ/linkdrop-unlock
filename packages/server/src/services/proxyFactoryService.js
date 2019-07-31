@@ -1,6 +1,6 @@
 import LinkdropFactory from '../../../contracts/build/LinkdropFactory'
 import relayerWalletService from './relayerWalletService'
-import configs from '../../../configs'
+import configs from '../../../../configs'
 import logger from '../utils/logger'
 const config = configs.get('server')
 const ethers = require('ethers')

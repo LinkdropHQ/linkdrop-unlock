@@ -1,5 +1,5 @@
 {
-  "name": "Linkdrop-App-Claim",
+  "name": "@linkdrop/app-claim",
   "version": "1.0.8",
   "description": "Front end part for linkdrop app to claim tokens",
   "main": "index.js",
@@ -42,8 +42,8 @@
     "is-android": "^1.0.1",
     "is-ios": "^1.0.0",
     "jest-css-modules": "^2.0.0",
-    "linkdrop-commons": "^1.0.8",
-    "linkdrop-ui-kit": "^1.0.8",
+    "@linkdrop/commons": "^1.0.8",
+    "@linkdrop/ui-kit": "^1.0.8",
     "node-sass": "^4.7.2",
     "react": "^16.8.6",
     "react-addons-css-transition-group": "^15.5.2",
@@ -101,6 +101,6 @@
     "not ie < 9"
   ],
   "babel": {
-    "extends": "../../babel.config.js"
+    "extends": "../../../babel.config.js"
   }
 }

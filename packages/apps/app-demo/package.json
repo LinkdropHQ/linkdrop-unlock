@@ -1,5 +1,5 @@
 {
-  "name": "Linkdrop-App-Demo",
+  "name": "@linkdrop/app-demo",
   "version": "1.0.8",
   "description": "Front end part for linkdrop app landing",
   "main": "index.js",
@@ -39,8 +39,8 @@
     "i18next": "^8.4.3",
     "immutable": "^3.8.1",
     "jest-css-modules": "^2.0.0",
-    "linkdrop-commons": "^1.0.8",
-    "linkdrop-ui-kit": "^1.0.8",
+    "@linkdrop/commons": "^1.0.8",
+    "@linkdrop/ui-kit": "^1.0.8",
     "node-sass": "^4.7.2",
     "qrcode.react": "^0.9.3",
     "react": "^16.8.6",
@@ -101,6 +101,6 @@
     "parser": "babel-eslint"
   },
   "babel": {
-    "extends": "../../babel.config.js"
+    "extends": "../../../babel.config.js"
   }
 }

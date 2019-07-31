@@ -3,7 +3,7 @@
 import { put, select } from 'redux-saga/effects'
 import { ethers, utils } from 'ethers'
 import TokenMock from 'contracts/TokenMock.json'
-import { mocks } from 'linkdrop-commons'
+import { mocks } from '@linkdrop/commons'
 import NFTMock from 'contracts/NFTMock.json'
 
 let web3Obj

@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './styles.module'
-import { Loading } from 'linkdrop-ui-kit'
+import { Loading } from '@linkdrop/ui-kit'
 import { LinkBlock } from 'components/pages/common'
 
 class LoadingScreen extends React.Component {

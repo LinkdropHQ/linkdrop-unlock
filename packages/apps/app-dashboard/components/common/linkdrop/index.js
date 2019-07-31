@@ -4,10 +4,10 @@ import { Button } from 'components/common'
 import classNames from 'classnames'
 import { translate, actions } from 'decorators'
 import moment from 'moment'
-import { Icons, Loading } from 'linkdrop-ui-kit'
+import { Icons, Loading } from '@linkdrop/ui-kit'
 import config from 'config-dashboard'
 import { multiply, add } from 'mathjs'
-import { convertFromExponents } from 'linkdrop-commons'
+import { convertFromExponents } from '@linkdrop/commons'
 moment.locale('en-gb')
 
 @actions(({

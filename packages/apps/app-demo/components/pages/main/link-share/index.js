@@ -2,10 +2,10 @@
 import React from 'react'
 import { translate, actions } from 'decorators'
 import styles from './styles.module'
-import { Alert, Button, TextControlBlock, Icons, Loading } from 'linkdrop-ui-kit'
+import { Alert, Button, TextControlBlock, Icons, Loading } from '@linkdrop/ui-kit'
 import classNames from 'classnames'
 import { LinkBlock, QrShare } from 'components/pages/common'
-import { copyToClipboard, getHashVariables } from 'linkdrop-commons'
+import { copyToClipboard, getHashVariables } from '@linkdrop/commons'
 import variables from 'variables'
 import { ethers } from 'ethers'
 

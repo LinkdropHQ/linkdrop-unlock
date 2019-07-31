@@ -1,13 +1,13 @@
 import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
-import { defineNetworkName } from 'linkdrop-commons'
+import { defineNetworkName } from '@linkdrop/commons'
 import NFTMock from 'contracts/NFTMock.json'
 
 const generator = function * ({ payload }) {
   try {
     yield put({ type: 'USER.SET_ERRORS', payload: { errors: [] } })
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    let { account, chainId, tokenAddress, tokenId } = payload
+    const { account, chainId, tokenAddress, tokenId } = payload
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const nftContract = yield new ethers.Contract(tokenAddress, NFTMock.abi, provider)

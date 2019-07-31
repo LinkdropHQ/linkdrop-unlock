@@ -50,12 +50,12 @@ module.exports = {
     modules: [
       path.resolve('./'),
       path.resolve('./node_modules'),
-      path.resolve('../../node_modules')
+      path.resolve('../../../node_modules')
     ],
     alias: {
-      wallets: path.resolve(__dirname, '../../configs/wallets.config'),
-      config: path.resolve(__dirname, '../../configs/app.config'),
-      'config-claim': path.resolve(__dirname, '../../configs/claim.config'),
+      wallets: path.resolve(__dirname, '../../../configs/wallets.config'),
+      config: path.resolve(__dirname, '../../../configs/app.config'),
+      'config-claim': path.resolve(__dirname, '../../../configs/claim.config'),
       contracts: path.resolve(__dirname, '../../contracts/build'),
       variables: path.resolve(__dirname, '../linkdrop-commons/variables/index.module.scss')
     }

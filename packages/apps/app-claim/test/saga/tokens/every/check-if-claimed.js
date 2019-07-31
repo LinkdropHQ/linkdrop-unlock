@@ -4,7 +4,7 @@ import checkIfClaimedGenerator from 'data/store/saga/tokens/every/check-if-claim
 import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { createMockProvider } from 'ethereum-waffle'
-import { defineNetworkName } from 'linkdrop-commons'
+import { defineNetworkName } from '@linkdrop/commons'
 
 const linkKey = '0x3e42a6647091a256103b6ad3d310b3887b3fe5d7f5e3d71df2f03985ca5ea071'
 const provider = createMockProvider()

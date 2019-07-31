@@ -1,7 +1,7 @@
 import React from 'react'
 import { translate } from 'decorators'
 import styles from './styles.module'
-import { RetinaImage } from 'linkdrop-ui-kit'
+import { RetinaImage } from '@linkdrop/ui-kit'
 import { getImages } from 'helpers'
 
 @translate('pages.main')

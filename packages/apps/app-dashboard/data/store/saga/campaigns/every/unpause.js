@@ -1,7 +1,7 @@
 /* global web3 */
 import { put, select } from 'redux-saga/effects'
 import LinkdropMastercopy from 'contracts/LinkdropMastercopy.json'
-import { defineNetworkName } from 'linkdrop-commons'
+import { defineNetworkName } from '@linkdrop/commons'
 import { ethers } from 'ethers'
 const ls = (typeof window === 'undefined' ? {} : window).localStorage
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
-import { Loading } from 'linkdrop-ui-kit'
+import { Loading } from '@linkdrop/ui-kit'
 import { PageHeader, PageLoader } from 'components/common'
 import EthAmountData from './eth-amount-data'
 import LinkContents from './link-contents'

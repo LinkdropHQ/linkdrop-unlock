@@ -3,7 +3,7 @@ import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import { withRouter } from 'react-router'
 import text from 'texts'
-import { Icons } from 'linkdrop-ui-kit'
+import { Icons } from '@linkdrop/ui-kit'
 import ProgressBar from './progress-bar'
 
 @actions(({ user: { step } }) => ({ step }))

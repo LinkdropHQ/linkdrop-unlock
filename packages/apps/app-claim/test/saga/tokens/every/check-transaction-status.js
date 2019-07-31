@@ -4,7 +4,7 @@ import checkTransactionStatusGenerator from 'data/store/saga/tokens/every/check-
 import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import { createMockProvider } from 'ethereum-waffle'
-import { defineNetworkName } from 'linkdrop-commons'
+import { defineNetworkName } from '@linkdrop/commons'
 
 const provider = createMockProvider()
 describe('data/store/saga/tokens/every/check-transaction-status.js', () => {

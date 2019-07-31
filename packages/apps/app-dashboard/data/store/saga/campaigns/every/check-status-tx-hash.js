@@ -1,6 +1,6 @@
 import { put, select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
-import { defineNetworkName } from 'linkdrop-commons'
+import { defineNetworkName } from '@linkdrop/commons'
 const ls = (typeof window === 'undefined' ? {} : window).localStorage
 
 const generator = function * ({ payload }) {

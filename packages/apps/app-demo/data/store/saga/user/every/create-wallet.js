@@ -1,6 +1,6 @@
 import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
-import LinkdropSDK from 'sdk/src/index'
+import LinkdropSDK from '@linkdrop/sdk/src/index'
 import configs from 'config-demo'
 import { factory } from 'app.config.js'
 const localStorage = (typeof window === 'undefined' ? {} : window).localStorage

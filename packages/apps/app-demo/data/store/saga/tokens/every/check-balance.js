@@ -1,6 +1,6 @@
 import { put, select, call } from 'redux-saga/effects'
 import { ethers, utils } from 'ethers'
-import { defineNetworkName } from 'linkdrop-commons'
+import { defineNetworkName } from '@linkdrop/commons'
 import { getTokensOpensea, getTokensTrustWallet } from 'data/api/tokens'
 import TokenMock from 'contracts/TokenMock.json'
 
@@ -16,7 +16,7 @@ const generator = function * ({ payload }) {
     // check of ethereum balance
     const balanceFormatted = utils.formatEther(balance)
     // check of erc-721 balance
-    let { assets: erc721Balance = [] } = yield call(getTokensOpensea, { wallet: account, chainId })
+    const { assets: erc721Balance = [] } = yield call(getTokensOpensea, { wallet: account, chainId })
     let erc20Balance = null
     // check of erc-20 (only on mainnet) balance
     if (Number(chainId) === 1 && !tokenAddress) {
