@@ -12,7 +12,6 @@ const generator = function * ({ payload }) {
     const weiAmount = utils.parseEther(convertFromExponents(balance))
     const privateKey = yield select(generator.selectors.privateKey)
     const ethersContractZeroAddress = ethers.constants.AddressZero
-    console.log('here1', sdk)
     const campaignId = yield select(generator.selectors.campaignId)
     const link = yield sdk.generateLink({
       signingKeyOrWallet: privateKey,
@@ -22,8 +21,6 @@ const generator = function * ({ payload }) {
       expirationTime: configs.expirationTime,
       campaignId
     })
-
-    console.log('here2')
 
     yield delay(10)
     const links = yield select(generator.selectors.links)
