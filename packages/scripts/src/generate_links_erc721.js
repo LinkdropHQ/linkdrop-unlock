@@ -1,5 +1,5 @@
 import NFTMock from '../../contracts/build/NFTMock'
-import LinkdropSDK from '../../sdk/src/index'
+import LinkdropSDK from '@linkdrop/sdk'
 
 import ora from 'ora'
 import { terminal as term } from 'terminal-kit'

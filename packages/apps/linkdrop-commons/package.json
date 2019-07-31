@@ -6,5 +6,8 @@
   "license": "MIT",
   "babel": {
     "extends": "../../babel.config.js"
+  },
+  "dependencies": {
+    "@linkdrop/sdk": "^1.0.7"
   }
 }

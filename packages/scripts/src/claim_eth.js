@@ -1,4 +1,4 @@
-import LinkdropSDK from '../../sdk/src/index'
+import LinkdropSDK from '@linkdrop/sdk'
 
 import ora from 'ora'
 
