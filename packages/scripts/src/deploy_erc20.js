@@ -4,7 +4,7 @@ import { getLinkdropMasterWallet, newError } from './utils'
 import { ethers } from 'ethers'
 import fs from 'fs'
 import ora from 'ora'
-import configs from '../../configs'
+import configs from '../../../configs'
 
 const config = configs.get('scripts')
 const configPath = configs.getPath('scripts')
