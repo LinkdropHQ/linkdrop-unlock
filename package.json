@@ -44,5 +44,8 @@
   },
   "standard": {
     "parser": "babel-eslint"
+  },
+  "devDependencies": {
+    "lerna": "^3.16.4"
   }
 }
