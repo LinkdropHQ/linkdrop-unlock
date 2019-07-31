@@ -7,7 +7,7 @@ SDK for computing proxy address, generating and claiming linkdrops
 ## Installation
 
 ```bash
-yarn add @linkdrop/sdk@https://github.com/LinkdropProtocol/linkdrop-monorepo/tree/dev/sdk
+yarn add @linkdrop/sdk
 ```
 
 ## Usage
