@@ -1,5 +1,5 @@
 import LinkdropSDK from '../../../sdk/src/index'
-import configs from '../../../configs'
+import configs from '../../../../configs'
 const config = configs.get('server')
 const { FACTORY_ADDRESS, CHAIN } = config
 

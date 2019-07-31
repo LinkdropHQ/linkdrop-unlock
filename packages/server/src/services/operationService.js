@@ -1,7 +1,7 @@
 import logger from '../utils/logger'
 import Operation from '../models/Operation'
 import relayerWalletService from './relayerWalletService'
-import configs from '../../../configs'
+import configs from '../../../../configs'
 const ethers = require('ethers')
 const config = configs.get('server')
 const {
