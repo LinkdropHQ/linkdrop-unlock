@@ -1,7 +1,7 @@
 {
   "name": "root",
   "version": "0.1.0",
-  "private": false,
+  "private": true,
   "main": "index.js",
   "repository": "https://github.com/LinkdropProtocol/linkdrop-monorepo.git",
   "license": "MIT",
@@ -10,8 +10,8 @@
     "packages/apps/*"
   ],
   "scripts": {
-    "test": "mocha --require @babel/polyfill --require @babel/register",
-    "compile-contracts": "cd packages/contracts && npx waffle .waffle && cd ..",
+    "test": "cd packages/contracts/ && mocha --require @babel/polyfill --require @babel/register",
+    "compile-contracts": "cd packages/contracts && npx waffle .waffle",
     "deploy-registry": "npx babel-node packages/scripts/src/deploy_registry.js",
     "deploy-mastercopy": "npx babel-node packages/scripts/src/deploy_mastercopy.js",
     "deploy-factory": "npx babel-node packages/scripts/src/deploy_factory.js",
@@ -29,9 +29,9 @@
     "setup-linkdrop": "yarn compile-contracts && yarn deploy-mastercopy && yarn deploy-factory",
     "setup-tokens": "yarn deploy-erc20 && yarn deploy-erc721",
     "setup-linkdrop-erc721": "yarn deploy-mastercopy && yarn deploy-factory && yarn generate-links-erc721",
-    "test:demo": "NODE_ENV=test-demo NODE_PATH=./apps/app-demo mocha apps/app-demo/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",
-    "test:claim": "NODE_ENV=test-claim NODE_PATH=./apps/app-claim mocha apps/app-claim/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",
-    "build:sdk": "babel sdk/src -d sdk/dist",
+    "test:demo": "NODE_ENV=test-demo NODE_PATH=./packages/apps/app-demo mocha apps/app-demo/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",
+    "test:claim": "NODE_ENV=test-claim NODE_PATH=./packages/apps/app-claim mocha apps/app-claim/test/**/*.js  --compilers js:@babel/register --require ignore-styles --recursive",
+    "build:sdk": "babel packages/sdk/src -d sdk/dist",
     "retry-transaction": "npx babel-node packages/server/tasks/retry_transaction.js",
     "retry-operation": "npx babel-node packages/server/tasks/retry_operation.js"
   },
