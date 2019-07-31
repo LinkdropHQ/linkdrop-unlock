@@ -3,6 +3,7 @@
   "version": "1.0.6",
   "main": "server.js",
   "author": "Linkdrop <linkdrop.org>",
+  "private": true,
   "license": "MIT",
   "scripts": {
     "start": "npx babel-node server.js",
@@ -32,5 +33,6 @@
     "mongoose": "^5.5.6",
     "util": "^0.12.1",
     "winston": "^3.2.1"
-  }
+  },
+  "gitHead": "414d0e9ecca3fab72be5820c3046207b0b5415b2"
 }

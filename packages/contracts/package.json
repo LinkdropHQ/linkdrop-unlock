@@ -26,5 +26,6 @@
   },
   "standard": {
     "parser": "babel-eslint"
-  }
+  },
+  "gitHead": "414d0e9ecca3fab72be5820c3046207b0b5415b2"
 }
