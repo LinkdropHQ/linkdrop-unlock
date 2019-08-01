@@ -1,10 +1,12 @@
+/* global Image */
 import React from 'react'
+import { ethers, utils } from 'ethers'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import classNames from 'classnames'
 import { Button, PageHeader } from 'components/common'
 import { Loading, Icons } from '@linkdrop/ui-kit'
-import { defineNetworkName } from '@linkdrop/commons'
+import { defineNetworkName, convertFromExponents } from '@linkdrop/commons'
 import { getImages } from 'helpers'
 
 @actions(({ user: { loading, chainId }, campaigns: { items, current } }) => ({ chainId, items, current, loading }))
@@ -16,6 +18,12 @@ class Step5 extends React.Component {
     const links = (currentCampaign || {}).links
     const images = getImages({ src: 'claim-page' })
     if (!currentCampaign) { return null }
+    const { currentAddress, campaignId, privateKey, tokenAmount, ethAmount, tokenAddress, tokenDecimals } = currentCampaign
+    const weiAmount = utils.parseEther(convertFromExponents(ethAmount || 0))
+    const tokenAmountFormatted = utils.parseUnits(
+      String(tokenAmount || 0),
+      tokenDecimals || 0
+    )
     return <div className={styles.container}>
       <PageHeader title={this.t('titles.getTheLinks')} />
       {loading && <Loading withOverlay />}
@@ -32,9 +40,13 @@ class Step5 extends React.Component {
           <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.codeDetails')}</p>
           <xmp className={styles.codeBlock}>
             {this.t('texts.codeBlock', {
-              chain: defineNetworkName({ chainId: 1 }),
-              masterAddress: currentCampaign.currentAddress,
-              campaignId: currentCampaign.campaignId
+              chain: defineNetworkName({ chainId }),
+              masterAddress: currentAddress,
+              campaignId: campaignId,
+              linkdropSigner: privateKey,
+              weiAmount: ethAmount ? weiAmount : 0,
+              tokenAddress: tokenAddress || ethers.constants.AddressZero,
+              tokenAmount: tokenAmount ? tokenAmountFormatted : 0
             })}
           </xmp>
         </div>
@@ -43,7 +55,6 @@ class Step5 extends React.Component {
           <p className={classNames(styles.text, styles.textGrey, styles.textMargin40)}>{this.t('titles.manual')}</p>
           <div className={styles.buttonsContainer}>
             <Button onClick={_ => links && this.actions().campaigns.getCSV({ links, id: campaignToCheck || current })} className={styles.button}>{this.t('buttons.downloadCsv')}</Button>
-            <Button transparent className={classNames(styles.button, styles.buttonWithImg)}><span>{this.t('buttons.qr')}</span><Icons.ExternalLink /></Button>
           </div>
           <p onClick={e => {
             if (e.target.tagName === 'A') {
@@ -59,9 +70,9 @@ class Step5 extends React.Component {
       </div>
       <div>
         <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.contractParams')}</p>
-        <p className={classNames(styles.text, styles.textMargin10, styles.ellipsis)} dangerouslySetInnerHTML={{ __html: this.t('titles.masterAddress', { address: currentCampaign.currentAddress }) }} />
-        <p className={classNames(styles.text, styles.textMargin10, styles.ellipsis)} dangerouslySetInnerHTML={{ __html: this.t('titles.signingKey', { signingKey: currentCampaign.privateKey }) }} />
-        <p className={classNames(styles.text, styles.ellipsis)} dangerouslySetInnerHTML={{ __html: this.t('titles.campaignId', { campaignId: currentCampaign.campaignId }) }} />
+        <p className={classNames(styles.text, styles.textMargin10, styles.ellipsis)} dangerouslySetInnerHTML={{ __html: this.t('titles.masterAddress', { address: currentAddress }) }} />
+        <p className={classNames(styles.text, styles.textMargin10, styles.ellipsis)} dangerouslySetInnerHTML={{ __html: this.t('titles.signingKey', { signingKey: privateKey }) }} />
+        <p className={classNames(styles.text, styles.ellipsis)} dangerouslySetInnerHTML={{ __html: this.t('titles.campaignId', { campaignId }) }} />
       </div>
     </div>
   }

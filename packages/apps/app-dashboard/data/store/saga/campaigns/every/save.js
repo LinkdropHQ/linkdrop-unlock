@@ -9,6 +9,8 @@ const generator = function * ({ payload }) {
     const chainId = yield select(generator.selectors.chainId)
     const currentAddress = yield select(generator.selectors.currentAddress)
     const privateKey = yield select(generator.selectors.privateKey)
+    const tokenAddress = yield select(generator.selectors.tokenAddress)
+    const tokenDecimals = yield select(generator.selectors.tokenDecimals)
     const {
       tokenAmount,
       tokenSymbol,
@@ -34,7 +36,9 @@ const generator = function * ({ payload }) {
       campaignId: id,
       proxyAddress,
       currentAddress,
-      privateKey
+      privateKey,
+      tokenAddress,
+      tokenDecimals
     }
     const campaigns = yield select(generator.selectors.campaigns)
     const campaignsUpdated = campaigns.concat(newCampaign)
@@ -55,6 +59,8 @@ generator.selectors = {
   privateKey: ({ user: { privateKey } }) => privateKey,
   campaigns: ({ campaigns: { items: campaigns } }) => campaigns,
   chainId: ({ user: { chainId } }) => chainId,
+  tokenAddress: ({ tokens: { address } }) => address,
+  tokenDecimals: ({ tokens: { decimals } }) => decimals,
   campaignData: ({
     campaigns: {
       tokenAmount,

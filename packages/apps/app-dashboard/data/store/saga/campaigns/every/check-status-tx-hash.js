@@ -7,7 +7,7 @@ const generator = function * ({ payload }) {
   try {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const campaigns = yield select(generator.selectors.campaigns)
-    const { txHash, chainId, newStatus, id: proxyAddress } = payload
+    const { txHash, chainId, id: proxyAddress } = payload
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const receipt = yield provider.getTransactionReceipt(txHash)

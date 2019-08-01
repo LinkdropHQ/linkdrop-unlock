@@ -1,5 +1,5 @@
 export default {
   titles: {
-    'rinkeby': 'Rinkeby Testnet'
+    rinkeby: 'Rinkeby Testnet'
   }
 }
