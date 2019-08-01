@@ -1,0 +1,56 @@
+@import "variables";
+
+.container {
+  height: 130px;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.title {
+  font-size: 24px;
+  line-height: 1;
+  color: $blackColor;
+}
+
+.icon {
+  margin-left: 10px;
+}
+
+.helpDesk, .main, .container {
+  display: flex;
+  align-items: center;
+}
+
+.main {
+  flex: 1 0 auto;
+}
+
+.helpDesk {
+  font-size: 20px;
+  path {
+    transition: fill .3s;
+  }
+
+  svg {
+    margin-left: 15px;
+  }
+
+  a {
+    color: $blackColor;
+    transition: color .3s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      color: $dbBlue;
+      svg {
+        path {
+          fill: $dbBlue;
+        }   
+      }
+    }
+  }
+  
+}

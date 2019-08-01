@@ -1,0 +1,39 @@
+{
+  "name": "@linkdrop/server",
+  "version": "1.0.8",
+  "main": "server.js",
+  "author": "Linkdrop <linkdrop.org>",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "npx babel-node server.js",
+    "dev": "nodemon --exec npx babel-node server.js",
+    "deploy-rinkeby": "cd deploy && npx shipit rinkeby deploy",
+    "deploy-ropsten": "cd deploy && npx shipit ropsten deploy",
+    "deploy-mainnet": "cd deploy && npx shipit mainnet deploy"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/node": "^7.2.2",
+    "@babel/polyfill": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/register": "^7.4.0",
+    "nodemon": "^1.18.11",
+    "shipit-cli": "^4.2.0",
+    "shipit-deploy": "^4.1.4"
+  },
+  "babel": {
+    "extends": "../babel.config.js"
+  },
+  "dependencies": {
+    "@linkdrop/sdk": "^1.0.8",
+    "cli-table": "^0.3.1",
+    "cors": "^2.8.5",
+    "express-async-handler": "^1.1.4",
+    "mongoose": "^5.5.6",
+    "util": "^0.12.1",
+    "winston": "^3.2.1"
+  },
+  "gitHead": "414d0e9ecca3fab72be5820c3046207b0b5415b2"
+}

@@ -1,0 +1,40 @@
+@import "variables";
+
+.container {
+  border: 1px solid $greyStrokeColor;
+  background: $whiteColor;
+  color: $blackColor;
+  padding: 40px;
+  border-radius: 5px;
+  margin-right: 50px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.transparent {
+  background: transparent;
+  border: 1px solid $blackColor;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.description, .extraContent {
+  font-size: 16px;
+}
+
+.description {
+  margin-bottom: 10px;
+}
+
+.extraContent {
+  margin-bottom: 30px;
+}
+
+.button {
+  max-width: 158px;
+  padding: 4px 36px;
+}

@@ -1,0 +1,78 @@
+@import "variables";
+
+.container {
+  border: 1px solid $greyStrokeColor;
+  background: $whiteColor;
+  color: $blackColor;
+  padding: 40px;
+  border-radius: 5px;
+  margin-right: 50px;
+  max-width: 400px;
+  width: 100%;
+  position: relative;
+  margin-bottom: 50px;
+
+  &.containerDisabled {
+    .title, .link, .date, .statusField, .links {
+      color: $textGreyColor;
+    }
+  }
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 40px;
+  margin-top: 0;
+}
+
+.link, .date, .statusField {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.status {
+  color: $blackColor;
+  text-decoration: underline;
+  cursor: pointer;
+  &.statusActive, &.statusPaused, &.statusCanceled {
+    text-decoration: none;
+    cursor: default;
+  }
+  &.statusActive {
+    color: $dbBlue;
+  }
+  &.statusPaused {
+    color: $orangeColor;
+  }
+}
+
+.date{
+  span {
+    color: $dbGrey;
+  }
+}
+
+.links {
+  margin-bottom: 60px;
+}
+
+.buttons {
+  display: flex;
+}
+
+.button {
+  padding: 4px 30px;
+
+  &:first-child {
+    margin-right: 20px;
+  }
+}
+
+.buttonWithIcon {
+  padding: 4px 10px 4px 20px;
+
+  svg {
+    margin: 0px 0px 0px 15px;
+  }
+}
+

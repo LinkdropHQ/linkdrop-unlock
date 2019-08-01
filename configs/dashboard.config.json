@@ -1,0 +1,12 @@
+{
+  "balanceCheckInterval": 3000,
+  "nextStepTimeout": 1000,
+  "openseaMainnet": "https://api.opensea.io",
+  "openseaRinkeby": "https://rinkeby-api.opensea.io",
+  "trustWallet": "https://api.trustwalletapp.com",
+  "expirationTime": 1900000000000,
+  "initcode": "0x6352c7420d6000526103ff60206004601c335afa6040516060f3",
+  "linkPrice": 0.002,
+  "etherscanMainnet": "https://etherscan.io/address/",
+  "etherscanRinkeby": "https://rinkeby.etherscan.io/address/"
+}
