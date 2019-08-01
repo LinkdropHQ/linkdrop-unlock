@@ -60,31 +60,14 @@ class Campaign {
     })
   }
 
-  pause ({ id, chainId, account }) {
+  changeStatus ({ id, chainId, account, action }) {
     this.actions.dispatch({
-      type: '*CAMPAIGNS.PAUSE',
+      type: '*CAMPAIGNS.CHANGE_STATUS',
       payload: {
         id,
         chainId,
-        account
-      }
-    })
-  }
-
-  unpause ({ id, chainId, account }) {
-    this.actions.dispatch({
-      type: '*CAMPAIGNS.UNPAUSE',
-      payload: {
-        id, chainId, account
-      }
-    })
-  }
-
-  withdraw ({ id, chainId, account }) {
-    this.actions.dispatch({
-      type: '*CAMPAIGNS.WITHDRAW',
-      payload: {
-        id, chainId, account
+        account,
+        action
       }
     })
   }
