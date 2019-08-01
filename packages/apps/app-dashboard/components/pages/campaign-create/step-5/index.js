@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import { Button, PageHeader } from 'components/common'
 import { Loading, Icons } from '@linkdrop/ui-kit'
 import { defineNetworkName } from '@linkdrop/commons'
+import { getImages } from 'helpers'
 
 @actions(({ user: { loading, chainId }, campaigns: { items, current } }) => ({ chainId, items, current, loading }))
 @translate('pages.campaignCreate')
@@ -13,6 +14,7 @@ class Step5 extends React.Component {
     const { items, current, campaignToCheck, loading, chainId } = this.props
     const currentCampaign = items.find(item => item.id === (campaignToCheck || current))
     const links = (currentCampaign || {}).links
+    const images = getImages({ src: 'claim-page' })
     if (!currentCampaign) { return null }
     return <div className={styles.container}>
       <PageHeader title={this.t('titles.getTheLinks')} />
@@ -43,12 +45,16 @@ class Step5 extends React.Component {
             <Button onClick={_ => links && this.actions().campaigns.getCSV({ links, id: campaignToCheck || current })} className={styles.button}>{this.t('buttons.downloadCsv')}</Button>
             <Button transparent className={classNames(styles.button, styles.buttonWithImg)}><span>{this.t('buttons.qr')}</span><Icons.ExternalLink /></Button>
           </div>
-          <p className={classNames(styles.text, styles.textMargin60)} dangerouslySetInnerHTML={{ __html: this.t('titles.howToClaimPreview') }} />
-          <p className={classNames(styles.text, styles.textBold)}>{this.t('titles.faq')}</p>
+          <p onClick={e => {
+            if (e.target.tagName === 'A') {
+              e.preventDefault()
+              const image = new Image()
+              image.src = e.target.getAttribute('href')
+              const w = window.open('')
+              w.document.write(image.outerHTML)
+            }
+          }} className={classNames(styles.text, styles.textMargin60)} dangerouslySetInnerHTML={{ __html: this.t('titles.howToClaimPreview', { href: images.image }) }} />
           <p className={classNames(styles.text, styles.textMargin20)} dangerouslySetInnerHTML={{ __html: this.t('titles.visitHelpCenter', { href: 'https://www.notion.so/Help-Center-9cf549af5f614e1caee6a660a93c489b' }) }} />
-          <p className={classNames(styles.text, styles.textMargin20)} dangerouslySetInnerHTML={{ __html: this.t('titles.customizations') }} />
-          <p className={classNames(styles.text, styles.textMargin20)} dangerouslySetInnerHTML={{ __html: this.t('titles.pauseOrStop') }} />
-          <p className={classNames(styles.text, styles.textMargin20)} dangerouslySetInnerHTML={{ __html: this.t('titles.analytics') }} />
         </div>
       </div>
       <div>

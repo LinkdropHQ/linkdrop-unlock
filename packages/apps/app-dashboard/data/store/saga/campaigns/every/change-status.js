@@ -7,14 +7,14 @@ const ls = (typeof window === 'undefined' ? {} : window).localStorage
 
 const generator = function * ({ payload }) {
   try {
-    const { id: proxyAddress, chainId, account } = payload
+    const { id: proxyAddress, chainId, account, action } = payload
     const campaigns = yield select(generator.selectors.campaigns)
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const proxyContract = yield new ethers.Contract(proxyAddress, LinkdropMastercopy.abi, provider)
     const gasPrice = yield provider.getGasPrice()
     const oneGwei = ethers.utils.parseUnits('1', 'gwei')
-    const data = yield proxyContract.interface.functions.pause.encode([])
+    const data = yield proxyContract.interface.functions[action].encode([])
     const promise = new Promise((resolve, reject) => {
       web3.eth.sendTransaction({ to: proxyAddress, from: account, gasPrice: gasPrice.add(oneGwei), data }, (err, txHash) => {
         if (err) { console.error(err); reject(err) }
@@ -28,7 +28,7 @@ const generator = function * ({ payload }) {
       const campaignsUpdated = campaigns.map(campaign => {
         if (campaign.id === proxyAddress) {
           campaign.loading = true
-          campaign.awaitingStatus = 'paused'
+          campaign.awaitingStatus = awaitingStatus[action]
           campaign.awaitingTxHash = txHash
         }
         return campaign
@@ -46,4 +46,10 @@ const generator = function * ({ payload }) {
 export default generator
 generator.selectors = {
   campaigns: ({ campaigns: { items: campaigns } }) => campaigns
+}
+
+const awaitingStatus = {
+  pause: 'paused',
+  withdraw: 'canceled',
+  unpause: 'active'
 }
