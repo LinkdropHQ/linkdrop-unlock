@@ -24,13 +24,13 @@ contract LinkdropCommon is ILinkdropCommon, LinkdropStorage {
     public
     returns (bool)
     {
-        require(!_initialized, "Already initialized");
+        require(!initialized, "Already initialized");
         owner = _owner;
         linkdropMaster = _linkdropMaster;
         isLinkdropSigner[linkdropMaster] = true;
         version = _version;
         chainId = _chainId;
-        _initialized = true;
+        initialized = true;
         return true;
     }
 
