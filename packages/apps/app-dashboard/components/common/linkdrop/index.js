@@ -88,7 +88,7 @@ class Linkdrop extends React.Component {
             {this.t(`statusType.active`)}
           </span> / <span
             className={styles.status}
-            onClick={_ => this.actions().campaigns.pause({ id, chainId, account: currentAddress })}
+            onClick={_ => this.actions().campaigns.changeStatus({ action: 'pause', id, chainId, account: currentAddress })}
           >
             {this.t(`statusType.pause`)}
           </span>
@@ -102,12 +102,12 @@ class Linkdrop extends React.Component {
             {this.t(`statusType.paused`)}
           </span> / <span
             className={styles.status}
-            onClick={_ => this.actions().campaigns.unpause({ id, chainId, account: currentAddress })}
+            onClick={_ => this.actions().campaigns.changeStatus({ action: 'unpause', id, chainId, account: currentAddress })}
           >
             {this.t(`statusType.activate`)}
           </span> / <span
             className={styles.status}
-            onClick={_ => this.actions().campaigns.withdraw({ id, chainId, account: currentAddress })}
+            onClick={_ => this.actions().campaigns.changeStatus({ action: 'withdraw', id, chainId, account: currentAddress })}
           >
             {this.t(`statusType.withdraw`)}
           </span>
