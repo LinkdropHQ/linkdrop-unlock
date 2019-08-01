@@ -56,12 +56,9 @@ export default {
     signingKey: 'Signing Key: <span>{{signingKey}}</span>',
     downloadFile: 'Download CSV file',
     manual: 'Manual distribution',
-    howToClaimPreview: 'How claim page will look like<br>for receivers — <a href={{url}}>Preview<a/>',
+    howToClaimPreview: 'How claim page will look like<br>for receivers — <a target="_blank" href={{href}}>Preview<a/>',
     faq: 'FAQ',
-    visitHelpCenter: 'Visit <a href={{href}}>Help Center<a>',
-    customizations: '<a href={{href}}>Customization of claim page</a>',
-    pauseOrStop: '<a href={{href}}>Pause / Stop campaign</a>',
-    analytics: '<a href={{href}}>Analytics of campaign</a>',
+    visitHelpCenter: 'Have a question — visit <a target="_blank" href={{href}}>Help Center</a><br>or send us a message via Intercom',
     campaignId: 'Campaign ID: <span>{{campaignId}}</span>'
   },
   texts: {
