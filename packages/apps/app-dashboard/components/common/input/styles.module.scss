@@ -1,0 +1,13 @@
+@import "variables";
+
+.container {
+  height: 40px;
+  line-height: 40px;
+  font-size: 16px;
+  padding: 0 15px;
+  border-color: $greyStrokeColor;
+}
+
+.centered {
+  text-align: center;
+}
