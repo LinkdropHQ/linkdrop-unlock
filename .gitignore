@@ -10,7 +10,7 @@ node_modules/
 .DS_Store
 other/
 build/
-scripts/output
+packages/scripts/output
 
 # Configs
 .env
