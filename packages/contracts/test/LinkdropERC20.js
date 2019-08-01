@@ -301,7 +301,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
     await proxy.pause({ gasLimit: 500000 })
 
     await expect(
-      factory.claim(
+      factory.checkClaimParams(
         weiAmount,
         tokenAddress,
         tokenAmount,
@@ -311,10 +311,9 @@ describe('ETH/ERC20 linkdrop tests', () => {
         campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
-        receiverSignature,
-        { gasLimit: 80000 }
+        receiverSignature
       )
-    ).to.be.reverted
+    ).to.be.revertedWith('Paused')
   })
 
   it('should fail to claim with insufficient allowance', async () => {

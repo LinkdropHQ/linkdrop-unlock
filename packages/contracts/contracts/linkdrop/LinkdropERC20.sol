@@ -99,6 +99,9 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     public view
     returns (bool)
     {
+        // Make sure contract is not paused
+        require(!paused(), "Paused");
+
         // If tokens are being claimed
         if (_tokenAmount > 0) {
             require(_tokenAddress != address(0), "Invalid token address");

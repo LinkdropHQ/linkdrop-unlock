@@ -315,7 +315,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
     await proxy.pause({ gasLimit: 500000 })
 
     await expect(
-      factory.claimERC721(
+      factory.checkClaimParamsERC721(
         weiAmount,
         nftAddress,
         tokenId,
@@ -325,10 +325,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
         campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
-        receiverSignature,
-        { gasLimit: 500000 }
+        receiverSignature
       )
-    ).to.be.reverted
+    ).to.be.revertedWith('Paused')
   })
 
   it('should fail to claim nft not owned by proxy', async () => {

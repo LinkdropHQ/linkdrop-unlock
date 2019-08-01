@@ -98,6 +98,9 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
     public view
     returns (bool)
     {
+        // Make sure contract is not paused
+        require(!paused(), "Paused");
+
         // Make sure nft address is not equal to address(0)
         require(_nftAddress != address(0), "Invalid nft address");
 
