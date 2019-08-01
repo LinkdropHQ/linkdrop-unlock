@@ -16,8 +16,8 @@ This is a work in progress. Expect breaking changes. The code has not been audit
 
 ## Building, running & testing locally 
 
-To build and run locally, first follow the instructions in `scripts` - https://github.com/LinkdropHQ/linkdrop-monorepo/tree/master/scripts  
-After server is running, you can follow instructions in `apps` to serve front-end apps (demo and claiming apps) - https://github.com/LinkdropHQ/linkdrop-monorepo/tree/master/apps
+To build and run locally, first follow the instructions in `scripts` - https://github.com/LinkdropHQ/linkdrop-monorepo/tree/master/packages/scripts  
+After server is running, you can follow instructions in `apps` to serve front-end apps (demo and claiming apps) - https://github.com/LinkdropHQ/linkdrop-monorepo/tree/master/packages/apps
 
 ## Dashboard
 You can generate new campaign at https://dashboard.linkdrop.io. The Dashboard supports Mainnet and Rinkeby Test networks right now. Let us know if you're intested in supporting other networks by sendding an email to hi@linkdrop.io
