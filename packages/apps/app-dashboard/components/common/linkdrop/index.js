@@ -6,7 +6,7 @@ import { translate, actions } from 'decorators'
 import moment from 'moment'
 import { Icons, Loading } from '@linkdrop/ui-kit'
 import config from 'config-dashboard'
-import { multiply, add } from 'mathjs'
+import { multiply, bignumber } from 'mathjs'
 import { convertFromExponents } from '@linkdrop/commons'
 moment.locale('en-gb')
 
@@ -26,7 +26,7 @@ class Linkdrop extends React.Component {
   }
 
   componentWillReceiveProps ({ status, awaitingStatus, awaitingTxHash, id, chainId }) {
-    const { status: prevStatus, awaitingStatus: prevAwaitingStatus } = this.props
+    const { awaitingStatus: prevAwaitingStatus } = this.props
     if (awaitingStatus != null && awaitingStatus !== prevAwaitingStatus && status !== awaitingStatus) {
       this.intervalCheck = window.setInterval(_ => this.actions().campaigns.checkStatusTxHash({ txHash: awaitingTxHash, chainId, id, newStatus: awaitingStatus }), config.balanceCheckInterval)
     }
@@ -66,13 +66,13 @@ class Linkdrop extends React.Component {
 
   renderTitle ({ tokenAmount, tokenSymbol, ethAmount, tokenType, linksAmount }) {
     if (tokenType === 'erc20' && !ethAmount) {
-      return <div className={styles.title}>{convertFromExponents(multiply(tokenAmount, linksAmount))} {tokenSymbol}</div>
+      return <div className={styles.title}>{convertFromExponents(multiply(bignumber(tokenAmount), bignumber(linksAmount)))} {tokenSymbol}</div>
     }
     if (tokenType === 'erc20' && ethAmount) {
-      return <div className={styles.title}>{convertFromExponents(multiply(tokenAmount, linksAmount))} {tokenSymbol} + {this.t('eth')}</div>
+      return <div className={styles.title}>{convertFromExponents(multiply(bignumber(tokenAmount), bignumber(linksAmount)))} {tokenSymbol} + {this.t('eth')}</div>
     }
     if (tokenType === 'eth' && ethAmount) {
-      return <div className={styles.title}>{convertFromExponents(multiply(ethAmount, linksAmount))} ETH</div>
+      return <div className={styles.title}>{convertFromExponents(multiply(bignumber(ethAmount), bignumber(linksAmount)))} ETH</div>
     }
     return null
   }

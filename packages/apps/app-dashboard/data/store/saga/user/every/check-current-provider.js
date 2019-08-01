@@ -17,12 +17,19 @@ const generator = function * ({ payload }) {
     if (!selectedAddress || !networkVersion) {
       return yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
     }
+    window.addressChangeInterval && window.clearInterval(window.addressChangeInterval)
     const networkName = defineNetworkName({ chainId: networkVersion })
     const sdk = initializeSdk({ claimHost, factoryAddress: factory, chainId: networkName, linkdropMasterAddress: selectedAddress, jsonRpcUrl, apiHost })
     yield put({ type: 'USER.SET_SDK', payload: { sdk } })
     yield put({ type: 'USER.SET_CURRENT_ADDRESS', payload: { currentAddress: selectedAddress } })
     yield put({ type: 'USER.SET_CHAIN_ID', payload: { chainId: networkVersion } })
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
+    window.addressChangeInterval = window.setInterval(() => {
+      const currentMetamaskAddress = web3.eth.accounts[0]
+      if (selectedAddress !== currentMetamaskAddress) {
+        window.location.reload()
+      }
+    }, 2000)
   } catch (e) {
     console.error(e)
   }
