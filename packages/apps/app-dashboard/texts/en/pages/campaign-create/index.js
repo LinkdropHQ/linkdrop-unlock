@@ -50,7 +50,7 @@ export default {
     nodeJsSupport: 'Right now Linkdrop SDK supports only Node.js.',
     otherPlatforms: 'We\'re working on adding other languages and platforms.',
     contactUs: ' Contact us for more details.',
-    codeDetails: 'See the code and deatails',
+    codeDetails: 'See the code and details',
     contractParams: 'Linkdrop Contract parameters',
     masterAddress: 'Master Address: <span>{{address}}</span>',
     signingKey: 'Signing Key: <span>{{signingKey}}</span>',
@@ -80,26 +80,18 @@ export default {
     _15: 'You wil send {{eth}} ETH to start generate links',
     _16: '<span>{{eth}} ETH</span> — Ether to distribute',
     _17: '<span>{{eth}} ETH</span> — Service fee',
-    codeBlock: `// import library
+    codeBlock: `// installation: yarn add @linkdrop/sdk
+// import library
 const LinkdropSDK = require('@linkdrop/sdk')
+
 // OR
 import LinkdropSDK from '@linkdrop/sdk'
 
 // initialization
 const linkdropSDK = LinkdropSDK({
-  linkdropMasterAddress: {{masterAddress}},
-  // optional params:
-  // chain = <CHAIN>, // 'mainnet' by default
-  // chainId = <CHAIN_ID>, // getChainId(chain) by default
-  // jsonRpcUrl = <JSON_RPC_URL>, // 'https://{{chain}}.infura.io' by default,
-  // apiHost = <API_HOST>, // 'https://{{chain}}.linkdrop.io' by default
-  // claimHost = <CLAIM_HOST>, // 'https://claim.linkdrop.io' by default
-  // factory = <LINKDROP_FACTORY_ADDRESS>, // '0x01e7F4C72182Eb4421AFB1Ec99cee9Ef5B83EE18' by default
+  linkdropMasterAddress: '{{masterAddress}}',
+  chain = '{{chain}}'
 })
-
-// get proxy address
-const campaignId = {{campaignId}}
-const proxyAddress = linkdropSDK.getProxyAddress(campaignId)
 
 // generate links for ETH and ERC20
 const {
@@ -108,12 +100,12 @@ const {
   linkKey,
   linkdropSignerSignature
 } = await linkdropSDK.generateLink({
-  signingKeyOrWallet, // Signing private key or ethers.js Wallet instance
-  weiAmount, // Amount of wei per claim
-  tokenAddress, // ERC20 token address
-  tokenAmount, // Amount of ERC20 tokens per claim
-  expirationTime = 12345678910, // Link expiration time
-  campaignId = {{campaignId}}, // Campaign id
+  signingKeyOrWallet: '{{linkdropSigner}}', // Signing private key or ethers.js Wallet instance
+  weiAmount: {{weiAmount}}, // Amount of wei per claim
+  tokenAddress: '{{tokenAddress}}', // ERC20 token address
+  tokenAmount: {{tokenAmount}}, // Amount of ERC20 tokens per claim
+  expirationTime: 12345678910, // Link expiration time
+  campaignId: {{campaignId}} // Campaign id
 })
 `
   },

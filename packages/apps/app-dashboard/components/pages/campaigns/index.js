@@ -2,7 +2,6 @@ import React from 'react'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import { Linkdrop, ActionBlock } from 'components/common'
-import config from 'config-dashboard'
 
 @actions(({ user: { chainId, txHash, transactionStatus }, metamask: { status: metamaskStatus }, campaigns: { items } }) => ({ items, transactionStatus, chainId, txHash, metamaskStatus }))
 @translate('pages.campaigns')
