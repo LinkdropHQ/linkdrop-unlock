@@ -7,18 +7,18 @@ import { getImages } from 'helpers'
 import classNames from 'classnames'
 import { withRouter } from 'react-router'
 
-@actions(({ user: { currentAddress }, campaigns: { items } }) => ({ currentAddress, items }))
+@actions(({ user: { currentAddress, chainId }, campaigns: { items } }) => ({ currentAddress, items, chainId }))
 @translate('common.aside')
 class Aside extends React.Component {
   render () {
-    const { currentAddress, items } = this.props
+    const { currentAddress, items, chainId } = this.props
     return <aside className={styles.container}>
       <div className={styles.mainBlock}>
         <div className={styles.logo}>
           <a href='/#/'><RetinaImage alwaysHighRes width={118} {...getImages({ src: 'hole' })} /></a>
         </div>
         {this.renderDashboardButton()}
-        {this.renderCampaignsButton({ currentAddress, items })}
+        {this.renderCampaignsButton({ currentAddress, items, chainId })}
         {this.renderCreateButton({ currentAddress })}
       </div>
       <div className={styles.footer}>
@@ -60,13 +60,14 @@ class Aside extends React.Component {
     </div>
   }
 
-  renderCampaignsButton ({ currentAddress, items }) {
+  renderCampaignsButton ({ currentAddress, items, chainId }) {
+    const itemsForCurrentChainId = items.filter(item => item.chainId === chainId && item.currentAddress === currentAddress)
     return <div className={classNames(styles.menuItem, {
-      [styles.disabled]: !currentAddress || !items || items.length === 0,
+      [styles.disabled]: !currentAddress || !itemsForCurrentChainId || itemsForCurrentChainId.length === 0,
       [styles.active]: this.defineCurrentPage() === 'campaigns'
     })}>
       <a onClick={e => {
-        if (!currentAddress || items.length === 0) { e.preventDefault() }
+        if (!currentAddress || itemsForCurrentChainId.length === 0) { e.preventDefault() }
       }} href='/#/campaigns'>{this.t('campaigns')}</a>
     </div>
   }

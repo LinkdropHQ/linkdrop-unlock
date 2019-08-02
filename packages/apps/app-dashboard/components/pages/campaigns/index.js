@@ -3,12 +3,12 @@ import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import { Linkdrop, ActionBlock } from 'components/common'
 
-@actions(({ user: { chainId, txHash, transactionStatus }, metamask: { status: metamaskStatus }, campaigns: { items } }) => ({ items, transactionStatus, chainId, txHash, metamaskStatus }))
+@actions(({ user: { chainId, txHash, transactionStatus, currentAddress }, metamask: { status: metamaskStatus }, campaigns: { items } }) => ({ items, transactionStatus, chainId, txHash, metamaskStatus, currentAddress }))
 @translate('pages.campaigns')
 class Campaigns extends React.Component {
   render () {
-    const { items, chainId } = this.props
-    const itemsForCurrentChainId = items.filter(item => item.chainId === chainId)
+    const { items, chainId, currentAddress } = this.props
+    const itemsForCurrentChainId = items.filter(item => item.chainId === chainId && item.currentAddress === currentAddress)
     return <div className={styles.container}>
       {itemsForCurrentChainId.map(linkdrop => <Linkdrop
         key={linkdrop.id}

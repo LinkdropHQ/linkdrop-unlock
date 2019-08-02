@@ -61,9 +61,9 @@ class Input extends React.Component {
 
   renderNumberInput () {
     const { value } = this.state
-    const { className, suffix, disabled, centered, format } = this.props
+    const { className, suffix, disabled, centered, format, decimalSeparator } = this.props
     return <div className={styles.wrapper}>
-      <NumberFormat decimalScale={8} format={format} disabled={disabled} renderText={value => !disabled && <div>{value}</div>} value={value || 0} suffix={` ${suffix || ''}`} className={this.defineClassNames({ className, disabled, centered })} onChange={e => this.changeValue(e)} />
+      <NumberFormat decimalSeparator={decimalSeparator} decimalScale={8} format={format} disabled={disabled} renderText={value => !disabled && <div>{value}</div>} value={value || 0} suffix={` ${suffix || ''}`} className={this.defineClassNames({ className, disabled, centered })} onChange={e => this.changeValue(e)} />
     </div>
   }
 }

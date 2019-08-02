@@ -88,7 +88,7 @@ class Step1 extends React.Component {
           <div className={styles.linksAmount}>
             <h3 className={styles.subtitle}>{this.t('titles.totalLinks')}</h3>
             <div className={styles.linksAmountContainer}>
-              <Input numberInput className={styles.input} value={linksAmount} onChange={({ value }) => this.setField({ field: 'linksAmount', value: parseFloat(value) })} />
+              <Input numberInput decimalSeparator={false} className={styles.input} value={linksAmount} onChange={({ value }) => this.setField({ field: 'linksAmount', value: parseFloat(value) })} />
             </div>
           </div>
         </div>
