@@ -50,6 +50,7 @@ class Linkdrop extends React.Component {
       tokenType,
       id
     } = this.props
+
     const checkAddressUrl = `${Number(chainId) === 1 ? config.etherscanMainnet : config.etherscanRinkeby}/${id}`
     return <div className={classNames(styles.container, { [styles.containerDisabled]: status === 'canceled' })}>
       {loading && <Loading withOverlay />}
