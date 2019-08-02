@@ -30,22 +30,26 @@ app.use('/api/v1/', buildRouter('routes'))
 
 // Error handling middleware
 app.use((error, req, res, next) => {
-    logger.error(error.message)
-    if (error.isOperational) {
-	res.status(error.statusCode)      
-	res.send({ success: false, error: error.message, errors: ["SERVER_ERROR_OCCURED"] })
-    } else if (error.reason) {
-	// error for contract or ethers.js
-	logger.json(error)
-        const errors = error.reason
-	res.status(400)
-	res.send({ success: false, errors })
-    } else {
-	// don't send error details to the scary external world
-	logger.error(error.stack)
-	const errors = ["SERVER_ERROR_OCCURED"]
-	res.status(500)
-	res.send({ success: false, errors })
-    }
+  logger.error(error.message)
+  if (error.isOperational) {
+    res.status(error.statusCode)
+    res.send({
+      success: false,
+      error: error.message,
+      errors: ['SERVER_ERROR_OCCURED']
+    })
+  } else if (error.reason) {
+    // error for contract or ethers.js
+    logger.json(error)
+    const errors = error.reason
+    res.status(400)
+    res.send({ success: false, errors })
+  } else {
+    // don't send error details to the scary external world
+    logger.error(error.stack)
+    const errors = ['SERVER_ERROR_OCCURED']
+    res.status(500)
+    res.send({ success: false, errors })
+  }
   return null
 })

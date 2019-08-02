@@ -26,7 +26,7 @@ function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee(_ref) {
-    var jsonRpcUrl, apiHost, weiAmount, tokenAddress, tokenAmount, expirationTime, version, chainId, linkKey, linkdropMasterAddress, linkdropSignerSignature, receiverAddress, factoryAddress, campaignId, provider, receiverSignature, linkId, claimParams, response, _response$data, error, success, txHash;
+    var jsonRpcUrl, apiHost, weiAmount, tokenAddress, tokenAmount, expirationTime, version, chainId, linkKey, linkdropMasterAddress, linkdropSignerSignature, receiverAddress, factoryAddress, campaignId, provider, receiverSignature, linkId, claimParams, response, _response$data, error, errors, success, txHash;
 
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
@@ -176,9 +176,10 @@ function () {
 
           case 37:
             response = _context.sent;
-            _response$data = response.data, error = _response$data.error, success = _response$data.success, txHash = _response$data.txHash;
+            _response$data = response.data, error = _response$data.error, errors = _response$data.errors, success = _response$data.success, txHash = _response$data.txHash;
             return _context.abrupt("return", {
               error: error,
+              errors: errors,
               success: success,
               txHash: txHash
             });
@@ -204,7 +205,7 @@ function () {
   var _ref4 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee2(_ref3) {
-    var jsonRpcUrl, apiHost, weiAmount, nftAddress, tokenId, expirationTime, version, chainId, linkKey, linkdropMasterAddress, linkdropSignerSignature, receiverAddress, factoryAddress, campaignId, provider, receiverSignature, linkId, claimParams, response, _response$data2, error, success, txHash;
+    var jsonRpcUrl, apiHost, weiAmount, nftAddress, tokenId, expirationTime, version, chainId, linkKey, linkdropMasterAddress, linkdropSignerSignature, receiverAddress, factoryAddress, campaignId, provider, receiverSignature, linkId, claimParams, response, _response$data2, error, errors, success, txHash;
 
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) {
@@ -354,9 +355,10 @@ function () {
 
           case 37:
             response = _context2.sent;
-            _response$data2 = response.data, error = _response$data2.error, success = _response$data2.success, txHash = _response$data2.txHash;
+            _response$data2 = response.data, error = _response$data2.error, errors = _response$data2.errors, success = _response$data2.success, txHash = _response$data2.txHash;
             return _context2.abrupt("return", {
               error: error,
+              errors: errors,
               success: success,
               txHash: txHash
             });

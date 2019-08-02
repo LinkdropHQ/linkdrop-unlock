@@ -106,8 +106,8 @@ export const claim = async ({
     claimParams
   )
 
-  const { error, success, txHash } = response.data
-  return { error, success, txHash }
+  const { error, errors, success, txHash } = response.data
+  return { error, errors, success, txHash }
 }
 
 export const claimERC721 = async ({
@@ -216,6 +216,6 @@ export const claimERC721 = async ({
     claimParams
   )
 
-  const { error, success, txHash } = response.data
-  return { error, success, txHash }
+  const { error, errors, success, txHash } = response.data
+  return { error, errors, success, txHash }
 }
