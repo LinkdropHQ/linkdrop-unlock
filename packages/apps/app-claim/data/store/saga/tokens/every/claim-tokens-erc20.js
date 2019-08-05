@@ -1,4 +1,5 @@
 import { put, select } from 'redux-saga/effects'
+import { ERRORS } from './data'
 
 const generator = function * ({ payload }) {
   try {
@@ -39,15 +40,3 @@ export default generator
 generator.selectors = {
   sdk: ({ user: { sdk } }) => sdk
 }
-const ERRORS = [
-  'LINKDROP_PROXY_CONTRACT_PAUSED',
-  'INVALID_TOKEN_ADDRESS',
-  'LINK_CLAIMED',
-  'LINK_CANCELED',
-  'INSUFFICIENT_ETHERS',
-  'INSUFFICIENT_TOKENS',
-  'INSUFFICIENT_ALLOWANCE',
-  'INVALID_LINKDROP_SIGNER_SIGNATURE',
-  'INVALID_RECEIVER_SIGNATURE',
-  'SERVER_ERROR_OCCURED'
-]
