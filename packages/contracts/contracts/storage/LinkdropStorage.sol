@@ -24,7 +24,7 @@ contract LinkdropStorage {
     mapping (address => bool) internal _canceled;
 
     // Indicates whether the initializer function has been called or not
-    bool internal _initialized;
+    bool public initialized;
 
     // Indicates whether the contract is paused or not
     bool internal _paused;

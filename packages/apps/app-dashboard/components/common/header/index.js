@@ -10,7 +10,7 @@ import ProgressBar from './progress-bar'
 @translate('common.header')
 class Header extends React.Component {
   render () {
-    const { step, disableProgressBar, children } = this.props
+    const { step } = this.props
     const currentPage = this.defineCurrentPage()
     return <header className={styles.container}>
       <div className={styles.main}>

@@ -24,8 +24,7 @@ packages/apps/app-claim/assets/scripts/
 
 packages/apps/app-demo/node_modules/
 packages/apps/app-demo/assets/scripts/
-
-packages/apps/linkdrop-ui-kit/dist/
+packages/apps/linkdrop-ui-kit/dist/bundle.js
 
 # emacs
 *#

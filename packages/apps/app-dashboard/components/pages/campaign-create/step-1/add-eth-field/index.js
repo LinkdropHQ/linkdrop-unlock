@@ -3,7 +3,6 @@ import { actions, translate } from 'decorators'
 import styles from '../styles.module'
 import { Button, Input } from 'components/common'
 import { Icons } from '@linkdrop/ui-kit'
-import { convertFromExponents } from '@linkdrop/commons'
 
 @actions(_ => ({}))
 @translate('pages.campaignCreate')

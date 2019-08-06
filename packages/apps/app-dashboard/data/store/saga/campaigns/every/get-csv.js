@@ -3,7 +3,7 @@ import { convertArrayToCSV } from 'convert-array-to-csv'
 const generator = function * ({ payload }) {
   try {
     const { links, id } = payload
-    const linksData = links.map((link, idx) => ({ link, id: idx + 1 }))
+    const linksData = links.map(link => ({ link }))
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const csv = convertArrayToCSV(linksData)
     const hiddenElement = document.createElement('a')
