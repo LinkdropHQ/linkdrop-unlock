@@ -4,7 +4,7 @@ import styles from './styles.module'
 import { ethers } from 'ethers'
 import classNames from 'classnames'
 import { Loading } from '@linkdrop/ui-kit'
-import { Select, Input, PageHeader, PageLoader } from 'components/common'
+import { Select, Input, PageHeader } from 'components/common'
 import TokenAddressInput from './token-address-input'
 import LinksContent from './links-content'
 import NextButton from './next-button'
@@ -88,7 +88,7 @@ class Step1 extends React.Component {
           <div className={styles.linksAmount}>
             <h3 className={styles.subtitle}>{this.t('titles.totalLinks')}</h3>
             <div className={styles.linksAmountContainer}>
-              <Input numberInput className={styles.input} value={linksAmount} onChange={({ value }) => this.setField({ field: 'linksAmount', value: parseFloat(value) })} />
+              <Input numberInput decimalSeparator={false} className={styles.input} value={linksAmount} onChange={({ value }) => this.setField({ field: 'linksAmount', value: parseFloat(value) })} />
             </div>
           </div>
         </div>

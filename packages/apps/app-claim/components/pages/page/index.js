@@ -13,7 +13,7 @@ class Page extends React.Component {
       </div>
       <Footer
         content={text('components.footer.copyright')}
-        href='https://medium.com/linkdrop-protocol/introducing-linkdrop-protocol-f612ae181e31'
+        href='https://linkdrop.io'
       />
     </div>
   }

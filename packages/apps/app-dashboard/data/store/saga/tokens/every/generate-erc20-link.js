@@ -23,7 +23,7 @@ const generator = function * ({ payload }) {
     const link = yield sdk.generateLink({
       signingKeyOrWallet: privateKey,
       weiAmount: weiAmount || 0,
-      tokenAddress: tokenAddress,
+      tokenAddress,
       tokenAmount: String(erc20BalanceFormatted),
       expirationTime: configs.expirationTime,
       campaignId

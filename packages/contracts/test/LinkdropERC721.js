@@ -140,7 +140,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
 
     await expect(
       proxyInstance.removeSigner(receiver.address, { gasLimit: 500000 })
-    ).to.be.revertedWith('Only linkdrop master')
+    ).to.be.revertedWith('ONLY_LINKDROP_MASTER')
     isSigner = await proxyInstance.isLinkdropSigner(receiver.address)
     expect(isSigner).to.eq(true)
   })
@@ -195,7 +195,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverAddress,
         receiverSignature
       )
-    ).to.be.revertedWith('Insufficient allowance')
+    ).to.be.revertedWith('INSUFFICIENT_ALLOWANCE')
   })
 
   it('creates new link key and verifies its signature', async () => {
@@ -259,7 +259,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
     )
     // Pausing
     await expect(proxyInstance.pause({ gasLimit: 500000 })).to.be.revertedWith(
-      'Only linkdrop master'
+      'ONLY_LINKDROP_MASTER'
     )
   })
 
@@ -315,7 +315,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
     await proxy.pause({ gasLimit: 500000 })
 
     await expect(
-      factory.claimERC721(
+      factory.checkClaimParamsERC721(
         weiAmount,
         nftAddress,
         tokenId,
@@ -325,10 +325,9 @@ describe('ETH/ERC721 linkdrop tests', () => {
         campaignId,
         link.linkdropSignerSignature,
         receiverAddress,
-        receiverSignature,
-        { gasLimit: 500000 }
+        receiverSignature
       )
-    ).to.be.reverted
+    ).to.be.revertedWith('LINKDROP_PROXY_CONTRACT_PAUSED')
   })
 
   it('should fail to claim nft not owned by proxy', async () => {
@@ -393,7 +392,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.revertedWith('Insufficient allowance')
+    ).to.be.revertedWith('INSUFFICIENT_ALLOWANCE')
   })
 
   it('should fail to claim nft by expired link', async () => {
@@ -427,7 +426,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.revertedWith('Expired link')
+    ).to.be.revertedWith('LINK_EXPIRED')
   })
 
   it('should fail to claim nft with invalid contract version link', async () => {
@@ -459,7 +458,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.revertedWith('Invalid linkdrop signer signature')
+    ).to.be.revertedWith('INVALID_LINKDROP_SIGNER_SIGNATURE')
   })
 
   it('should fail to claim nft with invalid chaind id', async () => {
@@ -491,7 +490,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.revertedWith('Invalid linkdrop signer signature')
+    ).to.be.revertedWith('INVALID_LINKDROP_SIGNER_SIGNATURE')
   })
 
   it('should fail to claim nft which does not belong to linkdrop master', async () => {
@@ -524,7 +523,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.revertedWith('Unavailable token')
+    ).to.be.revertedWith('LINKDROP_MASTER_DOES_NOT_OWN_TOKEN_ID')
   })
 
   it('should succesfully claim nft with valid claim params', async () => {
@@ -584,7 +583,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.revertedWith('Claimed link')
+    ).to.be.revertedWith('LINK_CLAIMED')
   })
 
   it('should fail to claim nft with fake linkdropMaster signature', async () => {
@@ -611,7 +610,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.revertedWith('Invalid linkdrop signer signature')
+    ).to.be.revertedWith('INVALID_LINKDROP_SIGNER_SIGNATURE')
   })
 
   it('should fail to claim nft with fake receiver signature', async () => {
@@ -655,7 +654,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.revertedWith('Invalid receiver signature')
+    ).to.be.revertedWith('INVALID_RECEIVER_SIGNATURE')
   })
 
   it('should fail to claim nft by canceled link', async () => {
@@ -688,7 +687,7 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.revertedWith('Canceled link')
+    ).to.be.revertedWith('LINK_CANCELED')
   })
 
   it('should be able to send ethers to proxy', async () => {
@@ -815,6 +814,6 @@ describe('ETH/ERC721 linkdrop tests', () => {
         receiverSignature,
         { gasLimit: 500000 }
       )
-    ).to.be.revertedWith('Not deployed')
+    ).to.be.revertedWith('LINKDROP_PROXY_CONTRACT_NOT_DEPLOYED')
   })
 })
