@@ -4,7 +4,7 @@ import { Button } from 'components/common'
 import styles from './styles.module'
 import Web3Connect from 'web3connect'
 
-@actions(_ => ({}))
+@actions(({ campaigns: { items } }) => ({ items }))
 @translate('pages.main')
 class MetamaskInjector extends React.Component {
   constructor (props) {
@@ -24,10 +24,6 @@ class MetamaskInjector extends React.Component {
     if (provider.selectedAddress) {
       this.actions().user.checkCurrentProvider()
     }
-  }
-
-  componentDidMount () {
-    window.location.href = '/#/'
   }
 
   render () {

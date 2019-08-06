@@ -16,6 +16,42 @@ export default {
     copyLink: 'Copy link'
   },
   errors: {
+    LINKDROP_PROXY_CONTRACT_PAUSED: {
+      title: 'Campaign is paused',
+      description: ''
+    },
+    INVALID_TOKEN_ADDRESS: {
+      title: 'Invalid token address',
+      description: ''
+    },
+    LINK_CLAIMED: {
+      title: 'Link claimed',
+      description: ''
+    },
+    INSUFFICIENT_ETHERS: {
+      title: 'Insufficient ethers',
+      description: ''
+    },
+    INSUFFICIENT_TOKENS: {
+      title: 'Insufficient tokens',
+      description: ''
+    },
+    INSUFFICIENT_ALLOWANCE: {
+      title: 'Insufficient allowance',
+      description: ''
+    },
+    INVALID_LINKDROP_SIGNER_SIGNATURE: {
+      title: 'Invalid Linkdrop signer signature',
+      description: ''
+    },
+    INVALID_RECEIVER_SIGNATURE: {
+      title: 'Invalid receiver signature',
+      description: ''
+    },
+    SERVER_ERROR_OCCURED: {
+      title: 'Server error occured',
+      description: ''
+    },
     LINK_EXPIRED: {
       title: 'Expired',
       description: 'Sorry, link is expired'
@@ -27,6 +63,10 @@ export default {
     LINK_FAILED: {
       title: 'Failed',
       description: 'Oops, something went wrong'
+    },
+    LINK_INVALID: {
+      title: 'Invalid Link',
+      description: 'Please check the format of claim link'
     },
     NETWORK_NOT_SUPPORTED: {
       title: 'Network is not supported',
