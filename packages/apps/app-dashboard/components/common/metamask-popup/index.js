@@ -38,6 +38,9 @@ class MetamaskPopup extends React.Component {
         width={245}
         {...getImages({ src: 'popup-approve' })}
       />
+      <div className={styles.arrow}>
+        <Icons.Cursor />
+      </div>
     </div>
   }
 }

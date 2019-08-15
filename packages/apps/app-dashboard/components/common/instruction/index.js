@@ -13,16 +13,16 @@ class Instruction extends React.Component {
     const { ethAmount, tokenAmount, tokenSymbol, linksAmount } = this.props
     if (tokenAmount) {
       return <div className={styles.container}>
-        <p className={styles.text} dangerouslySetInnerHTML={{ __html: this.t('texts._19') }} />
+        <p className={styles.text} dangerouslySetInnerHTML={{ __html: this.t('texts._1') }} />
         <MetamaskPopup />
-        <p className={styles.textExtra} dangerouslySetInnerHTML={{ __html: this.t('texts._20') }} />
+        <p className={styles.textExtra} dangerouslySetInnerHTML={{ __html: this.t('texts._2') }} />
       </div>
     }
 
     return <div className={styles.container}>
-      <p className={styles.text} dangerouslySetInnerHTML={{ __html: this.t('texts._21') }} />
+      <p className={styles.text} dangerouslySetInnerHTML={{ __html: this.t('texts._3') }} />
       <MetamaskPopup amount={convertFromExponents(multiply(add(bignumber(ethAmount), config.linkPrice), bignumber(linksAmount)))} />
-      <p className={styles.textExtra} dangerouslySetInnerHTML={{ __html: this.t('texts._20') }} />
+      <p className={styles.textExtra} dangerouslySetInnerHTML={{ __html: this.t('texts._2') }} />
     </div>
   }
 }
