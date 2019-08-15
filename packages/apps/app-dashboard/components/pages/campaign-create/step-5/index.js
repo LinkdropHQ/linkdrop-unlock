@@ -4,8 +4,8 @@ import { ethers, utils } from 'ethers'
 import { actions, translate } from 'decorators'
 import styles from './styles.module'
 import classNames from 'classnames'
-import { Button, PageHeader } from 'components/common'
-import { Loading, Icons } from '@linkdrop/ui-kit'
+import { Button, PageHeader, PageLoader } from 'components/common'
+import { Icons } from '@linkdrop/ui-kit'
 import { defineNetworkName, convertFromExponents } from '@linkdrop/commons'
 import { getImages } from 'helpers'
 
@@ -26,7 +26,7 @@ class Step5 extends React.Component {
     )
     return <div className={styles.container}>
       <PageHeader title={this.t('titles.getTheLinks')} />
-      {loading && <Loading withOverlay />}
+      {loading && <PageLoader />}
       <div className={styles.content}>
         <div className={styles.automatic}>
 
