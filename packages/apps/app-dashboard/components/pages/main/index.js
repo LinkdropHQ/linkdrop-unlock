@@ -21,7 +21,7 @@ class Main extends React.Component {
         description={this.t('texts.incentivizeCustomer')}
         extraContent={this.t('titles.allAssets')}
         onClick={_ => {
-          window.open('https://linkdrop.io/sales/', '_blank')
+          window.open('https://linkdrop.io/contact', '_blank')
         }}
         buttonTitle={this.t('buttons.contactUs')}
       />

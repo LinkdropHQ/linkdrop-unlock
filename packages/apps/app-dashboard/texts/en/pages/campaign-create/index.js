@@ -80,6 +80,7 @@ export default {
     _15: 'You wil send {{eth}} ETH to start generate links',
     _16: '<span>{{eth}} ETH</span> — Ether to distribute',
     _17: '<span>{{eth}} ETH</span> — Service fee',
+    _18: 'By service fees, we cover Gas costs for links distribution and our operation costs.',
     codeBlock: `// installation: yarn add @linkdrop/sdk
 // import library
 const LinkdropSDK = require('@linkdrop/sdk')
