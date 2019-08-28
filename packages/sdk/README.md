@@ -56,9 +56,19 @@ let campaignId = 1
 let proxyAddress = linkdropSDK.getProxyAddress(campaignId)
 ```
 
-#### ⚠️ Reminder
+### Topup and approve tokens to proxy contract
 
-Don't forget to topup and approve tokens to precomputed proxy address before claiming link from it.
+⚠️ Don't forget to topup and approve tokens to precomputed proxy address before any links can be claimed from it.
+
+```js
+const { topupTxHash, approveTxHash } = await linkdropSDK.topupAndApprove({ 
+    signingKeyOrWallet,
+    proxyAddress,
+    weiAmount = 0,
+    tokenAddress = '0x0000000000000000000000000000000000000000',
+    tokenAmount = 0
+})
+```
 
 ### Deploy proxy contract
 
