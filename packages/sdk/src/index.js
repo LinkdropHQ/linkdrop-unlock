@@ -1,6 +1,7 @@
 import { computeProxyAddress } from './utils'
 import * as generateLinkUtils from './generateLink'
 import * as claimUtils from './claim'
+import * as deployUtils from './deployProxy'
 
 import LinkdropFactory from '@linkdrop/contracts/build/LinkdropFactory'
 import { ethers } from 'ethers'
@@ -168,6 +169,15 @@ class LinkdropSDK {
       linkdropSignerSignature,
       receiverAddress,
       factoryAddress: this.factoryAddress,
+      campaignId
+    })
+  }
+
+  async deployProxy ({ signingKeyOrWallet, campaignId = 0 }) {
+    return deployUtils.deployProxy({
+      jsonRpcUrl: this.jsonRpcUrl,
+      factoryAddress: this.factoryAddress,
+      signingKeyOrWallet,
       campaignId
     })
   }

@@ -23,23 +23,37 @@ import LinkdropSDK from '@linkdrop/sdk'
 ### Initialization
 
 ```js
-const linkdropSDK = LinkdropSDK({
+const linkdropSDK = new LinkdropSDK({
   linkdropMasterAddress: <LINKDROP_MASTER_ADDRESS>,
+  factoryAddress: <LINKDROP_FACTORY_ADDRESS>,
   // optional params:
-  // chain = <CHAIN>, // 'mainnet' by default
-  // chainId = <CHAIN_ID>, // getChainId(chain) by default
+  // chain = <CHAIN>, // 'rinkeby' by default
   // jsonRpcUrl = <JSON_RPC_URL>, // `https://${chain}.infura.io` by default,
   // apiHost = <API_HOST>, // `https://${chain}.linkdrop.io` by default
   // claimHost = <CLAIM_HOST>, // 'https://claim.linkdrop.io' by default
-  // factory = <LINKDROP_FACTORY_ADDRESS>, // '0x01e7F4C72182Eb4421AFB1Ec99cee9Ef5B83EE18' by default
 }))
 ```
 
-### Get proxy address
+Linkdrop SDK constructor takes following params:
+
+- Required params:
+  - linkdropMasterAddress - Linkdrop master address
+  - factoryAddress - Linkdrop factory contract address
+
+- Optional params:
+  - chain - Chain name, Currently supported chains are ‘mainnet’, ‘rinkeby’, ‘ropsten’ and ’goerli’. Will use ‘rinkeby’ by default
+  - jsonRpcUrl - JSON RPC URL to Ethereum node. Will use `${chain}.infura.io` by default
+  - apiHost - Linkdrop Relayer Service API host. Will use `${chain}.linkdrop.io` by default
+  - claimHost - Claiming page url host. Will use `claim.linkdrop.io` by default
+
+You can deploy your own Linkdrop factory contract or use ours deployed on Mainnet, Rinkeby and Goerli networks at `0xBa051891B752ecE3670671812486fe8dd34CC1c8`
+
+
+### Precompute proxy address
 
 ```js
-const campaignId = 1
-const proxyAddress = linkdropSDK.getProxyAddress(campaignId)
+let campaignId = 1
+let proxyAddress = linkdropSDK.getProxyAddress(campaignId)
 ```
 
 ### Generate link for ETH or ERC20
