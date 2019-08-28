@@ -53,6 +53,7 @@ export default {
     codeDetails: 'See the code and details',
     contractParams: 'Linkdrop Contract parameters',
     masterAddress: 'Master Address: <span>{{address}}</span>',
+    factoryAddress: 'Factory Address: <span>{{address}}</span>',
     signingKey: 'Signing Key: <span>{{signingKey}}</span>',
     downloadFile: 'Download CSV file',
     manual: 'Manual distribution',

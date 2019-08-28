@@ -8,6 +8,7 @@ import { Button, PageHeader, PageLoader } from 'components/common'
 import { Icons } from '@linkdrop/ui-kit'
 import { defineNetworkName, convertFromExponents } from '@linkdrop/commons'
 import { getImages } from 'helpers'
+import { factory } from 'app.config.js'
 
 @actions(({ user: { loading, chainId }, campaigns: { items, current } }) => ({ chainId, items, current, loading }))
 @translate('pages.campaignCreate')
@@ -71,6 +72,7 @@ class Step5 extends React.Component {
       <div>
         <p className={classNames(styles.text, styles.textMargin20)}>{this.t('titles.contractParams')}</p>
         <p className={classNames(styles.text, styles.textMargin10, styles.ellipsis)} dangerouslySetInnerHTML={{ __html: this.t('titles.masterAddress', { address: currentAddress }) }} />
+        <p className={classNames(styles.text, styles.textMargin10, styles.ellipsis)} dangerouslySetInnerHTML={{ __html: this.t('titles.factoryAddress', { address: factory }) }} />
         <p className={classNames(styles.text, styles.textMargin10, styles.ellipsis)} dangerouslySetInnerHTML={{ __html: this.t('titles.signingKey', { signingKey: privateKey }) }} />
         <p className={classNames(styles.text, styles.ellipsis)} dangerouslySetInnerHTML={{ __html: this.t('titles.campaignId', { campaignId }) }} />
       </div>
