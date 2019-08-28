@@ -56,6 +56,18 @@ let campaignId = 1
 let proxyAddress = linkdropSDK.getProxyAddress(campaignId)
 ```
 
+#### ⚠️ Reminder
+
+Don't forget to topup and approve tokens to precomputed proxy address before claiming link from it.
+
+### Deploy proxy contract
+
+```js
+const txHash = await linkdropSDK.deployProxy({ signingKeyOrWallet, campaignId = 0 })
+```
+This function will deploy a proxy contract for a given campaign id.
+
+
 ### Generate link for ETH or ERC20
 
 ```js
