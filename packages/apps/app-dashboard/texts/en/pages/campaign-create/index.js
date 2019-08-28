@@ -92,7 +92,12 @@ import LinkdropSDK from '@linkdrop/sdk'
 // initialization
 const linkdropSDK = LinkdropSDK({
   linkdropMasterAddress: '{{masterAddress}}',
-  chain = '{{chain}}'
+  factoryAddress: '{{factoryAddress}}',
+  // optional params
+  // chain: '{{chain}}',
+  // jsonRpcUrl = <JSON_RPC_URL>, // https://{{chain}}.infura.io by default,
+  // apiHost = <API_HOST>, // https://{{chain}}.linkdrop.io by default
+  // claimHost = <CLAIM_HOST>, // 'https://claim.linkdrop.io' by default
 })
 
 // generate links for ETH and ERC20
