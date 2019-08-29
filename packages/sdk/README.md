@@ -59,20 +59,8 @@ let proxyAddress = linkdropSDK.getProxyAddress(campaignId = 0)
 
 This function precomputes the proxy address for each campaign. 
 
-⚠️ If you are integrating one-to-one linkdrops please always use `campaignId = 0`
+⚠️ If you are integrating one-to-one linkdrops you should always use `campaignId = 0`
 
-### Top-up proxy address with ETH
-
-```js
-const txHash = await linkdropSDK.topup({ 
-    signingKeyOrWallet,
-    proxyAddress,
-    weiAmount 
-})
-```
-This function will topup the provided proxy address with `weiAmount` ethers
-
-⚠️ We currently charge a fixed fee of 0.002 ETH per claimed link so bear in mind to top-up the proxy address with enough funds to cover fees
 
 ### Approve ERC20 tokens to proxy address
 
@@ -97,13 +85,25 @@ const txHash = await linkdropSDK.approveERC721({
 ```
 This function will approve all NFTs to provided proxy address
 
-### Deploy proxy contract
+### Top-up proxy address with ETH
 
 ```js
-const txHash = await linkdropSDK.deployProxy({ signingKeyOrWallet, campaignId = 0 })
+const txHash = await linkdropSDK.topup({ 
+    signingKeyOrWallet,
+    proxyAddress,
+    weiAmount 
+})
+```
+This function will topup the provided proxy address with `weiAmount` ethers
+
+
+### Top-up and deploy proxy contract
+
+```js
+const txHash = await linkdropSDK.deployProxy({ signingKeyOrWallet, campaignId = 0, weiAmount })
 ```
 
-This function will deploy a proxy contract for a given campaign id.
+This function will deploy a proxy contract for a given campaign id and top it up with `weiAmount` provided
 
 ## Generate links
 

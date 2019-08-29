@@ -507,18 +507,19 @@ function () {
       var _deployProxy = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee9(_ref9) {
-        var signingKeyOrWallet, _ref9$campaignId, campaignId;
+        var signingKeyOrWallet, _ref9$campaignId, campaignId, weiAmount;
 
         return _regenerator["default"].wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
               case 0:
-                signingKeyOrWallet = _ref9.signingKeyOrWallet, _ref9$campaignId = _ref9.campaignId, campaignId = _ref9$campaignId === void 0 ? 0 : _ref9$campaignId;
+                signingKeyOrWallet = _ref9.signingKeyOrWallet, _ref9$campaignId = _ref9.campaignId, campaignId = _ref9$campaignId === void 0 ? 0 : _ref9$campaignId, weiAmount = _ref9.weiAmount;
                 return _context9.abrupt("return", deployUtils.deployProxy({
                   jsonRpcUrl: this.jsonRpcUrl,
                   factoryAddress: this.factoryAddress,
                   signingKeyOrWallet: signingKeyOrWallet,
-                  campaignId: campaignId
+                  campaignId: campaignId,
+                  weiAmount: weiAmount
                 }));
 
               case 2:

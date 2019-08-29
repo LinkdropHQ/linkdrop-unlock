@@ -202,12 +202,13 @@ class LinkdropSDK {
     })
   }
 
-  async deployProxy ({ signingKeyOrWallet, campaignId = 0 }) {
+  async deployProxy ({ signingKeyOrWallet, campaignId = 0, weiAmount }) {
     return deployUtils.deployProxy({
       jsonRpcUrl: this.jsonRpcUrl,
       factoryAddress: this.factoryAddress,
       signingKeyOrWallet,
-      campaignId
+      campaignId,
+      weiAmount
     })
   }
 }

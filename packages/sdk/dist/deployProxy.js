@@ -85,24 +85,79 @@ function () {
   var _ref4 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee2(_ref3) {
-    var jsonRpcUrl, factoryAddress, signingKeyOrWallet, campaignId, factoryContract;
+    var jsonRpcUrl, factoryAddress, signingKeyOrWallet, campaignId, weiAmount, provider, wallet, factoryContract, data;
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            jsonRpcUrl = _ref3.jsonRpcUrl, factoryAddress = _ref3.factoryAddress, signingKeyOrWallet = _ref3.signingKeyOrWallet, campaignId = _ref3.campaignId;
-            _context2.next = 3;
+            jsonRpcUrl = _ref3.jsonRpcUrl, factoryAddress = _ref3.factoryAddress, signingKeyOrWallet = _ref3.signingKeyOrWallet, campaignId = _ref3.campaignId, weiAmount = _ref3.weiAmount;
+
+            if (!(jsonRpcUrl == null || jsonRpcUrl === '')) {
+              _context2.next = 3;
+              break;
+            }
+
+            throw new Error("Please provide json rpc url");
+
+          case 3:
+            if (!(factoryAddress === null || factoryAddress === '')) {
+              _context2.next = 5;
+              break;
+            }
+
+            throw new Error("Please provide factory address");
+
+          case 5:
+            if (!(signingKeyOrWallet === null || signingKeyOrWallet === '')) {
+              _context2.next = 7;
+              break;
+            }
+
+            throw new Error("Please provide signing key or wallet");
+
+          case 7:
+            if (!(campaignId === null || campaignId === '')) {
+              _context2.next = 9;
+              break;
+            }
+
+            throw new Error("Please provide campaign id");
+
+          case 9:
+            provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl);
+
+            if (typeof signingKeyOrWallet === 'string') {
+              wallet = new ethers.Wallet(signingKeyOrWallet, provider);
+            } else if ((0, _typeof2["default"])(signingKeyOrWallet) === 'object') {
+              wallet = signingKeyOrWallet;
+            }
+
+            _context2.next = 13;
             return connectToFactoryContract({
               jsonRpcUrl: jsonRpcUrl,
               factoryAddress: factoryAddress,
               signingKeyOrWallet: signingKeyOrWallet
             });
 
-          case 3:
+          case 13:
             factoryContract = _context2.sent;
+
+            if (!(weiAmount > 0)) {
+              _context2.next = 17;
+              break;
+            }
+
+            data = factoryContract["interface"].functions.deployProxy.encode(campaignId);
+            return _context2.abrupt("return", wallet.sendTransaction({
+              to: factoryAddress,
+              value: weiAmount,
+              data: data
+            }));
+
+          case 17:
             return _context2.abrupt("return", factoryContract.deployProxy(campaignId));
 
-          case 5:
+          case 18:
           case "end":
             return _context2.stop();
         }
