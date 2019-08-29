@@ -41,7 +41,7 @@ function () {
     var linkdropMasterAddress = _ref.linkdropMasterAddress,
         factoryAddress = _ref.factoryAddress,
         _ref$chain = _ref.chain,
-        chain = _ref$chain === void 0 ? 'rinkeby' : _ref$chain,
+        chain = _ref$chain === void 0 ? 'mainnet' : _ref$chain,
         _ref$jsonRpcUrl = _ref.jsonRpcUrl,
         jsonRpcUrl = _ref$jsonRpcUrl === void 0 ? "https://".concat(chain, ".infura.io") : _ref$jsonRpcUrl,
         _ref$apiHost = _ref.apiHost,
@@ -58,7 +58,7 @@ function () {
       throw new Error('Please provide factory address');
     }
 
-    if (chain !== 'rinkeby' && chain !== 'mainnet' && chain !== 'ropsten' && chain !== 'goerli') {
+    if (chain !== 'rinkeby' && chain !== 'mainnet' && chain !== 'goerli') {
       throw new Error('Unsupported chain');
     }
 

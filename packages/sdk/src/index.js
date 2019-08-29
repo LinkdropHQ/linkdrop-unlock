@@ -14,7 +14,7 @@ class LinkdropSDK {
   constructor ({
     linkdropMasterAddress,
     factoryAddress,
-    chain = 'rinkeby',
+    chain = 'mainnet',
     jsonRpcUrl = `https://${chain}.infura.io`,
     apiHost = `https://${chain}.linkdrop.io`,
     claimHost = 'https://claim.linkdrop.io'
@@ -27,12 +27,7 @@ class LinkdropSDK {
       throw new Error('Please provide factory address')
     }
 
-    if (
-      chain !== 'rinkeby' &&
-      chain !== 'mainnet' &&
-      chain !== 'ropsten' &&
-      chain !== 'goerli'
-    ) {
+    if (chain !== 'rinkeby' && chain !== 'mainnet' && chain !== 'goerli') {
       throw new Error('Unsupported chain')
     }
 
