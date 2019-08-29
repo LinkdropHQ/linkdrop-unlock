@@ -13,7 +13,7 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
-var _LinkdropFactory = _interopRequireDefault(require("../../contracts/build/LinkdropFactory.json"));
+var _LinkdropFactory = _interopRequireDefault(require("@linkdrop/contracts/build/LinkdropFactory.json"));
 
 var ethers = require('ethers');
 

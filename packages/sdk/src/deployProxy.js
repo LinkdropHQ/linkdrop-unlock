@@ -1,4 +1,4 @@
-import LinkdropFactory from '../../contracts/build/LinkdropFactory.json'
+import LinkdropFactory from '@linkdrop/contracts/build/LinkdropFactory.json'
 const ethers = require('ethers')
 
 export const connectToFactoryContract = async ({

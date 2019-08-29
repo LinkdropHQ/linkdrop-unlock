@@ -56,9 +56,7 @@ let campaignId = 1
 let proxyAddress = linkdropSDK.getProxyAddress(campaignId)
 ```
 
-### Topup and approve tokens to proxy contract
-
-⚠️ Don't forget to topup and approve tokens to precomputed proxy address before any links can be claimed from it.
+### Topup and approve ERC20 tokens to proxy contract
 
 ```js
 const { topupTxHash, approveTxHash } = await linkdropSDK.topupAndApprove({ 
@@ -69,6 +67,19 @@ const { topupTxHash, approveTxHash } = await linkdropSDK.topupAndApprove({
     tokenAmount = 0
 })
 ```
+This function will topup the provided proxy address and approve `tokenAmount` tokens to it
+
+### Topup and approve ERC721 tokens to proxy contract
+
+```js
+const { topupTxHash, approveTxHash } = await linkdropSDK.topupAndApproveERC721({ 
+    signingKeyOrWallet,
+    proxyAddress,
+    weiAmount = 0,
+    nftAddress
+})
+```
+This function will topup the provided proxy address and approve all NFTs to it
 
 ### Deploy proxy contract
 
@@ -76,6 +87,9 @@ const { topupTxHash, approveTxHash } = await linkdropSDK.topupAndApprove({
 const txHash = await linkdropSDK.deployProxy({ signingKeyOrWallet, campaignId = 0 })
 ```
 This function will deploy a proxy contract for a given campaign id.
+
+
+⚠️ Don't forget to topup and approve tokens to precomputed proxy address before any links can be claimed from it.
 
 
 ### Generate link for ETH or ERC20
