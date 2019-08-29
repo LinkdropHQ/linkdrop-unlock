@@ -402,25 +402,22 @@ function () {
       return claimERC721;
     }()
   }, {
-    key: "topupAndApprove",
+    key: "topup",
     value: function () {
-      var _topupAndApprove = (0, _asyncToGenerator2["default"])(
+      var _topup = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee6(_ref6) {
-        var signingKeyOrWallet, proxyAddress, _ref6$weiAmount, weiAmount, _ref6$tokenAddress, tokenAddress, _ref6$tokenAmount, tokenAmount;
-
+        var signingKeyOrWallet, proxyAddress, weiAmount;
         return _regenerator["default"].wrap(function _callee6$(_context6) {
           while (1) {
             switch (_context6.prev = _context6.next) {
               case 0:
-                signingKeyOrWallet = _ref6.signingKeyOrWallet, proxyAddress = _ref6.proxyAddress, _ref6$weiAmount = _ref6.weiAmount, weiAmount = _ref6$weiAmount === void 0 ? 0 : _ref6$weiAmount, _ref6$tokenAddress = _ref6.tokenAddress, tokenAddress = _ref6$tokenAddress === void 0 ? '0x0000000000000000000000000000000000000000' : _ref6$tokenAddress, _ref6$tokenAmount = _ref6.tokenAmount, tokenAmount = _ref6$tokenAmount === void 0 ? 0 : _ref6$tokenAmount;
-                return _context6.abrupt("return", topupAndApproveUtils.topupAndApprove({
+                signingKeyOrWallet = _ref6.signingKeyOrWallet, proxyAddress = _ref6.proxyAddress, weiAmount = _ref6.weiAmount;
+                return _context6.abrupt("return", topupAndApproveUtils.topup({
                   jsonRpcUrl: this.jsonRpcUrl,
                   signingKeyOrWallet: signingKeyOrWallet,
                   proxyAddress: proxyAddress,
-                  weiAmount: weiAmount,
-                  tokenAddress: tokenAddress,
-                  tokenAmount: tokenAmount
+                  weiAmount: weiAmount
                 }));
 
               case 2:
@@ -431,31 +428,30 @@ function () {
         }, _callee6, this);
       }));
 
-      function topupAndApprove(_x6) {
-        return _topupAndApprove.apply(this, arguments);
+      function topup(_x6) {
+        return _topup.apply(this, arguments);
       }
 
-      return topupAndApprove;
+      return topup;
     }()
   }, {
-    key: "topupAndApproveERC721",
+    key: "approve",
     value: function () {
-      var _topupAndApproveERC = (0, _asyncToGenerator2["default"])(
+      var _approve = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee7(_ref7) {
-        var signingKeyOrWallet, proxyAddress, _ref7$weiAmount, weiAmount, nftAddress;
-
+        var signingKeyOrWallet, proxyAddress, tokenAddress, tokenAmount;
         return _regenerator["default"].wrap(function _callee7$(_context7) {
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
-                signingKeyOrWallet = _ref7.signingKeyOrWallet, proxyAddress = _ref7.proxyAddress, _ref7$weiAmount = _ref7.weiAmount, weiAmount = _ref7$weiAmount === void 0 ? 0 : _ref7$weiAmount, nftAddress = _ref7.nftAddress;
-                return _context7.abrupt("return", topupAndApproveUtils.topupAndApproveERC721({
+                signingKeyOrWallet = _ref7.signingKeyOrWallet, proxyAddress = _ref7.proxyAddress, tokenAddress = _ref7.tokenAddress, tokenAmount = _ref7.tokenAmount;
+                return _context7.abrupt("return", topupAndApproveUtils.approve({
                   jsonRpcUrl: this.jsonRpcUrl,
                   signingKeyOrWallet: signingKeyOrWallet,
                   proxyAddress: proxyAddress,
-                  weiAmount: weiAmount,
-                  nftAddress: nftAddress
+                  tokenAddress: tokenAddress,
+                  tokenAmount: tokenAmount
                 }));
 
               case 2:
@@ -466,30 +462,29 @@ function () {
         }, _callee7, this);
       }));
 
-      function topupAndApproveERC721(_x7) {
-        return _topupAndApproveERC.apply(this, arguments);
+      function approve(_x7) {
+        return _approve.apply(this, arguments);
       }
 
-      return topupAndApproveERC721;
+      return approve;
     }()
   }, {
-    key: "deployProxy",
+    key: "approveERC721",
     value: function () {
-      var _deployProxy = (0, _asyncToGenerator2["default"])(
+      var _approveERC = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee8(_ref8) {
-        var signingKeyOrWallet, _ref8$campaignId, campaignId;
-
+        var signingKeyOrWallet, proxyAddress, nftAddress;
         return _regenerator["default"].wrap(function _callee8$(_context8) {
           while (1) {
             switch (_context8.prev = _context8.next) {
               case 0:
-                signingKeyOrWallet = _ref8.signingKeyOrWallet, _ref8$campaignId = _ref8.campaignId, campaignId = _ref8$campaignId === void 0 ? 0 : _ref8$campaignId;
-                return _context8.abrupt("return", deployUtils.deployProxy({
+                signingKeyOrWallet = _ref8.signingKeyOrWallet, proxyAddress = _ref8.proxyAddress, nftAddress = _ref8.nftAddress;
+                return _context8.abrupt("return", topupAndApproveUtils.topupAndApproveERC721({
                   jsonRpcUrl: this.jsonRpcUrl,
-                  factoryAddress: this.factoryAddress,
                   signingKeyOrWallet: signingKeyOrWallet,
-                  campaignId: campaignId
+                  proxyAddress: proxyAddress,
+                  nftAddress: nftAddress
                 }));
 
               case 2:
@@ -500,7 +495,41 @@ function () {
         }, _callee8, this);
       }));
 
-      function deployProxy(_x8) {
+      function approveERC721(_x8) {
+        return _approveERC.apply(this, arguments);
+      }
+
+      return approveERC721;
+    }()
+  }, {
+    key: "deployProxy",
+    value: function () {
+      var _deployProxy = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee9(_ref9) {
+        var signingKeyOrWallet, _ref9$campaignId, campaignId;
+
+        return _regenerator["default"].wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                signingKeyOrWallet = _ref9.signingKeyOrWallet, _ref9$campaignId = _ref9.campaignId, campaignId = _ref9$campaignId === void 0 ? 0 : _ref9$campaignId;
+                return _context9.abrupt("return", deployUtils.deployProxy({
+                  jsonRpcUrl: this.jsonRpcUrl,
+                  factoryAddress: this.factoryAddress,
+                  signingKeyOrWallet: signingKeyOrWallet,
+                  campaignId: campaignId
+                }));
+
+              case 2:
+              case "end":
+                return _context9.stop();
+            }
+          }
+        }, _callee9, this);
+      }));
+
+      function deployProxy(_x9) {
         return _deployProxy.apply(this, arguments);
       }
 

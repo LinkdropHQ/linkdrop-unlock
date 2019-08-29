@@ -169,34 +169,35 @@ class LinkdropSDK {
     })
   }
 
-  async topupAndApprove ({
-    signingKeyOrWallet,
-    proxyAddress,
-    weiAmount = 0,
-    tokenAddress = '0x0000000000000000000000000000000000000000',
-    tokenAmount = 0
-  }) {
-    return topupAndApproveUtils.topupAndApprove({
+  async topup ({ signingKeyOrWallet, proxyAddress, weiAmount }) {
+    return topupAndApproveUtils.topup({
       jsonRpcUrl: this.jsonRpcUrl,
       signingKeyOrWallet,
       proxyAddress,
-      weiAmount,
+      weiAmount
+    })
+  }
+
+  async approve ({
+    signingKeyOrWallet,
+    proxyAddress,
+    tokenAddress,
+    tokenAmount
+  }) {
+    return topupAndApproveUtils.approve({
+      jsonRpcUrl: this.jsonRpcUrl,
+      signingKeyOrWallet,
+      proxyAddress,
       tokenAddress,
       tokenAmount
     })
   }
 
-  async topupAndApproveERC721 ({
-    signingKeyOrWallet,
-    proxyAddress,
-    weiAmount = 0,
-    nftAddress
-  }) {
+  async approveERC721 ({ signingKeyOrWallet, proxyAddress, nftAddress }) {
     return topupAndApproveUtils.topupAndApproveERC721({
       jsonRpcUrl: this.jsonRpcUrl,
       signingKeyOrWallet,
       proxyAddress,
-      weiAmount,
       nftAddress
     })
   }

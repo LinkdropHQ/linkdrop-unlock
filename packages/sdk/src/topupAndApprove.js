@@ -2,11 +2,46 @@ import { ethers } from 'ethers'
 import TokenMock from '../../contracts/build/TokenMock.json'
 import NFTMock from '../../contracts/build/NFTMock.json'
 
-export const topupAndApprove = async ({
+export const topup = async ({
   jsonRpcUrl,
   signingKeyOrWallet,
   proxyAddress,
-  weiAmount,
+  weiAmount
+}) => {
+  if (jsonRpcUrl == null || jsonRpcUrl === '') {
+    throw new Error(`Please provide json rpc url`)
+  }
+  if (signingKeyOrWallet == null || signingKeyOrWallet === '') {
+    throw new Error(`Please provide signing key or wallet`)
+  }
+  if (proxyAddress == null || proxyAddress === '') {
+    throw new Error(`Please provide proxy address`)
+  }
+  if (weiAmount == null || weiAmount === '') {
+    throw new Error(`Please provide wei amount`)
+  }
+
+  const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
+
+  let wallet
+  if (typeof signingKeyOrWallet === 'string') {
+    wallet = new ethers.Wallet(signingKeyOrWallet, provider)
+  } else if (typeof signingKeyOrWallet === 'object') {
+    wallet = signingKeyOrWallet
+  }
+
+  const tx = await wallet.sendTransaction({
+    to: proxyAddress,
+    value: weiAmount
+  })
+
+  return tx.hash
+}
+
+export const approve = async ({
+  jsonRpcUrl,
+  signingKeyOrWallet,
+  proxyAddress,
   tokenAddress,
   tokenAmount
 }) => {
@@ -19,9 +54,6 @@ export const topupAndApprove = async ({
   if (proxyAddress == null || proxyAddress === '') {
     throw new Error(`Please provide proxy address`)
   }
-  if (weiAmount == null || weiAmount === '') {
-    throw new Error(`Please provide wei amount`)
-  }
   if (tokenAddress == null || tokenAddress === '') {
     throw new Error(`Please provide token address`)
   }
@@ -31,40 +63,23 @@ export const topupAndApprove = async ({
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
-  let wallet, topupTx, approveTx
+  let wallet
   if (typeof signingKeyOrWallet === 'string') {
     wallet = new ethers.Wallet(signingKeyOrWallet, provider)
   } else if (typeof signingKeyOrWallet === 'object') {
     wallet = signingKeyOrWallet
   }
 
-  if (weiAmount > 0) {
-    topupTx = await wallet.sendTransaction({
-      to: proxyAddress,
-      value: weiAmount
-    })
-  }
+  const tokenContract = new ethers.Contract(tokenAddress, TokenMock.abi, wallet)
+  const tx = await tokenContract.approve(proxyAddress, tokenAmount)
 
-  if (
-    tokenAmount > 0 &&
-    tokenAddress !== '0x0000000000000000000000000000000000000000'
-  ) {
-    const tokenContract = new ethers.Contract(
-      tokenAddress,
-      TokenMock.abi,
-      wallet
-    )
-    approveTx = await tokenContract.approve(proxyAddress, tokenAmount)
-  }
-
-  return { topupTxHash: topupTx.hash, approveTxHash: approveTx.hash }
+  return tx.hash
 }
 
-export const topupAndApproveERC721 = async ({
+export const approveERC721 = async ({
   jsonRpcUrl,
   signingKeyOrWallet,
   proxyAddress,
-  weiAmount = 0,
   nftAddress
 }) => {
   if (jsonRpcUrl == null || jsonRpcUrl === '') {
@@ -76,16 +91,13 @@ export const topupAndApproveERC721 = async ({
   if (proxyAddress == null || proxyAddress === '') {
     throw new Error(`Please provide proxy address`)
   }
-  if (weiAmount == null || weiAmount === '') {
-    throw new Error(`Please provide wei amount`)
-  }
   if (nftAddress == null || nftAddress === '') {
     throw new Error(`Please provide nft address`)
   }
 
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
-  let wallet, topupTx
+  let wallet
 
   if (typeof signingKeyOrWallet === 'string') {
     wallet = new ethers.Wallet(signingKeyOrWallet, provider)
@@ -93,15 +105,8 @@ export const topupAndApproveERC721 = async ({
     wallet = signingKeyOrWallet
   }
 
-  if (weiAmount > 0) {
-    topupTx = await wallet.sendTransaction({
-      to: proxyAddress,
-      value: weiAmount
-    })
-  }
-
   const nftContract = new ethers.Contract(nftAddress, NFTMock.abi, wallet)
-  const approveTx = await nftContract.setApprovalForAll(proxyAddress, true)
+  const tx = await nftContract.setApprovalForAll(proxyAddress, true)
 
-  return { topupTxHash: topupTx.hash, approveTxHash: approveTx.hash }
+  return tx.hash
 }
