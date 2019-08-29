@@ -115,3 +115,9 @@ const txHash = await linkdropSDK.claim({
 ```
 
 This function will claim ETH or ERC20 token by making a POST request to server endpoint. Make sure the server is up by running `yarn server`.
+
+## Stay in Touch
+💬 Join Linkdrop Community Telegram to chat with the core team
+📈 Try out Linkdrop Dashboard to generate onboarding links
+🙌 Want to contribute to the project—just ping us
+💌 Reach us at hi@linkdop.io
