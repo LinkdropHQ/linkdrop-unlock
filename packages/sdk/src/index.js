@@ -2,6 +2,7 @@ import { computeProxyAddress } from './utils'
 import * as generateLinkUtils from './generateLink'
 import * as claimUtils from './claim'
 import * as deployUtils from './deployProxy'
+import * as topupAndApproveUtils from './topupAndApprove'
 
 import LinkdropFactory from '@linkdrop/contracts/build/LinkdropFactory'
 import { ethers } from 'ethers'
@@ -170,6 +171,38 @@ class LinkdropSDK {
       receiverAddress,
       factoryAddress: this.factoryAddress,
       campaignId
+    })
+  }
+
+  async topupAndApprove ({
+    signingKeyOrWallet,
+    proxyAddress,
+    weiAmount = 0,
+    tokenAddress = '0x0000000000000000000000000000000000000000',
+    tokenAmount = 0
+  }) {
+    return topupAndApproveUtils.topupAndApprove({
+      jsonRpcUrl: this.jsonRpcUrl,
+      signingKeyOrWallet,
+      proxyAddress,
+      weiAmount,
+      tokenAddress,
+      tokenAmount
+    })
+  }
+
+  async topupAndApproveERC721 ({
+    signingKeyOrWallet,
+    proxyAddress,
+    weiAmount = 0,
+    nftAddress
+  }) {
+    return topupAndApproveUtils.topupAndApproveERC721({
+      jsonRpcUrl: this.jsonRpcUrl,
+      signingKeyOrWallet,
+      proxyAddress,
+      weiAmount,
+      nftAddress
     })
   }
 
