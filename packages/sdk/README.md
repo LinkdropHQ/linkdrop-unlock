@@ -20,7 +20,7 @@ const LinkdropSDK = require('@linkdrop/sdk')
 import LinkdropSDK from '@linkdrop/sdk'
 ```
 
-### Initialization
+## Initialization
 
 ```js
 const linkdropSDK = new LinkdropSDK({
@@ -52,8 +52,7 @@ You can deploy your own Linkdrop factory contract or use ours deployed on Mainne
 ### Precompute proxy address
 
 ```js
-let campaignId = 1
-let proxyAddress = linkdropSDK.getProxyAddress(campaignId)
+let proxyAddress = linkdropSDK.getProxyAddress(campaignId = 0)
 ```
 
 ### Topup and approve ERC20 tokens to proxy contract
@@ -91,6 +90,9 @@ This function will deploy a proxy contract for a given campaign id.
 
 ⚠️ Don't forget to topup and approve tokens to precomputed proxy address before any links can be claimed from it.
 
+## Generate links
+
+It's either possible to generate links and campaigns using our [Dashboard](https://dashboard.linkdrop.io) or using SDK:
 
 ### Generate link for ETH or ERC20
 
@@ -131,6 +133,8 @@ const {
 ```
 
 This function will generate link for claiming ERC721 token and return the following params `url, linkId, linkKey, linkdropSignerSignature`
+
+## Claim links
 
 ### Claim ETH or ERC20
 
