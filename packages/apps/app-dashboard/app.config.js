@@ -1,24 +1,24 @@
-/* global JSON_RPC_URL, MASTER_COPY, FACTORY, CLAIM_HOST, API_HOST */
-let jsonRpcUrl, masterCopy, factory, claimHost, apiHost
+/* global JSON_RPC_URL, MASTER_COPY, INFURA_PK, FACTORY, CLAIM_HOST, API_HOST */
+let config
+
 try {
-  const config = require('../../../configs/app.config.json')
-  jsonRpcUrl = String(config.jsonRpcUrl)
-  masterCopy = String(config.masterCopy)
-  factory = String(config.factory)
-  claimHost = String(config.claimHost)
-  apiHost = String(config.apiHost)
+  config = require('../../../configs/app.config.json')
 } catch (e) {
-  jsonRpcUrl = JSON_RPC_URL
-  masterCopy = MASTER_COPY
-  factory = FACTORY
-  claimHost = CLAIM_HOST
-  apiHost = API_HOST
+  config = {}
 }
+
+const jsonRpcUrl = JSON_RPC_URL || String(config.jsonRpcUrl)
+const masterCopy = MASTER_COPY || String(config.masterCopy)
+const factory = FACTORY || String(config.factory)
+const claimHost = CLAIM_HOST || String(config.claimHost)
+const apiHost = API_HOST || String(config.apiHost)
+const infuraPk = INFURA_PK || String(config.infuraPk)
 
 module.exports = {
   jsonRpcUrl,
   claimHost,
   apiHost,
   masterCopy,
-  factory
+  factory,
+  infuraPk
 }
