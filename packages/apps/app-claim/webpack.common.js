@@ -106,6 +106,7 @@ module.exports = {
       API_HOST_RINKEBY: JSON.stringify(process.env.API_HOST_RINKEBY),
       API_HOST_MAINNET: JSON.stringify(process.env.API_HOST_MAINNET),
       CLAIM_HOST: JSON.stringify(process.env.CLAIM_HOST),
+      INFURA_PK: JSON.stringify(process.env.INFURA_PK),
       INITIAL_BLOCK_RINKEBY: JSON.stringify(process.env.INITIAL_BLOCK_RINKEBY),
       INITIAL_BLOCK_MAINNET: JSON.stringify(process.env.INITIAL_BLOCK_MAINNET),
       'process.env': {
