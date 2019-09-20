@@ -63,7 +63,7 @@ class OperationService {
     await operation.save()
 
     logger.info(
-      `Operation ${operation.type} was successfully updated to database: ${
+      `Operation ${operation.type} was successfully updated in database: ${
         operation.id
       }`
     )

@@ -8,7 +8,7 @@ class ClaimService {
     return `claim-${linkdropMasterAddress.toLowerCase()}-${linkId.toLowerCase()}`
   }
 
-  async cancelClaim (linkdropMasterAddress, linkId) {
+  async cancel (linkdropMasterAddress, linkId) {
     const claimId = this._computeId({ linkdropMasterAddress, linkId })
     let operation = await operationService.findById(claimId)
     if (!operation) {
@@ -20,7 +20,7 @@ class ClaimService {
     return operationService.update({ id: claimId, status: 'canceled' })
   }
 
-  async getClaimStatus (linkdropMasterAddress, linkId) {
+  async getStatus (linkdropMasterAddress, linkId) {
     const claimId = this._computeId({ linkdropMasterAddress, linkId })
     const operation = await operationService.findById(claimId)
     if (!operation) {
