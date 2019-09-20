@@ -36,10 +36,7 @@ export const getStatus = async (req, res) => {
   )
 
   // return status in successful response
-  res.json({
-    success: true,
-    status
-  })
+  res.send(status)
 }
 
 // POST

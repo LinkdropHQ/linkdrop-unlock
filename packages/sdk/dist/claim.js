@@ -392,7 +392,7 @@ function () {
           case 0:
             apiHost = _ref5.apiHost, linkdropMasterAddress = _ref5.linkdropMasterAddress, linkId = _ref5.linkId;
             _context3.next = 3;
-            return axios.get("".concat(apiHost, "/api/v1/linkdrops/getStatus/:linkdropMasterAddress/:linkId"));
+            return axios.get("".concat(apiHost, "/api/v1/linkdrops/getStatus/").concat(linkdropMasterAddress, "/").concat(linkId));
 
           case 3:
             response = _context3.sent;

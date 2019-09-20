@@ -1,6 +1,7 @@
 import { signReceiverAddress } from './utils'
 const ethers = require('ethers')
 const axios = require('axios')
+
 // Turn off annoying warnings
 ethers.errors.setLogLevel('error')
 
@@ -226,7 +227,7 @@ export const getLinkStatus = async ({
   linkId
 }) => {
   const response = await axios.get(
-    `${apiHost}/api/v1/linkdrops/getStatus/:linkdropMasterAddress/:linkId`
+    `${apiHost}/api/v1/linkdrops/getStatus/${linkdropMasterAddress}/${linkId}`
   )
 
   const { error, errors, success, status } = response.data
