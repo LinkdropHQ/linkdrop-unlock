@@ -1,4 +1,7 @@
-import { claimServiceERC20, claimServiceERC721 } from '../services/claimServices'
+import {
+  claimServiceERC20,
+  claimServiceERC721
+} from '../services/claimServices'
 
 export const claim = async (req, res) => {
   // claim transaction
