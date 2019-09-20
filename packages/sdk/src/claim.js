@@ -219,3 +219,30 @@ export const claimERC721 = async ({
   const { error, errors, success, txHash } = response.data
   return { error, errors, success, txHash }
 }
+
+export const getLinkStatus = async ({
+  apiHost,
+  linkdropMasterAddress,
+  linkId
+}) => {
+  const response = await axios.get(
+    `${apiHost}/api/v1/linkdrops/getStatus/:linkdropMasterAddress/:linkId`
+  )
+
+  const { error, errors, success, status } = response.data
+  return { error, errors, success, status }
+}
+
+export const cancelLink = async ({
+  apiHost,
+  linkdropMasterAddress,
+  linkId
+}) => {
+  const response = await axios.post(`${apiHost}/api/v1/linkdrops/cancel`, {
+    linkdropMasterAddress,
+    linkId
+  })
+
+  const { error, errors, success, claimOperation } = response.data
+  return { error, errors, success, claimOperation }
+}
