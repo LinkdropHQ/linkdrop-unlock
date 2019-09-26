@@ -34,7 +34,8 @@ class WalletChoosePage extends React.Component {
       return <div className={classNames(commonStyles.container, styles.container, {
         [styles.sliderShow]: showSlider,
         [styles.sliderHide]: showSlider === false
-      })}>
+      })}
+      >
         <Alert className={styles.alert} icon={<Icons.Exclamation />} />
         <div className={styles.title}>{this.t('titles.needWallet')}</div>
         {platform !== 'desktop' && <Button href={buttonLink} target='_blank' className={styles.button}>
@@ -54,6 +55,7 @@ class WalletChoosePage extends React.Component {
         break
       case 'status':
       case 'imtoken':
+      case 'opera':
         instruction = this.renderDeepLinkInstruction({ walletType, title: walletTitle, href: walletURL })
         break
       default:
@@ -62,7 +64,8 @@ class WalletChoosePage extends React.Component {
     return <div className={classNames(commonStyles.container, styles.container, {
       [styles.sliderShow]: showSlider,
       [styles.sliderHide]: showSlider === false
-    })}>
+    })}
+    >
       <div className={classNames(styles.wallet, styles.withBorder, styles.walletPreview)}>
         <RetinaImage width={60} {...getImages({ src: walletType })} />
       </div>
@@ -79,10 +82,13 @@ class WalletChoosePage extends React.Component {
       case 'trust':
       case 'imtoken':
       case 'status':
+      case 'opera': {
         const buttonTitle = getWalletData({ wallet: walletType }).name
-        return <Button href={platform !== 'desktop' && getWalletLink({ platform, wallet: walletType, currentUrl: window.location.href })} className={styles.button}>
+        const buttonLink = getWalletLink({ platform, wallet: walletType, currentUrl: window.location.href })
+        return <Button href={platform !== 'desktop' && buttonLink} className={styles.button}>
           {buttonTitle}
         </Button>
+      }
       default:
         return <Button inverted onClick={_ => copyToClipboard({ value: window.location.href })} className={styles.button}>
           {this.t('buttons.copyLink')}
@@ -115,6 +121,7 @@ class WalletChoosePage extends React.Component {
   }
 
   renderDeepLinkInstruction ({ walletType, title, href }) {
+    console.log({ walletType })
     return <DeepLinkInstruction walletType={walletType} styles={styles} t={this.t} title={title} href={href} />
   }
 
