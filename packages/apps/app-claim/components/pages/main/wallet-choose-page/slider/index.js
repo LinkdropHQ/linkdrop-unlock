@@ -25,4 +25,4 @@ const renderImage = ({ id, walletType, selectWallet }) => {
 }
 
 const ANDROID_WALLETS = ['trust', 'coinbase', 'opera', 'imtoken', 'status', 'gowallet', 'buntoy']
-const IOS_WALLETS = ['trust', 'coinbase', 'imtoken', 'status', 'tokenpocket']
+const IOS_WALLETS = ['trust', 'coinbase', 'imtoken', 'status', 'tokenpocket', 'opera']
