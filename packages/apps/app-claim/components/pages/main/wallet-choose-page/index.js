@@ -121,7 +121,6 @@ class WalletChoosePage extends React.Component {
   }
 
   renderDeepLinkInstruction ({ walletType, title, href }) {
-    console.log({ walletType })
     return <DeepLinkInstruction walletType={walletType} styles={styles} t={this.t} title={title} href={href} />
   }
 
