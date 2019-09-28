@@ -11,7 +11,8 @@
     "fast-csv": "^2.4.1",
     "ora": "^3.4.0",
     "query-string": "^6.4.2",
-    "terminal-kit": "^1.28.0"
+    "terminal-kit": "^1.28.0",
+    "yargs": "^14.0.0"
   },
   "babel": {
     "extends": "../babel.config.js"
