@@ -4,6 +4,7 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/ILinkdropERC20.sol";
 import "./LinkdropCommon.sol";
 import "../interfaces/IPublicLock.sol";
+import "../interfaces/ILinkdropFactory.sol";
 
 contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     using SafeMath for uint;
@@ -295,7 +296,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                 _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature,
-                0.002 ether // fee
+                ILinkdropFactory(owner).getFee(address(this)) // fee
             ),
             "INVALID_CLAIM_PARAMS"
         );
@@ -326,7 +327,8 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     )
     internal returns (bool)
     {
-        tx.origin.transfer(0.002 ether);
+        // Transfers fee to relayer who called this contract through factory
+        tx.origin.transfer(ILinkdropFactory(owner).getFee(address(this)));
 
         // Transfer ethers
         if (_weiAmount > 0) {

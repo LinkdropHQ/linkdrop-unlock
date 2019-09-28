@@ -9,15 +9,16 @@ contract FeeManager is Ownable {
 
     uint public standardFee = 0.002 ether;
 
+    function getFee(address _proxy) external view returns (uint) {
+        return fees[_proxy];
+    }
+
     function setFee(address _proxy, uint _fee) external onlyOwner returns (bool) {
         _setFee(_proxy, _fee);
         return true;
     }
 
     function _setFee(address _proxy, uint _fee) internal {
-        if (fees[_proxy] != 0) {
-            require(_fee < fees[_proxy], "CANNOT_INCREASE_FEE");
-        }
         fees[_proxy] = _fee;
         emit FeeChanged(_proxy, _fee);
     }
