@@ -264,6 +264,82 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
 //                                          UNLOCK
 // ======================================================================================================
 
+    function checkClaimParamsUnlock
+    (
+        uint _weiAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
+        uint _expiration,
+        address _linkId,
+        bytes memory _linkdropSignerSignature,
+        address _receiver,
+        bytes memory _receiverSignature,
+        uint _fee,
+        address payable _lock
+    )
+    public view
+    whenNotPaused
+    returns (bool)
+    {
+        uint keyPrice = IPublicLock(_lock).keyPrice();
+        require(_weiAmount >= keyPrice, "INSUFFICIENT_ETHERS_FOR_UNLOCK");
+
+        // If tokens are being claimed
+        if (_tokenAmount > 0) {
+            require(_tokenAddress != address(0), "INVALID_TOKEN_ADDRESS");
+        }
+
+        // Make sure link is not claimed
+        require(isClaimedLink(_linkId) == false, "LINK_CLAIMED");
+
+        // Make sure link is not canceled
+        require(isCanceledLink(_linkId) == false, "LINK_CANCELED");
+
+        // Make sure link is not expired
+        require(_expiration >= now, "LINK_EXPIRED");
+
+        // Make sure eth amount is available for this contract
+        require(address(this).balance >= _weiAmount.add(_fee), "INSUFFICIENT_ETHERS");
+
+        // Make sure tokens are available for this contract
+        if (_tokenAddress != address(0)) {
+            require
+            (
+                IERC20(_tokenAddress).balanceOf(linkdropMaster) >= _tokenAmount,
+                "INSUFFICIENT_TOKENS"
+            );
+
+            require
+            (
+                IERC20(_tokenAddress).allowance(linkdropMaster, address(this)) >= _tokenAmount, "INSUFFICIENT_ALLOWANCE"
+            );
+        }
+
+        // Verify that link key is legit and signed by linkdrop signer
+        require
+        (
+            verifyLinkdropSignerSignature
+            (
+                _weiAmount,
+                _tokenAddress,
+                _tokenAmount,
+                _expiration,
+                _linkId,
+                _linkdropSignerSignature
+            ),
+            "INVALID_LINKDROP_SIGNER_SIGNATURE"
+        );
+
+        // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
+        require
+        (
+            verifyReceiverSignature(_linkId, _receiver, _receiverSignature),
+            "INVALID_RECEIVER_SIGNATURE"
+        );
+
+        return true;
+    }
+
     function claimUnlock
     (
         uint _weiAmount,
@@ -283,13 +359,11 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     whenNotPaused
     returns (bool)
     {
-        uint keyPrice = IPublicLock(_lock).keyPrice();
-        require(_weiAmount >= keyPrice, "INSUFFICIENT_FUNDS_FOR_UNLOCK");
 
         // Make sure params are valid
         require
         (
-            checkClaimParams
+            checkClaimParamsUnlock
             (
                 _weiAmount,
                 _tokenAddress,
@@ -315,7 +389,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         );
 
         // Emit claim event
-        emit Claimed(_linkId, _weiAmount, _tokenAddress, _tokenAmount, _receiver);
+        emit ClaimedUnlock(_linkId, _weiAmount, _tokenAddress, _tokenAmount, _receiver, _lock);
 
         return true;
     }

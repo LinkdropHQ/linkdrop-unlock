@@ -1,4 +1,10 @@
 const routes = {
+  '/linkdrops/claimUnlock': {
+    post: {
+      controller: 'claimController',
+      method: 'claimUnlock'
+    }
+  },
   '/linkdrops/claim': {
     post: {
       controller: 'claimController',
