@@ -148,7 +148,7 @@ class ClaimService {
 
   async claimUnlock (params) {
     // Make sure all arguments are passed
-    this._checkClaimParamsUnlock(params)
+    this._checkClaimParams(params)
 
     // Check whether a claim tx exists in database
     const claim = await this.findClaimInDB(params)
@@ -181,7 +181,7 @@ class ClaimService {
     }
 
     // blockhain check that params are valid
-    await this._checkParamsWithBlockchainCallUnlock(params)
+    await this._checkParamsWithBlockchainCall(params)
     logger.debug('Blockchain params check passed. Submitting claim tx...')
 
     // save claim operation to database

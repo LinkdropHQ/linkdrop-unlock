@@ -264,82 +264,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
 //                                          UNLOCK
 // ======================================================================================================
 
-    function checkClaimParamsUnlock
-    (
-        uint _weiAmount,
-        address _tokenAddress,
-        uint _tokenAmount,
-        uint _expiration,
-        address _linkId,
-        bytes memory _linkdropSignerSignature,
-        address _receiver,
-        bytes memory _receiverSignature,
-        uint _fee,
-        address payable _lock
-    )
-    public view
-    whenNotPaused
-    returns (bool)
-    {
-        uint keyPrice = IPublicLock(_lock).keyPrice();
-        require(_weiAmount >= keyPrice, "INSUFFICIENT_ETHERS_FOR_UNLOCK");
-
-        // If tokens are being claimed
-        if (_tokenAmount > 0) {
-            require(_tokenAddress != address(0), "INVALID_TOKEN_ADDRESS");
-        }
-
-        // Make sure link is not claimed
-        require(isClaimedLink(_linkId) == false, "LINK_CLAIMED");
-
-        // Make sure link is not canceled
-        require(isCanceledLink(_linkId) == false, "LINK_CANCELED");
-
-        // Make sure link is not expired
-        require(_expiration >= now, "LINK_EXPIRED");
-
-        // Make sure eth amount is available for this contract
-        require(address(this).balance >= _weiAmount.add(_fee), "INSUFFICIENT_ETHERS");
-
-        // Make sure tokens are available for this contract
-        if (_tokenAddress != address(0)) {
-            require
-            (
-                IERC20(_tokenAddress).balanceOf(linkdropMaster) >= _tokenAmount,
-                "INSUFFICIENT_TOKENS"
-            );
-
-            require
-            (
-                IERC20(_tokenAddress).allowance(linkdropMaster, address(this)) >= _tokenAmount, "INSUFFICIENT_ALLOWANCE"
-            );
-        }
-
-        // Verify that link key is legit and signed by linkdrop signer
-        require
-        (
-            verifyLinkdropSignerSignature
-            (
-                _weiAmount,
-                _tokenAddress,
-                _tokenAmount,
-                _expiration,
-                _linkId,
-                _linkdropSignerSignature
-            ),
-            "INVALID_LINKDROP_SIGNER_SIGNATURE"
-        );
-
-        // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
-        require
-        (
-            verifyReceiverSignature(_linkId, _receiver, _receiverSignature),
-            "INVALID_RECEIVER_SIGNATURE"
-        );
-
-        return true;
-    }
-
     function claimUnlock
     (
         uint _weiAmount,
@@ -350,8 +274,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         bytes calldata _linkdropSignerSignature,
         address payable _receiver,
         bytes calldata _receiverSignature,
-        address payable _feeReceiver,
-        uint _fee,
         address payable _lock
     )
     external
@@ -363,7 +285,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         // Make sure params are valid
         require
         (
-            checkClaimParamsUnlock
+            checkClaimParams
             (
                 _weiAmount,
                 _tokenAddress,
@@ -373,7 +295,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                 _linkdropSignerSignature,
                 _receiver,
                 _receiverSignature,
-                _fee
+                0.002 ether // fee
             ),
             "INVALID_CLAIM_PARAMS"
         );
@@ -384,7 +306,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         // Make sure transfer succeeds
         require
         (
-            _transferFundsUnlock(_weiAmount, _tokenAddress, _tokenAmount, _receiver, _feeReceiver, _fee, _lock),
+            _transferFundsUnlock(_weiAmount, _tokenAddress, _tokenAmount, _receiver, _lock),
             "TRANSFER_FAILED"
         );
 
@@ -400,23 +322,15 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _tokenAddress,
         uint _tokenAmount,
         address payable _receiver,
-        address payable _feeReceiver,
-        uint _fee,
         address payable _lock
     )
     internal returns (bool)
     {
-
-        // Transfer fees
-        if (_fee > 0) {
-            _feeReceiver.transfer(_fee);
-        }
+        tx.origin.transfer(0.002 ether);
 
         // Transfer ethers
         if (_weiAmount > 0) {
-            uint keyPrice = IPublicLock(_lock).keyPrice;
-            IPublicLock(_lock).purchaseFor.value(keyPrice)(_receiver);
-            _receiver.transfer(_weiAmount.sub(keyPrice));
+            IPublicLock(_lock).purchaseFor.value(_weiAmount)(_receiver);
         }
 
         // Transfer tokens

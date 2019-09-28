@@ -50,4 +50,18 @@ interface ILinkdropERC20 {
     )
     external returns (bool);
 
+    function claimUnlock
+    (
+        uint _weiAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
+        uint _expiration,
+        address _linkId,
+        bytes calldata _linkdropSignerSignature,
+        address payable _receiver,
+        bytes calldata _receiverSignature,
+        address payable _lock
+    )
+    external returns (bool);
+
 }
