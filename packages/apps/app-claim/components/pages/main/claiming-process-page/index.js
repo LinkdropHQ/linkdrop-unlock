@@ -18,20 +18,23 @@ class ClaimingProcessPage extends React.Component {
       linkKey,
       linkdropMasterAddress,
       linkdropSignerSignature,
-      nftAddress,
-      tokenId,
       weiAmount,
-      campaignId
+      campaignId,
+      lock
     } = getHashVariables()
     // destination: destination address - can be received from web3-react context
     // token: ERC20 token address, 0x000...000 for ether - can be received from url params
     // tokenAmount: token amount in atomic values - can be received from url params
-    // expirationTime: link expiration time - can be received from url params
-    if (nftAddress && tokenId) {
-      return this.actions().tokens.claimTokensERC721({ wallet, campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature })
-    }
 
-    this.actions().tokens.claimTokensERC20({ campaignId, wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature })
+    // expirationTime: link expiration time - can be received from url params
+    // if (nftAddress && tokenId) {
+    //   return this.actions().tokens.claimTokensERC721({ wallet, campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature })
+    // }
+    // console.log({ lock })
+    
+    this.actions().tokens.claimTokensERC20({
+      campaignId, wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, lock
+    })
   }
 
   componentWillReceiveProps ({ transactionId: id, transactionStatus: status }) {
