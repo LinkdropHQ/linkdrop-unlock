@@ -257,6 +257,62 @@ class LinkdropSDK {
       linkId
     })
   }
+
+  ///
+  async generateLinkUnlock ({
+    signingKeyOrWallet,
+    weiAmount,
+    tokenAddress,
+    tokenAmount,
+    expirationTime = 12345678910,
+    campaignId,
+    lock
+  }) {
+    return generateLinkUtils.generateLinkUnlock({
+      factoryAddress: this.factoryAddress,
+      chainId: this.chainId,
+      claimHost: this.claimHost,
+      linkdropMasterAddress: this.linkdropMasterAddress,
+      signingKeyOrWallet,
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime,
+      version: this.version[campaignId] || (await this.getVersion(campaignId)),
+      campaignId,
+      lock
+    })
+  }
+
+  async claimUnlock ({
+    weiAmount,
+    tokenAddress,
+    tokenAmount,
+    expirationTime = 12345678910,
+    linkKey,
+    linkdropSignerSignature,
+    receiverAddress,
+    campaignId,
+    lock
+  }) {
+    return claimUtils.claimUnlock({
+      jsonRpcUrl: this.json,
+      apiHost: this.apiHost,
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime,
+      version: this.version[campaignId] || (await this.getVersion(campaignId)),
+      chainId: this.chainId,
+      linkKey,
+      linkdropMasterAddress: this.linkdropMasterAddress,
+      linkdropSignerSignature,
+      receiverAddress,
+      factoryAddress: this.factoryAddress,
+      campaignId,
+      lock
+    })
+  }
 }
 
 function getChainId (chain) {

@@ -25,6 +25,35 @@ class ClaimServiceERC20 extends ClaimServiceBase {
   _sendClaimTx (params) {
     return proxyFactoryService.claim(params)
   }
+
+  // ===========================================================================================
+  //                                  UNLOCK
+  // ===========================================================================================
+
+  _checkClaimParamsUnlock (params) {
+    // check basic linkdrop params
+    super._checkClaimParamsBase(params)
+
+    // make erc20 specific checks
+    if (!params.tokenAddress) {
+      throw new BadRequestError('Please provide tokenAddress argument')
+    }
+    if (!params.tokenAmount) {
+      throw new BadRequestError('Please provide tokenAddress argument')
+    }
+    if (!params.lock) {
+      throw new BadRequestError('Please provide lock argument')
+    }
+    logger.debug('Valid claim params: ' + JSON.stringify(params))
+  }
+
+  _checkParamsWithBlockchainCallUnlock (params) {
+    return proxyFactoryService.checkClaimParamsUnlock(params)
+  }
+
+  _sendClaimkTxUnlock (params) {
+    return proxyFactoryService.claimUnlock(params)
+  }
 }
 
 export default new ClaimServiceERC20()
