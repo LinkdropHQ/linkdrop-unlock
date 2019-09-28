@@ -43,7 +43,7 @@ const linkdropSDK = new LinkdropSDK({
 
 export const generate = async () => {
   let spinner, tx
-  try {
+  // try {
     spinner = ora({
       text: term.bold.green.str('Generating links'),
       color: 'green'
@@ -66,28 +66,32 @@ export const generate = async () => {
     const proxyBalance = await provider.getBalance(proxyAddress)
 
     // check that proxy address is deployed
-    await deployProxyIfNeeded(spinner)
-
-    if (proxyBalance < totalCosts) {
-      // Transfer ethers
-      amountToSend = totalCosts.sub(proxyBalance)
-
-      spinner.info(
-        term.bold.str(
-          `Sending ${amountToSend /
-            Math.pow(10, tokenDecimals)} ${tokenSymbol} to ^g${proxyAddress}`
-        )
+  await deployProxyIfNeeded(spinner, privateKey)
+  
+  if (proxyBalance.lt(totalCosts)) {
+    
+    console.log({ proxyBalance })
+    
+    // Transfer ethers
+    amountToSend = totalCosts.sub(proxyBalance)
+    
+   
+    spinner.info(
+      term.bold.str(
+        `Sending ${amountToSend /
+                   Math.pow(10, tokenDecimals)} ${tokenSymbol} to ^g${proxyAddress}`
       )
-
-      tx = await linkdropMaster.sendTransaction({
-        to: proxyAddress,
-        value: amountToSend,
-        gasLimit: 23000
-      })
-
-      term.bold(`Tx Hash: ^g${tx.hash}\n`)
-    }
-
+    )
+      
+    tx = await linkdropMaster.sendTransaction({
+      to: proxyAddress,
+      value: amountToSend,
+      gasLimit: 23000
+    })
+      
+    term.bold(`Tx Hash: ^g${tx.hash}\n`)
+  }
+   
     // Generate links
     let links = []
 
@@ -115,23 +119,23 @@ export const generate = async () => {
     const dir = path.join(__dirname, '../output')
     const filename = path.join(dir, 'linkdrop_eth_unlock.csv')
 
-    try {
+    // try {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir)
       }
       const ws = fs.createWriteStream(filename)
       fastcsv.write(links, { headers: true }).pipe(ws)
-    } catch (err) {
-      throw newError(err)
-    }
+    // } catch (err) {
+    //   throw newError(err)
+    // }
 
     spinner.succeed(term.bold.str(`Generated and saved links to ^_${filename}`))
 
     return links
-  } catch (err) {
-    spinner.fail(term.bold.red.str('Failed to generate links'))
-    throw newError(err)
-  }
+  // } catch (err) {
+  //   spinner.fail(term.bold.red.str('Failed to generate links'))
+  //   throw newError(err)
+  // }
 }
 
 generate()
