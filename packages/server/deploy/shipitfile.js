@@ -2,30 +2,30 @@ module.exports = shipit => {
   require('shipit-deploy')(shipit)
 
   const network = process.argv[2]
-  const PM2_APP_NAME = `linkdrop-${network}`
+  const PM2_APP_NAME = `linkdrop-unlock-${network}`
   let CUSTOM_PORT
 
-  if (network === 'mainnet') CUSTOM_PORT = 10001
-  else if (network === 'rinkeby') CUSTOM_PORT = 10004
-  else if (network === 'ropsten') CUSTOM_PORT = 10003
+  if (network === 'mainnet') CUSTOM_PORT = 12001
+  else if (network === 'rinkeby') CUSTOM_PORT = 12004
+  else if (network === 'ropsten') CUSTOM_PORT = 12003
 
   shipit.initConfig({
     default: {
-      repositoryUrl: 'git@github.com:LinkdropProtocol/linkdrop-monorepo.git',
+      repositoryUrl: 'git@github.com:LinkdropHQ/linkdrop-unlock.git',
       keepReleases: 3
     },
     rinkeby: {
-      deployTo: 'linkdrop/rinkeby',
+      deployTo: 'linkdrop-unlock/rinkeby',
       servers: 'root@rinkeby.linkdrop.io',
       branch: 'dev'
     },
     ropsten: {
-      deployTo: 'linkdrop/ropsten',
+      deployTo: 'linkdrop-unlock/ropsten',
       servers: 'root@rinkeby.linkdrop.io',
       branch: 'dev'
     },
     mainnet: {
-      deployTo: 'linkdrop/mainnet',
+      deployTo: 'linkdrop-unlock/mainnet',
       servers: 'root@rinkeby.linkdrop.io',
       branch: 'dev'
     }
@@ -41,7 +41,7 @@ module.exports = shipit => {
   shipit.task('copyConfig', async () => {
     await shipit.copyToRemote(
       '../../../configs/server.config.json',
-      `linkdrop/${network}/current/configs/server.config.json`
+      `linkdrop-unlock/${network}/current/configs/server.config.json`
     )
   })
 

@@ -141,6 +141,63 @@ class ClaimService {
 
     return tx.hash
   }
+
+  // ===========================================================================================
+  //                                  UNLOCK
+  // ===========================================================================================
+
+  async claimUnlock (params) {
+    // Make sure all arguments are passed
+    this._checkClaimParams(params)
+
+    // Check whether a claim tx exists in database
+    const claim = await this.findClaimInDB(params)
+    if (claim) {
+      logger.info(`Existing claim transaction found: ${claim.id}`)
+
+      if (!claim.transactions) {
+        logger.warn(
+          `Existing claim transaction found: ${claim.id} without transactions`
+        )
+        throw new Error('Claim link was already submitted')
+      }
+
+      // retrieving the latest transactoin and returning it's tx hash
+      const tx = claim.transactions[claim.transactions.length - 1]
+      return tx.hash
+    }
+    logger.debug("Claim doesn't exist in database yet. Creating new claim...")
+
+    // compute proxyAddress from master address
+    const proxyAddress = await linkdropService.getProxyAddress(
+      params.linkdropMasterAddress,
+      params.campaignId
+    )
+
+    logger.debug(`Proxy address computed: ${proxyAddress}`)
+    params = {
+      ...params,
+      proxyAddress
+    }
+
+    // blockhain check that params are valid
+    await this._checkParamsWithBlockchainCall(params)
+    logger.debug('Blockchain params check passed. Submitting claim tx...')
+
+    // save claim operation to database
+    const claimId = this._computeId(params)
+    logger.debug('Saving claim operation to database...')
+    await operationService.create({ id: claimId, type: 'claim', data: params })
+
+    // send claim transaction to blockchain
+    const tx = await this._sendClaimTxUnlock(params)
+    logger.info('Submitted claim tx: ' + tx.hash)
+
+    // add transaction details to database
+    await operationService.addTransaction(claimId, tx)
+
+    return tx.hash
+  }
 }
 
 export default ClaimService

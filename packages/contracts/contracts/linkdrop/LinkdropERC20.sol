@@ -3,6 +3,8 @@ pragma solidity ^0.5.6;
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/ILinkdropERC20.sol";
 import "./LinkdropCommon.sol";
+import "../interfaces/IPublicLock.sol";
+import "../interfaces/ILinkdropFactory.sol";
 
 contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     using SafeMath for uint;
@@ -241,11 +243,96 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     internal returns (bool)
     {
         // Transfer fees
-        _feeReceiver.transfer(_fee);
+        if (_fee > 0) {
+            _feeReceiver.transfer(_fee);
+        }
 
         // Transfer ethers
         if (_weiAmount > 0) {
             _receiver.transfer(_weiAmount);
+        }
+
+        // Transfer tokens
+        if (_tokenAmount > 0) {
+            IERC20(_tokenAddress).transferFrom(linkdropMaster, _receiver, _tokenAmount);
+        }
+
+        return true;
+    }
+
+
+// ======================================================================================================
+//                                          UNLOCK
+// ======================================================================================================
+
+    function claimUnlock
+    (
+        uint _weiAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
+        uint _expiration,
+        address _linkId,
+        bytes calldata _linkdropSignerSignature,
+        address payable _receiver,
+        bytes calldata _receiverSignature,
+        address payable _lock
+    )
+    external
+    onlyFactory
+    whenNotPaused
+    returns (bool)
+    {
+
+        // Make sure params are valid
+        require
+        (
+            checkClaimParams
+            (
+                _weiAmount,
+                _tokenAddress,
+                _tokenAmount,
+                _expiration,
+                _linkId,
+                _linkdropSignerSignature,
+                _receiver,
+                _receiverSignature,
+                ILinkdropFactory(owner).getFee(address(this)) // fee
+            ),
+            "INVALID_CLAIM_PARAMS"
+        );
+
+        // Mark link as claimed
+        claimedTo[_linkId] = _receiver;
+
+        // Make sure transfer succeeds
+        require
+        (
+            _transferFundsUnlock(_weiAmount, _tokenAddress, _tokenAmount, _receiver, _lock),
+            "TRANSFER_FAILED"
+        );
+
+        // Emit claim event
+        emit ClaimedUnlock(_linkId, _weiAmount, _tokenAddress, _tokenAmount, _receiver, _lock);
+
+        return true;
+    }
+
+    function _transferFundsUnlock
+    (
+        uint _weiAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
+        address payable _receiver,
+        address payable _lock
+    )
+    internal returns (bool)
+    {
+        // Transfers fee to relayer who called this contract through factory
+        tx.origin.transfer(ILinkdropFactory(owner).getFee(address(this)));
+
+        // Transfer ethers
+        if (_weiAmount > 0) {
+            IPublicLock(_lock).purchaseFor.value(_weiAmount)(_receiver);
         }
 
         // Transfer tokens

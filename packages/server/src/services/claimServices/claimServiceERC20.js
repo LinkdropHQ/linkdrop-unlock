@@ -25,6 +25,14 @@ class ClaimServiceERC20 extends ClaimServiceBase {
   _sendClaimTx (params) {
     return proxyFactoryService.claim(params)
   }
+
+  // ===========================================================================================
+  //                                  UNLOCK
+  // ===========================================================================================
+
+  _sendClaimTxUnlock (params) {
+    return proxyFactoryService.claimUnlock(params)
+  }
 }
 
 export default new ClaimServiceERC20()

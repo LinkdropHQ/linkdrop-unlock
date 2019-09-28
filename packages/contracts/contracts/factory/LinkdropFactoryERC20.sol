@@ -112,4 +112,48 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
         return true;
     }
 
+// ======================================================================================================
+//                                          UNLOCK
+// ======================================================================================================
+
+    function claimUnlock
+    (
+        uint _weiAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
+        uint _expiration,
+        address _linkId,
+        address payable _linkdropMaster,
+        uint _campaignId,
+        bytes calldata _linkdropSignerSignature,
+        address payable _receiver,
+        bytes calldata _receiverSignature,
+        address payable _lock
+    )
+    external
+    returns (bool)
+    {
+        // Make sure proxy contract is deployed
+        require(isDeployed(_linkdropMaster, _campaignId), "LINKDROP_PROXY_CONTRACT_NOT_DEPLOYED");
+
+        // Make sure only whitelisted relayer calls this function
+        require(isRelayer[msg.sender], "ONLY_RELAYER");
+
+        // Call claim function in the context of proxy contract
+        ILinkdropERC20(deployed[salt(_linkdropMaster, _campaignId)]).claimUnlock
+        (
+            _weiAmount,
+            _tokenAddress,
+            _tokenAmount,
+            _expiration,
+            _linkId,
+            _linkdropSignerSignature,
+            _receiver,
+            _receiverSignature,
+            _lock
+        );
+
+        return true;
+    }
+
 }

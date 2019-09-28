@@ -50,3 +50,18 @@ export const cancel = async (req, res) => {
 
   res.json({ success: true, claimOperation })
 }
+
+// ===========================================================================================
+//                                  UNLOCK
+// ===========================================================================================
+
+export const claimUnlock = async (req, res) => {
+  // claim transaction
+  const txHash = await claimServiceERC20.claimUnlock(req.body)
+
+  // return tx hash in successful response
+  res.json({
+    success: true,
+    txHash: txHash
+  })
+}

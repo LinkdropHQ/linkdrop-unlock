@@ -124,6 +124,68 @@ class ProxyFactoryService {
       { gasPrice }
     )
   }
+
+  // ===========================================================================================
+  //                                  UNLOCK
+  // ===========================================================================================
+
+  checkClaimParamsUnlock ({
+    weiAmount,
+    tokenAddress,
+    tokenAmount,
+    expirationTime,
+    linkId,
+    linkdropMasterAddress,
+    campaignId,
+    linkdropSignerSignature,
+    receiverAddress,
+    receiverSignature,
+    lock
+  }) {
+    return this.contract.checkClaimParamsUnlock(
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime,
+      linkId,
+      linkdropMasterAddress,
+      campaignId,
+      linkdropSignerSignature,
+      receiverAddress,
+      receiverSignature,
+      lock
+    )
+  }
+
+  async claimUnlock ({
+    weiAmount,
+    tokenAddress,
+    tokenAmount,
+    expirationTime,
+    linkId,
+    linkdropMasterAddress,
+    campaignId,
+    linkdropSignerSignature,
+    receiverAddress,
+    receiverSignature,
+    lock
+  }) {
+    const gasPrice = await relayerWalletService.getGasPrice()
+    return this.contract.claimUnlock(
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime,
+      linkId,
+      linkdropMasterAddress,
+      campaignId,
+      linkdropSignerSignature,
+      receiverAddress,
+      receiverSignature,
+      lock,
+      { gasPrice }
+    )
+  }
 }
 
 export default new ProxyFactoryService()

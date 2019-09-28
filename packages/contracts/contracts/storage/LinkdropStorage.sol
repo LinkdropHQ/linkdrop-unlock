@@ -32,6 +32,7 @@ contract LinkdropStorage {
     // Events
     event Canceled(address linkId);
     event Claimed(address indexed linkId, uint ethAmount, address indexed token, uint tokenAmount, address receiver);
+    event ClaimedUnlock(address indexed linkId, uint ethAmount, address indexed token, uint tokenAmount, address receiver, address indexed lock);
     event ClaimedERC721(address indexed linkId, uint ethAmount, address indexed nft, uint tokenId, address receiver);
     event Paused();
     event Unpaused();
