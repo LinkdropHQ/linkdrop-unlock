@@ -4,8 +4,8 @@ const generator = function * ({ payload }) {
   try {
     const { linkId, contract } = payload
     const eventPromise = new Promise((resolve, reject) => {
-      const filter = contract.filters.Claimed(linkId)
-      contract.on(filter, (linkId, ethAmount, token, tokenAmount, receiver, event) => {
+      const filter = contract.filters.ClaimedUnlock(linkId)
+      contract.on(filter, (linkId, ethAmount, token, tokenAmount, receiver, lock, event) => {
         return resolve({ event })
       })
     })
