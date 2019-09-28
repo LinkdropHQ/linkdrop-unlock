@@ -21,7 +21,7 @@ const generator = function * ({ payload }) {
       chain: networkName,
       linkdropMasterAddress,
       jsonRpcUrl: `https://${networkName}.infura.io/v3/${infuraPk}`,
-      apiHost: `https://${networkName}.linkdrop.io`
+      apiHost: `https://unlock-${networkName}.linkdrop.io`
     })
     yield put({ type: 'USER.SET_SDK', payload: { sdk } })
     const address = sdk.getProxyAddress(campaignId)

@@ -1,5 +1,4 @@
 import {
-  getLinkdropMasterWallet,
   getProvider,
   getString,
   getInt
@@ -10,20 +9,26 @@ import { terminal as term } from 'terminal-kit'
 import { ethers } from 'ethers'
 const CAMPAIGN_ID = getInt('CAMPAIGN_ID')
 const PROVIDER = getProvider()
-const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
+// const LINKDROP_MASTER_WALLET = getLinkdropMasterWallet()
 const FACTORY_ADDRESS = getString('FACTORY_ADDRESS')
 const CHAIN = getString('CHAIN')
-const LINKDROP_MASTER_PRIVATE_KEY = getString('linkdropMasterPrivateKey')
 const JSON_RPC_URL = getString('jsonRpcUrl')
 
-const linkdropSDK = new LinkdropSDK({
-  linkdropMasterAddress: new ethers.Wallet(LINKDROP_MASTER_PRIVATE_KEY).address,
-  chain: CHAIN,
-  jsonRpcUrl: JSON_RPC_URL,
-  factoryAddress: FACTORY_ADDRESS
-})
-
-const deployProxyIfNeeded = async spinner => {
+const deployProxyIfNeeded = async (spinner, linkdropMasterPrivateKey) => {
+  const provider = getProvider()
+  
+  const linkdropMasterWallet = new ethers.Wallet(
+    linkdropMasterPrivateKey,
+    provider
+  )
+  
+  const linkdropSDK = new LinkdropSDK({
+    linkdropMasterAddress: linkdropMasterWallet.address,
+    chain: CHAIN,
+    jsonRpcUrl: JSON_RPC_URL,
+    factoryAddress: FACTORY_ADDRESS
+  })
+  
   const proxyAddress = linkdropSDK.getProxyAddress(CAMPAIGN_ID)
 
   // check that proxy address is deployed
@@ -36,7 +41,7 @@ const deployProxyIfNeeded = async spinner => {
     const factoryContract = new ethers.Contract(
       FACTORY_ADDRESS,
       LinkdropFactory.abi,
-      LINKDROP_MASTER_WALLET
+      linkdropMasterWallet
     )
     const tx = await factoryContract.deployProxy(CAMPAIGN_ID)
     if (spinner) {

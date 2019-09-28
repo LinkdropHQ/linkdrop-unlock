@@ -3,10 +3,10 @@ import { ERRORS } from './data'
 
 const generator = function * ({ payload }) {
   try {
-    const { campaignId, wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
+    const { campaignId, wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, lock } = payload    
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
-    const { success, errors, txHash } = yield sdk.claim({
+    const { success, errors, txHash } = yield sdk.claimUnlock({
       weiAmount: weiAmount || '0',
       tokenAddress,
       tokenAmount: tokenAmount || '0',
@@ -15,7 +15,8 @@ const generator = function * ({ payload }) {
       linkdropMasterAddress,
       linkdropSignerSignature,
       receiverAddress: wallet,
-      campaignId
+      campaignId,
+      lock
     })
 
     if (success) {

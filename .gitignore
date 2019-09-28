@@ -17,7 +17,7 @@ packages/scripts/output
 config.json
 app.config.json
 server.config.json
-scripts.config.json
+
 
 packages/apps/app-claim/node_modules/
 packages/apps/app-claim/assets/scripts/

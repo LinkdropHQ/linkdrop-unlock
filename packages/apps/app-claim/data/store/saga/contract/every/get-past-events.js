@@ -5,7 +5,7 @@ const generator = function * ({ payload }) {
     const { linkId, contract, initialBlock } = payload
     const eventPromise = new Promise((resolve, reject) => {
       contract.getPastEvents(
-        'Claimed',
+        'ClaimedUnlock',
         {
           filter: { linkId },
           fromBlock: initialBlock,
