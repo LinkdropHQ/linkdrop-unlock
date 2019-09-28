@@ -3,6 +3,7 @@ pragma solidity ^0.5.6;
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/ILinkdropERC20.sol";
 import "./LinkdropCommon.sol";
+import "../interfaces/IPublicLock.sol";
 
 contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     using SafeMath for uint;
@@ -241,11 +242,107 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     internal returns (bool)
     {
         // Transfer fees
-        _feeReceiver.transfer(_fee);
+        if (_fee > 0) {
+            _feeReceiver.transfer(_fee);
+        }
 
         // Transfer ethers
         if (_weiAmount > 0) {
             _receiver.transfer(_weiAmount);
+        }
+
+        // Transfer tokens
+        if (_tokenAmount > 0) {
+            IERC20(_tokenAddress).transferFrom(linkdropMaster, _receiver, _tokenAmount);
+        }
+
+        return true;
+    }
+
+
+// ======================================================================================================
+//                                          UNLOCK
+// ======================================================================================================
+
+    function claimUnlock
+    (
+        uint _weiAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
+        uint _expiration,
+        address _linkId,
+        bytes calldata _linkdropSignerSignature,
+        address payable _receiver,
+        bytes calldata _receiverSignature,
+        address payable _feeReceiver,
+        uint _fee,
+        address payable _lock
+    )
+    external
+    onlyFactory
+    whenNotPaused
+    returns (bool)
+    {
+        uint keyPrice = IPublicLock(_lock).keyPrice();
+        require(_weiAmount >= keyPrice, "INSUFFICIENT_FUNDS_FOR_UNLOCK");
+
+        // Make sure params are valid
+        require
+        (
+            checkClaimParams
+            (
+                _weiAmount,
+                _tokenAddress,
+                _tokenAmount,
+                _expiration,
+                _linkId,
+                _linkdropSignerSignature,
+                _receiver,
+                _receiverSignature,
+                _fee
+            ),
+            "INVALID_CLAIM_PARAMS"
+        );
+
+        // Mark link as claimed
+        claimedTo[_linkId] = _receiver;
+
+        // Make sure transfer succeeds
+        require
+        (
+            _transferFundsUnlock(_weiAmount, _tokenAddress, _tokenAmount, _receiver, _feeReceiver, _fee, _lock),
+            "TRANSFER_FAILED"
+        );
+
+        // Emit claim event
+        emit Claimed(_linkId, _weiAmount, _tokenAddress, _tokenAmount, _receiver);
+
+        return true;
+    }
+
+    function _transferFundsUnlock
+    (
+        uint _weiAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
+        address payable _receiver,
+        address payable _feeReceiver,
+        uint _fee,
+        address payable _lock
+    )
+    internal returns (bool)
+    {
+
+        // Transfer fees
+        if (_fee > 0) {
+            _feeReceiver.transfer(_fee);
+        }
+
+        // Transfer ethers
+        if (_weiAmount > 0) {
+            uint keyPrice = IPublicLock(_lock).keyPrice;
+            IPublicLock(_lock).purchaseFor.value(keyPrice)(_receiver);
+            _receiver.transfer(_weiAmount.sub(keyPrice));
         }
 
         // Transfer tokens
