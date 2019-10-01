@@ -360,6 +360,6 @@ export const claimUnlock = async ({
     claimParams
   )
 
-  const { error, errors, success, txHash, txData } = response.data
-  return { error, errors, success, txHash, txData }
+  const { error, errors, success, txHash, txData, relayerAddress } = response.data
+  return { error, errors, success, txHash, txData, relayerAddress }
 }

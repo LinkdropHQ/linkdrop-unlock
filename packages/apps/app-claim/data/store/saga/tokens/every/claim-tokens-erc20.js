@@ -9,7 +9,7 @@ const generator = function * ({ payload }) {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
 
-    const { success, errors, txHash, txData } = yield sdk.claimUnlock({
+    const { success, errors, txHash, txData, relayerAddress } = yield sdk.claimUnlock({
       weiAmount: weiAmount || '0',
       tokenAddress,
       tokenAmount: tokenAmount || '0',
@@ -26,12 +26,10 @@ const generator = function * ({ payload }) {
     
     if (success) {
       const { chainId } = getHashVariables()
-      const proxyAddress = sdk.getProxyAddress(campaignId)
-      console.log({ chainId, proxyAddress })
       const data = yield registerWithUnlock({
         transactionHash: txHash,
         chain: chainId,
-        sender: '0xd54f7e7ddc18a8354fe29506f609d46a662e8a76',
+        sender: relayerAddress,
         recipient: lock,
         for_: wallet,
         txData: `0xf6e4641f000000000000000000000000${wallet.slice(2).toLowerCase()}`
