@@ -1,12 +1,15 @@
 import { put, select } from 'redux-saga/effects'
 import { ERRORS } from './data'
+import registerWithUnlock from 'data/api/register-with-unlock'
+import { getHashVariables } from '@linkdrop/commons'
 
 const generator = function * ({ payload }) {
   try {
     const { campaignId, wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, lock } = payload    
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
-    const { success, errors, txHash } = yield sdk.claimUnlock({
+
+    const { success, errors, txHash, txData, relayerAddress } = yield sdk.claimUnlock({
       weiAmount: weiAmount || '0',
       tokenAddress,
       tokenAmount: tokenAmount || '0',
@@ -19,7 +22,19 @@ const generator = function * ({ payload }) {
       lock
     })
 
+    console.log({ success, errors, txHash, txData })
+    
     if (success) {
+      const { chainId } = getHashVariables()
+      const data = yield registerWithUnlock({
+        transactionHash: txHash,
+        chain: chainId,
+        sender: relayerAddress,
+        recipient: lock,
+        for_: wallet,
+        txData: `0xf6e4641f000000000000000000000000${wallet.slice(2).toLowerCase()}`
+      })
+      console.log({ data })
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })
     } else {
       if (errors.length > 0) {
