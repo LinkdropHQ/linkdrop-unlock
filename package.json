@@ -36,7 +36,7 @@
     "build:sdk": "babel packages/sdk/src -d packages/sdk/dist",
     "retry-transaction": "npx babel-node packages/server/tasks/retry_transaction.js",
     "retry-operation": "npx babel-node packages/server/tasks/retry_operation.js",
-    "generate-links-eth-unlock": "npx babel-node packages/scripts/src/generate_links_eth_unlock.js",
+    "generate-unlock-links": "npx babel-node packages/scripts/src/generate_links_eth_unlock.js",
     "claim-eth-unlock": "npx babel-node packages/scripts/src/claim_eth_unlock.js"
   },
   "standard": {
