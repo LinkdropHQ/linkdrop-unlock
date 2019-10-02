@@ -7,7 +7,7 @@ import text from 'texts'
 class Page extends React.Component {
   render () {
     return <div className={styles.container}>
-      <Header title={this.t('titles.getTokens')} />
+      <Header title={this.t('titles.unlock')} />
       <div className={styles.main}>
         {this.props.children}
       </div>

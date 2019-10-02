@@ -6,7 +6,6 @@ import { copyToClipboard, getHashVariables } from '@linkdrop/commons'
 import classNames from 'classnames'
 import styles from './styles.module'
 import commonStyles from '../styles.module'
-import Slider from './slider'
 import CommonInstruction from './common-instruction'
 import DeepLinkInstruction from './deep-link-instruction'
 
@@ -25,8 +24,7 @@ class WalletChoosePage extends React.Component {
     const { showSlider } = this.state
     const { walletType } = this.props
     const { platform } = this
-    const { w = 'trust' } = getHashVariables()
-    console.log({ walletType })
+    const { w = 'opera' } = getHashVariables()
     if (walletType && walletType != null) {
       return this.renderWalletInstruction({ walletType })
     } else {
@@ -38,11 +36,10 @@ class WalletChoosePage extends React.Component {
       })}
       >
         <Alert className={styles.alert} icon={<Icons.Exclamation />} />
-        <div className={styles.title}>{this.t('titles.needWallet')}</div>
+        <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.needWallet') }} />
         {platform !== 'desktop' && <Button href={buttonLink} target='_blank' className={styles.button}>
           {this.t('buttons.useWallet', { wallet: buttonTitle })}
         </Button>}
-        {this.renderSlider({ walletType })}
       </div>
     }
   }
@@ -73,7 +70,6 @@ class WalletChoosePage extends React.Component {
       <div className={classNames(styles.title, styles.instructionTitle)}>{this.t('titles.howToClaim', { wallet: walletTitle })}</div>
       {instruction}
       {this.renderInstructionButton({ walletType })}
-      {this.renderSlider({ walletType })}
     </div>
   }
 
@@ -95,26 +91,6 @@ class WalletChoosePage extends React.Component {
           {this.t('buttons.copyLink')}
         </Button>
     }
-  }
-
-  renderSlider ({ walletType }) {
-    const { platform } = this
-    return <Slider
-      t={this.t}
-      platform={platform}
-      walletType={walletType}
-      selectWallet={({ id }) => {
-        this.toggleSlider({
-          showSlider: false,
-          callback: () => this.actions().user.setWalletType({ walletType: id })
-        })
-      }}
-      showSlider={_ => {
-        this.toggleSlider({
-          showSlider: true
-        })
-      }}
-    />
   }
 
   renderCommonInstruction ({ walletType, title, href }) {
