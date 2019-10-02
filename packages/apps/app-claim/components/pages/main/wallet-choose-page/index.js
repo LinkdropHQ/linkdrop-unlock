@@ -8,6 +8,7 @@ import styles from './styles.module'
 import commonStyles from '../styles.module'
 import CommonInstruction from './common-instruction'
 import DeepLinkInstruction from './deep-link-instruction'
+import Slider from './slider'
 
 @actions(({ user: { walletType } }) => ({ walletType }))
 @translate('pages.main')
@@ -40,6 +41,7 @@ class WalletChoosePage extends React.Component {
         {platform !== 'desktop' && <Button href={buttonLink} target='_blank' className={styles.button}>
           {this.t('buttons.useWallet', { wallet: buttonTitle })}
         </Button>}
+        {this.renderSlider({ walletType })}
       </div>
     }
   }
@@ -70,6 +72,7 @@ class WalletChoosePage extends React.Component {
       <div className={classNames(styles.title, styles.instructionTitle)}>{this.t('titles.howToClaim', { wallet: walletTitle })}</div>
       {instruction}
       {this.renderInstructionButton({ walletType })}
+      {this.renderSlider({ walletType })}
     </div>
   }
 
@@ -99,6 +102,26 @@ class WalletChoosePage extends React.Component {
 
   renderDeepLinkInstruction ({ walletType, title, href }) {
     return <DeepLinkInstruction walletType={walletType} styles={styles} t={this.t} title={title} href={href} />
+  }
+
+  renderSlider ({ walletType }) {
+    const { platform } = this
+    return <Slider
+      t={this.t}
+      platform={platform}
+      walletType={walletType}
+      selectWallet={({ id }) => {
+        this.toggleSlider({
+          showSlider: false,
+          callback: () => this.actions().user.setWalletType({ walletType: id })
+        })
+      }}
+      showSlider={_ => {
+        this.toggleSlider({
+          showSlider: true
+        })
+      }}
+    />
   }
 
   toggleSlider ({ showSlider = true, callback }) {
