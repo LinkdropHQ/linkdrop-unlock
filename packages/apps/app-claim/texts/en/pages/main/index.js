@@ -2,19 +2,19 @@ export default {
   titles: {
     needWallet: 'You need Opera to<br>claim Unlock token',
     haveAnother: 'Have another wallet?',
-    claimTo: 'Claim to: <span>{{wallet}}</span>',
+    claimTo: 'Claiming to: <span>{{wallet}}</span>',
     transactionInProcess: 'Transaction is processing',
     claiming: 'Claiming...',
-    instructions: 'It may take a few minutes. You can come back later.',
-    seeDetails: 'See details on <a target="_blank" href={{transactionLink}}>Etherscan</a>',
-    tokensClaimed: '<span>{{tokens}}</span> claimed',
+    instructions: 'It may take a few minutes. <a target="_blank" href={{transactionLink}}>Details</a>.',
+    tokensClaimed: '<span>{{tokens}}</span><br>is claimed',
     howToClaim: 'How to claim tokens to {{wallet}}',
     claimUnlock: 'Get an Unlock token<br>to access the article',
     agreeWithTerms: 'By claiming you agree to the <a target="_blank" href={{href}}>Terms & Privacy</a>'
   },
   buttons: {
     useWallet: 'Open in {{wallet}}',
-    copyLink: 'Copy link'
+    copyLink: 'Copy link',
+    readArticle: 'Read Article'
   },
   errors: {
     LINKDROP_PROXY_CONTRACT_PAUSED: {

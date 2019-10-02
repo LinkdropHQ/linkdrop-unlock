@@ -1,10 +1,11 @@
 import React from 'react'
-import { Loading } from '@linkdrop/ui-kit'
-import { actions, translate, platform } from 'decorators'
+import { Loading } from 'components/pages/common'
+import { actions, translate, platform, detectBrowser } from 'decorators'
 import InitialPage from './initial-page'
 import WalletChoosePage from './wallet-choose-page'
 import ClaimingProcessPage from './claiming-process-page'
 import ErrorPage from './error-page'
+import OperaInstruction from './opera-instruction'
 import ClaimingFinishedPage from './claiming-finished-page'
 import { getHashVariables, defineNetworkName, capitalize } from '@linkdrop/commons'
 import { Web3Consumer } from 'web3-react'
@@ -23,6 +24,7 @@ import { Web3Consumer } from 'web3-react'
   readyToClaim
 }))
 @platform()
+@detectBrowser()
 @translate('pages.claim')
 class Claim extends React.Component {
   componentDidMount () {
@@ -100,7 +102,10 @@ class Claim extends React.Component {
     // error
     const {
       account,
-      networkId
+      networkId,
+      library,
+      connector,
+      connectorName
     } = context
     const {
       chainId,
@@ -133,43 +138,49 @@ class Claim extends React.Component {
     }
     switch (step) {
       case 1:
-        return <InitialPage
+        return <ClaimingFinishedPage
           {...commonData}
           onClick={_ => {
-            // if (account) {
-            //   // if wallet account was found in web3 context, then go to step 4 and claim data
-            //   return this.actions().user.setStep({ step: 4 })
-            // }
-            // if wallet was not found in web3 context, then go to step 2 with wallet select page and instructions
-            this.actions().user.setStep({ step: 2 })
+            if (!this.isOpera) {
+              // to opera deeplink page
+              return this.actions().user.setStep({ step: 2 })
+            }
+            if (!account) {
+              // to instruction page
+              return this.actions().user.setStep({ step: 3 })
+            }
+            // to claiming page
+            return this.actions().user.setStep({ step: 5 })
           }}
         />
       case 2:
         // page with wallet select component
         return <WalletChoosePage onClick={_ => {
-          this.actions().user.setStep({ step: 3 })
+          this.actions().user.setStep({ step: 4 })
         }}
         />
       case 3:
+        return <OperaInstruction />
+      case 4:
         // page with info about current wallet and button to claim tokens
         return <InitialPage
           {...commonData}
           onClick={_ => {
-            this.actions().user.setStep({ step: 4 })
+            this.actions().user.setStep({ step: 5 })
           }}
         />
-      case 4:
+      case 5:
         // claiming is in process
         return <ClaimingProcessPage
           {...commonData}
         />
-      case 5:
+      case 6:
         // claiming finished successfully
         return <ClaimingFinishedPage
           {...commonData}
         />
       default:
-        // зloading
+        // loading
         return <Loading />
     }
   }
