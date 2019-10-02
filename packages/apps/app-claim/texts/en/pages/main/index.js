@@ -1,6 +1,6 @@
 export default {
   titles: {
-    needWallet: 'You need Opera to<br>claim Unlock token',
+    needWallet: 'You need Opera to<br>claim Unlock key',
     haveAnother: 'Have another wallet?',
     claimTo: 'Claiming to: <span>{{wallet}}</span>',
     transactionInProcess: 'Transaction is processing',
@@ -8,7 +8,7 @@ export default {
     instructions: 'It may take a few minutes. <a target="_blank" href={{transactionLink}}>Details</a>.',
     tokensClaimed: '<span>{{tokens}}</span><br>is claimed',
     howToClaim: 'How to claim tokens to {{wallet}}',
-    claimUnlock: 'Get an Unlock token<br>to access the article',
+    claimUnlock: 'Get an Unlock key<br>to access the article',
     agreeWithTerms: 'By claiming you agree to the <a target="_blank" href={{href}}>Terms & Privacy</a>'
   },
   buttons: {
