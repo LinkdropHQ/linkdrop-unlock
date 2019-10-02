@@ -3,7 +3,7 @@ import { useWeb3Context } from 'web3-react'
 import { Router } from 'react-router'
 import { ConnectedRouter } from 'connected-react-router'
 import { history } from 'data/store'
-import { Loading } from '@linkdrop/ui-kit'
+import { Loading } from 'components/pages/common'
 import AppRouter from '../router'
 
 export default function RouterProvider () {

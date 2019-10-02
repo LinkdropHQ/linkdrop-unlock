@@ -13,6 +13,11 @@
 
 .alert {
   margin-bottom: 40px;
+  border-color: $unlockColor;
+
+  path {
+    fill: $unlockColor;
+  }
 }
 
 .subtitle {
