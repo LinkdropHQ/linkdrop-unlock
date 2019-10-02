@@ -3,9 +3,9 @@ import axios from 'axios'
 const _getEndpointUrl = (chain) => {
   let url
   if (String(chain) === '1') {
-    url = 'http://locksmith.unlock-protocol.com/api/linkdrop/transaction'
+    url = 'https://locksmith.unlock-protocol.com/api/linkdrop/transaction'
   } else if (String(chain) === '4') {
-    url = 'http://rinkeby.locksmith.unlock-protocol.com/api/linkdrop/transaction'
+    url = 'https://rinkeby.locksmith.unlock-protocol.com/api/linkdrop/transaction'
   } else {
     console.log('Unknown chain Id: ', chain)
     throw new Error('Unknown chain Id: ', chain)
