@@ -138,7 +138,7 @@ class Claim extends React.Component {
     }
     switch (step) {
       case 1:
-        return <ClaimingFinishedPage
+        return <InitialPage
           {...commonData}
           onClick={_ => {
             if (!this.isOpera) {
