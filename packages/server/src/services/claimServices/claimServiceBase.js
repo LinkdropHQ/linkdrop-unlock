@@ -107,7 +107,7 @@ class ClaimService {
 
       // retrieving the latest transactoin and returning it's tx hash
       const tx = claim.transactions[claim.transactions.length - 1]
-      return tx.hash
+      return tx
     }
     logger.debug("Claim doesn't exist in database yet. Creating new claim...")
 
@@ -196,7 +196,7 @@ class ClaimService {
     // add transaction details to database
     await operationService.addTransaction(claimId, tx)
 
-    return tx.hash
+    return tx
   }
 }
 
