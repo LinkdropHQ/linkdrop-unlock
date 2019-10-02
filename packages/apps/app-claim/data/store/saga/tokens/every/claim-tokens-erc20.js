@@ -22,14 +22,14 @@ const generator = function * ({ payload }) {
       lock
     })
 
-    console.log({ success, errors, txHash, txData })
+    const unlockTxHash = '0x' + wallet.slice(2, 7) + txHash.slice(7)
     
     if (success) {
       const { chainId } = getHashVariables()
       const data = yield registerWithUnlock({
-        transactionHash: txHash,
+        transactionHash: unlockTxHash,
         chain: chainId,
-        sender: relayerAddress,
+        sender: relayerAddress.toLowerCase(),
         recipient: lock,
         for_: wallet,
         txData: `0xf6e4641f000000000000000000000000${wallet.slice(2).toLowerCase()}`
