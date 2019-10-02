@@ -3,9 +3,9 @@ import axios from 'axios'
 const _getEndpointUrl = (chain) => {
   let url
   if (String(chain) === '1') {
-    url = 'https://locksmith.unlock-protocol.com/api/linkdrop/transaction'
+    url = 'http://locksmith.unlock-protocol.com/api/linkdrop/transaction'
   } else if (String(chain) === '4') {
-    url = 'https://rinkeby.locksmith.unlock-protocol.com/api/linkdrop/transaction'
+    url = 'http://rinkeby.locksmith.unlock-protocol.com/api/linkdrop/transaction'
   } else {
     console.log('Unknown chain Id: ', chain)
     throw new Error('Unknown chain Id: ', chain)
@@ -23,7 +23,7 @@ const _getEndpointUrl = (chain) => {
 const registerWithUnlock = async ({ transactionHash, chain, sender, recipient, for_, txData }) => {
   try { 
     const endpoint = _getEndpointUrl(chain)
-  
+    axios.defaults.headers.post['Content-Type'] = 'application/json'
     const result = await axios.post(endpoint, {
       transactionHash,
       chain,

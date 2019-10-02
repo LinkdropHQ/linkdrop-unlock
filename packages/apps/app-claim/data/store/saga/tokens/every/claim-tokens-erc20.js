@@ -9,7 +9,7 @@ const generator = function * ({ payload }) {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
 
-    const { success, errors, txHash, txData, relayerAddress } = yield sdk.claimUnlock({
+    let { success, errors, txHash, txData, relayerAddress } = yield sdk.claimUnlock({
       weiAmount: weiAmount || '0',
       tokenAddress,
       tokenAmount: tokenAmount || '0',
@@ -22,14 +22,20 @@ const generator = function * ({ payload }) {
       lock
     })
 
-    console.log({ success, errors, txHash, txData })
+    // console.log({ success, errors, txHash, txData })
+
+    txHash = '0x9fb20b3b33c20323645b4d12f93069db311cbefe74b8c15ec6b346176aefb7b6'
+    // const relayerAddress = '0xd54f7e7ddc18a8354fe29506f609d46a662e8a76'
+    // const success = true
+    // const errors = []
+    
     
     if (success) {
       const { chainId } = getHashVariables()
       const data = yield registerWithUnlock({
         transactionHash: txHash,
         chain: chainId,
-        sender: relayerAddress,
+        sender: relayerAddress.toLowerCase(),
         recipient: lock,
         for_: wallet,
         txData: `0xf6e4641f000000000000000000000000${wallet.slice(2).toLowerCase()}`
