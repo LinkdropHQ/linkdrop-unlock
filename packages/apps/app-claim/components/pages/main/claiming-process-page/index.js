@@ -1,5 +1,6 @@
 import React from 'react'
-import { Loading } from '@linkdrop/ui-kit'
+import { Button } from '@linkdrop/ui-kit'
+import { Loading } from 'components/pages/common'
 import { translate, actions } from 'decorators'
 import styles from './styles.module'
 import commonStyles from '../styles.module'
@@ -31,7 +32,7 @@ class ClaimingProcessPage extends React.Component {
     //   return this.actions().tokens.claimTokensERC721({ wallet, campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature })
     // }
     // console.log({ lock })
-    
+
     this.actions().tokens.claimTokensERC20({
       campaignId, wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, lock
     })
@@ -45,29 +46,32 @@ class ClaimingProcessPage extends React.Component {
     }
     if (status != null && prevStatus === null) {
       this.statusCheck && window.clearInterval(this.statusCheck)
-      this.actions().user.setStep({ step: 5 })
+      this.actions().user.setStep({ step: 6 })
     }
   }
 
   render () {
-    const { chainId } = getHashVariables()
+    const { chainId, article = 'https://www.forbes.com/crypto-blockchain/' } = getHashVariables()
     const { transactionId } = this.props
     return <div className={commonStyles.container}>
       <Loading container size='small' className={styles.loading} />
       <div className={styles.title}>{this.t('titles.claiming')}</div>
       <div className={styles.subtitle}>{this.t('titles.transactionInProcess')}</div>
-      <div className={styles.description}>{this.t('titles.instructions')}</div>
       <div
         className={classNames(styles.description, {
-          [styles.descriptionHidden]: !transactionId
         })}
         dangerouslySetInnerHTML={{
-          __html: this.t('titles.seeDetails', {
+          __html: this.t('titles.instructions', {
             transactionLink: `${defineEtherscanUrl({ chainId })}tx/${transactionId}`
           })
         }}
       />
+      {this.renderArticleButton({ article })}
     </div>
+  }
+
+  renderArticleButton ({ article }) {
+    if (article) { return <Button target='_blank' className={styles.button} href={decodeURIComponent(article)}>{this.t('buttons.readArticle')}</Button> }
   }
 }
 

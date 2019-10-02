@@ -2,9 +2,9 @@
 
 .title {
   font-size: 24px;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   span {
-    font-family: 'Inter-Medium';
+    font-family: 'Inter-Bold';
   }
 }
 
@@ -19,9 +19,19 @@
 
 .alert {
   margin-bottom: 40px;
+  border-color: $unlockColor;
+
+  path {
+    fill: $unlockColor;
+  }
 }
 
 .descriptionHidden {
   visibility: hidden;
   opacity: 0;
+}
+
+.button {
+  max-width: 300px;
+  min-width: 300px;
 }

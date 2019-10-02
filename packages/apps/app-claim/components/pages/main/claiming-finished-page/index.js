@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert, Icons } from '@linkdrop/ui-kit'
+import { Alert, Icons, Button } from '@linkdrop/ui-kit'
 import { translate, actions } from 'decorators'
 import styles from './styles.module'
 import commonStyles from '../styles.module'
@@ -10,22 +10,27 @@ import classNames from 'classnames'
 @translate('pages.main')
 class ClaimingFinishedPage extends React.Component {
   render () {
-    const { chainId } = getHashVariables()
+    const { chainId, article = 'https://www.forbes.com/crypto-blockchain/' } = getHashVariables()
     const { transactionId, amount, symbol } = this.props
     return <div className={commonStyles.container}>
       <Alert icon={<Icons.Check />} className={styles.alert} />
-      <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.tokensClaimed', { tokens: `${amount || ''} ${symbol || ''}` }) }} />
-      <div
+      <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.tokensClaimed', { tokens: 'Unlock key' }) }} />
+      {false && <div
         className={classNames(styles.description, {
           [styles.descriptionHidden]: !transactionId
         })}
         dangerouslySetInnerHTML={{
-          __html: this.t('titles.seeDetails', {
+          __html: this.t('titles.instructions', {
             transactionLink: `${defineEtherscanUrl({ chainId })}tx/${transactionId}`
           })
         }}
-      />
+      />}
+      {this.renderArticleButton({ article })}
     </div>
+  }
+
+  renderArticleButton ({ article }) {
+    if (article) { return <Button target='_blank' className={styles.button} href={decodeURIComponent(article)}>{this.t('buttons.readArticle')}</Button> }
   }
 }
 

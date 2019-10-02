@@ -1,0 +1,25 @@
+@import "variables";
+
+.title {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 40px;
+  font-family: 'Inter-Medium';
+}
+
+.alert {
+  margin-bottom: 30px;
+  border-color: $unlockColor;
+
+  path {
+    fill: $unlockColor;
+  }
+}
+.instruction {
+  text-align: center;
+  font-size: 18px;
+
+  .instructionItem {
+    margin-bottom: 14px;
+  }
+}

@@ -1,5 +1,5 @@
 export default {
   titles: {
-    getTokens: 'Get Tokens'
+    unlock: 'Unlock Content'
   }
 }
