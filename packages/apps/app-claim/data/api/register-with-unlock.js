@@ -23,7 +23,7 @@ const _getEndpointUrl = (chain) => {
 const registerWithUnlock = async ({ transactionHash, chain, sender, recipient, for_, txData }) => {
   try { 
     const endpoint = _getEndpointUrl(chain)
-  
+    axios.defaults.headers.post['Content-Type'] = 'application/json'
     const result = await axios.post(endpoint, {
       transactionHash,
       chain,
