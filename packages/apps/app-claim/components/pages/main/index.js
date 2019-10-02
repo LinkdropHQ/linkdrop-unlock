@@ -141,13 +141,13 @@ class Claim extends React.Component {
         return <InitialPage
           {...commonData}
           onClick={_ => {
-            if (!this.isOpera) {
-              // to opera deeplink page
-              return this.actions().user.setStep({ step: 2 })
-            }
-            if (!account) {
+            if (this.isOpera && !account && this.platform !== 'desktop') {
               // to instruction page
               return this.actions().user.setStep({ step: 3 })
+            }
+            if ((this.platform !== 'desktop' && !this.isOpera) || !account) {
+              // to wallet choose page
+              return this.actions().user.setStep({ step: 2 })
             }
             // to claiming page
             return this.actions().user.setStep({ step: 5 })
