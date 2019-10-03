@@ -1,6 +1,6 @@
 import { put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
-import { factory } from 'app.config.js'
+import { factoryMainnet, factoryRinkeby } from 'app.config.js'
 import { defineNetworkName } from '@linkdrop/commons'
 import LinkdropFactory from 'contracts/LinkdropFactory.json'
 
@@ -12,6 +12,7 @@ const generator = function * ({ payload }) {
     const provider = yield ethers.getDefaultProvider(networkName)
     const linkWallet = yield new ethers.Wallet(linkKey, provider)
     const linkId = yield linkWallet.address
+    const factory = Number(chainId) === 1 ? factoryMainnet : factoryRinkeby
     const factoryContract = yield new ethers.Contract(factory, LinkdropFactory.abi, provider)
     const claimed = yield factoryContract.isClaimedLink(linkdropMasterAddress, campaignId, linkId)
     const lockAbi = ['function balanceOf(address _owner) view returns (uint)']
