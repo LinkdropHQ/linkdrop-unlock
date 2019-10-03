@@ -21,42 +21,74 @@ const CHAIN = getString('CHAIN')
 const EXPIRATION_TIME = getExpirationTime()
 const CAMPAIGN_ID = getInt('CAMPAIGN_ID')
 const FACTORY_ADDRESS = getString('FACTORY_ADDRESS')
-const GAS_FEE = ethers.utils.parseUnits('0.002')
-
-const args = require('yargs').argv
-
+const LINKDROP_GAS_FEE = ethers.utils.parseUnits('0.002')
 const Lock = { abi: ['function keyPrice() public view returns (uint)'] }
 
-const provider = getProvider()
-const privateKey = args.pk
-let lock = args.lock
+const getScriptArgs = () => {
+  const args = require('yargs').argv
+  //
 
-let linksNumber = args.n || 1
+  const privateKey = args.pk
 
-const linkdropMaster = new ethers.Wallet(privateKey, provider)
-const linkdropSDK = new LinkdropSDK({
-  linkdropMasterAddress: linkdropMaster.address,
-  chain: CHAIN,
-  jsonRpcUrl: JSON_RPC_URL,
-  factoryAddress: FACTORY_ADDRESS
-})
+  if (!args.pk) {
+    throw new Error('Please provide private key (--pk 0x0...00)')
+  }
+  
+  const lock = args.lock
+  if (!args.lock) {
+    throw new Error('Please provide lock address (--lock 0x0...00)')
+  }
+  
+  if (!args.n) {
+    throw new Error('Please provide links number argument: (--n 500)')
+  }
+  const linksNumber = Number(args.n)
+  if (!(linksNumber > 0)) {
+    throw new Error('Invalid --n arg: ' + args.n)
+  }
+  
+  const network = args.network
+  if (!args.network) {
+    throw new Error('Please provide network argument: (--network rinkeby|mainnet)')
+  }
+
+  if (args.network !== 'rinkeby' && args.network !== 'mainnet') {
+    throw new Error("Network arg should be either 'rinkeby' or 'mainnet'")
+  }
+  
+  return { privateKey, lock, linksNumber, network }
+}
 
 export const generate = async () => {
   let spinner, tx
-  // try {
+  try {
     spinner = ora({
       text: term.bold.green.str('Generating links'),
       color: 'green'
     })
     spinner.start()
-
+  
+  const { privateKey, lock, linksNumber, network } = getScriptArgs()
+  
+  console.log({ privateKey, lock, linksNumber, network })
+  
+  throw new Error("WIP WIP WIP")
+  
+  const provider = getProvider()
+  const linkdropMaster = new ethers.Wallet(privateKey, provider)
+  const linkdropSDK = new LinkdropSDK({
+    linkdropMasterAddress: linkdropMaster.address,
+    chain: CHAIN,
+    jsonRpcUrl: JSON_RPC_URL,
+    factoryAddress: FACTORY_ADDRESS
+  })
     const proxyAddress = linkdropSDK.getProxyAddress(CAMPAIGN_ID)
 
     lock = new ethers.Contract(lock, Lock.abi, provider)
     const keyPrice = await lock.keyPrice()
 
     const weiCosts = keyPrice.mul(linksNumber)
-    const feeCosts = GAS_FEE.mul(linksNumber)
+    const feeCosts = LINKDROP_GAS_FEE.mul(linksNumber)
     const totalCosts = weiCosts.add(feeCosts)
 
     let amountToSend
@@ -132,10 +164,10 @@ export const generate = async () => {
     spinner.succeed(term.bold.str(`Generated and saved links to ^_${filename}`))
 
     return links
-  // } catch (err) {
-  //   spinner.fail(term.bold.red.str('Failed to generate links'))
-  //   throw newError(err)
-  // }
+  } catch (err) {
+    spinner.fail(term.bold.red.str('Failed to generate links'))
+    throw newError(err)
+  }
 }
 
 generate()
