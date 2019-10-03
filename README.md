@@ -10,7 +10,8 @@ This is a work in progress. Expect breaking changes. The code has not been audit
 ```bash
 git clone https://github.com/LinkdropHQ/linkdrop-unlock.git
 cd linkdrop-unlock
-yarn
+yarn # install deps
+yarn compile-contracts # compile linkdrops contracts
 ```  
 
 2. Run the following command to generate links: 
