@@ -9,6 +9,7 @@ const initialState = {
   walletType: null,
   readyToClaim: false,
   alreadyClaimed: false,
+  claimedByUser: true,
   sdk: null
 }
 
@@ -29,6 +30,6 @@ const ACTIONS = {
   'USER.SET_WALLET_TYPE': reducers.setWalletType,
   'USER.SET_READY_TO_CLAIM': reducers.setReadyToClaim,
   'USER.SET_ALREADY_CLAIMED': reducers.setAlreadyClaimed,
-  'USER.SET_SDK': reducers.setSdk
-
+  'USER.SET_SDK': reducers.setSdk,
+  'USER.SET_CLAIMED_BY_USER': reducers.setClaimedByUser
 }

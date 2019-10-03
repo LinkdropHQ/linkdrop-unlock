@@ -15,8 +15,8 @@ class Tokens {
     this.actions.dispatch({ type: '*TOKENS.CHECK_TRANSACTION_STATUS', payload: { transactionId, chainId } })
   }
 
-  checkIfClaimed ({ linkKey, chainId, linkdropMasterAddress, campaignId }) {
-    this.actions.dispatch({ type: '*TOKENS.CHECK_IF_CLAIMED', payload: { linkKey, chainId, linkdropMasterAddress, campaignId } })
+  checkIfClaimed ({ linkKey, chainId, linkdropMasterAddress, campaignId, lock, address }) {
+    this.actions.dispatch({ type: '*TOKENS.CHECK_IF_CLAIMED', payload: { linkKey, chainId, linkdropMasterAddress, campaignId, lock, address } })
   }
 }
 
