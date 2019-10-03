@@ -100,8 +100,10 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
-      MASTER_COPY: JSON.stringify(process.env.MASTER_COPY),
-      FACTORY: JSON.stringify(process.env.FACTORY),
+      MASTER_COPY_RINKEBY: JSON.stringify(process.env.MASTER_COPY_RINKEBY),
+      MASTER_COPY_MAINNET: JSON.stringify(process.env.MASTER_COPY_MAINNET),
+      FACTORY_RINKEBY: JSON.stringify(process.env.FACTORY_RINKEBY),
+      FACTORY_MAINNET: JSON.stringify(process.env.FACTORY_MAINNET),
       INFURA_PK: JSON.stringify(process.env.INFURA_PK),
       INITIAL_BLOCK_RINKEBY: JSON.stringify(process.env.INITIAL_BLOCK_RINKEBY),
       INITIAL_BLOCK_MAINNET: JSON.stringify(process.env.INITIAL_BLOCK_MAINNET),
