@@ -133,6 +133,11 @@ class Claim extends React.Component {
 
     const walletChoosePage = <WalletChoosePage />
 
+    if (this.platform === 'desktop' && (!account || !active)) {
+      // if network id in the link and in the web3 are different
+      return <ErrorPage error='NETWORK_NOT_SUPPORTED' network={capitalize({ string: defineNetworkName({ chainId }) })} />
+    }
+
     if ((!account || !active) && (step === 1 || step === 0)) {
       return initialPage
     }
@@ -145,6 +150,7 @@ class Claim extends React.Component {
       // if some errors occured and can be found in redux store, then show error page
       return <ErrorPage error={errors[0]} />
     }
+
     if (
       (this.platform === 'desktop' && networkId && Number(chainId) !== Number(networkId)) ||
       (this.platform !== 'desktop' && account && networkId && Number(chainId) !== Number(networkId))) {
@@ -163,7 +169,7 @@ class Claim extends React.Component {
         return initialPage
       case 2:
         // page with wallet select component
-        return
+        return walletChoosePage
       case 3:
         return <OperaInstruction />
       case 4:
