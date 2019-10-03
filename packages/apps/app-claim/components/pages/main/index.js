@@ -28,7 +28,7 @@ import { Web3Consumer } from 'web3-react'
 @translate('pages.claim')
 class Claim extends React.Component {
   componentDidMount () {
-    const { account } = this.props
+    const { account, active } = this.props
     const {
       linkKey,
       chainId,
@@ -36,7 +36,10 @@ class Claim extends React.Component {
       campaignId,
       lock
     } = getHashVariables()
-    this.actions().tokens.checkIfClaimed({ address: account, lock, linkKey, chainId, linkdropMasterAddress, campaignId })
+    if (active && account) {
+      console.log('here')
+      this.actions().tokens.checkIfClaimed({ address: account, lock, linkKey, chainId, linkdropMasterAddress, campaignId })
+    }
     this.actions().user.createSdk({ linkdropMasterAddress, chainId, linkKey, campaignId })
   }
 
@@ -104,20 +107,40 @@ class Claim extends React.Component {
     // error
     const {
       account,
-      networkId
+      networkId,
+      active
     } = context
     const {
       chainId,
       linkdropMasterAddress
     } = getHashVariables()
     const commonData = { linkdropMasterAddress, chainId, decimals, amount, symbol, icon, wallet: account, loading: userLoading }
-    if (this.platform === 'desktop' && !account) {
-      return <div>
-        <ErrorPage
-          error='NEED_METAMASK'
-        />
-      </div>
+    const initialPage = <InitialPage
+      {...commonData}
+      onClick={_ => {
+        if (this.isOpera && !account && this.platform !== 'desktop') {
+          // to instruction page
+          return this.actions().user.setStep({ step: 3 })
+        }
+        if ((this.platform !== 'desktop' && !this.isOpera) || !account) {
+          // to wallet choose page
+          return this.actions().user.setStep({ step: 2 })
+        }
+        // to claiming page
+        return this.actions().user.setStep({ step: 5 })
+      }}
+    />
+
+    const walletChoosePage = <WalletChoosePage />
+
+    if ((!account || !active) && (step === 1 || step === 0)) {
+      return initialPage
     }
+
+    if ((!account || !active) && step === 2) {
+      return walletChoosePage
+    }
+
     if (errors && errors.length > 0) {
       // if some errors occured and can be found in redux store, then show error page
       return <ErrorPage error={errors[0]} />
@@ -137,27 +160,10 @@ class Claim extends React.Component {
     }
     switch (step) {
       case 1:
-        return <InitialPage
-          {...commonData}
-          onClick={_ => {
-            if (this.isOpera && !account && this.platform !== 'desktop') {
-              // to instruction page
-              return this.actions().user.setStep({ step: 3 })
-            }
-            if ((this.platform !== 'desktop' && !this.isOpera) || !account) {
-              // to wallet choose page
-              return this.actions().user.setStep({ step: 2 })
-            }
-            // to claiming page
-            return this.actions().user.setStep({ step: 5 })
-          }}
-        />
+        return initialPage
       case 2:
         // page with wallet select component
-        return <WalletChoosePage onClick={_ => {
-          this.actions().user.setStep({ step: 4 })
-        }}
-        />
+        return
       case 3:
         return <OperaInstruction />
       case 4:
