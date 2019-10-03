@@ -1,11 +1,11 @@
 {
-  "jsonRpcUrl": "https://mainnet.infura.io",
-  "CHAIN": "mainnet",
-  "API_HOST": "https://unlock-mainnet.linkdrop.io",
-  "chainId": "1",
+  "jsonRpcUrl": "https://rinkeby.infura.io",
+  "CHAIN": "rinkeby",
+  "API_HOST": "https://unlock-rinkeby.linkdrop.io",
+  "chainId": "4",
   "version": "2",
   "linkdropMasterPrivateKey": "",
-  "masterCopy": "0x414A7f56eb5175cFeCD6eaf65FF18bd83c096691",
+  "masterCopy": "0x1930a054d608e93f4D6Bceb3A8148F94F0FaAF3d",
   "receiverAddress": "0x6c0f58ad4eb24da5769412bf34ddee698c4d185b",
   "weiAmount": "10",
   "tokenAddress": "",
@@ -14,6 +14,6 @@
   "nftAddress": "",
   "nftIds": "[0,1,2,3]",
   "CAMPAIGN_ID": "0",
-  "FACTORY_ADDRESS": "0xE7BF0d2eF48becc66ABeAC0e3f1F88FEEE194441",
+  "FACTORY_ADDRESS": "0xFB55Efe17c5DBd3F82ccF901bE908e4D2e7d1eDD",
   "RELAYER_ADDRESS": ""   
 }
