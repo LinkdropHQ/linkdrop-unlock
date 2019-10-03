@@ -1,7 +1,8 @@
 import { put } from 'redux-saga/effects'
 import initializeSdk from 'data/sdk'
 import {
-  factory,
+  factoryRinkeby,
+  factoryMainnet,
   infuraPk
 } from 'app.config.js'
 import { ethers } from 'ethers'
@@ -16,6 +17,7 @@ const generator = function * ({ payload }) {
   try {
     const { linkdropMasterAddress, chainId, linkKey, campaignId } = payload
     const networkName = defineNetworkName({ chainId })
+    const factory = Number(chainId) === 1 ? factoryMainnet : factoryRinkeby
     const sdk = initializeSdk({
       factoryAddress: factory,
       chain: networkName,
