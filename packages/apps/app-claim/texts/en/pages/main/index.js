@@ -6,7 +6,9 @@ export default {
     transactionInProcess: 'Transaction is processing',
     claiming: 'Claiming...',
     instructions: 'It may take a few minutes. <a target="_blank" href={{transactionLink}}>Details</a>.',
+    details: 'Details on <a target="_blank" href={{transactionLink}}>Etherscan</a>.',
     tokensClaimed: '<span>{{tokens}}</span><br>is claimed',
+    tokensClaimedBySomeone: '<span>{{tokens}}</span> is claimed<br>by someone else',
     howToClaim: 'How to claim tokens to {{wallet}}',
     claimUnlock: 'Get an Unlock key<br>to access the article',
     agreeWithTerms: 'By claiming you agree to the <a target="_blank" href={{href}}>Terms & Privacy</a>'
