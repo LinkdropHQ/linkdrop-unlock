@@ -8,6 +8,7 @@ import AppRouter from '../router'
 
 export default function RouterProvider () {
   const context = useWeb3Context()
+  const { account, active } = context
 
   useEffect(() => {
     context.setFirstValidConnector(['MetaMask', 'Infura'])
@@ -20,7 +21,7 @@ export default function RouterProvider () {
   } else {
     return <ConnectedRouter history={history}>
       <Router history={history}>
-        <AppRouter account={context.account} />
+        <AppRouter account={account} active={active} />
       </Router>
     </ConnectedRouter>
   }

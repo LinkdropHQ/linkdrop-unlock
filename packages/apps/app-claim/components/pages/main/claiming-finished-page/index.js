@@ -7,17 +7,19 @@ import { getHashVariables, defineEtherscanUrl } from '@linkdrop/commons'
 import classNames from 'classnames'
 
 @actions(({
-  user: { claimedByUser },
+  user: { claimedByUser, readyToClaim },
   tokens: { transactionId }
 }) => ({
   claimedByUser,
-  transactionId
+  transactionId,
+  readyToClaim
 }))
 @translate('pages.main')
 class ClaimingFinishedPage extends React.Component {
   render () {
     const { chainId, article = 'https://www.forbes.com/crypto-blockchain/' } = getHashVariables()
-    const { transactionId, amount, claimedByUser, symbol } = this.props
+    const { transactionId, amount, claimedByUser, symbol, readyToClaim } = this.props
+    if (!readyToClaim) { return null }
     return <div className={commonStyles.container}>
       <Alert icon={<Icons.Check />} className={styles.alert} />
       <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t(`titles.${claimedByUser ? 'tokensClaimed' : 'tokensClaimedBySomeone'}`, { tokens: 'Unlock key' }) }} />
