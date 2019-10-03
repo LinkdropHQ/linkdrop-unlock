@@ -28,13 +28,15 @@ import { Web3Consumer } from 'web3-react'
 @translate('pages.claim')
 class Claim extends React.Component {
   componentDidMount () {
+    const { account } = this.props
     const {
       linkKey,
       chainId,
       linkdropMasterAddress,
-      campaignId
+      campaignId,
+      lock
     } = getHashVariables()
-    this.actions().tokens.checkIfClaimed({ linkKey, chainId, linkdropMasterAddress, campaignId })
+    this.actions().tokens.checkIfClaimed({ address: account, lock, linkKey, chainId, linkdropMasterAddress, campaignId })
     this.actions().user.createSdk({ linkdropMasterAddress, chainId, linkKey, campaignId })
   }
 
@@ -102,10 +104,7 @@ class Claim extends React.Component {
     // error
     const {
       account,
-      networkId,
-      library,
-      connector,
-      connectorName
+      networkId
     } = context
     const {
       chainId,

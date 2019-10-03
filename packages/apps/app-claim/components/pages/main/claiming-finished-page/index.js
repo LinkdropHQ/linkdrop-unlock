@@ -6,26 +6,32 @@ import commonStyles from '../styles.module'
 import { getHashVariables, defineEtherscanUrl } from '@linkdrop/commons'
 import classNames from 'classnames'
 
-@actions(({ tokens: { transactionId } }) => ({ transactionId }))
+@actions(({
+  user: { claimedByUser },
+  tokens: { transactionId }
+}) => ({
+  claimedByUser,
+  transactionId
+}))
 @translate('pages.main')
 class ClaimingFinishedPage extends React.Component {
   render () {
     const { chainId, article = 'https://www.forbes.com/crypto-blockchain/' } = getHashVariables()
-    const { transactionId, amount, symbol } = this.props
+    const { transactionId, amount, claimedByUser, symbol } = this.props
     return <div className={commonStyles.container}>
       <Alert icon={<Icons.Check />} className={styles.alert} />
-      <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.tokensClaimed', { tokens: 'Unlock key' }) }} />
-      {false && <div
+      <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t(`titles.${claimedByUser ? 'tokensClaimed' : 'tokensClaimedBySomeone'}`, { tokens: 'Unlock key' }) }} />
+      {claimedByUser && this.renderArticleButton({ article })}
+      <div
         className={classNames(styles.description, {
           [styles.descriptionHidden]: !transactionId
         })}
         dangerouslySetInnerHTML={{
-          __html: this.t('titles.instructions', {
+          __html: this.t('titles.details', {
             transactionLink: `${defineEtherscanUrl({ chainId })}tx/${transactionId}`
           })
         }}
-      />}
-      {this.renderArticleButton({ article })}
+      />
     </div>
   }
 
