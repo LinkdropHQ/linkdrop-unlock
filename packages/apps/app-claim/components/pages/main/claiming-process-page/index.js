@@ -59,6 +59,7 @@ class ClaimingProcessPage extends React.Component {
       <div className={styles.subtitle}>{this.t('titles.transactionInProcess')}</div>
       <div
         className={classNames(styles.description, {
+          [styles.descriptionHidden]: !transactionId
         })}
         dangerouslySetInnerHTML={{
           __html: this.t('titles.instructions', {
