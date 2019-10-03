@@ -68,6 +68,7 @@ class ClaimingProcessPage extends React.Component {
         }}
       />
       {this.renderArticleButton({ article })}
+
     </div>
   }
 

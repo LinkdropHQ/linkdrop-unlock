@@ -11,9 +11,9 @@
 .description {
   font-size: 14px;
   margin-bottom: 8px;
-
+  color: $textGreyColor;
   a {
-    color: $blackColor;
+    color: $textGreyColor;
   }
 }
 
@@ -34,4 +34,5 @@
 .button {
   max-width: 300px;
   min-width: 300px;
+  margin-bottom: 40px;
 }

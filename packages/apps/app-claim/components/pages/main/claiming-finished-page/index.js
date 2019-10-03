@@ -21,17 +21,17 @@ class ClaimingFinishedPage extends React.Component {
     return <div className={commonStyles.container}>
       <Alert icon={<Icons.Check />} className={styles.alert} />
       <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t(`titles.${claimedByUser ? 'tokensClaimed' : 'tokensClaimedBySomeone'}`, { tokens: 'Unlock key' }) }} />
+      {claimedByUser && this.renderArticleButton({ article })}
       <div
         className={classNames(styles.description, {
           [styles.descriptionHidden]: !transactionId
         })}
         dangerouslySetInnerHTML={{
-          __html: this.t('titles.instructions', {
+          __html: this.t('titles.details', {
             transactionLink: `${defineEtherscanUrl({ chainId })}tx/${transactionId}`
           })
         }}
       />
-      {this.renderArticleButton({ article })}
     </div>
   }
 
