@@ -135,7 +135,7 @@ class Claim extends React.Component {
 
     if (this.platform === 'desktop' && (!account || !active)) {
       // if network id in the link and in the web3 are different
-      return <ErrorPage error='NETWORK_NOT_SUPPORTED' network={capitalize({ string: defineNetworkName({ chainId }) })} />
+      return <ErrorPage error='NEED_METAMASK' />
     }
 
     if ((!account || !active) && (step === 1 || step === 0)) {
