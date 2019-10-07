@@ -38,100 +38,101 @@ const linkdropSDK = new LinkdropSDK({
   linkdropMasterAddress: linkdropMaster.address,
   chain: CHAIN,
   jsonRpcUrl: JSON_RPC_URL,
-  factoryAddress: FACTORY_ADDRESS
+  factoryAddress: FACTORY_ADDRESS,
+  claimHost: 'https://unlock.linkdrop.io'
 })
 
 export const generate = async () => {
   let spinner, tx
   // try {
-    spinner = ora({
-      text: term.bold.green.str('Generating links'),
-      color: 'green'
-    })
-    spinner.start()
+  spinner = ora({
+    text: term.bold.green.str('Generating links'),
+    color: 'green'
+  })
+  spinner.start()
 
-    const proxyAddress = linkdropSDK.getProxyAddress(CAMPAIGN_ID)
+  const proxyAddress = linkdropSDK.getProxyAddress(CAMPAIGN_ID)
 
-    lock = new ethers.Contract(lock, Lock.abi, provider)
-    const keyPrice = await lock.keyPrice()
+  lock = new ethers.Contract(lock, Lock.abi, provider)
+  const keyPrice = await lock.keyPrice()
 
-    const weiCosts = keyPrice.mul(linksNumber)
-    const feeCosts = GAS_FEE.mul(linksNumber)
-    const totalCosts = weiCosts.add(feeCosts)
+  const weiCosts = keyPrice.mul(linksNumber)
+  const feeCosts = GAS_FEE.mul(linksNumber)
+  const totalCosts = weiCosts.add(feeCosts)
 
-    let amountToSend
+  let amountToSend
 
-    const tokenSymbol = 'ETH'
-    const tokenDecimals = 18
-    const proxyBalance = await provider.getBalance(proxyAddress)
+  const tokenSymbol = 'ETH'
+  const tokenDecimals = 18
+  const proxyBalance = await provider.getBalance(proxyAddress)
 
-    // check that proxy address is deployed
+  // check that proxy address is deployed
   await deployProxyIfNeeded(spinner, privateKey)
-  
+
   if (proxyBalance.lt(totalCosts)) {
-    
     console.log({ proxyBalance })
-    
+
     // Transfer ethers
     amountToSend = totalCosts.sub(proxyBalance)
-    
-   
+
     spinner.info(
       term.bold.str(
         `Sending ${amountToSend /
-                   Math.pow(10, tokenDecimals)} ${tokenSymbol} to ^g${proxyAddress}`
+          Math.pow(10, tokenDecimals)} ${tokenSymbol} to ^g${proxyAddress}`
       )
     )
-      
+
     tx = await linkdropMaster.sendTransaction({
       to: proxyAddress,
       value: amountToSend,
       gasLimit: 23000
     })
-      
+
     term.bold(`Tx Hash: ^g${tx.hash}\n`)
   }
-   
-    // Generate links
-    let links = []
 
-    for (let i = 0; i < linksNumber; i++) {
-      let {
-        url,
-        linkId,
-        linkKey,
-        linkdropSignerSignature
-      } = await linkdropSDK.generateLinkUnlock({
-        signingKeyOrWallet: privateKey,
-        weiAmount: keyPrice,
-        tokenAddress: ethers.constants.AddressZero,
-        tokenAmount: 0,
-        expirationTime: EXPIRATION_TIME,
-        campaignId: CAMPAIGN_ID,
-        lock: lock.address
-      })
+  // Generate links
+  let links = []
 
-      let link = { i, linkId, linkKey, linkdropSignerSignature, url }
-      links.push(link)
-    }
+  for (let i = 0; i < linksNumber; i++) {
+    let {
+      url,
+      linkId,
+      linkKey,
+      linkdropSignerSignature
+    } = await linkdropSDK.generateLinkUnlock({
+      signingKeyOrWallet: privateKey,
+      weiAmount: keyPrice,
+      tokenAddress: ethers.constants.AddressZero,
+      tokenAmount: 0,
+      expirationTime: EXPIRATION_TIME,
+      campaignId: CAMPAIGN_ID,
+      lock: lock.address
+    })
 
-    // Save links
-    const dir = path.join(__dirname, '../output')
-    const filename = path.join(dir, 'linkdrop_eth_unlock.csv')
+    url = `${url}&w=opera`
 
-    // try {
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir)
-      }
-      const ws = fs.createWriteStream(filename)
-      fastcsv.write(links, { headers: true }).pipe(ws)
-    // } catch (err) {
-    //   throw newError(err)
-    // }
+    let link = { i, linkId, linkKey, linkdropSignerSignature, url }
+    links.push(link)
+  }
 
-    spinner.succeed(term.bold.str(`Generated and saved links to ^_${filename}`))
+  // Save links
+  const dir = path.join(__dirname, '../output')
+  const filename = path.join(dir, 'linkdrop_eth_unlock.csv')
 
-    return links
+  // try {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir)
+  }
+  const ws = fs.createWriteStream(filename)
+  fastcsv.write(links, { headers: true }).pipe(ws)
+  // } catch (err) {
+  //   throw newError(err)
+  // }
+
+  spinner.succeed(term.bold.str(`Generated and saved links to ^_${filename}`))
+
+  return links
   // } catch (err) {
   //   spinner.fail(term.bold.red.str('Failed to generate links'))
   //   throw newError(err)

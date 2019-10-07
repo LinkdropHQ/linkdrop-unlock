@@ -2,30 +2,30 @@ module.exports = shipit => {
   require('shipit-deploy')(shipit)
 
   const network = process.argv[2]
-  const PM2_APP_NAME = `linkdrop-unlock-${network}`
+  const PM2_APP_NAME = `linkdrop-${network}`
   let CUSTOM_PORT
 
-  if (network === 'mainnet') CUSTOM_PORT = 12001
-  else if (network === 'rinkeby') CUSTOM_PORT = 12004
-  else if (network === 'ropsten') CUSTOM_PORT = 12003
+  if (network === 'mainnet-unlock') CUSTOM_PORT = 12001
+  else if (network === 'rinkeby-unlock') CUSTOM_PORT = 12004
+  else if (network === 'ropsten-unlock') CUSTOM_PORT = 12003
 
   shipit.initConfig({
     default: {
       repositoryUrl: 'git@github.com:LinkdropHQ/linkdrop-unlock.git',
       keepReleases: 3
     },
-    rinkeby: {
-      deployTo: 'linkdrop-unlock/rinkeby',
+    'rinkeby-unlock': {
+      deployTo: 'linkdrop/rinkeby-unlock',
       servers: 'root@rinkeby.linkdrop.io',
       branch: 'dev'
     },
-    ropsten: {
-      deployTo: 'linkdrop-unlock/ropsten',
+    'ropsten-unlock': {
+      deployTo: 'linkdrop/ropsten-unlock',
       servers: 'root@rinkeby.linkdrop.io',
       branch: 'dev'
     },
-    mainnet: {
-      deployTo: 'linkdrop-unlock/mainnet',
+    'mainnet-unlock': {
+      deployTo: 'linkdrop/mainnet-unlock',
       servers: 'root@rinkeby.linkdrop.io',
       branch: 'dev'
     }
