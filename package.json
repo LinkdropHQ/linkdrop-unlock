@@ -10,6 +10,7 @@
     "packages/apps/*"
   ],
   "scripts": {
+    "postinstall": "yarn compile-contracts",
     "test": "cd packages/contracts/ && mocha --require @babel/polyfill --require @babel/register",
     "compile-contracts": "cd packages/contracts && npx waffle .waffle",
     "deploy-registry": "npx babel-node packages/scripts/src/deploy_registry.js",
