@@ -10,13 +10,14 @@ import ClaimingFinishedPage from './claiming-finished-page'
 import { getHashVariables, defineNetworkName, capitalize } from '@linkdrop/commons'
 import { Web3Consumer } from 'web3-react'
 
-@actions(({ user: { errors, step, loading: userLoading, readyToClaim, alreadyClaimed }, tokens: { transactionId }, contract: { loading, decimals, amount, symbol, icon } }) => ({
+@actions(({ user: { errors, step, loading: userLoading, readyToClaim, alreadyClaimed }, tokens: { name, transactionId }, contract: { loading, decimals, amount, symbol, icon } }) => ({
   userLoading,
   loading,
   decimals,
   symbol,
   amount,
   icon,
+  name,
   step,
   transactionId,
   errors,
