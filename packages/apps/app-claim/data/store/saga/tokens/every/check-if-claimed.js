@@ -15,9 +15,11 @@ const generator = function * ({ payload }) {
     const factory = Number(chainId) === 1 ? factoryMainnet : factoryRinkeby
     const factoryContract = yield new ethers.Contract(factory, LinkdropFactory.abi, provider)
     const claimed = yield factoryContract.isClaimedLink(linkdropMasterAddress, campaignId, linkId)
+    const lockAbi = ['function balanceOf(address _owner) view returns (uint)', 'function name() external view returns (string memory)']
+    const lockContract = new ethers.Contract(lockAddress, lockAbi, provider)
+    const name = yield lockContract.name()
+    yield put({ type: 'TOKENS.SET_NAME', payload: { name } })
     if (claimed) {
-      const lockAbi = ['function balanceOf(address _owner) view returns (uint)']
-      const lockContract = new ethers.Contract(lockAddress, lockAbi, provider)
       const hasToken = yield lockContract.balanceOf(address)
       yield put({ type: 'USER.SET_CLAIMED_BY_USER', payload: { claimedByUser: Number(hasToken) > 0 } })
     }

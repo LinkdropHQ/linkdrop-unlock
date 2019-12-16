@@ -1,21 +1,23 @@
 import React from 'react'
 import { RetinaImage, Button } from '@linkdrop/ui-kit'
-import { translate } from 'decorators'
+import { translate, actions } from 'decorators'
 import { shortenString } from '@linkdrop/commons'
 import text from 'texts'
 import styles from './styles.module'
 import commonStyles from '../styles.module'
 import { getImages } from 'helpers'
 
+@actions(({ tokens: { name } }) => ({ name }))
 @translate('pages.main')
 class InitialPage extends React.Component {
   render () {
-    const { onClick, amount, symbol, loading, wallet } = this.props
+    const { onClick, amount, symbol, loading, wallet, name } = this.props
+    console.log({ name })
     return <div className={commonStyles.container}>
       <div className={styles.tokenIcon}>
         <RetinaImage width={100} {...getImages({ src: 'unlock' })} />
       </div>
-      <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.claimUnlock') }} />
+      <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.claimUnlock', { name }) }} />
       <Button loading={loading} className={styles.button} onClick={_ => onClick && onClick()}>
         {text('common.buttons.claim')}
       </Button>

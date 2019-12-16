@@ -1,5 +1,5 @@
 export default {
   titles: {
-    unlock: 'Unlock Content'
+    unlock: 'Unlock Membership'
   }
 }

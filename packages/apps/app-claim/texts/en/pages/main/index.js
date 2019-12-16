@@ -10,7 +10,7 @@ export default {
     tokensClaimed: '<span>{{tokens}}</span><br>is claimed',
     tokensClaimedBySomeone: '<span>{{tokens}}</span> is claimed<br>by someone else',
     howToClaim: 'How to claim tokens to {{wallet}}',
-    claimUnlock: 'Get an Unlock key<br>to access the article',
+    claimUnlock: 'Get an Unlock key<br>to become a member to<br>{{name}}',
     agreeWithTerms: 'By claiming you agree to the <a target="_blank" href={{href}}>Terms & Privacy</a>'
   },
   buttons: {
