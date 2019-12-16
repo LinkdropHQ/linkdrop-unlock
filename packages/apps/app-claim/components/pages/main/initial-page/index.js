@@ -12,7 +12,6 @@ import { getImages } from 'helpers'
 class InitialPage extends React.Component {
   render () {
     const { onClick, amount, symbol, loading, wallet, name } = this.props
-    console.log({ name })
     return <div className={commonStyles.container}>
       <div className={styles.tokenIcon}>
         <RetinaImage width={100} {...getImages({ src: 'unlock' })} />
