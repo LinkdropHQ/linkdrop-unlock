@@ -123,7 +123,7 @@ class Claim extends React.Component {
           // to instruction page
           return this.actions().user.setStep({ step: 3 })
         }
-        if ((this.platform !== 'desktop' && !this.isOpera) || !account) {
+        if (!account) {
           // to wallet choose page
           return this.actions().user.setStep({ step: 2 })
         }
