@@ -10,7 +10,7 @@
     "extends": "../babel.config.js"
   },
   "dependencies": {
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "ethers": "^4.0.27"
   },
   "gitHead": "414d0e9ecca3fab72be5820c3046207b0b5415b2"
